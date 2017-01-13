@@ -222,6 +222,8 @@ float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
 int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
 
+extern uint8_t launcherStatus;
+
 void USART1_IRQHandler(void)
 {	 
 	static int	status = 0;
@@ -350,11 +352,15 @@ void USART1_IRQHandler(void)
 				switch(ACCTid)
 				{
 					case 1:
-						PosCrl(9,1,2048);
+						if (launcherStatus == 0)
+					  {
+							PosCrl(9,1,2048); 
+							launcherStatus = 1;
+						}
 						ACCTid = 0;
 						break;
-					case 2:
-						PosCrl(9,1,2048);
+  				case 2:
+//						PosCrl(9,1,2048);
 						ACCTid = 0;
 						break;
 				}
@@ -494,7 +500,7 @@ void UART5_IRQHandler(void)
 	if(USART_GetITStatus(UART5, USART_IT_RXNE)==SET)   
 	{
 		USART_ClearITPendingBit( UART5,USART_IT_RXNE);
-		Msg=USART_ReceiveData(UART5);
+		Msg = USART_ReceiveData(UART5);
 		switch(Uart5Status)
 		{
 			case 0:

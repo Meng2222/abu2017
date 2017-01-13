@@ -867,11 +867,14 @@ ARM Macro Assembler    Page 14
               00000400 
               00000200 
               00000000 
-Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\obj\st
-artup_stm32f4xx.d -o.\obj\startup_stm32f4xx.o -IC:\Keil_v5\ARM\RV31\INC -IC:\Ke
-il_v5\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F4
-xx_DFP\1.0.8\Device\Include --list=.\list\startup_stm32f4xx.lst ..\Libraries\CM
-SIS\startup\startup_stm32f4xx.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4 --apcs=interw
+ork --depend=.\obj\startup_stm32f4xx.d -o.\obj\startup_stm32f4xx.o -IC:\Users\m
+echa\Desktop\abu2017\Ö÷¿Ø1.0.0.161231_¦Á\MDK-ARM\RTE -IC:\Software\Keil_V5\ARM\
+PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include -IC:\So
+ftware\Keil_V5\ARM\CMSIS\Include -IC:\Software\Keil_V5\ARM\PACK\Keil\STM32F4xx_
+DFP\2.5.0\Device\Include --predefine="__UVISION_VERSION SETA 521" --predefine="
+STM32F407xx SETA 1" --list=.\list\startup_stm32f4xx.lst ..\Libraries\CMSIS\star
+tup\startup_stm32f4xx.s
 
 
 
@@ -1984,4 +1987,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-445 symbols in table
+447 symbols in table

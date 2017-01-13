@@ -2,10 +2,10 @@
 .\obj\adc.o: ..\Action_User\adc.h
 .\obj\adc.o: ..\Libraries\CMSIS\stm32f4xx.h
 .\obj\adc.o: ..\Libraries\CMSIS\core_cm4.h
-.\obj\adc.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h
-.\obj\adc.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include\core_cmInstr.h
-.\obj\adc.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include\core_cmFunc.h
-.\obj\adc.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include\core_cm4_simd.h
+.\obj\adc.o: C:\Software\Keil_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\adc.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cmInstr.h
+.\obj\adc.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cmFunc.h
+.\obj\adc.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cm4_simd.h
 .\obj\adc.o: ..\Libraries\CMSIS\system_stm32f4xx.h
 .\obj\adc.o: ..\Action_User\timer.h
 .\obj\adc.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h
@@ -13,4 +13,4 @@
 .\obj\adc.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h
 .\obj\adc.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h
 .\obj\adc.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h
-.\obj\adc.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\math.h
+.\obj\adc.o: C:\Software\Keil_V5\ARM\ARMCC\Bin\..\include\math.h

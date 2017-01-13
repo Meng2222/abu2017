@@ -89,7 +89,9 @@ void ConfigTask(void)
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
+uint8_t launcherStatus = 0;
 uint8_t status = 0;
+uint8_t counter = 0;
 float cl_angle(float ex,float act);	
 void WalkTask(void)
 {
@@ -99,8 +101,19 @@ void WalkTask(void)
 
 	while(1)
 	{
-//		OSSemPend(PeriodSem,0,&os_err);     //
-		
+   		OSSemPend(PeriodSem,0,&os_err);
+			
+			if (launcherStatus == 1)
+			{
+				counter++;
+				if (counter == 100)
+				{
+					PosCrl(9, 1, 2048);
+					launcherStatus = 0;
+					counter = 0;
+				}
+			}
 //		USART_OUT(UART5,(uint8_t *)"%d\t%d\t%d\t%d\t\n",EncVel[0],(int)(GetSpeed(1)),EncVel[1],(int)(GetSpeed(2)));
 	} 
+	
 }	
