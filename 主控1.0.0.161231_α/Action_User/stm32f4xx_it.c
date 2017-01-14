@@ -62,9 +62,18 @@ union Vell
 	uint8_t  Data8[2];
 	int16_t  Data16;
 }vell;
+union MSG
+{
+	uint8_t data8[8];
+	int data32[2];
+	float dataf[2];
+}msg;
+
 uint16_t encoder_right,encoder_left;
 int16_t vell_right,vell_left;
 
+float Speed;
+float Position[4];
 
 void CAN1_RX0_IRQHandler(void)
 {
@@ -72,13 +81,14 @@ void CAN1_RX0_IRQHandler(void)
 	OS_CPU_SR  cpu_sr;
 	static uint8_t buffer[8];
 	static uint32_t StdId=0;
+	int32_t i = 0;
 
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	CAN_RxMsg(CAN1, &StdId,buffer,8);
+	CAN_RxMsg(CAN1, &StdId, buffer, 8);
 
-	if(StdId == 0x16)	//
+	if(StdId == 0x16) 
 	{
 		pos.Data8[0]=buffer[0];
 		pos.Data8[1]=buffer[1];
@@ -90,7 +100,7 @@ void CAN1_RX0_IRQHandler(void)
 		SetEncVel(0,vell_right);
 	}
 	
-	if(StdId == 0x18)	//
+	if(StdId == 0x18)
 	{
 		pos.Data8[0]=buffer[0];
 		pos.Data8[1]=buffer[1];
@@ -100,6 +110,42 @@ void CAN1_RX0_IRQHandler(void)
 		vell.Data8[1]=buffer[3]; 
 		vell_left=vell.Data16;		
 		SetEncVel(1,vell_left);
+	}
+	
+	if(StdId==0x286 || StdId==0x287 || StdId==0x288 ||  StdId==0x289)
+	{
+		for(i = 0;i < 8;i++)
+		{
+			msg.data8[i]=buffer[i];
+		}
+
+		if(msg.data32[0] == 0x40005856)
+		{
+			if(StdId==0x289) 
+			{
+				Speed = msg.data32[1];
+			}
+		}
+		
+		if(msg.data32[0] == 0x40005850)
+		{
+			if(StdId==0x286) 
+			{
+				Position[0] = 45 - (msg.data32[1] - 249) * 0.01598;    //∫ΩœÚ
+			}
+			if(StdId==0x287) 
+			{
+				Position[1] = 45 - (msg.data32[1] - 1082) * 0.01758;    //∫·πˆ
+			}
+			if(StdId==0x288) 
+			{
+				Position[2] = (msg.data32[1] - 1125) * 0.01302 - 6;    //∏©—ˆ
+			}
+			if(StdId==0x289) 
+			{
+				Position[3] = msg.data32[1];
+			}
+		}
 	}
 	
 	CAN_ClearFlag(CAN1,CAN_FLAG_EWG);
@@ -115,6 +161,7 @@ void CAN1_RX0_IRQHandler(void)
 	CAN_ClearFlag(CAN1,CAN_FLAG_FOV1);
 	OSIntExit();
 }
+
 /****************«˝∂Ø∆˜CAN1Ω”ø⁄ƒ£øÈ****end******************/
 /************************************************************/
 
@@ -223,6 +270,7 @@ int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
 int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
 
 extern uint8_t launcherStatus;
+int32_t launcherPos = 1678;
 
 void USART1_IRQHandler(void)
 {	 
@@ -298,21 +346,21 @@ void USART1_IRQHandler(void)
 						temAngle = (45.0f-dataConvert.dataf);
 						if(temAngle < 0.0f)		temAngle = 0.0f;
 						if(temAngle > 45.0f)		temAngle = 45.0f;
-						PosCrl(7,0,(int32_t)(temAngle * 56.8889f));
+						PosCrl(7,0,(int32_t)(temAngle * 56.8889f));  //∫·πˆ  45f -> 0f
 						break;
 					case 1:
 						pitch[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf + 6.0f;
 						if(temAngle < 0.0f)		temAngle = 0.0f;
 						if(temAngle > 36.0f)		temAngle = 36.0f;
-						PosCrl(8,0,(int32_t)(temAngle * 76.8f));
+						PosCrl(8,0,(int32_t)(temAngle * 76.8f));     //∏©—ˆ -6f -> 30f
 						break;
 					case 2:
 						yaw[id / 5] = dataConvert.dataf;
 						temAngle = 45.0f - dataConvert.dataf;
 						if(temAngle < 0.0f)		temAngle = 0.0f;
 						if(temAngle > 90.0f)		temAngle = 90.0f;
-						PosCrl(6,0,(int32_t)(temAngle * 62.57778f));
+						PosCrl(6,0,(int32_t)(temAngle * 62.57778f));  //∫ΩœÚ -45f -> 45f
 						break;
 					case 3:
 						speed1[id / 5] = dataConvert.data32;
@@ -354,7 +402,8 @@ void USART1_IRQHandler(void)
 					case 1:
 						if (launcherStatus == 0)
 					  {
-							PosCrl(9,1,2048); 
+							launcherPos += 2048;
+							PosCrl(9, 0, launcherPos); 
 							launcherStatus = 1;
 						}
 						ACCTid = 0;
@@ -469,30 +518,27 @@ void USART1_IRQHandler(void)
 
 /******************¿∂—¿¥Æø⁄****************/
 void UART4_IRQHandler(void)
-{
-  
-
-	  
+{	  
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 	
 	 if(USART_GetITStatus(UART4, USART_IT_RXNE)==SET)   
-	 {
-			USART_ClearITPendingBit( UART4,USART_IT_RXNE);
+	 {	
+		  USART_ClearITPendingBit( UART4,USART_IT_RXNE);
 	 }
 	 
    OSIntExit();
 }
 
 //µ˜ ‘¥Æø⁄÷–∂œ
-static uint8_t Cmd[5];
+//static uint8_t Cmd[5];
 void UART5_IRQHandler(void)
 {
-	static int Uart5Status = 0;
-	static uint8_t i = 0;
-	uint8_t Msg = 0;
+//	static int Uart5Status = 0;
+//	static uint8_t i = 0;
+//	uint8_t Msg = 0;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
@@ -500,50 +546,49 @@ void UART5_IRQHandler(void)
 	if(USART_GetITStatus(UART5, USART_IT_RXNE)==SET)   
 	{
 		USART_ClearITPendingBit( UART5,USART_IT_RXNE);
-		Msg = USART_ReceiveData(UART5);
-		switch(Uart5Status)
-		{
-			case 0:
-				if(Msg == 0x43)		//C
-					Uart5Status = 1;		
-				break;
-			case 1:
-				if(Msg == 0x4D)							//M	
-					Uart5Status = 2;		
-				else if(Msg == 0x43)				//C	
-					Uart5Status = 1;
-				else 
-					Uart5Status = 0;
-				break;
-			case 2:
-				Cmd[i] = Msg;
-				i++;
-				if(i >= 5){
-					i = 0;
-					Uart5Status = 3;
-				}
-				break;
-			case 3:
-				if(Msg == 0x4D)							//M	
-					Uart5Status = 4;
-				else
-					Uart5Status = 0;
-				break;
-			case 4:
-				if(Msg == 0x43)							//√¸¡Ó¥¶¿Ì
-				{
-					if(Cmd[2] == 'U')
-						IncSpeed(Cmd[0] - '0');
-					if(Cmd[2] == 'D')
-						DecSpeed(Cmd[0] - '0');
-				}
-				Uart5Status = 0;
-				break;
-			default:
-				Uart5Status = 0;
-				break;
-		}
-		
+//		Msg = USART_ReceiveData(UART5);
+//		switch(Uart5Status)
+//		{
+//			case 0:
+//				if(Msg == 0x43)		//C
+//					Uart5Status = 1;		
+//				break;
+//			case 1:
+//				if(Msg == 0x4D)							//M	
+//					Uart5Status = 2;		
+//				else if(Msg == 0x43)				//C	
+//					Uart5Status = 1;
+//				else 
+//					Uart5Status = 0;
+//				break;
+//			case 2:
+//				Cmd[i] = Msg;
+//				i++;
+//				if(i >= 5){
+//					i = 0;
+//					Uart5Status = 3;
+//				}
+//				break;
+//			case 3:
+//				if(Msg == 0x4D)							//M	
+//					Uart5Status = 4;
+//				else
+//					Uart5Status = 0;
+//				break;
+//			case 4:
+//				if(Msg == 0x43)							//√¸¡Ó¥¶¿Ì
+//				{
+//					if(Cmd[2] == 'U')
+//						IncSpeed(Cmd[0] - '0');
+//					if(Cmd[2] == 'D')
+//						DecSpeed(Cmd[0] - '0');
+//				}
+//				Uart5Status = 0;
+//				break;
+//			default:
+//				Uart5Status = 0;
+//				break;
+//		}
 	}
 	OSIntExit();	 
 	 

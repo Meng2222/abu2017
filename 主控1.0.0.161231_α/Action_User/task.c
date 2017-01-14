@@ -80,7 +80,7 @@ void ConfigTask(void)
 	Pos_cfg(7,5000,5000,30000);//·­¹ö
 	Pos_cfg(8,5000,5000,30000);//¸©Ñö
 	
-	Pos_cfg(9,250000,250000,10000);//ÍÆÅÌ(9,250000,250000,25000)
+	Pos_cfg(9,250000,250000,15000);//ÍÆÅÌ(9,250000,250000,25000)
 	
 	Vel_cfg(10,300000,300000);	//ºó ·¢Éä 
 	Vel_cfg(11,300000,300000);	//
@@ -90,8 +90,10 @@ void ConfigTask(void)
 }
 
 uint8_t launcherStatus = 0;
+extern int32_t launcherPos;
 uint8_t status = 0;
 uint8_t counter = 0;
+extern float Position[4];
 float cl_angle(float ex,float act);	
 void WalkTask(void)
 {
@@ -103,12 +105,23 @@ void WalkTask(void)
 	{
    		OSSemPend(PeriodSem,0,&os_err);
 			
+			ReadActualPos(6);
+			ReadActualPos(7);
+			ReadActualPos(8);
+			ReadActualPos(9);
+		  ReadActualVel(9);
+		
+		  USART_OUT(UART5, "Roll*10 = %d, Pitch*10 = %d, Yaw*10 = %d   EncVel0 = %d   EncVel1 = %d\r\n", 
+		            (int)(Position[1] * 10), (int)(Position[2] * 10), (int)(Position[0] * 10), 
+									GetEncVel(0), GetEncVel(1));
+		  
 			if (launcherStatus == 1)
 			{
 				counter++;
 				if (counter == 100)
 				{
-					PosCrl(9, 1, 2048);
+					launcherPos += 2048;
+					PosCrl(9, 0, launcherPos);
 					launcherStatus = 0;
 					counter = 0;
 				}
