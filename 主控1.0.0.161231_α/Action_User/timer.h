@@ -24,6 +24,8 @@ void SetSpeed(uint8_t Num,float percent);
 float GetSpeed(uint8_t Num);
 void IncSpeed(uint8_t Num);
 void DecSpeed(uint8_t Num);
+
+void TIM7_Int_Init(u16 arr,u16 psc);
 #endif
 
 

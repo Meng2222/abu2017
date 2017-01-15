@@ -72,8 +72,8 @@ union MSG
 uint16_t encoder_right,encoder_left;
 int16_t vell_right,vell_left;
 
-float Speed;
-float Position[4];
+float speed;
+float position[4];
 
 void CAN1_RX0_IRQHandler(void)
 {
@@ -123,7 +123,7 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(StdId==0x289) 
 			{
-				Speed = msg.data32[1];
+				speed = msg.data32[1];
 			}
 		}
 		
@@ -131,19 +131,19 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(StdId==0x286) 
 			{
-				Position[0] = 45 - (msg.data32[1] - 249) * 0.01598;    //航向
+				position[0] = 45 - (msg.data32[1] - 249) * 0.01598;    //航向
 			}
 			if(StdId==0x287) 
 			{
-				Position[1] = 45 - (msg.data32[1] - 1082) * 0.01758;    //横滚
+				position[1] = 45 - (msg.data32[1] - 1082) * 0.01758;    //横滚
 			}
 			if(StdId==0x288) 
 			{
-				Position[2] = (msg.data32[1] - 1125) * 0.01302 - 6;    //俯仰
+				position[2] = (msg.data32[1] - 1125) * 0.01302 - 6;    //俯仰
 			}
 			if(StdId==0x289) 
 			{
-				Position[3] = msg.data32[1];
+				position[3] = msg.data32[1];
 			}
 		}
 	}
@@ -229,6 +229,7 @@ void TIM5_IRQHandler(void)
 	if(TIM_GetITStatus(TIM5, TIM_IT_Update)==SET)    
 	{              
 		TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+		updatevel(GetPosX(), GetPosY(), getAngle());
 	}
 	OSIntExit();
 }
@@ -423,98 +424,99 @@ void USART1_IRQHandler(void)
 
 /****************陀螺仪串口接受中断****start****************/
 
-//static float pos_x=0;
-//static float pos_y=0;
-//static float zangle=0;
-//static float xangle=0;
-//static float yangle=0;
-//static float w_z=0;
-//void USART1_IRQHandler(void)
-//{	 
-//	static uint8_t ch;
-//	static union
-//  {
-//	 uint8_t data[24];
-//	 float ActVal[6];
-//  }posture;
-//	static uint8_t count=0;
-//	static uint8_t i=0;
-//	OS_CPU_SR  cpu_sr;
-//	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
-//	OSIntNesting++;
-//	OS_EXIT_CRITICAL();
+static float pos_x=0;
+static float pos_y=0;
+static float zangle=0;
+static float xangle=0;
+static float yangle=0;
+static float w_z=0;
+void USART3_IRQHandler(void)
+{	 
+	static uint8_t ch;
+	static union
+  {
+	 uint8_t data[24];
+	 float ActVal[6];
+  }posture;
+	static uint8_t count=0;
+	static uint8_t i=0;
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
 
-//	if(USART_GetITStatus(USART3, USART_IT_RXNE)==SET)   
-//	{
-//		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
-//		ch=USART_ReceiveData(USART3);
-//		 switch(count)
-//		 {
-//			 case 0:
-//				 if(ch==0x0d)
-//					 count++;
-//				 else
-//					 count=0;
-//				 break;
-//				 
-//			 case 1:
-//				 if(ch==0x0a)
-//				 {
-//					 i=0;
-//					 count++;
-//				 }
-//				 else if(ch==0x0d);
-//				 else
-//					 count=0;
-//				 break;
-//				 
-//			 case 2:
-//				 posture.data[i]=ch;
-//			   i++;
-//			   if(i>=24)
-//				 {
-//					 i=0;
-//					 count++;
-//				 }
-//				 break;
-//				 
-//			 case 3:
-//				 if(ch==0x0a)
-//					 count++;
-//				 else
-//					 count=0;
-//				 break;
-//				 
-//			 case 4:
-//				 if(ch==0x0d)
-//				 {
-//  				 zangle=posture.ActVal[0];
-//	  		   xangle=posture.ActVal[1];
-//		  	   yangle=posture.ActVal[2];
-//			     pos_x =posture.ActVal[3];
-//			     pos_y =posture.ActVal[4];
-//			     w_z   =posture.ActVal[5];
-//					 
-//					 xangle=xangle;
-//					 yangle=yangle;
-//					 pos_x =pos_x ;
-//					 pos_y =pos_y ;
-//					 w_z   =w_z;
-//					 
-//					 setAngle(zangle);
-//				 }
-//			   count=0;
-//				 break;
-//			 
-//			 default:
-//				 count=0;
-//			   break;		 
-//		 }
-//		 
-//		 
-//	 }
-//	OSIntExit();
-//}
+	if(USART_GetITStatus(USART3, USART_IT_RXNE)==SET)   
+	{
+		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
+		ch=USART_ReceiveData(USART3);
+		 switch(count)
+		 {
+			 case 0:
+				 if(ch==0x0d)
+					 count++;
+				 else
+					 count=0;
+				 break;
+				 
+			 case 1:
+				 if(ch==0x0a)
+				 {
+					 i=0;
+					 count++;
+				 }
+				 else if(ch==0x0d);
+				 else
+					 count=0;
+				 break;
+				 
+			 case 2:
+				 posture.data[i]=ch;
+			   i++;
+			   if(i>=24)
+				 {
+					 i=0;
+					 count++;
+				 }
+				 break;
+				 
+			 case 3:
+				 if(ch==0x0a)
+					 count++;
+				 else
+					 count=0;
+				 break;
+				 
+			 case 4:
+				 if(ch==0x0d)
+				 {
+  				 zangle=posture.ActVal[0];
+	  		   xangle=posture.ActVal[1];
+		  	   yangle=posture.ActVal[2];
+			     pos_x =posture.ActVal[3];
+			     pos_y =posture.ActVal[4];
+			     w_z   =posture.ActVal[5];
+					 
+					 xangle=xangle;
+					 yangle=yangle;
+					 pos_x =pos_x ;
+					 pos_y =pos_y ;
+					 w_z   =w_z   ;
+					 
+					 SetPosX(pos_x);
+					 SetPosY(pos_y);
+					 setAngle(zangle);
+				 }
+			   count=0;
+				 break;
+			 
+			 default:
+				 count=0;
+			   break;		 
+		 }	 
+		 
+	 }
+	OSIntExit();
+}
 
 /******************蓝牙串口****************/
 void UART4_IRQHandler(void)
@@ -532,68 +534,56 @@ void UART4_IRQHandler(void)
    OSIntExit();
 }
 
-//调试串口中断
-//static uint8_t Cmd[5];
+/*********************************WIFI*************************/
+/**************************************************************/
+
+//通过判断接收连续2个字符之间的时间差不大于100ms来决定是不是一次连续的数据.
+//如果2个字符接收间隔超过100ms,则认为不是1次连续数据.也就是超过100ms没有接收到
+//任何数据,则表示此次接收完毕.
+//接收到的数据状态
+//[15]:0,没有接收到数据;1,接收到了一批数据.
+//[14:0]:接收到的数据长度
 void UART5_IRQHandler(void)
 {
-//	static int Uart5Status = 0;
-//	static uint8_t i = 0;
-//	uint8_t Msg = 0;
+	u8 res;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(USART_GetITStatus(UART5, USART_IT_RXNE)==SET)   
+	if(USART_GetITStatus(UART5, USART_IT_RXNE)!=RESET)   
 	{
 		USART_ClearITPendingBit( UART5,USART_IT_RXNE);
-//		Msg = USART_ReceiveData(UART5);
-//		switch(Uart5Status)
-//		{
-//			case 0:
-//				if(Msg == 0x43)		//C
-//					Uart5Status = 1;		
-//				break;
-//			case 1:
-//				if(Msg == 0x4D)							//M	
-//					Uart5Status = 2;		
-//				else if(Msg == 0x43)				//C	
-//					Uart5Status = 1;
-//				else 
-//					Uart5Status = 0;
-//				break;
-//			case 2:
-//				Cmd[i] = Msg;
-//				i++;
-//				if(i >= 5){
-//					i = 0;
-//					Uart5Status = 3;
-//				}
-//				break;
-//			case 3:
-//				if(Msg == 0x4D)							//M	
-//					Uart5Status = 4;
-//				else
-//					Uart5Status = 0;
-//				break;
-//			case 4:
-//				if(Msg == 0x43)							//命令处理
-//				{
-//					if(Cmd[2] == 'U')
-//						IncSpeed(Cmd[0] - '0');
-//					if(Cmd[2] == 'D')
-//						DecSpeed(Cmd[0] - '0');
-//				}
-//				Uart5Status = 0;
-//				break;
-//			default:
-//				Uart5Status = 0;
-//				break;
-//		}
+    res =USART_ReceiveData(UART5);		
+			if((USART5_RX_STA&(1<<15))==0)//接收完的一批数据,还没有被处理,则不再接收其他数据
+			{ 
+				if(USART5_RX_STA<USART5_MAX_RECV_LEN)		//还可以接收数据
+				{
+					TIM_SetCounter(TIM7,0);//计数器清空        				 
+					if(USART5_RX_STA==0)		
+						TIM_Cmd(TIM7, ENABLE);  //使能定时器7 
+					USART5_RX_BUF[USART5_RX_STA++]=res;		//记录接收到的值	 
+				}else 
+				{
+					USART5_RX_STA|=1<<15;					//强制标记接收完成
+				} 
+			}
 	}
-	OSIntExit();	 
-	 
+	OSIntExit();		
 }
 
+//定时器7中断服务程序		    
+void TIM7_IRQHandler(void)
+{ 	
+	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)//是更新中断
+	{	 			   
+		USART5_RX_STA|=1<<15;	//标记接收完成
+		TIM_ClearITPendingBit(TIM7, TIM_IT_Update  );  //清除TIM7更新中断标志    
+		TIM_Cmd(TIM7, DISABLE);  //关闭TIM7 
+	}	    
+}
+
+/*********************************WIFI*************************/
+/**************************************************************/
 
 /**
   * @brief   This function handles NMI exception.

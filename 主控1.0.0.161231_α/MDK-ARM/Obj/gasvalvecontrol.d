@@ -1,0 +1,12 @@
+.\obj\gasvalvecontrol.o: ..\Action_User\gasvalvecontrol.c
+.\obj\gasvalvecontrol.o: ..\Action_User\can.h
+.\obj\gasvalvecontrol.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h
+.\obj\gasvalvecontrol.o: ..\Libraries\CMSIS\stm32f4xx.h
+.\obj\gasvalvecontrol.o: ..\Libraries\CMSIS\core_cm4.h
+.\obj\gasvalvecontrol.o: C:\Software\Keil_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\gasvalvecontrol.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cmInstr.h
+.\obj\gasvalvecontrol.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cmFunc.h
+.\obj\gasvalvecontrol.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cm4_simd.h
+.\obj\gasvalvecontrol.o: ..\Libraries\CMSIS\system_stm32f4xx.h
+.\obj\gasvalvecontrol.o: ..\Action_User\gasvalvecontrol.h
+.\obj\gasvalvecontrol.o: ..\Action_User\can.h

@@ -38,3 +38,6 @@
 .\obj\task.o: ..\Action_User\action_math.h
 .\obj\task.o: ..\Action_User\GET_SET.h
 .\obj\task.o: ..\Action_User\encoder.h
+.\obj\task.o: ..\Action_User\gasvalvecontrol.h
+.\obj\task.o: ..\Action_User\can.h
+.\obj\task.o: ..\Action_User\wifi.h

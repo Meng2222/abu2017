@@ -24,3 +24,5 @@
 .\obj\usart.o: ..\uCOS-ii\Port\cpu.h
 .\obj\usart.o: ..\uCOS-ii\Port\cpu_def.h
 .\obj\usart.o: ..\uCOS-ii\Port\cpu_cfg.h
+.\obj\usart.o: ..\Action_User\timer.h
+.\obj\usart.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h

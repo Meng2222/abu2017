@@ -89,6 +89,34 @@ void GPIO_Init_Pins(GPIO_TypeDef * GPIOx,
 		
 	GPIO_Init(GPIOx,&GPIO_InitStructure);	
 }
+void KeyInit(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_0|GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN;
+	GPIO_InitStructure.GPIO_OType=GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOE,&GPIO_InitStructure);	
+	
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_0|GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_Init(GPIOE,&GPIO_InitStructure);	
+	
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN;
+	GPIO_InitStructure.GPIO_OType=GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB,&GPIO_InitStructure);	
+	
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOB,&GPIO_InitStructure);	
+}
 
 
 void BeepInit(void)
@@ -96,3 +124,22 @@ void BeepInit(void)
   GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
 }
 	
+void PhotoelectricityInit(void)        //左前PE8 右前PE7 左 PB1 右 PB0
+{
+	GPIO_InitTypeDef  GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);//使能GPIOF时钟
+
+	  //GPIOF9,F10初始化设置
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10;//LED0和LED1对应IO口
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输出模式
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+	GPIO_Init(GPIOE, &GPIO_InitStructure);//初始化GPIO
+		
+	GPIO_SetBits(GPIOE,GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10);//GPIOF9,F10设置高，灯灭
+		
+	
+
+}

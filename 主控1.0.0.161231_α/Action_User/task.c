@@ -16,6 +16,8 @@
 #include "GET_SET.h"
 #include "stm32f4xx_usart.h"
 #include "encoder.h"
+#include "gasvalvecontrol.h"
+#include "wifi.h"
 
 //////////////////Area of defining semaphore////////////////////////
  OS_EVENT 		*PeriodSem;
@@ -47,11 +49,18 @@ void ConfigTask(void)
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	  
-	TIM_Init(TIM2,999,839,0,0);					//主周期定时10ms	
-	TIM_Delayms(TIM5,1800);
+	TIM_Init(TIM2,999,839,0,0);					//主周期定时10ms
+	TIM_Delayms(TIM5,1500);	
 	
 	USART1_Init(115200);
 	UART5_Init(115200);		//调试用蓝牙
+	
+	USART3_Init(115200);	
+	TIM_Delayms(TIM5,10000);	
+	
+//	atk_8266_init();
+	KeyInit();
+	PhotoelectricityInit();
 	
 	CAN_Config(CAN1,500,GPIOB,GPIO_Pin_8, GPIO_Pin_9);
 
@@ -86,15 +95,28 @@ void ConfigTask(void)
 	Vel_cfg(11,300000,300000);	//
 	
 	TIM_Delayms(TIM5,50);
+	
+	ClampOpen();
+	
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
 uint8_t launcherStatus = 0;
 extern int32_t launcherPos;
-uint8_t status = 0;
-uint8_t counter = 0;
-extern float Position[4];
+static uint8_t counter = 0;
+extern float speed;
+extern float position[4];
 float cl_angle(float ex,float act);	
+
+enum StatusMachine
+{
+	goToLoadingArea,
+	Load,
+	goToLaunchingArea,
+	launch
+};
+static uint8_t status = goToLoadingArea;
+
 void WalkTask(void)
 {
 	CPU_INT08U  os_err;
@@ -103,29 +125,57 @@ void WalkTask(void)
 
 	while(1)
 	{
-   		OSSemPend(PeriodSem,0,&os_err);
-			
-			ReadActualPos(6);
-			ReadActualPos(7);
-			ReadActualPos(8);
-			ReadActualPos(9);
-		  ReadActualVel(9);
+   	OSSemPend(PeriodSem,0,&os_err);
 		
-		  USART_OUT(UART5, "Roll*10 = %d, Pitch*10 = %d, Yaw*10 = %d   EncVel0 = %d   EncVel1 = %d\r\n", 
-		            (int)(Position[1] * 10), (int)(Position[2] * 10), (int)(Position[0] * 10), 
-									GetEncVel(0), GetEncVel(1));
-		  
-			if (launcherStatus == 1)
-			{
-				counter++;
-				if (counter == 100)
+		switch(status)
+		{
+			case goToLoadingArea:
+//				if (GetPosX() <= -12837)
+//				{
+					if (PHOTOSENSORLEFTFRONT && PHOTOSENSORRIGHTFRONT)
+					{
+						status++;
+					}
+//				}
+				break;
+			case Load:
+				ClampClose();
+				if (KEYSWITCHLEFT && KEYSWITCHRIGHT)
 				{
-					launcherPos += 2048;
-					PosCrl(9, 0, launcherPos);
-					launcherStatus = 0;
-					counter = 0;
+					status ++;
 				}
+				break;
+			case goToLaunchingArea:
+				break;
+			case launch:
+				break;
+			default:
+				break;		
+		}
+		
+		ReadActualPos(6);
+		ReadActualPos(7);
+		ReadActualPos(8);
+		ReadActualPos(9);
+		ReadActualVel(9);
+		
+		//u5_printf("%d\r\n",(int)(1000*GetPosX()));
+		//USART_OUT(UART5, (const uint8_t *)"%d\r\n", GetPosX());
+//		USART_OUT(UART5, (const uint8_t *)"Roll*10 = %d, Pitch*10 = %d, Yaw*10 = %d   LauncherVel = %d   EncVel0 = %d   EncVel1 = %d\r\n", 
+//							(int)(position[1] * 10), (int)(position[2] * 10), (int)(position[0] * 10), 
+//								speed, GetEncVel(0), GetEncVel(1));
+		
+		if (launcherStatus == 1)
+		{
+			counter++;
+			if (counter == 100)
+			{
+				launcherPos += 2048;
+				PosCrl(9, 0, launcherPos);
+				launcherStatus = 0;
+				counter = 0;
 			}
+		}
 //		USART_OUT(UART5,(uint8_t *)"%d\t%d\t%d\t%d\t\n",EncVel[0],(int)(GetSpeed(1)),EncVel[1],(int)(GetSpeed(2)));
 	} 
 	
