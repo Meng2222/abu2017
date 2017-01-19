@@ -234,6 +234,9 @@ void TIM5_IRQHandler(void)
 	OSIntExit();
 }
 
+//static uint16_t photoSensorCounter = 0;
+//float frisbeeSpeed;
+
 void TIM3_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -242,7 +245,20 @@ void TIM3_IRQHandler(void)
 	OS_EXIT_CRITICAL();
 	if(TIM_GetITStatus(TIM3, TIM_IT_Update)==SET)    
 	{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);	
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+		
+//		//光电检测出口速度
+//		if (!(PHOTOSENSORLAUNCHER))
+//		{
+//			photoSensorCounter++;
+//		}
+//		if (PHOTOSENSORLAUNCHER && photoSensorCounter != 0)
+//		{
+//			frisbeeSpeed = 240.0f / (float)photoSensorCounter;
+//			u5_printf("S = %d.%d\r\n",(int)(frisbeeSpeed), (int)((frisbeeSpeed - (int)frisbeeSpeed) * 1000));
+//			photoSensorCounter = 0;
+//			
+//		}		
 	}
 	OSIntExit();
 }

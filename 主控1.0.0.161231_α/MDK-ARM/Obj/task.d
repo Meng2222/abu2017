@@ -25,7 +25,6 @@
 .\obj\task.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h
 .\obj\task.o: ..\Action_User\timer.h
 .\obj\task.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h
-.\obj\task.o: ..\Action_User\walk.h
 .\obj\task.o: ..\Action_User\adc.h
 .\obj\task.o: ..\Action_User\gpio.h
 .\obj\task.o: ..\Action_User\usart.h
@@ -40,4 +39,5 @@
 .\obj\task.o: ..\Action_User\encoder.h
 .\obj\task.o: ..\Action_User\gasvalvecontrol.h
 .\obj\task.o: ..\Action_User\can.h
+.\obj\task.o: ..\Action_User\movebase.h
 .\obj\task.o: ..\Action_User\wifi.h

@@ -12,6 +12,7 @@
 #define PHOTOSENSORRIGHTFRONT 	(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_8))
 #define PHOTOSENSORLEFTUP 			(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_10))
 #define PHOTOSENSORRIGHTUP 			(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_7))
+#define PHOTOSENSORLAUNCHER 	  (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1))
 #define BEEP_ON          				GPIO_SetBits(GPIOE,GPIO_Pin_2)
 #define BEEP_OFF         				GPIO_ResetBits(GPIOE,GPIO_Pin_2)
  

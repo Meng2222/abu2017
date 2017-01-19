@@ -339,7 +339,8 @@ void UART5_Init(uint32_t BaudRate)
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
 
- 	USART_DeInit(UART5);  //复位串口5
+  //若使用蓝牙屏掉此句
+// USART_DeInit(UART5);  //复位串口5
 	
   /* Connect PXx to USARTx_Tx*/
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
@@ -375,10 +376,12 @@ void UART5_Init(uint32_t BaudRate)
 	/* Enable USART */
 	USART_Cmd(UART5, ENABLE);
  //------------------------------------------------------------
+	//以下三句若使用蓝牙需屛掉
 	//使能USART5接收中断,
-	TIM7_Int_Init(1000-1,8400-1);		//100ms中断
-	USART5_RX_STA=0;		//清零
-	TIM_Cmd(TIM7, DISABLE); //关闭定时器7
+	
+	//TIM7_Int_Init(1000-1,8400-1);		//100ms中断
+	//USART5_RX_STA=0;		//清零
+	//TIM_Cmd(TIM7, DISABLE); //关闭定时器7
 }
 
 

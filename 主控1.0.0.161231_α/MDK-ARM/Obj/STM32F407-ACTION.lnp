@@ -14,6 +14,7 @@
 ".\obj\encoder.o"
 ".\obj\gasvalvecontrol.o"
 ".\obj\wifi.o"
+".\obj\movebase.o"
 ".\obj\system_stm32f4xx.o"
 ".\obj\startup_stm32f4xx.o"
 ".\obj\os_cpu_c.o"
