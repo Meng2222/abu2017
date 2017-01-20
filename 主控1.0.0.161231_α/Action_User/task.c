@@ -97,7 +97,7 @@ void ConfigTask(void)
 	
 	TIM_Delayms(TIM5,50);
 
-//	ClampOpen();
+	ClampOpen();
 	
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -112,6 +112,7 @@ static uint8_t lastXCounter;
 static float lastX = 0;
 static float presentX = 0;
 static float robotSpeed = 0;
+static uint8_t stopCounter = 0;
 //float test;
 
 enum StatusMachine
@@ -141,25 +142,26 @@ void WalkTask(void)
 			case goToLoadingArea:
 				if (GetPosX() > -400.0f)
 				{
-					Move(XSpeedUp(-0.0f, -400.0f, -1.5f), 0.08f);
+					MoveX(XSpeedUp(-0.0f, -400.0f, -1.5f));
 				}
-			    else if (GetPosX() <= -400 && GetPosX() > -12600.0f)
+			    else if (GetPosX() <= -400 && GetPosX() > -12400.0f)
 				{
-					Move(-1.5f, 0.08f);
+					MoveX(-1.5f);
 				}
-				else if (GetPosX() <= -12600.0f)
+				else if (GetPosX() <= -12400.0f)
 				{
-					Move(XSpeedDown(-12600.0f, -13100.0f, -1.5f), 0.08f);
-					if (PHOTOSENSORLEFTFRONT && PHOTOSENSORRIGHTFRONT && GetPosX() <= -13000.0f)
+					MoveX(XSpeedDown(-12400.0f, -12800.0f, -1.5f));
+					if (PHOTOSENSORLEFTFRONT && PHOTOSENSORRIGHTFRONT && GetPosX() <= -12800.0f)
 					{
-						Move(-0.0f, 0.0f);
-//						status++;
+						MoveX(0.0f);
+						status++;
 					}
 				}
 				break;
 				
 			//装载飞盘
 			case Load:
+				MoveX(0.0f);	
 				ClampClose();
 				if (KEYSWITCHLEFT && KEYSWITCHRIGHT)
 				{
@@ -170,18 +172,35 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 				PosCrl(5, 0, -150000);
-				if (GetPosX() <= -7530)
+				
+			    if (GetPosX() <= -12600.0f)
 				{
-					Move(1.0f, 0.07f);
+					MoveX(XSpeedUp(-13040.0f, -12600.0f, 1.5f));
 				}
-				else if (GetPosX() > -7530 && GetPosX() <= -6530)
+			    else if (GetPosX() <= -7130.0f && GetPosX() > -12600.0f)
 				{
-					Move(XSpeedDown(-7530.0f, -3540.0f, 1.0f), 0.07f);
+					MoveX(1.5f);
 				}
-				else if (GetPosX() > -6530)
+				else if (GetPosX() > -7130.0f && GetPosX() <= -6730.0f)
 				{
-					Move(0.0f, 0.0f);
-					status++;
+					MoveX(XSpeedDown(-7130.0f, -6730.0f, 1.5f));
+				}
+				else if (GetPosX() > -6730)
+				{
+					MoveX(0.7f);
+					if (GetPosX() > -6530)
+					{
+						MoveX(0.0f);
+						
+						if (getAngle() < 1.0f && getAngle() > -1.0f && stopCounter >= 100)
+						{
+							StopMove();
+							stopCounter = 0;
+							status++;
+						}
+						
+						stopCounter++;
+					}
 				}
 				break;
 			
@@ -206,9 +225,9 @@ void WalkTask(void)
 		{
 			presentX = GetPosX();
 			robotSpeed = (presentX - lastX) / 100.0f;
-			USART_OUT(UART5, (const uint8_t *)"%d.%d   %d   %d\r\n",
+			USART_OUT(UART5, (const uint8_t *)"%d.%d   %d   %d  %d\r\n",
 				      (int)robotSpeed, (int)((robotSpeed - (int)robotSpeed) * 1000),
-				      (int)presentX, (int)lastX);
+				      (int)presentX, (int)GetPosY(), (int)getAngle());
 			lastX = presentX;
 			lastXCounter = 0;
 		}

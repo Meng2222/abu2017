@@ -158,8 +158,14 @@ float VelPulse2Standard(float velPulse);
 */
 float VelStandard2Pulse(float velStandard);
 
-//运动函数
-int Move(float velX, float velY);
+//X运动函数
+int MoveX(float velX);
+
+//Y运动函数
+int MoveY(float velY);
+
+//姿态修正函数
+wheelSpeed_t RotateRoundAPoint(int wheelNum , float w);
 
 //减速x方向速度函数
 float XSpeedDown(float posX, float dstX, float speedBegin);

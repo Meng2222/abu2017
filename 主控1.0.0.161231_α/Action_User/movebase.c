@@ -126,26 +126,87 @@ float VelStandard2Pulse(float velStandard)
 	return velPulse;
 }
 
-//运动函数
-int Move(float velX, float velY)
+//X运动函数
+int MoveX(float velX)
 {
 	static wheelSpeed_t speedOut = {0.0,0.0,0.0,0.0};
+	static float p = 14.0f;
+	float velY = fabs(0.07f * velX) + 0.1f;
 	
 	speedOut.v1 =  VelStandard2Pulse( velX * 0.707107f + velY  * 0.707107f);
 	speedOut.v2 =  VelStandard2Pulse( velX * 0.707107f - velY  * 0.707107f);
 	speedOut.v3 =  VelStandard2Pulse(-velX * 0.707107f - velY  * 0.707107f);
 	speedOut.v4 =  VelStandard2Pulse(-velX * 0.707107f + velY  * 0.707107f);
 
-	if(velX<1.2f)FourWheelVelControl(speedOut);
-	if(velX>=1.2f)StopMove();
+	//姿态修正
+	if(getAngle() > 0)
+	{
+		speedOut.v1 +=  VelStandard2Pulse(0.4794f * ANGTORAD(-p * getAngle()));
+		speedOut.v2 +=  VelStandard2Pulse(1.0950f * ANGTORAD(-p * getAngle()));
+		speedOut.v3 +=  VelStandard2Pulse(0.6166f * ANGTORAD(-p * getAngle())); 
+		speedOut.v4 +=  VelStandard2Pulse(0.0f);
+	}
+	else if(getAngle() < 0)
+	{
+		speedOut.v1 +=  VelStandard2Pulse(1.0950f * ANGTORAD(-p * getAngle()));
+		speedOut.v2 +=  VelStandard2Pulse(0.4794f * ANGTORAD(-p * getAngle()));
+		speedOut.v3 +=  VelStandard2Pulse(0.0f); 
+		speedOut.v4 +=  VelStandard2Pulse(0.6166f * ANGTORAD(-p * getAngle()));
+	}
+	
+	if(velX < 2.0f && velX > -2.0f)
+	{
+		FourWheelVelControl(speedOut);
+	}
+	if(velX >= 2.0f || velX <= -2.0f)
+	{
+		StopMove();
+	}
+	
 	return RETURNOK;
+}
+
+//Y运动函数
+int MoveY(float velY)
+{
+	static wheelSpeed_t speedOut = {0.0,0.0,0.0,0.0};
+	
+	speedOut.v1 =  VelStandard2Pulse( velY  * 0.707107f);
+	speedOut.v2 =  VelStandard2Pulse(-velY  * 0.707107f);
+	speedOut.v3 =  VelStandard2Pulse(-velY  * 0.707107f);
+	speedOut.v4 =  VelStandard2Pulse( velY  * 0.707107f);
+	
+	FourWheelVelControl(speedOut);
+	
+	return RETURNOK;
+}
+//姿态修正函数
+wheelSpeed_t RotateRoundAPoint(int wheelNum , float w)
+{
+	wheelSpeed_t speedOut = {0.0f,0.0f,0.0f,0.0f};
+	if(wheelNum == 4)
+	{
+		speedOut.v1 =  VelStandard2Pulse(0.4794f * ANGTORAD(w));
+		speedOut.v2 =  VelStandard2Pulse(1.1040f * ANGTORAD(w));
+		speedOut.v3 =  VelStandard2Pulse(0.6166f * ANGTORAD(w)); 
+		speedOut.v4 =  VelStandard2Pulse(0.0f * ANGTORAD(w));
+	}
+	else if(wheelNum == 3)
+	{
+		speedOut.v1 =  VelStandard2Pulse(1.1040f * ANGTORAD(w));
+		speedOut.v2 =  VelStandard2Pulse(0.4794f * ANGTORAD(w));
+		speedOut.v3 =  VelStandard2Pulse(0.0f); 
+		speedOut.v4 =  VelStandard2Pulse(0.6166f * ANGTORAD(w));
+	}
+	return speedOut;
 }
 
 //减速x方向速度函数
 float XSpeedDown(float posX, float dstX, float speedBegin)
 {
 	float speed = 0.0f;
-	speed = (GetPosX() - dstX) / (posX - dstX) * speedBegin;
+	speed = (GetPosX() - dstX) / (posX - dstX) * (speedBegin - 0.7f * (speedBegin / fabs(speedBegin)))
+        	+ 0.7f * (speedBegin / fabs(speedBegin));;
 	return speed;
 }
 
@@ -153,6 +214,7 @@ float XSpeedDown(float posX, float dstX, float speedBegin)
 float XSpeedUp(float posX, float dstX, float speedEnd)
 {
 	float speed = 0.0f;
-	speed = (GetPosX() - posX) / (dstX - posX) * speedEnd;
+	speed = (GetPosX() - posX) / (dstX - posX) * (speedEnd - 1.0f * (speedEnd / fabs(speedEnd)))
+        	+ 1.0f * (speedEnd / fabs(speedEnd));
 	return speed;
 }
