@@ -1,5 +1,5 @@
-#include  <includes.h>
-#include  <app_cfg.h>
+#include <includes.h>
+#include <app_cfg.h>
 #include "misc.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_rcc.h"
@@ -43,28 +43,35 @@ void App_Task()
 													(INT8U           ) Walk_TASK_PRIO  );													
 }
 
+/*
+===============================================================
+                        初始化任务
+===============================================================
+*/
 void ConfigTask(void)
 {	
 	CPU_INT08U  os_err;	
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
-	  
-	TIM_Init(TIM2,999,839,0,0);					//主周期定时10ms
-	TIM_Init(TIM3,99,839,0,0);
-	TIM_Delayms(TIM5,1500);	
 	
+	//定时器初始化
+	TIM_Init(TIM2, 999, 839, 0, 0);					//主周期定时10ms
+	TIM_Init(TIM3, 99 , 839, 0, 0);
+	TIM_Delayms(TIM5, 1500);	
+	
+	//串口初始化
 	USART1_Init(115200);
-	UART5_Init(115200);		//调试用蓝牙
-	
+	UART5_Init(115200);		//调试用蓝牙	
 	USART3_Init(115200);	
-	TIM_Delayms(TIM5,10000);	
+	TIM_Delayms(TIM5, 10000);	
 	
 //	atk_8266_init();
 	KeyInit();
 	PhotoelectricityInit();
 	
-	CAN_Config(CAN1,500,GPIOB,GPIO_Pin_8, GPIO_Pin_9);
+	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 
+    //电机初始化及使能
 	elmo_Init();
 	
 	elmo_Enable(1);
@@ -84,7 +91,7 @@ void ConfigTask(void)
 	Vel_cfg(3, 100000, 100000);
 	Vel_cfg(4, 100000, 100000);
 	
-	Pos_cfg(5,300000,300000,12000);
+	Pos_cfg(5, 300000, 300000, 12000);
 	
 	Pos_cfg(6,5000,5000,30000);//航向
 	Pos_cfg(7,5000,5000,30000);//翻滚
@@ -102,39 +109,44 @@ void ConfigTask(void)
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
+/*
+===============================================================
+                        行走移动任务
+===============================================================
+*/
 uint8_t launcherStatus = 0;
 extern int32_t launcherPos;
 static uint8_t launcherCounter = 0;
 extern float speed;
 extern float position[4];
-float cl_angle(float ex,float act);	
+float cl_angle(float ex, float act);	
 static uint8_t lastXCounter;
 static float lastX = 0;
 static float presentX = 0;
 static float robotSpeed = 0;
 static uint8_t stopCounter = 0;
-//float test;
 
 enum StatusMachine
 {
 	goToLoadingArea,
-	Load,
+	load,
 	goToLaunchingArea,
 	launch
 };
+
 static uint8_t status = goToLoadingArea;
 
 void WalkTask(void)
 {
 	CPU_INT08U  os_err;
-	os_err=os_err;
-    OSSemSet(PeriodSem,0,&os_err);
+	os_err = os_err;
+    OSSemSet(PeriodSem, 0, &os_err);
 
 	while(1)
 	{
-		OSSemPend(PeriodSem,0,&os_err);
+		OSSemPend(PeriodSem, 0, &os_err);
 		
-		updatevel(GetPosX(), GetPosY(), getAngle());
+		updatevel(GetPosX(), GetPosY(), GetAngle());
 			
 		switch (status)
 		{
@@ -160,7 +172,7 @@ void WalkTask(void)
 				break;
 				
 			//装载飞盘
-			case Load:
+			case load:
 				MoveX(0.0f);	
 				ClampClose();
 				if (KEYSWITCHLEFT && KEYSWITCHRIGHT)
@@ -192,7 +204,7 @@ void WalkTask(void)
 					{
 						MoveX(0.0f);
 						
-						if (getAngle() < 1.0f && getAngle() > -1.0f && stopCounter >= 100)
+						if (GetAngle() < 1.0f && GetAngle() > -1.0f && stopCounter >= 100)
 						{
 							StopMove();
 							stopCounter = 0;
@@ -211,7 +223,8 @@ void WalkTask(void)
 			default:
 				break;		
 		}
-		
+
+        //蓝牙 or wifi调试输出		
 //		ReadActualPos(6);
 //		ReadActualPos(7);
 //		ReadActualPos(8);
@@ -227,7 +240,7 @@ void WalkTask(void)
 			robotSpeed = (presentX - lastX) / 100.0f;
 			USART_OUT(UART5, (const uint8_t *)"%d.%d   %d   %d  %d\r\n",
 				      (int)robotSpeed, (int)((robotSpeed - (int)robotSpeed) * 1000),
-				      (int)presentX, (int)GetPosY(), (int)getAngle());
+				      (int)presentX, (int)GetPosY(), (int)GetAngle());
 			lastX = presentX;
 			lastXCounter = 0;
 		}
@@ -236,19 +249,18 @@ void WalkTask(void)
 //							(int)(position[1] * 10), (int)(position[2] * 10), (int)(position[0] * 10), 
 //								speed, GetEncVel(0), GetEncVel(1));
 		
-		//发射一秒后发射器退回
-		if (launcherStatus == 1)
-		{
-			launcherCounter++;
-			if (launcherCounter == 100)
-			{
-				launcherPos += 2048;
-				PosCrl(9, 0, launcherPos);
-				launcherStatus = 0;
-				launcherCounter = 0;
-			}
-		}
+//		//发射一秒后发射器退回
+//		if (launcherStatus == 1)
+//		{
+//			launcherCounter++;
+//			if (launcherCounter == 100)
+//			{
+//				launcherPos += 2048;
+//				PosCrl(9, 0, launcherPos);
+//				launcherStatus = 0;
+//				launcherCounter = 0;
+//			}
+//		}
 
 	} 
-	
 }	

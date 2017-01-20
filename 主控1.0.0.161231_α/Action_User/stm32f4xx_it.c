@@ -90,38 +90,38 @@ void CAN1_RX0_IRQHandler(void)
 
 	if(StdId == 0x16) 
 	{
-		pos.Data8[0]=buffer[0];
-		pos.Data8[1]=buffer[1];
-		encoder_right=pos.Data16;
+		pos.Data8[0] = buffer[0];
+		pos.Data8[1] = buffer[1];
+		encoder_right = pos.Data16;
 		
-		vell.Data8[0]=buffer[2];
-		vell.Data8[1]=buffer[3]; 
-		vell_right=vell.Data16;	
-		SetEncVel(0,vell_right);
+		vell.Data8[0] = buffer[2];
+		vell.Data8[1] = buffer[3]; 
+		vell_right = vell.Data16;	
+		SetEncVel(0, vell_right);
 	}
 	
 	if(StdId == 0x18)
 	{
-		pos.Data8[0]=buffer[0];
-		pos.Data8[1]=buffer[1];
-		encoder_right=pos.Data16;
+		pos.Data8[0] = buffer[0];
+		pos.Data8[1] = buffer[1];
+		encoder_right = pos.Data16;
 		
-		vell.Data8[0]=buffer[2];
-		vell.Data8[1]=buffer[3]; 
-		vell_left=vell.Data16;		
-		SetEncVel(1,vell_left);
+		vell.Data8[0] = buffer[2];
+		vell.Data8[1] = buffer[3]; 
+		vell_left = vell.Data16;		
+		SetEncVel(1, vell_left);
 	}
 	
 	if(StdId==0x286 || StdId==0x287 || StdId==0x288 ||  StdId==0x289)
 	{
-		for(i = 0;i < 8;i++)
+		for(i = 0; i < 8; i++)
 		{
-			msg.data8[i]=buffer[i];
+			msg.data8[i] = buffer[i];
 		}
 
 		if(msg.data32[0] == 0x40005856)
 		{
-			if(StdId==0x289) 
+			if(StdId == 0x289) 
 			{
 				speed = msg.data32[1];
 			}
@@ -129,36 +129,36 @@ void CAN1_RX0_IRQHandler(void)
 		
 		if(msg.data32[0] == 0x40005850)
 		{
-			if(StdId==0x286) 
+			if(StdId == 0x286) 
 			{
 				position[0] = 45 - (msg.data32[1] - 249) * 0.01598;    //航向
 			}
-			if(StdId==0x287) 
+			if(StdId == 0x287) 
 			{
 				position[1] = 45 - (msg.data32[1] - 1082) * 0.01758;    //横滚
 			}
-			if(StdId==0x288) 
+			if(StdId == 0x288) 
 			{
 				position[2] = (msg.data32[1] - 1125) * 0.01302 - 6;    //俯仰
 			}
-			if(StdId==0x289) 
+			if(StdId == 0x289) 
 			{
 				position[3] = msg.data32[1];
 			}
 		}
 	}
 	
-	CAN_ClearFlag(CAN1,CAN_FLAG_EWG);
-	CAN_ClearFlag(CAN1,CAN_FLAG_EPV);
-	CAN_ClearFlag(CAN1,CAN_FLAG_BOF);
-	CAN_ClearFlag(CAN1,CAN_FLAG_LEC);
+	CAN_ClearFlag(CAN1, CAN_FLAG_EWG);
+	CAN_ClearFlag(CAN1, CAN_FLAG_EPV);
+	CAN_ClearFlag(CAN1, CAN_FLAG_BOF);
+	CAN_ClearFlag(CAN1, CAN_FLAG_LEC);
 	
-	CAN_ClearFlag(CAN1,CAN_FLAG_FMP0);
-	CAN_ClearFlag(CAN1,CAN_FLAG_FF0);
-	CAN_ClearFlag(CAN1,CAN_FLAG_FOV0);
-	CAN_ClearFlag(CAN1,CAN_FLAG_FMP1);
-	CAN_ClearFlag(CAN1,CAN_FLAG_FF1);
-	CAN_ClearFlag(CAN1,CAN_FLAG_FOV1);
+	CAN_ClearFlag(CAN1, CAN_FLAG_FMP0);
+	CAN_ClearFlag(CAN1, CAN_FLAG_FF0);
+	CAN_ClearFlag(CAN1, CAN_FLAG_FOV0);
+	CAN_ClearFlag(CAN1, CAN_FLAG_FMP1);
+	CAN_ClearFlag(CAN1, CAN_FLAG_FF1);
+	CAN_ClearFlag(CAN1, CAN_FLAG_FOV1);
 	OSIntExit();
 }
 
@@ -180,7 +180,7 @@ void TIM2_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(TIM_GetITStatus(TIM2, TIM_IT_Update)==SET)
+	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
 
 		OSSemPost(PeriodSem);
@@ -197,7 +197,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(TIM_GetITStatus(TIM1, TIM_IT_Update)==SET)    
+	if(TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)    
 	{                                                
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}
@@ -211,7 +211,7 @@ void TIM8_UP_TIM13_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(TIM_GetITStatus(TIM8, TIM_IT_Update)==SET)    
+	if(TIM_GetITStatus(TIM8, TIM_IT_Update) == SET)    
 	{                                                
 		TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
 	}
@@ -226,10 +226,10 @@ void TIM5_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(TIM_GetITStatus(TIM5, TIM_IT_Update)==SET)    
+	if(TIM_GetITStatus(TIM5, TIM_IT_Update) == SET)    
 	{              
 		TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-		updatevel(GetPosX(), GetPosY(), getAngle());
+		updatevel(GetPosX(), GetPosY(), GetAngle());
 	}
 	OSIntExit();
 }
@@ -243,7 +243,7 @@ void TIM3_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(TIM_GetITStatus(TIM3, TIM_IT_Update)==SET)    
+	if(TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)    
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 		
@@ -321,12 +321,14 @@ void USART1_IRQHandler(void)
 				if (ch == 'A')        
 					status++;
 				break;
+				
 			case 1:
 				if (ch == 'C')
 					status++;
 				else
 					status = 0;
 				break;
+				
 			case 2: 
 				if (ch == 'P')
 					status++;                  //ACPC + [id] + data[4] + extra[3]
@@ -335,57 +337,85 @@ void USART1_IRQHandler(void)
 				else
 					status = 0;
 				break;
+				
 			case 3:                            /*ACPC begin from here*/  
 				if (ch == 'C')
 					status++;
 				else
 					status = 0;
-				break;	
+				break;
+				
 			case 4:
 				id = ch;
 				status++;
 				break;
+			
 			case 5:
 			case 6:
 			case 7:
 			case 8:
 			case 9:
+				
 			case 10:
 				if(status < 9)
+				{
 					dataConvert.data8[status - 5] = ch;
+				}
 				status++;
 				break;
+
 			case 11:
 				switch(id % 5)
 				{
 					case 0:
 						roll[id / 5] = dataConvert.dataf;
-						temAngle = (45.0f-dataConvert.dataf);
-						if(temAngle < 0.0f)		temAngle = 0.0f;
-						if(temAngle > 45.0f)		temAngle = 45.0f;
-						PosCrl(7,0,(int32_t)(temAngle * 56.8889f));  //横滚  45f -> 0f
+						temAngle = (45.0f - dataConvert.dataf);
+						if(temAngle < 0.0f)
+						{
+							temAngle = 0.0f;
+						}
+						if(temAngle > 45.0f)
+						{
+							temAngle = 45.0f;
+						}
+						PosCrl(7, 0, (int32_t)(temAngle * 56.8889f));  //横滚  45f -> 0f
 						break;
+						
 					case 1:
 						pitch[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf + 6.0f;
-						if(temAngle < 0.0f)		temAngle = 0.0f;
-						if(temAngle > 36.0f)		temAngle = 36.0f;
-						PosCrl(8,0,(int32_t)(temAngle * 76.8f));     //俯仰 -6f -> 30f
+						if(temAngle < 0.0f)
+						{
+							temAngle = 0.0f;
+						}
+						if(temAngle > 36.0f)
+						{
+							temAngle = 36.0f;
+						}
+						PosCrl(8, 0, (int32_t)(temAngle * 76.8f));     //俯仰 -6f -> 30f
 						break;
+					
 					case 2:
 						yaw[id / 5] = dataConvert.dataf;
 						temAngle = 45.0f - dataConvert.dataf;
-						if(temAngle < 0.0f)		temAngle = 0.0f;
-						if(temAngle > 90.0f)		temAngle = 90.0f;
-						PosCrl(6,0,(int32_t)(temAngle * 62.57778f));  //航向 -45f -> 45f
+						if(temAngle < 0.0f)
+						{
+							temAngle = 0.0f;
+						}
+						if(temAngle > 90.0f)
+						{
+							temAngle = 90.0f;
+						}
+						PosCrl(6, 0, (int32_t)(temAngle * 62.57778f));  //航向 -45f -> 45f
 						break;
+						
 					case 3:
 						speed1[id / 5] = dataConvert.data32;
-						VelCrl(11,4096*dataConvert.data32);
+						VelCrl(11, 4096 * dataConvert.data32);
 						break;
 					case 4:
 						speed2[id / 5] = dataConvert.data32;
-						VelCrl(10,4096*dataConvert.data32);
+						VelCrl(10, 4096 * dataConvert.data32);
 						break;
 					default:
 						id = 0xff;
@@ -418,14 +448,15 @@ void USART1_IRQHandler(void)
 				{
 					case 1:
 						if (launcherStatus == 0)
-					  {
+						{
 							launcherPos += 2048;
 							PosCrl(9, 0, launcherPos); 
 							launcherStatus = 1;
 						}
 						ACCTid = 0;
 						break;
-  				case 2:
+						
+					case 2:
 //						PosCrl(9,1,2048);
 						ACCTid = 0;
 						break;
@@ -440,12 +471,12 @@ void USART1_IRQHandler(void)
 
 /****************陀螺仪串口接受中断****start****************/
 
-static float pos_x=0;
-static float pos_y=0;
-static float zangle=0;
-static float xangle=0;
-static float yangle=0;
-static float w_z=0;
+static float pos_x  = 0;
+static float pos_y  = 0;
+static float zangle = 0;
+static float xangle = 0;
+static float yangle = 0;
+static float w_z    = 0;
 void USART3_IRQHandler(void)
 {	 
 	static uint8_t ch;
@@ -454,8 +485,8 @@ void USART3_IRQHandler(void)
 	 uint8_t data[24];
 	 float ActVal[6];
   }posture;
-	static uint8_t count=0;
-	static uint8_t i=0;
+	static uint8_t count = 0;
+	static uint8_t i = 0;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -465,72 +496,71 @@ void USART3_IRQHandler(void)
 	{
 		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
 		ch=USART_ReceiveData(USART3);
-		 switch(count)
-		 {
-			 case 0:
-				 if(ch==0x0d)
-					 count++;
-				 else
-					 count=0;
-				 break;
-				 
-			 case 1:
-				 if(ch==0x0a)
-				 {
-					 i=0;
-					 count++;
-				 }
-				 else if(ch==0x0d);
-				 else
-					 count=0;
-				 break;
-				 
-			 case 2:
-				 posture.data[i]=ch;
-			   i++;
-			   if(i>=24)
-				 {
-					 i=0;
-					 count++;
-				 }
-				 break;
-				 
-			 case 3:
-				 if(ch==0x0a)
-					 count++;
-				 else
-					 count=0;
-				 break;
-				 
-			 case 4:
-				 if(ch==0x0d)
-				 {
-  				 zangle=posture.ActVal[0];
-	  		   xangle=posture.ActVal[1];
-		  	   yangle=posture.ActVal[2];
-			     pos_x =posture.ActVal[3];
-			     pos_y =posture.ActVal[4];
-			     w_z   =posture.ActVal[5];
-					 
-					 xangle=xangle;
-					 yangle=yangle;
-					 pos_x =pos_x ;
-					 pos_y =pos_y ;
-					 w_z   =w_z   ;
-					 
-					 SetPosX(pos_x);
-					 SetPosY(pos_y);
-					 setAngle(zangle);
-				 }
-			   count=0;
-				 break;
+		switch(count)
+		{
+			case 0:
+				if(ch == 0x0d)
+					count++;
+				else
+					count = 0;
+				break;
 			 
-			 default:
-				 count=0;
-			   break;		 
-		 }	 
-		 
-	 }
+			case 1:
+				if(ch == 0x0a)
+				{
+					i = 0;
+					count++;
+				}
+				else if(ch == 0x0d);
+				else
+					count = 0;
+				break;
+			 
+			case 2:
+				posture.data[i] = ch;
+				i++;
+				if(i >= 24)
+				{
+					i = 0;
+					count++;
+				}
+				break;
+			 
+			case 3:
+				if(ch == 0x0a)
+					count++;
+				else
+					count=0;
+				break;
+			 
+			case 4:
+				if(ch == 0x0d)
+				{
+					zangle = posture.ActVal[0];
+					xangle = posture.ActVal[1];
+					yangle = posture.ActVal[2];
+					pos_x  = posture.ActVal[3];
+					pos_y  = posture.ActVal[4];
+					w_z    = posture.ActVal[5];
+					 
+					xangle = xangle;
+					yangle = yangle;
+					pos_x  = pos_x ;
+					pos_y  = pos_y ;
+					w_z    = w_z   ;
+					 
+					SetPosX(pos_x);
+					SetPosY(pos_y);
+					SetAngle(zangle);
+				}
+				count = 0;
+				break;
+
+			default:
+				count = 0;
+				break;		 
+		}	 	 
+	}
 	OSIntExit();
 }
 
@@ -542,12 +572,12 @@ void UART4_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 	
-	 if(USART_GetITStatus(UART4, USART_IT_RXNE)==SET)   
-	 {	
-		  USART_ClearITPendingBit( UART4,USART_IT_RXNE);
-	 }
+	if(USART_GetITStatus(UART4, USART_IT_RXNE) == SET)   
+	{	
+		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
+	}
 	 
-   OSIntExit();
+	OSIntExit();
 }
 
 /*********************************WIFI*************************/
@@ -566,23 +596,24 @@ void UART5_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	if(USART_GetITStatus(UART5, USART_IT_RXNE)!=RESET)   
+	if(USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)   
 	{
-		USART_ClearITPendingBit( UART5,USART_IT_RXNE);
-    res =USART_ReceiveData(UART5);		
-			if((USART5_RX_STA&(1<<15))==0)//接收完的一批数据,还没有被处理,则不再接收其他数据
-			{ 
-				if(USART5_RX_STA<USART5_MAX_RECV_LEN)		//还可以接收数据
-				{
-					TIM_SetCounter(TIM7,0);//计数器清空        				 
-					if(USART5_RX_STA==0)		
-						TIM_Cmd(TIM7, ENABLE);  //使能定时器7 
-					USART5_RX_BUF[USART5_RX_STA++]=res;		//记录接收到的值	 
-				}else 
-				{
-					USART5_RX_STA|=1<<15;					//强制标记接收完成
-				} 
+		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
+		res = USART_ReceiveData(UART5);		
+		if((USART5_RX_STA&(1 << 15)) == 0)//接收完的一批数据,还没有被处理,则不再接收其他数据
+		{ 
+			if(USART5_RX_STA<USART5_MAX_RECV_LEN)		//还可以接收数据
+			{
+				TIM_SetCounter(TIM7, 0);//计数器清空        				 
+				if(USART5_RX_STA == 0)		
+					TIM_Cmd(TIM7, ENABLE);  //使能定时器7 
+				USART5_RX_BUF[USART5_RX_STA++] = res;		//记录接收到的值	 
 			}
+			else 
+			{
+				USART5_RX_STA |= 1 << 15;					//强制标记接收完成
+			} 
+		}
 	}
 	OSIntExit();		
 }
@@ -592,8 +623,8 @@ void TIM7_IRQHandler(void)
 { 	
 	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)//是更新中断
 	{	 			   
-		USART5_RX_STA|=1<<15;	//标记接收完成
-		TIM_ClearITPendingBit(TIM7, TIM_IT_Update  );  //清除TIM7更新中断标志    
+		USART5_RX_STA |= 1 << 15;	//标记接收完成
+		TIM_ClearITPendingBit(TIM7, TIM_IT_Update);  //清除TIM7更新中断标志    
 		TIM_Cmd(TIM7, DISABLE);  //关闭TIM7 
 	}	    
 }

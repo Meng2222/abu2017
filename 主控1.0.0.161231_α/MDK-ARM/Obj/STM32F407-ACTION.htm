@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\STM32F407-ACTION.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\STM32F407-ACTION.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Thu Jan 19 12:57:03 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Fri Jan 20 11:22:25 2017
 <BR><P>
 <H3>Maximum Stack Usage =        320 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -528,9 +528,9 @@ Global Symbols
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_CPU_SR_Restore
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSIntExit
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;updatevel
-<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getAngle
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetPosY
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetPosX
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAngle
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f4xx.o(RESET)
 </UL>
@@ -584,12 +584,12 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
 <LI>Call Chain = USART3_IRQHandler &rArr; USART_GetITStatus
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setAngle
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<BR>[Calls]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearITPendingBit
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetPosY
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetPosX
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetAngle
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_CPU_SR_Save
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_CPU_SR_Restore
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSIntExit
@@ -876,11 +876,11 @@ Global Symbols
 
 <P><STRONG><a name="[23b]"></a>getvel</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, usart.o(.text), UNUSED)
 
-<P><STRONG><a name="[e7]"></a>setAngle</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, usart.o(.text))
+<P><STRONG><a name="[e7]"></a>SetAngle</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, usart.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART3_IRQHandler
 </UL>
 
-<P><STRONG><a name="[ac]"></a>getAngle</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, usart.o(.text))
+<P><STRONG><a name="[ac]"></a>GetAngle</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, usart.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM5_IRQHandler
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MoveX
 <LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WalkTask
@@ -1139,8 +1139,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VelStandard2Pulse
 <LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FourWheelVelControl
-<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getAngle
 <LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StopMove
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAngle
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cfrcmple
 <LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fmul
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cfcmple
@@ -4184,12 +4184,11 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.text)
 </UL>
-<P><STRONG><a name="[62]"></a>WalkTask</STRONG> (Thumb, 754 bytes, Stack size 24 bytes, task.o(.text))
+<P><STRONG><a name="[62]"></a>WalkTask</STRONG> (Thumb, 694 bytes, Stack size 24 bytes, task.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 168 + Unknown Stack Size
 <LI>Call Chain = WalkTask &rArr; XSpeedUp &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;updatevel
-<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getAngle
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;XSpeedUp
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;XSpeedDown
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_OUT
@@ -4200,6 +4199,7 @@ Local Symbols
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MoveX
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetPosY
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetPosX
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAngle
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ReadInputDataBit
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClampClose
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cfrcmple
@@ -4213,7 +4213,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> task.o(.text)
 </UL>
-<P><STRONG><a name="[61]"></a>ConfigTask</STRONG> (Thumb, 500 bytes, Stack size 8 bytes, task.o(.text))
+<P><STRONG><a name="[61]"></a>ConfigTask</STRONG> (Thumb, 490 bytes, Stack size 8 bytes, task.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192 + Unknown Stack Size
 <LI>Call Chain = ConfigTask &rArr; Pos_cfg &rArr; CAN_TransmitStatus
 </UL>

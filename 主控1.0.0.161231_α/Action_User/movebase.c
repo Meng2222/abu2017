@@ -139,19 +139,19 @@ int MoveX(float velX)
 	speedOut.v4 =  VelStandard2Pulse(-velX * 0.707107f + velY  * 0.707107f);
 
 	//×ËÌ¬ÐÞÕý
-	if(getAngle() > 0)
+	if(GetAngle() > 0)
 	{
-		speedOut.v1 +=  VelStandard2Pulse(0.4794f * ANGTORAD(-p * getAngle()));
-		speedOut.v2 +=  VelStandard2Pulse(1.0950f * ANGTORAD(-p * getAngle()));
-		speedOut.v3 +=  VelStandard2Pulse(0.6166f * ANGTORAD(-p * getAngle())); 
+		speedOut.v1 +=  VelStandard2Pulse(0.4794f * ANGTORAD(-p * GetAngle()));
+		speedOut.v2 +=  VelStandard2Pulse(1.0950f * ANGTORAD(-p * GetAngle()));
+		speedOut.v3 +=  VelStandard2Pulse(0.6166f * ANGTORAD(-p * GetAngle())); 
 		speedOut.v4 +=  VelStandard2Pulse(0.0f);
 	}
-	else if(getAngle() < 0)
+	else if(GetAngle() < 0)
 	{
-		speedOut.v1 +=  VelStandard2Pulse(1.0950f * ANGTORAD(-p * getAngle()));
-		speedOut.v2 +=  VelStandard2Pulse(0.4794f * ANGTORAD(-p * getAngle()));
+		speedOut.v1 +=  VelStandard2Pulse(1.0950f * ANGTORAD(-p * GetAngle()));
+		speedOut.v2 +=  VelStandard2Pulse(0.4794f * ANGTORAD(-p * GetAngle()));
 		speedOut.v3 +=  VelStandard2Pulse(0.0f); 
-		speedOut.v4 +=  VelStandard2Pulse(0.6166f * ANGTORAD(-p * getAngle()));
+		speedOut.v4 +=  VelStandard2Pulse(0.6166f * ANGTORAD(-p * GetAngle()));
 	}
 	
 	if(velX < 2.0f && velX > -2.0f)

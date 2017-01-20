@@ -163,7 +163,7 @@ u8 atk_8266_wifiap_test(void)
 	u8 res=0;		
   int a=(int)(GetPosX()*100);
   int b=(int)(GetPosY()*100);
-	int c=(int)(100*getAngle());
+	int c=(int)(100*GetAngle());
 //	
 //while(1)
 //{

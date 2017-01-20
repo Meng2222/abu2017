@@ -16,7 +16,7 @@
 __align(8) u8 USART5_TX_BUF[USART5_MAX_SEND_LEN]; 	//发送缓冲,最大USART3_MAX_SEND_LEN字节  	  
 //串口接收缓存区 	
 u8 USART5_RX_BUF[USART5_MAX_RECV_LEN]; 				//接收缓冲,最大USART3_MAX_RECV_LEN个字节.
-u16 USART5_RX_STA=0; 
+u16 USART5_RX_STA = 0; 
 /**
   * @brief  Retargets the C library printf function to the USART.
   * @param  None
@@ -28,33 +28,35 @@ int fputc(int ch, FILE *f)
 {
 	 USART_SendData(UART5, (uint8_t) ch);
 
-  /* Loop until the end of transmission */
-  while (USART_GetFlagStatus(UART5, USART_FLAG_TC) == RESET)
-  {}
+	/* Loop until the end of transmission */
+	while (USART_GetFlagStatus(UART5, USART_FLAG_TC) == RESET)
+	{
+		
+	}
 
-  return ch;
+	return ch;
 }
 
 void USART1_Init(uint32_t BaudRate)
 {
-  GPIO_InitTypeDef 	GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
-	NVIC_InitTypeDef 	NVIC_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE); //使能GPIOB时钟
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);//使能USART1时钟
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE); //使能GPIOB时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);//使能USART1时钟
  
 	//串口3对应引脚复用映射
-	GPIO_PinAFConfig(GPIOB,GPIO_PinSource6,GPIO_AF_USART1); //GPIOC10复用为USART1
-	GPIO_PinAFConfig(GPIOB,GPIO_PinSource7,GPIO_AF_USART1); //GPIOC11复用为USART1
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_USART1); //GPIOC10复用为USART1
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_USART1); //GPIOC11复用为USART1
 	
 	//USART1端口配置
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7; //GPIOC10与GPIOC11
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7; //GPIOC10与GPIOC11
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	//速度50MHz
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽复用输出
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉
-	GPIO_Init(GPIOB,&GPIO_InitStructure); //初始化
+	GPIO_Init(GPIOB, &GPIO_InitStructure); //初始化
 
    //USART1 初始化设置
 	USART_InitStructure.USART_BaudRate = BaudRate;//波特率设置
@@ -63,45 +65,44 @@ void USART1_Init(uint32_t BaudRate)
 	USART_InitStructure.USART_Parity = USART_Parity_No;//无奇偶校验位
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//收发模式
-  USART_Init(USART1, &USART_InitStructure); //初始化串口1
+    USART_Init(USART1, &USART_InitStructure); //初始化串口1
 	
 	//USART_ClearFlag(USART1, USART_FLAG_TC);
 	
 
 	//Usart1 NVIC 配置
-  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;//串口1中断通道
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;//抢占优先级3
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority =1;		//子优先级3
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//子优先级3
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
 
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//开启相关中断
-  USART_Cmd(USART1, ENABLE);  //使能串口1 	
-
+    USART_Cmd(USART1, ENABLE);  //使能串口1 	
 }
 
 //PC10 PC11
 //陀螺仪串口
 void USART3_Init(uint32_t BaudRate)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC,ENABLE); //使能GPIOC时钟
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3,ENABLE);//使能USART3时钟
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE); //使能GPIOC时钟
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE); //使能USART3时钟
  
 	//串口3对应引脚复用映射
-	GPIO_PinAFConfig(GPIOC,GPIO_PinSource10,GPIO_AF_USART3); //GPIOC10复用为USART3
-	GPIO_PinAFConfig(GPIOC,GPIO_PinSource11,GPIO_AF_USART3); //GPIOC11复用为USART3
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3); //GPIOC10复用为USART3
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3); //GPIOC11复用为USART3
 	
 	//USART3端口配置
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11; //GPIOC10与GPIOC11
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	//速度50MHz
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11; //GPIOC10与GPIOC11
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF; //复用功能
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; //速度50MHz
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽复用输出
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉
-	GPIO_Init(GPIOC,&GPIO_InitStructure); //初始化
+	GPIO_Init(GPIOC, &GPIO_InitStructure); //初始化
 
    //USART1 初始化设置
 	USART_InitStructure.USART_BaudRate = BaudRate;//波特率设置
@@ -110,18 +111,18 @@ void USART3_Init(uint32_t BaudRate)
 	USART_InitStructure.USART_Parity = USART_Parity_No;//无奇偶校验位
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//收发模式
-  USART_Init(USART3, &USART_InitStructure); //初始化串口1
+    USART_Init(USART3, &USART_InitStructure); //初始化串口1
 	
-  USART_Cmd(USART3, ENABLE);  //使能串口1 	
+    USART_Cmd(USART3, ENABLE);  //使能串口1 	
 	USART_ClearFlag(USART3, USART_FLAG_TC);
 	
 	USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);//开启相关中断
 
 	//Usart1 NVIC 配置
-  NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;//串口1中断通道
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;//抢占优先级3
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority =1;		//子优先级3
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+    NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;	//子优先级3
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
 
 }
@@ -153,15 +154,19 @@ float updatevel(float Posx, float Posy, float Angle)
     int8_t fbward;
     velx = Posx - x_last;
     vely = Posy - y_last;
-    if(fabs(velx)> 0.3 || fabs(vely) > 0.3)
-        fbward = (fabs(atan2f(vely, velx)/3.1415926*180 - Angle) < 90)?1:-1;
+    if(fabs(velx) > 0.3 || fabs(vely) > 0.3)
+	{
+		fbward = (fabs(atan2f(vely, velx) / 3.1415926 * 180 - Angle) < 90) ? 1 : -1;
+	}
     else
-        fbward = 0;
-    vel = fbward * 100 * sqrtf(velx*velx + vely*vely);
+	{
+		fbward = 0;
+	}
+    vel = fbward * 100 * sqrtf(velx * velx + vely * vely);
 
     x_last = Posx;
     y_last = Posy;
-    actual_vel=vel;
+    actual_vel = vel;
     return vel;
 }
 float getvel(void)
@@ -169,12 +174,12 @@ float getvel(void)
     return actual_vel;
 }
 
-static float angle=0;
-void setAngle(float val)
+static float angle = 0;
+void SetAngle(float val)
 {
-	angle=val;
+	angle = val;
 }
-float getAngle(void)
+float GetAngle(void)
 {
 	return angle;
 }
@@ -194,16 +199,20 @@ float getAngle(void)
 			"%d"	十进制	   USART_OUT(USART1, "a=%d",10)
 * 调用方法：无 
 ****************************************************************************/
-void USART_OUT(USART_TypeDef* USARTx,const uint8_t *Data,...){ 
+void USART_OUT(USART_TypeDef* USARTx, const uint8_t *Data, ...)
+{ 
 	const char *s;
     int d;
     char buf[16];
     va_list ap;
     va_start(ap, Data);
 
-	while(*Data!=0){				                          //判断是否到达字符串结束符
-		if(*Data==0x5c){									  //'\'
-			switch (*++Data){
+	while(*Data != 0)				                          //判断是否到达字符串结束符
+	{
+		if(*Data == 0x5c)									  //'\'
+		{	
+			switch (*++Data)
+			{
 				case 'r':							          //回车符
 					USART_SendData(USARTx, 0x0d);	   
 
@@ -217,26 +226,28 @@ void USART_OUT(USART_TypeDef* USARTx,const uint8_t *Data,...){
 				default:
 					Data++;
 				    break;
-			}
-			
-			 
+			}	 
 		}
-		else if(*Data=='%'){									  //
-			switch (*++Data){				
+		else if(*Data == '%')									  //
+		{
+			switch (*++Data)				
+			{
 				case 's':										  //字符串
                 	s = va_arg(ap, const char *);
-                	for ( ; *s; s++) {
-                    	USART_SendData(USARTx,*s);
-						while(USART_GetFlagStatus(USARTx, USART_FLAG_TC)==RESET);
+                	for (; *s; s++) 
+				    {
+                    	USART_SendData(USARTx, *s);
+						while(USART_GetFlagStatus(USARTx, USART_FLAG_TC) == RESET);
                 	}
 					Data++;
                 	break;
             	case 'd':										  //十进制
                 	d = va_arg(ap, int);
                 	itoa(d, buf, 10);
-                	for (s = buf; *s; s++) {
-                    	USART_SendData(USARTx,*s);
-						while(USART_GetFlagStatus(USARTx, USART_FLAG_TC)==RESET);
+                	for (s = buf; *s; s++) 
+				    {
+                    	USART_SendData(USARTx, *s);
+						while(USART_GetFlagStatus(USARTx, USART_FLAG_TC) == RESET);
                 	}
 					Data++;
                 	break;
@@ -246,7 +257,7 @@ void USART_OUT(USART_TypeDef* USARTx,const uint8_t *Data,...){
 			}		 
 		}
 		else USART_SendData(USARTx, *Data++);
-		while(USART_GetFlagStatus(USARTx, USART_FLAG_TC)==RESET);
+		while(USART_GetFlagStatus(USARTx, USART_FLAG_TC) == RESET);
 	}
 }
 
@@ -365,14 +376,14 @@ void UART5_Init(uint32_t BaudRate)
   USART_Init(UART5, & USART_InitStructure);
   
 	//////////   设置UART5中断       ///////////////
-	NVIC_InitStructure.NVIC_IRQChannel=UART5_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority=1;
-	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_2);
+	NVIC_InitStructure.NVIC_IRQChannel = UART5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	NVIC_Init(&NVIC_InitStructure);
 
-	USART_ITConfig(UART5,USART_IT_RXNE,ENABLE);
+	USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
 	/* Enable USART */
 	USART_Cmd(UART5, ENABLE);
  //------------------------------------------------------------
@@ -387,18 +398,18 @@ void UART5_Init(uint32_t BaudRate)
 
 //串口5,printf 函数
 //确保一次发送数据不超过USART5_MAX_SEND_LEN字节
-void u5_printf(char* fmt,...)  
+void u5_printf(char* fmt, ...)  
 {  
-	u16 i,j;
+	u16 i, j;
 	va_list ap;
 	va_start(ap,fmt);
-	vsprintf((char*)USART5_TX_BUF,fmt,ap);
+	vsprintf((char*)USART5_TX_BUF, fmt, ap);
 	va_end(ap);
-	i=strlen((const char*)USART5_TX_BUF);//此次发送数据的长度
-	for(j=0;j<i;j++)//循环发送数据
+	i = strlen((const char*)USART5_TX_BUF);//此次发送数据的长度
+	for(j = 0; j < i; j++)//循环发送数据
 	{
-	  while(USART_GetFlagStatus(UART5,USART_FLAG_TC)==RESET);  //等待上次传输完成 
-		USART_SendData(UART5,(uint8_t)USART5_TX_BUF[j]); 	 //发送数据到串口5
+	  while(USART_GetFlagStatus(UART5,USART_FLAG_TC) == RESET);  //等待上次传输完成 
+		USART_SendData(UART5, (uint8_t)USART5_TX_BUF[j]); 	 //发送数据到串口5
 	}
 }
 /*********************************WIFI*************************/
