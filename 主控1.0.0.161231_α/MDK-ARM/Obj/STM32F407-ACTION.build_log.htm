@@ -27,11 +27,24 @@ Project File Date:  01/17/2017
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'C:\Software\Keil_V5\ARM\ARMCC\Bin'
 Build target 'ACTION'
-compiling stm32f4xx_it.c...
+compiling task.c...
+..\Action_User\task.c(121): warning:  #177-D: variable "launcherCounter" was declared but never referenced
+  static uint8_t launcherCounter = 0;
+..\Action_User\task.c(125): warning:  #177-D: variable "lastXCounter" was declared but never referenced
+  static uint8_t lastXCounter;
+..\Action_User\task.c(126): warning:  #177-D: variable "lastX" was declared but never referenced
+  static float lastX = 0;
+..\Action_User\task.c(127): warning:  #177-D: variable "presentX" was declared but never referenced
+  static float presentX = 0;
+..\Action_User\task.c(128): warning:  #177-D: variable "robotSpeed" was declared but never referenced
+  static float robotSpeed = 0;
+..\Action_User\task.c(129): warning:  #177-D: variable "stopCounter" was declared but never referenced
+  static uint8_t stopCounter = 0;
+..\Action_User\task.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=50408 RO-data=1656 RW-data=292 ZI-data=85996  
+Program Size: Code=51936 RO-data=1760 RW-data=272 ZI-data=85840  
 FromELF: creating hex file...
-".\Obj\STM32F407-ACTION.axf" - 0 Error(s), 0 Warning(s).
+".\Obj\STM32F407-ACTION.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\mecha\Desktop\abu2017\Ö÷¿Ø1.0.0.161231_¦Á\MDK-ARM\RTE

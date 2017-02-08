@@ -441,13 +441,19 @@ uint8_t CAN_RxMsg(CAN_TypeDef* CANx,
 				  uint8_t * buf,
 				  uint8_t len)
 {
-	uint8_t i=0;
+	uint8_t i = 0;
 	CanRxMsg RxMessage;
-    if(CAN_MessagePending(CANx,CAN_FIFO0)==0)return 0;		//if there is no data, get out of this function
+    if(CAN_MessagePending(CANx, CAN_FIFO0) == 0)
+	{
+		return 0;		//if there is no data, get out of this function
+	}
     CAN_Receive(CANx, CAN_FIFO0, &RxMessage);				//reveive data	
-    for(i=0;i<len;i++)
-		buf[i]=RxMessage.Data[i]; 
-	*StdId=RxMessage.StdId;
+    for(i = 0; i < len; i++)
+	{
+		buf[i] = RxMessage.Data[i];
+	}
+	*StdId = RxMessage.StdId;
+	
 	return 1;
 }
 

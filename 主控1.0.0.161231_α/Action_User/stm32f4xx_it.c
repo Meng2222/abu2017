@@ -279,195 +279,195 @@ void TIM4_IRQHandler(void)
 	OSIntExit();
 }
 
-/*************************与平板通信**************************/
-float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
-int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
+///*************************与平板通信**************************/
+//float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
+//int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
 
-extern uint8_t launcherStatus;
-int32_t launcherPos = 1678;
+//extern uint8_t launcherStatus;
+//int32_t launcherPos = 1678;
 
-void USART1_IRQHandler(void)
-{	 
-	static int	status = 0;
-	static uint8_t id = 0xff;
-	static int extraCounter = 0;                  //count extra byte
-	
-	static union
-	{
-		uint8_t data8[4];
-		int32_t data32;
-		float   dataf;
-	}dataConvert;
-	static int ACCTid = 0;
-	float temAngle = 0.0f;
-	OS_CPU_SR  cpu_sr;
-	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
-	OSIntNesting++;
-	OS_EXIT_CRITICAL();
+//void USART1_IRQHandler(void)
+//{	 
+//	static int	status = 0;
+//	static uint8_t id = 0xff;
+//	static int extraCounter = 0;                  //count extra byte
+//	
+//	static union
+//	{
+//		uint8_t data8[4];
+//		int32_t data32;
+//		float   dataf;
+//	}dataConvert;
+//	static int ACCTid = 0;
+//	float temAngle = 0.0f;
+//	OS_CPU_SR  cpu_sr;
+//	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
+//	OSIntNesting++;
+//	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET)   
-	{
-		uint8_t ch;
-		USART_ClearITPendingBit( USART1, USART_IT_RXNE);
-		ch = USART_ReceiveData(USART1);
-		USART_SendData(USART1, ch);
-		
-		switch (status)
-		{
-			case 0:                       
-				if (ch == 'A')        
-					status++;
-				break;
-				
-			case 1:
-				if (ch == 'C')
-					status++;
-				else
-					status = 0;
-				break;
-				
-			case 2: 
-				if (ch == 'P')
-					status++;                  //ACPC + [id] + data[4] + extra[3]
-				else if (ch == 'C')
-					status += 10;              //ACCT + [id] + extra[7]
-				else
-					status = 0;
-				break;
-				
-			case 3:                            /*ACPC begin from here*/  
-				if (ch == 'C')
-					status++;
-				else
-					status = 0;
-				break;
-				
-			case 4:
-				id = ch;
-				status++;
-				break;
-			
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-				
-			case 10:
-				if(status < 9)
-				{
-					dataConvert.data8[status - 5] = ch;
-				}
-				status++;
-				break;
+//	if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET)   
+//	{
+//		uint8_t ch;
+//		USART_ClearITPendingBit( USART1, USART_IT_RXNE);
+//		ch = USART_ReceiveData(USART1);
+//		USART_SendData(USART1, ch);
+//		
+//		switch (status)
+//		{
+//			case 0:                       
+//				if (ch == 'A')        
+//					status++;
+//				break;
+//				
+//			case 1:
+//				if (ch == 'C')
+//					status++;
+//				else
+//					status = 0;
+//				break;
+//				
+//			case 2: 
+//				if (ch == 'P')
+//					status++;                  //ACPC + [id] + data[4] + extra[3]
+//				else if (ch == 'C')
+//					status += 10;              //ACCT + [id] + extra[7]
+//				else
+//					status = 0;
+//				break;
+//				
+//			case 3:                            /*ACPC begin from here*/  
+//				if (ch == 'C')
+//					status++;
+//				else
+//					status = 0;
+//				break;
+//				
+//			case 4:
+//				id = ch;
+//				status++;
+//				break;
+//			
+//			case 5:
+//			case 6:
+//			case 7:
+//			case 8:
+//			case 9:
+//				
+//			case 10:
+//				if(status < 9)
+//				{
+//					dataConvert.data8[status - 5] = ch;
+//				}
+//				status++;
+//				break;
 
-			case 11:
-				switch(id % 5)
-				{
-					case 0:
-						roll[id / 5] = dataConvert.dataf;
-						temAngle = (45.0f - dataConvert.dataf);
-						if(temAngle < 0.0f)
-						{
-							temAngle = 0.0f;
-						}
-						if(temAngle > 45.0f)
-						{
-							temAngle = 45.0f;
-						}
-						PosCrl(7, 0, (int32_t)(temAngle * 56.8889f));  //横滚  45f -> 0f
-						break;
-						
-					case 1:
-						pitch[id / 5] = dataConvert.dataf;
-						temAngle = dataConvert.dataf + 6.0f;
-						if(temAngle < 0.0f)
-						{
-							temAngle = 0.0f;
-						}
-						if(temAngle > 36.0f)
-						{
-							temAngle = 36.0f;
-						}
-						PosCrl(8, 0, (int32_t)(temAngle * 76.8f));     //俯仰 -6f -> 30f
-						break;
-					
-					case 2:
-						yaw[id / 5] = dataConvert.dataf;
-						temAngle = 45.0f - dataConvert.dataf;
-						if(temAngle < 0.0f)
-						{
-							temAngle = 0.0f;
-						}
-						if(temAngle > 90.0f)
-						{
-							temAngle = 90.0f;
-						}
-						PosCrl(6, 0, (int32_t)(temAngle * 62.57778f));  //航向 -45f -> 45f
-						break;
-						
-					case 3:
-						speed1[id / 5] = dataConvert.data32;
-						VelCrl(11, 4096 * dataConvert.data32);
-						break;
-					case 4:
-						speed2[id / 5] = dataConvert.data32;
-						VelCrl(10, 4096 * dataConvert.data32);
-						break;
-					default:
-						id = 0xff;
-						break;
-				}
-				status = 0;
-				id = 0xff;
-				break;
-			case 12:                              /*ACCT begin from here*/
-				if (ch == 'T')
-					status++;
-				else
-					status = 0;
-				break;
-			case 13:
-				id = ch;
-				status++;
-				break;
-			case 14:
-				extraCounter++;
-				if (extraCounter == 6)
-				{
-					status++;
-					extraCounter = 0;
-				}
-				break;
-			default:
-				ACCTid = id;
-				switch(ACCTid)
-				{
-					case 1:
-						if (launcherStatus == 0)
-						{
-							launcherPos += 2048;
-							PosCrl(9, 0, launcherPos); 
-							launcherStatus = 1;
-						}
-						ACCTid = 0;
-						break;
-						
-					case 2:
-//						PosCrl(9,1,2048);
-						ACCTid = 0;
-						break;
-				}
-				status = 0;
-				id = 0xff;
-				break;					
-		}
-	 }
-	OSIntExit();
-}
+//			case 11:
+//				switch(id % 5)
+//				{
+//					case 0:
+//						roll[id / 5] = dataConvert.dataf;
+//						temAngle = (45.0f - dataConvert.dataf);
+//						if(temAngle < 0.0f)
+//						{
+//							temAngle = 0.0f;
+//						}
+//						if(temAngle > 45.0f)
+//						{
+//							temAngle = 45.0f;
+//						}
+//						PosCrl(7, 0, (int32_t)(temAngle * 56.8889f));  //横滚  45f -> 0f
+//						break;
+//						
+//					case 1:
+//						pitch[id / 5] = dataConvert.dataf;
+//						temAngle = dataConvert.dataf + 6.0f;
+//						if(temAngle < 0.0f)
+//						{
+//							temAngle = 0.0f;
+//						}
+//						if(temAngle > 36.0f)
+//						{
+//							temAngle = 36.0f;
+//						}
+//						PosCrl(8, 0, (int32_t)(temAngle * 76.8f));     //俯仰 -6f -> 30f
+//						break;
+//					
+//					case 2:
+//						yaw[id / 5] = dataConvert.dataf;
+//						temAngle = 45.0f - dataConvert.dataf;
+//						if(temAngle < 0.0f)
+//						{
+//							temAngle = 0.0f;
+//						}
+//						if(temAngle > 90.0f)
+//						{
+//							temAngle = 90.0f;
+//						}
+//						PosCrl(6, 0, (int32_t)(temAngle * 62.57778f));  //航向 -45f -> 45f
+//						break;
+//						
+//					case 3:
+//						speed1[id / 5] = dataConvert.data32;
+//						VelCrl(11, 4096 * dataConvert.data32);
+//						break;
+//					case 4:
+//						speed2[id / 5] = dataConvert.data32;
+//						VelCrl(10, 4096 * dataConvert.data32);
+//						break;
+//					default:
+//						id = 0xff;
+//						break;
+//				}
+//				status = 0;
+//				id = 0xff;
+//				break;
+//			case 12:                              /*ACCT begin from here*/
+//				if (ch == 'T')
+//					status++;
+//				else
+//					status = 0;
+//				break;
+//			case 13:
+//				id = ch;
+//				status++;
+//				break;
+//			case 14:
+//				extraCounter++;
+//				if (extraCounter == 6)
+//				{
+//					status++;
+//					extraCounter = 0;
+//				}
+//				break;
+//			default:
+//				ACCTid = id;
+//				switch(ACCTid)
+//				{
+//					case 1:
+//						if (launcherStatus == 0)
+//						{
+//							launcherPos += 2048;
+//							PosCrl(9, 0, launcherPos); 
+//							launcherStatus = 1;
+//						}
+//						ACCTid = 0;
+//						break;
+//						
+//					case 2:
+////						PosCrl(9,1,2048);
+//						ACCTid = 0;
+//						break;
+//				}
+//				status = 0;
+//				id = 0xff;
+//				break;					
+//		}
+//	 }
+//	OSIntExit();
+//}
 
 /****************陀螺仪串口接受中断****start****************/
 
@@ -477,7 +477,7 @@ static float zangle = 0;
 static float xangle = 0;
 static float yangle = 0;
 static float w_z    = 0;
-void USART3_IRQHandler(void)
+void USART1_IRQHandler(void)
 {	 
 	static uint8_t ch;
 	static union
@@ -492,10 +492,10 @@ void USART3_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART3, USART_IT_RXNE)==SET)   
+	if(USART_GetITStatus(USART1, USART_IT_RXNE)==SET)   
 	{
-		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
-		ch=USART_ReceiveData(USART3);
+		USART_ClearITPendingBit( USART1,USART_IT_RXNE);
+		ch=USART_ReceiveData(USART1);
 		switch(count)
 		{
 			case 0:
