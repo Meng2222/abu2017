@@ -85,6 +85,7 @@ void ConfigTask(void)
 	elmo_Enable(9);
 	elmo_Enable(10);
 	elmo_Enable(11);
+	elmo_Enable(12);	
 	
 	Vel_cfg(1, 100000, 100000);
 	Vel_cfg(2, 100000, 100000);
@@ -101,8 +102,11 @@ void ConfigTask(void)
 	
 	Vel_cfg(10,300000,300000);	//∫Û ∑¢…‰ 
 	Vel_cfg(11,300000,300000);	//
+	Vel_cfg(12,300000,300000);	//
 	
 	TIM_Delayms(TIM5,50);
+
+	while(1);
 
 	ClampOpen();
 	

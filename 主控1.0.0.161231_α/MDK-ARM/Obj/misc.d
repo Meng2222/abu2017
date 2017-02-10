@@ -2,8 +2,8 @@
 .\obj\misc.o: ..\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
 .\obj\misc.o: ..\Libraries\CMSIS\stm32f4xx.h
 .\obj\misc.o: ..\Libraries\CMSIS\core_cm4.h
-.\obj\misc.o: C:\Software\Keil_V5\ARM\ARMCC\Bin\..\include\stdint.h
-.\obj\misc.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cmInstr.h
-.\obj\misc.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cmFunc.h
-.\obj\misc.o: C:\Software\Keil_V5\ARM\CMSIS\Include\core_cm4_simd.h
+.\obj\misc.o: C:\Keil\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\misc.o: C:\Keil\ARM\CMSIS\Include\core_cmInstr.h
+.\obj\misc.o: C:\Keil\ARM\CMSIS\Include\core_cmFunc.h
+.\obj\misc.o: C:\Keil\ARM\CMSIS\Include\core_cm4_simd.h
 .\obj\misc.o: ..\Libraries\CMSIS\system_stm32f4xx.h
