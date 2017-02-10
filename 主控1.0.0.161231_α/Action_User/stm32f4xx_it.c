@@ -415,8 +415,6 @@ void USART1_IRQHandler(void)
 						break;
 					case 4:
 						speed2[id / 5] = dataConvert.data32;
-						VelCrl(11, -4096 * dataConvert.data32);
-						VelCrl(12, -4096 * dataConvert.data32);
 						break;
 					default:
 						id = 0xff;
