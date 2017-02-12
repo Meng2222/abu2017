@@ -230,6 +230,7 @@ void WalkTask(void)
 //		u5_printf("Roll*10 = %d, Pitch*10 = %d, Yaw*10 = %d   LauncherVel = %d   EncVel0 = %d   EncVel1 = %d\r\n", 
 //							(int)(position[1] * 10), (int)(position[2] * 10), (int)(position[0] * 10), 
 //								speed, GetEncVel(0), GetEncVel(1));
+
 		
 //		//发射一秒后发射器退回
 //		if (launcherStatus == 1)
