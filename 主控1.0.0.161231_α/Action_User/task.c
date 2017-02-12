@@ -19,19 +19,23 @@
 #include "movebase.h"
 #include "wifi.h"
 
-//////////////////Area of defining semaphore////////////////////////
- OS_EVENT 		*PeriodSem;
+/*
+===============================================================
+                        信号量定义
+===============================================================
+*/
+OS_EVENT *PeriodSem;
 
 void App_Task()
 {
 	CPU_INT08U  os_err;
-	os_err = os_err; /* prevent warning... */
+	os_err = os_err;          /*防止警告...*/
 	
-	/******************Create Semaphore***********************/
+	/*创建信号量*/
     PeriodSem				=	OSSemCreate(0);
 
-    /******************Create Task**************************/	
-	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,					//Initial Task
+    /*创建任务*/	
+	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*初始化任务*/
 	                      	(void          * ) 0,							
 													(OS_STK        * )&App_ConfigStk[Config_TASK_START_STK_SIZE-1],		
 													(INT8U           ) Config_TASK_START_PRIO  );	
@@ -55,8 +59,8 @@ void ConfigTask(void)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	
 	//定时器初始化
-	TIM_Init(TIM2, 999, 839, 0, 0);					//主周期定时10ms
-	TIM_Init(TIM3, 99 , 839, 0, 0);
+	TIM_Init(TIM2, 999, 839, 0, 0);		//主周期定时10ms
+	TIM_Init(TIM3, 99 , 839, 0, 0);     //检测出口速度1ms一次
 	TIM_Delayms(TIM5, 1500);	
 	
 	//串口初始化
@@ -71,7 +75,7 @@ void ConfigTask(void)
 	
 	CAN_Config(CAN1, 500, GPIOD, GPIO_Pin_0, GPIO_Pin_1);
 
-//    //电机初始化及使能
+    //电机初始化及使能
 //	elmo_Init();
 	
 	elmo_Enable(1);
@@ -104,7 +108,7 @@ void ConfigTask(void)
 //	Vel_cfg(10,300000,300000);	//后 发射 
 //	Vel_cfg(11,300000,300000);	//
 	
-	TIM_Delayms(TIM5,50);
+	TIM_Delayms(TIM5, 50);
 
 //	ClampOpen();
 	
@@ -118,25 +122,26 @@ void ConfigTask(void)
 */
 uint8_t launcherStatus = 0;
 extern int32_t launcherPos;
-static uint8_t launcherCounter = 0;
+//static uint8_t launcherCounter = 0;
 extern float speed;
 extern float position[4];
-float cl_angle(float ex, float act);	
-static uint8_t lastXCounter;
-static float lastX = 0;
-static float presentX = 0;
-static float robotSpeed = 0;
-static uint8_t stopCounter = 0;
+float cl_angle(float ex, float act);
+static uint8_t timeCounter = 0;
+//static float lastX = 0;
+//static float presentX = 0;
+//static float robotSpeed = 0;
+//static uint8_t stopCounter = 0;
+int a;
 
-enum StatusMachine
+typedef enum
 {
 	goToLoadingArea,
 	load,
 	goToLaunchingArea,
 	launch
-};
+}Status_t;
 
-static uint8_t status = goToLoadingArea;
+Status_t status = goToLoadingArea;
 
 void WalkTask(void)
 {
@@ -147,36 +152,34 @@ void WalkTask(void)
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
-		
-		updatevel(GetPosX(), GetPosY(), GetAngle());
+
+		a = GetVel();
+		a = a;
 			
 		switch (status)
 		{
 			//从出发区走向装载区
-			case goToLoadingArea:
-				Move(1000.0f, 0.0f, 12000.0f, 1000.0f);
-//				if (GetPosX() > -400.0f)
-//				{
-//					MoveX(XSpeedUp(-0.0f, -400.0f, -1.5f));
-//				}
-//			    else if (GetPosX() <= -400 && GetPosX() > -12400.0f)
-//				{
-//					MoveX(-1.5f);
-//				}
-//				else if (GetPosX() <= -12400.0f)
-//				{
-//					MoveX(XSpeedDown(-12000.0f, -12800.0f, -1.5f));
-//					if (PHOTOSENSORLEFTFRONT && PHOTOSENSORRIGHTFRONT && GetPosX() <= -12800.0f)
-//					{
-//						MoveX(0.0f);
-//						status++;
-//					}
-//				}
+			case goToLoadingArea:			
+			    Move(-1000.0f, 0.0f, -12686.0f, 1000.0f);
+			    
+			    if (GetPosX() <= -12686.0f)
+				{
+					LockWheel();
+					status++;
+				}
 				break;
 				
 			//装载飞盘
 			case load:
-				LockWheel();	
+				LockWheel();
+                
+  			    timeCounter++;
+			    
+			    if (timeCounter >= 100)
+				{
+					timeCounter = 0;
+					status++;
+				}
 //				ClampClose();
 //				if (KEYSWITCHLEFT && KEYSWITCHRIGHT)
 //				{
@@ -186,37 +189,13 @@ void WalkTask(void)
 			
             //从装载区走向发射区				
 			case goToLaunchingArea:
-//				PosCrl(5, 0, -150000);
-//				
-//			    if (GetPosX() <= -12600.0f)
-//				{
-//					MoveX(XSpeedUp(-13040.0f, -12600.0f, 1.5f));
-//				}
-//			    else if (GetPosX() <= -7130.0f && GetPosX() > -12600.0f)
-//				{
-//					MoveX(1.5f);
-//				}
-//				else if (GetPosX() > -7130.0f && GetPosX() <= -6730.0f)
-//				{
-//					MoveX(XSpeedDown(-7130.0f, -6730.0f, 1.5f));
-//				}
-//				else if (GetPosX() > -6730)
-//				{
-//					MoveX(0.7f);
-//					if (GetPosX() > -6530)
-//					{
-//						MoveX(0.0f);
-//						
-//						if (GetAngle() < 1.0f && GetAngle() > -1.0f && stopCounter >= 100)
-//						{
-//							StopMove();
-//							stopCounter = 0;
-//							status++;
-//						}
-//						
-//						stopCounter++;
-//					}
-//				}
+                Move(1000.0f, -12686.0f, /*-6343.0f*/0.0f, 1000.0f);
+			
+			    if (GetPosX() >= /*-6343.0f*/0.0f)
+				{
+					LockWheel();
+					status++;
+				}
 				break;
 			
 			//发射飞盘

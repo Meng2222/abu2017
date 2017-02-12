@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "timer.h"
 #include <string.h>
+#include "GET_SET.h"
 
 //连接端口号:8086,可自行修改为其他端口.
 const u8* portnum=(u8*)"8086";

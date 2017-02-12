@@ -43,6 +43,7 @@
 #include "can.h"
 #include "robs.h"
 #include "walk.h"
+#include "GET_SET.h"
 #include "String.h"
 #include "stm32f4xx_dma.h"
 #include "gpio.h"
@@ -229,7 +230,6 @@ void TIM5_IRQHandler(void)
 	if(TIM_GetITStatus(TIM5, TIM_IT_Update) == SET)    
 	{              
 		TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-		updatevel(GetPosX(), GetPosY(), GetAngle());
 	}
 	OSIntExit();
 }
@@ -278,6 +278,7 @@ void TIM4_IRQHandler(void)
 	}
 	OSIntExit();
 }
+
 
 ///*************************与平板通信**************************/
 //float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -477,14 +478,14 @@ static float zangle = 0;
 static float xangle = 0;
 static float yangle = 0;
 static float w_z    = 0;
-void USART1_IRQHandler(void)
+void USART1_IRQHandler(void)       //更新频率200Hz
 {	 
 	static uint8_t ch;
 	static union
-  {
-	 uint8_t data[24];
-	 float ActVal[6];
-  }posture;
+    {
+		uint8_t data[24];
+		float ActVal[6];
+    }posture;
 	static uint8_t count = 0;
 	static uint8_t i = 0;
 	OS_CPU_SR  cpu_sr;
@@ -552,6 +553,7 @@ void USART1_IRQHandler(void)
 					SetPosX(pos_x);
 					SetPosY(pos_y);
 					SetAngle(zangle);
+					UpdateVel();
 				}
 				count = 0;
 				break;

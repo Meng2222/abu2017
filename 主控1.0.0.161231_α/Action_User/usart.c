@@ -167,62 +167,6 @@ void USART3_Init(uint32_t BaudRate)
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器、
 }
 
-static float PosX=0;
-static float PosY=0;
-void SetPosX(float val)
-{
-	PosX = val;
-}
-float GetPosX(void)
-{
-	return PosX;
-}
-void SetPosY(float val)
-{
-	PosY = val;
-}
-float GetPosY(void)
-{
-	return PosY;
-}
-
-static float actual_vel=0.0f;
-float updatevel(float Posx, float Posy, float Angle)
-{
-    static float x_last = 0, y_last = 0;
-    float velx, vely, vel;
-    int8_t fbward;
-    velx = Posx - x_last;
-    vely = Posy - y_last;
-    if(fabs(velx) > 0.3 || fabs(vely) > 0.3)
-	{
-		fbward = (fabs(atan2f(vely, velx) / 3.1415926 * 180 - Angle) < 90) ? 1 : -1;
-	}
-    else
-	{
-		fbward = 0;
-	}
-    vel = fbward * 100 * sqrtf(velx * velx + vely * vely);
-
-    x_last = Posx;
-    y_last = Posy;
-    actual_vel = vel;
-    return vel;
-}
-float getvel(void)
-{
-    return actual_vel;
-}
-
-static float angle = 0;
-void SetAngle(float val)
-{
-	angle = val;
-}
-float GetAngle(void)
-{
-	return angle;
-}
 
 
  /****************************************************************************

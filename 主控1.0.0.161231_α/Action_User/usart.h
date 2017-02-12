@@ -20,14 +20,6 @@ void USART3_Init(uint32_t BaudRate);
 void UART5_Init(uint32_t BaudRate);
 void USART_OUT(USART_TypeDef* USARTx, const uint8_t *Data,...);
 char *itoa(int value, char *string, int radix);
-void SetPosX(float val);
-float GetPosX(void);
-void SetPosY(float val);
-float GetPosY(void);
-void SetAngle(float val);
-float GetAngle(void);
-float updatevel(float Posx, float Posy, float Angle);
-float getvel(void);
 
 #endif
 

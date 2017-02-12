@@ -162,8 +162,8 @@ void TIM_Init(TIM_TypeDef * TIMx, uint16_t arr, uint16_t psr,uint16_t prepri,uin
 	TIM_ClearITPendingBit(TIMx, TIM_IT_Update);                 //初始化时必须将溢出中断清0,必须在开溢出中断之前
 	TIM_ITConfig(TIMx,TIM_IT_Update,ENABLE);                    //允许溢出中断
 	//中断优先级NVIC设置
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=prepri;		//抢占优先级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority=subpri;            //从优先级
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=prepri;//抢占优先级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority=subpri;       //从优先级
 	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;               //使能IRQ通道
 	NVIC_Init(&NVIC_InitStructure);                             //初始化NVIC寄存器
 	
@@ -487,7 +487,7 @@ void TIM3_Pwm_Init(u32 arr,u32 psc)
 		
 		TIM_TimeBaseInit(TIM3,&TIM_TimeBaseStructure);//初始化定时器 4
 		
-	  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; //PWM 调制模式 2
+	    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; //PWM 调制模式 2
 
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
 		TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High; //输出极性低

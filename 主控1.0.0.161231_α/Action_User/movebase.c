@@ -21,15 +21,18 @@
 #include "timer.h"
 #include "movebase.h"
 #include "stm32f4xx_usart.h"
-
+#include "GET_SET.h"
 
 /* Exported functions ---------------------------------------------------------*/
+
 /*
- *电机配置
- */
+============================================================
+                       电机配置
+============================================================
+*/
 
 /**
-  * @brief  配置电机加速度
+  * @brief  计算各电机加速度
   * @param  carAcc:机器人的合加速度
   * @param  angle:机器人平移方向角
   * @retval mototAcc:四轮电机加速度
@@ -69,6 +72,42 @@ void ThreeWheelVelControl(wheelSpeed_t speed)
     VelCrl(3, speed.v3);
 }
 
+/*
+============================================================
+         车速（mm/s）与电机转速（脉冲/s）的转换             
+============================================================
+*/
+
+/**
+  * @brief  脉冲速度转化为标准单位速度
+  * @param  pulse:速度 脉冲/s
+  * @retval vel:速度 mm/s
+  */
+float Pulse2Vel(float pulse)
+{
+	float vel = 0.0f;
+	vel = pulse * (2.0f * PI * WHEELRADIUS) / REDUCTION / STDPULSE;
+	return vel;
+}
+
+/**
+  * @brief  标准单位速度转化为脉冲速度
+  * @param  vel:速度 mm/s
+  * @retval velpulse:速度 脉冲/s
+  */
+float Vel2Pulse(float vel)
+{
+	float pulse = 0.0f;
+	pulse = vel / (2.0f * PI * WHEELRADIUS) * STDPULSE * REDUCTION;
+	return pulse;
+}
+
+/*
+============================================================
+                      机器人运动部分            
+============================================================
+*/
+
 /**
   * @brief   电机制动
   * @param   None
@@ -82,36 +121,14 @@ void LockWheel(void)
 }
 
 /**
-  * @brief   脉冲速度转化为标准单位速度
-  * @param  velPulse:速度 脉冲/s
-  * @retval velStandard:速度 m/s
-  */
-float Pulse2Vel(float pulse)
-{
-	float vel = 0.0f;
-	vel = pulse * (2.0f * PI * WHEELRADIUS) / REDUCTION / STDPULSE;
-	return vel;
-}
-
-/**
-  * @brief  标准单位速度转化为脉冲速度
-  * @param  velStandard:速度 m/s
-  * @retval velPulse:速度 脉冲/s
-  */
-float Vel2Pulse(float vel)
-{
-	float pulse = 0.0f;
-	pulse = vel / (2.0f * PI * WHEELRADIUS) * STDPULSE * REDUCTION;
-	return pulse;
-}
-
-/**
-  * @brief  运动控制函数
+  * @brief  匀加减速运动控制函数
   * @param  velX:x方向速度     mm/s
   * @param  startPos:起始位置  mm
   * @param  targetPos:目标位置 mm
   * @param  accX:x方向加速度   mm/s^2
   * @retval RETURNOK:状态宏定义
+  * @attention
+  *         此函数没有停车语句
   */
 int Move(float velX, float startPos, float targetPos, float accX)
 {
@@ -123,6 +140,7 @@ int Move(float velX, float startPos, float targetPos, float accX)
 	float posErr = 0.0f;                                    //posErr:位置误差
 	float outputSpeed = 0.0f;                               //outputSpeed:输出速度
 	static float timer = 0.0f, formerStartPos = 23333.0f;   //timer:时间因子       formerStartPos:判断起始位置改变
+	static float startPosAct = 0.0f;                        //startPosAct:实际起始点，用于路径重新规划              
 	
 	
 	//实际运动需要的过程变量
@@ -130,8 +148,22 @@ int Move(float velX, float startPos, float targetPos, float accX)
 	float velY = 0.0f;
 	
 	
-	//梯形速度控制部分
-	targetDist = fabs(targetPos - startPos);
+	//梯形速度控制部分	
+	/*新运动过程初始化*/
+	if(formerStartPos != startPos)
+	{
+		formerStartPos = startPos;
+		startPosAct = startPos;
+		if (velX >= 0)
+		{
+			SetMotorAcc(CalcMotorAcc(1.5f * Vel2Pulse(accX), atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
+		}
+		else
+		{
+			SetMotorAcc(CalcMotorAcc(1.5f * Vel2Pulse(accX), atan2f(1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
+		}
+		timer = 0.0f;
+	}
 	
 	/*保证加速度安全*/
 	if(accX > MAXACC)
@@ -139,25 +171,11 @@ int Move(float velX, float startPos, float targetPos, float accX)
 		accX = MAXACC;
 	}
 	
-	/*每次改变运动过程需要做的*/
-	if(formerStartPos != startPos)
-	{
-		formerStartPos = startPos;
-		if (velX >= 0)
-		{
-			SetMotorAcc(CalcMotorAcc(1.5f * Vel2Pulse(accX), atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*VelX */));
-		}
-		else
-		{
-			SetMotorAcc(CalcMotorAcc(1.5f * Vel2Pulse(accX), atan2f(1000.0f, 70.0f)/* velY 约等于 -0.07*VelX */));
-		}
-		timer = 0.0f;
-	}
-	
 	/*计算速度和距离的理论值*/
+	targetDist = fabs(targetPos - startPosAct);
 	timeAcc = fabs(velX) / accX;
 	distAcc = 0.5f * accX * pow(timeAcc, 2);
-	/*梯形轨迹规划部分*/
+	/*梯形速度规划部分*/
 	if(2.0f * distAcc < targetDist)
 	{
 		distConst = targetDist - 2.0f * distAcc;
@@ -207,32 +225,48 @@ int Move(float velX, float startPos, float targetPos, float accX)
 	/*计算理论可以达到的位置*/
 	if(velX < 0.0f)
 	{
-		expPos = startPos - targetDist + expDist;
+		expPos = startPosAct - targetDist + expDist;
 		expSpeed = -expSpeed;
 	}
 	else 
 	{
-		expPos = startPos + targetDist - expDist;
+		expPos = startPosAct + targetDist - expDist;
 	}
 	
-	/*速度PID*/
+	/*存在距离差用PID调速*/
 	posErr = expPos - GetPosX();
-	outputSpeed = expSpeed + posErr * PVEL;
-	
-	/*保证车速安全*/
-	if(fabs(outputSpeed) > 2000.0f)
+	outputSpeed = expSpeed + posErr * PVEL;	
+	/*距离差过大时重新规划*/
+	if(fabs(posErr) > MAXPOSERR)
 	{
-		outputSpeed = 0.0f;
+		timer = fabs(GetVel()) / accX;
+		if (velX >= 0.0f)
+		{
+			startPosAct = GetPosX() - pow(GetVel(), 2) / (2 * accX);
+		}
+		else
+		{
+			startPosAct = GetPosX() + pow(GetVel(), 2) / (2 * accX);
+		}
+		outputSpeed = GetVel();
+	}
+	/*特殊情况导致速度极不安全时紧急制动*/
+	if(fabs(outputSpeed) > INSANESPEED)
+	{
+		while(1)
+		{
+			LockWheel();
+		}
 	}
 	
 	/*减至某较低速度匀速*/
-	if((outputSpeed <= 300.0f && outputSpeed >= 0.0f) && expDist <= targetDist / 2)
+	if((outputSpeed <= 100.0f && outputSpeed >= 0.0f) && expDist <= targetDist / 2)
 	{
-		outputSpeed = 300.0f;
+		outputSpeed = 100.0f;
 	}
-	else if((outputSpeed >= -300.0f && outputSpeed < 0.0f) && expDist <= targetDist / 2)
+	else if((outputSpeed >= -100.0f && outputSpeed < 0.0f) && expDist <= targetDist / 2)
 	{
-		outputSpeed = -300.0f;
+		outputSpeed = -100.0f;
 	}
 	
 	velX = outputSpeed;
@@ -262,14 +296,6 @@ int Move(float velX, float startPos, float targetPos, float accX)
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
-	
-	
-	//在targetPos停止
-	if((targetPos > startPos && GetPosX() >= targetPos) || (targetPos <= startPos && GetPosX() <= targetPos))
-	{
-		LockWheel();
-	}
-	
-	
+		
 	return RETURNOK;
 }

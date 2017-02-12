@@ -1,16 +1,12 @@
 /**
   ******************************************************************************
-  * @file    
-  * @author  Lxy Action
+  * @file    GET_SET.h
+  * @author  ST42
   * @version 
   * @date   
   * @brief   This file contains the headers of 
   ******************************************************************************
   * @attention
-  *
-  *
-  * 
-  * 
   *
   ******************************************************************************
   */ 
@@ -27,6 +23,17 @@
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void SetPosX(float val);
+float GetPosX(void);
+
+void SetPosY(float val);
+float GetPosY(void);
+
+void SetAngle(float val);
+float GetAngle(void);
+
+void UpdateVel(void);
+float GetVel(void);
 
 #endif
 

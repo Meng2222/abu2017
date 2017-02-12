@@ -45,7 +45,7 @@ void elmo_Enable(uint8_t ElmoNum)
 	TxMessage.RTR=CAN_RTR_Data  ;			   // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
   
-	 data[0][0]=0x01000000+((ElmoNum<<16)&0xffffffff); 
+	data[0][0]=0x01000000+((ElmoNum<<16)&0xffffffff); 
     	
 	TxMessage.Data[0] = *(unsigned long*)&data[i][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[i][0]>>8)&0xff;
