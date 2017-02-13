@@ -378,7 +378,7 @@ void USART1_IRQHandler(void)
 						{
 							temAngle = 45.0f;
 						}
-						PosCrl(7, 0, (int32_t)(temAngle * 56.8889f));  //ºá¹ö  45f -> 0f
+//						PosCrl(7, 0, (int32_t)(temAngle * 56.8889f));  //ºá¹ö  45f -> 0f
 						break;
 						
 					case 1:
@@ -392,7 +392,7 @@ void USART1_IRQHandler(void)
 						{
 							temAngle = 36.0f;
 						}
-						PosCrl(8, 0, (int32_t)(temAngle * 76.8f));     //¸©Ñö -6f -> 30f
+//						PosCrl(8, 0, (int32_t)(temAngle * 76.8f));     //¸©Ñö -6f -> 30f
 						break;
 					
 					case 2:
@@ -406,7 +406,7 @@ void USART1_IRQHandler(void)
 						{
 							temAngle = 90.0f;
 						}
-						PosCrl(6, 0, (int32_t)(temAngle * 62.57778f));  //º½Ïò -45f -> 45f
+//						PosCrl(6, 0, (int32_t)(temAngle * 62.57778f));  //º½Ïò -45f -> 45f
 						break;
 						
 					case 3:
@@ -415,6 +415,7 @@ void USART1_IRQHandler(void)
 						break;
 					case 4:
 						speed2[id / 5] = dataConvert.data32;
+						VelCrl(11, 4096 * dataConvert.data32);
 						break;
 					default:
 						id = 0xff;
