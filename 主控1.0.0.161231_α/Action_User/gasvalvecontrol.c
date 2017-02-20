@@ -24,18 +24,46 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 	
 	TxMessage.Data[0] = data;
 
-	mbox = CAN_Transmit(CAN1, &TxMessage);         
-	while ((CAN_TransmitStatus(CAN1, mbox) != CAN_TxStatus_Ok));
+	mbox = CAN_Transmit(CAN2, &TxMessage);         
+	while ((CAN_TransmitStatus(CAN2, mbox) != CAN_TxStatus_Ok));
 }
-
+//夹子开
 void ClampOpen(void)
 {
-	GasValveControl(1 , 4 , 0);
-	GasValveControl(1 , 3 , 1);
+	GasValveControl(1 , 6 , 0);
+	GasValveControl(1 , 5 , 1);
 }
-
+//夹子关
 void ClampClose(void)
 {
-	GasValveControl(1 , 4 , 1);
-	GasValveControl(1 , 3 , 0);
+	GasValveControl(1 , 6 , 1);
+	GasValveControl(1 , 5 , 0);
 }
+//翻
+void ClampRotate(void)
+{
+		GasValveControl(1 , 8 , 1);//往上翻
+}
+//左推盘
+void LeftPush(void)
+{
+		GasValveControl(1 , 1 , 0);//左推盘收
+		GasValveControl(1 , 2 , 1);//左推
+}
+void LeftBack(void)
+{
+		GasValveControl(1 , 1 , 1);//左推盘收
+		GasValveControl(1 , 2 , 0);//左推
+}
+//右推盘
+void RightPush(void)
+{
+		GasValveControl(1 , 3 , 0);//右收
+		GasValveControl(1 , 4 , 1);//右推
+}
+void RightBack(void)
+{
+		GasValveControl(1 , 3 , 1);//右收
+		GasValveControl(1 , 4 , 0);//右推
+}
+

@@ -478,7 +478,7 @@ static float zangle = 0;
 static float xangle = 0;
 static float yangle = 0;
 static float w_z    = 0;
-void USART1_IRQHandler(void)       //更新频率200Hz
+void USART3_IRQHandler(void)       //更新频率200Hz
 {	 
 	static uint8_t ch;
 	static union
@@ -493,10 +493,10 @@ void USART1_IRQHandler(void)       //更新频率200Hz
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART1, USART_IT_RXNE)==SET)   
+	if(USART_GetITStatus(USART3, USART_IT_RXNE)==SET)   
 	{
-		USART_ClearITPendingBit( USART1,USART_IT_RXNE);
-		ch=USART_ReceiveData(USART1);
+		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
+		ch=USART_ReceiveData(USART3);
 		switch(count)
 		{
 			case 0:

@@ -274,23 +274,23 @@ int Move(float velX, float startPos, float targetPos, float accX)
 	
 	
 	//速度分配至各轮
-	speedOut.v1 = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
+	speedOut.v1 = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
 	speedOut.v2 = Vel2Pulse(-velX                                             );
-	speedOut.v3 = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
+	speedOut.v3 = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
 
 	
 	//姿态修正
 	if(GetAngle() > 0)
 	{
-		speedOut.v1 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle()));
+		speedOut.v3 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.v3 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
+		speedOut.v1 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 	}
 	else if(GetAngle() < 0)
 	{
-		speedOut.v1 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		speedOut.v3 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.v3 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
+		speedOut.v1 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
 	}
 	
 	

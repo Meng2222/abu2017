@@ -70,17 +70,19 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 10000);	
 	
 //	atk_8266_init();
-//	KeyInit();
-//	PhotoelectricityInit();
+	KeyInit();
+	PhotoelectricityInit();
+	BeepInit();
 	
-	CAN_Config(CAN1, 500, GPIOD, GPIO_Pin_0, GPIO_Pin_1);
+	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
+	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
     //电机初始化及使能
 //	elmo_Init();
-	
-	elmo_Enable(1);
-	elmo_Enable(2);
-	elmo_Enable(3);
+//	
+//	elmo_Enable(1);
+//	elmo_Enable(2);
+//	elmo_Enable(3);
 
 //	elmo_Enable(4);
 //	elmo_Enable(5);
@@ -91,9 +93,9 @@ void ConfigTask(void)
 //	elmo_Enable(10);
 //	elmo_Enable(11);
 	
-	Vel_cfg(1, 100000, 100000);
-	Vel_cfg(2, 100000, 100000);
-	Vel_cfg(3, 100000, 100000);
+//	Vel_cfg(1, 100000, 100000);
+//	Vel_cfg(2, 100000, 100000);
+//	Vel_cfg(3, 100000, 100000);
 	
 //	Vel_cfg(4, 100000, 100000);
 //	
@@ -155,31 +157,50 @@ void WalkTask(void)
 
 		a = GetVel();
 		a = a;
-			
+//		GasValveControl(1 , 1 , 1);//左推盘收
+//		GasValveControl(1 , 2 , 1);//左推
+//		GasValveControl(1 , 3 , 1);//右收
+//		GasValveControl(1 , 4 , 1);//右推
+//		GasValveControl(1 , 5 , 1);//张
+//		GasValveControl(1 , 6 , 1);//关
+//		GasValveControl(1 , 8 , 1);//往上翻
+	
 		switch (status)
 		{
 			//从出发区走向装载区
-			case goToLoadingArea:			
-			    Move(-1000.0f, 0.0f, -12686.0f, 1000.0f);
-			    
-			    if (GetPosX() <= -12686.0f)
-				{
-					LockWheel();
-					status++;
-				}
+			case goToLoadingArea:
+//				VelCrl(1,5000);
+//				VelCrl(2,5000);
+//				VelCrl(3,5000);
+			
+//			    Move(-1000.0f, 0.0f, -12686.0f, 1000.0f);
+//			    
+//			    if (GetPosX() <= -12686.0f)
+//				{
+//					LockWheel();
+//					status++;
+//				}
+//			    if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
+//				{
+//					BEEP_ON;
+//				}
+//				else
+//				{
+//					BEEP_OFF;
+//				}
 				break;
 				
 			//装载飞盘
 			case load:
-				LockWheel();
-                
-  			    timeCounter++;
-			    
-			    if (timeCounter >= 100)
-				{
-					timeCounter = 0;
-					status++;
-				}
+//				LockWheel();
+//                
+//  			    timeCounter++;
+//			    
+//			    if (timeCounter >= 100)
+//				{
+//					timeCounter = 0;
+//					status++;
+//				}
 //				ClampClose();
 //				if (KEYSWITCHLEFT && KEYSWITCHRIGHT)
 //				{
@@ -187,24 +208,24 @@ void WalkTask(void)
 //				}
 				break;
 			
-            //从装载区走向发射区				
+//            //从装载区走向发射区				
 			case goToLaunchingArea:
-                Move(1000.0f, -12686.0f, /*-6343.0f*/0.0f, 1000.0f);
-			
-			    if (GetPosX() >= /*-6343.0f*/0.0f)
-				{
-					LockWheel();
-					status++;
-				}
+//                Move(1000.0f, -12686.0f, /*-6343.0f*/0.0f, 1000.0f);
+//			
+//			    if (GetPosX() >= /*-6343.0f*/0.0f)
+//				{
+//					LockWheel();
+//					status++;
+//				}
 				break;
-			
-			//发射飞盘
+//			
+//			//发射飞盘
 			case launch:
 				break;
 			
-			default:
+//			default:
 				break;		
-		}
+//		}
 
         //蓝牙 or wifi调试输出		
 //		ReadActualPos(6);
@@ -244,6 +265,6 @@ void WalkTask(void)
 //				launcherCounter = 0;
 //			}
 //		}
-
+		}
 	} 
 }	
