@@ -121,6 +121,7 @@ float Vel2Pulse(float vel)
   */
 extern float moveTimer;
 extern uint8_t moveTimFlag;
+extern int expSpeed;
 
 void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
 {
@@ -205,6 +206,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	{
 		pExpData->pos = startPos + targetDist - pExpData->dist;
 	}
+	
+	expSpeed = pExpData->speed;
 }
 
 
@@ -218,6 +221,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
   *         None
   */
 
+extern int expSpeedp;
+
 void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 {
 	float posErr = 0.0f;                                    //posErr:位置误差
@@ -226,7 +231,13 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
+	if (fabs(posErr) > 300.0f)
+	{
+		posErr = 0.0f;
+	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
+	
+	expSpeedp = outputSpeed;
 	
 	/*特殊情况导致速度极不安全时紧急制动*/
 	if(fabs(outputSpeed) > INSANESPEED)
@@ -334,11 +345,11 @@ void Move(float velX, float startPos, float targetPos, float accX)
 		formerStartPos = startPos;
 		if (velX >= 0)
 		{
-			SetMotorAcc(CalcMotorAcc(/*2.0f * Vel2Pulse(accX)*/MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
+			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
 		}
 		else
 		{
-			SetMotorAcc(CalcMotorAcc(/*2.0f * Vel2Pulse(accX)*/MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
+			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
 		}
 		moveTimer = 0.0f;
 		moveTimFlag = 1;

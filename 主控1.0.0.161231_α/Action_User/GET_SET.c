@@ -119,5 +119,34 @@ float GetVel(void)
     return vel;
 }
 
-		
+/*
+===============================================================
+                         motor vel
+===============================================================
+*/
+static float motorVel[3] = {0.0f, 0.0f, 0.0f};
+static float motorVelRate = 0.0f, motorVelAng = 0.0f;
+
+void SetMotorVel(float *value)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		motorVel[i] = Pulse2Vel(value[i]);
+	}
+}
+float GetMotorVel(int motorNum)
+{
+	return motorVel[motorNum - 1];
+}
+float GetMotorVelRate(void)
+{
+	motorVelRate = sqrtf(pow(motorVel[1], 2) + pow(motorVel[0] - motorVel[2], 2) / 3);
+	return motorVelRate;
+}
+float GetMotorVelAng(void)
+{
+	motorVelAng = atan2f(sqrtf(3) * motorVel[1], motorVel[0] - motorVel[2]) / PI * 180.0f;
+	return motorVelAng;
+}
+
 /************************ (C) COPYRIGHT 2015 ACTION *****END OF FILE****/

@@ -47,7 +47,7 @@
 #include "stm32f4xx_exti.h"
 #include "elmo.h"
 #include "action_math.h"
-#include "encoder.h"
+
 /************************************************************/
 /****************驱动器CAN1接口模块****start******************/
 union Position
@@ -71,6 +71,7 @@ uint16_t encoder_right,encoder_left;
 int16_t vell_right,vell_left;
 
 float speed;
+float Speed[3];
 float position[4];
 
 void CAN1_RX0_IRQHandler(void)
@@ -86,30 +87,28 @@ void CAN1_RX0_IRQHandler(void)
 	OS_EXIT_CRITICAL();
 	CAN_RxMsg(CAN1, &StdId, buffer, 8);
 
-	if(StdId == 0x16) 
+	if(StdId==0x281 || StdId==0x282 || StdId==0x283)     //get speed value
 	{
-		pos.Data8[0] = buffer[0];
-		pos.Data8[1] = buffer[1];
-		encoder_right = pos.Data16;
-		
-		vell.Data8[0] = buffer[2];
-		vell.Data8[1] = buffer[3]; 
-		vell_right = vell.Data16;	
-		SetEncVel(0, vell_right);
+		for(i = 0; i < 8; i++)
+			msg.data8[i] = buffer[i];
+
+		if(msg.data32[0] == 0x00005856)
+		{
+			if(StdId == 0x281) 
+			{
+				Speed[0] = msg.data32[1];
+			}
+			if(StdId == 0x282) 
+			{
+				Speed[1] = msg.data32[1];	
+			}
+			if(StdId == 0x283) 
+			{
+				Speed[2] = msg.data32[1];
+			}
+			SetMotorVel(Speed);
+		}
 	}
-	
-	if(StdId == 0x18)
-	{
-		pos.Data8[0] = buffer[0];
-		pos.Data8[1] = buffer[1];
-		encoder_right = pos.Data16;
-		
-		vell.Data8[0] = buffer[2];
-		vell.Data8[1] = buffer[3]; 
-		vell_left = vell.Data16;		
-		SetEncVel(1, vell_left);
-	}
-	
 	if(StdId==0x286 || StdId==0x287 || StdId==0x288 ||  StdId==0x289)
 	{
 		for(i = 0; i < 8; i++)
@@ -501,10 +500,11 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 					yangle = yangle;
 					pos_x  = pos_x ;
 					pos_y  = pos_y ;
+
 					w_z    = w_z   ;
 					 
-					SetPosX(pos_x);
-					SetPosY(pos_y);
+					SetPosX(-pos_x);
+					SetPosY(-pos_y);
 					SetAngle(zangle);
 					UpdateVel();
 				}

@@ -440,11 +440,6 @@
               <FilePath>..\Action_User\action_math.c</FilePath>
             </File>
             <File>
-              <FileName>encoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\encoder.c</FilePath>
-            </File>
-            <File>
               <FileName>gasvalvecontrol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Action_User\gasvalvecontrol.c</FilePath>
