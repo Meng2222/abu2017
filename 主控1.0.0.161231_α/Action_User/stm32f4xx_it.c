@@ -37,12 +37,9 @@
 #include "stm32f4xx_tim.h"
 #include "stm32f4xx_usart.h"
 #include "math.h"
-#include "adc.h"
 #include "usart.h"
 #include "timer.h"
 #include "can.h"
-#include "robs.h"
-#include "walk.h"
 #include "GET_SET.h"
 #include "String.h"
 #include "stm32f4xx_dma.h"
@@ -170,24 +167,34 @@ void CAN1_RX0_IRQHandler(void)
 //每1ms调用一次  用于读取编码器的值和计算坐标
 
 extern  OS_EVENT 		*PeriodSem;
-//int posx,posy;
+
+float moveTimer = 0.0f;
+uint8_t moveTimFlag = 0;
+
+uint8_t semTimer = 0;
+
 void TIM2_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
-//	static uint8_t countss=0;
-//	static uint8_t Count=0;
-//	float pos_x;
-//  float pos_y;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
-
-		OSSemPost(PeriodSem);
+		if (moveTimFlag == 1)
+		{
+			moveTimer += 0.001f;
+		}	
+		
+		semTimer++;
+		if (semTimer == 10)
+		{
+			OSSemPost(PeriodSem);
+			semTimer = 0;
+		}
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-   }
-	 OSIntExit();
+	}
+	OSIntExit();
 }
 
 
@@ -234,8 +241,6 @@ void TIM5_IRQHandler(void)
 	OSIntExit();
 }
 
-//static uint16_t photoSensorCounter = 0;
-//float frisbeeSpeed;
 
 void TIM3_IRQHandler(void)
 {
@@ -246,19 +251,6 @@ void TIM3_IRQHandler(void)
 	if(TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)    
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-		
-//		//光电检测出口速度
-//		if (!(PHOTOSENSORLAUNCHER))
-//		{
-//			photoSensorCounter++;
-//		}
-//		if (PHOTOSENSORLAUNCHER && photoSensorCounter != 0)
-//		{
-//			frisbeeSpeed = 240.0f / (float)photoSensorCounter;
-//			u5_printf("S = %d.%d\r\n",(int)(frisbeeSpeed), (int)((frisbeeSpeed - (int)frisbeeSpeed) * 1000));
-//			photoSensorCounter = 0;
-//			
-//		}		
 	}
 	OSIntExit();
 }
@@ -280,195 +272,156 @@ void TIM4_IRQHandler(void)
 }
 
 
-///*************************与平板通信**************************/
-//float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
-//int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
+/*************************与平板通信**************************/
+float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
+int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
 
-//extern uint8_t launcherStatus;
-//int32_t launcherPos = 1678;
+void UART4_IRQHandler(void)
+{	 
+	static int	status = 0;
+	static uint8_t id = 0xff;
+	static int extraCounter = 0;                  //count extra byte
+	
+	static union
+	{
+		uint8_t data8[4];
+		int32_t data32;
+		float   dataf;
+	}dataConvert;
+	static int ACCTid = 0;
+	float temAngle = 0.0f;
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
 
-//void USART1_IRQHandler(void)
-//{	 
-//	static int	status = 0;
-//	static uint8_t id = 0xff;
-//	static int extraCounter = 0;                  //count extra byte
-//	
-//	static union
-//	{
-//		uint8_t data8[4];
-//		int32_t data32;
-//		float   dataf;
-//	}dataConvert;
-//	static int ACCTid = 0;
-//	float temAngle = 0.0f;
-//	OS_CPU_SR  cpu_sr;
-//	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
-//	OSIntNesting++;
-//	OS_EXIT_CRITICAL();
-
-//	if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET)   
-//	{
-//		uint8_t ch;
-//		USART_ClearITPendingBit( USART1, USART_IT_RXNE);
-//		ch = USART_ReceiveData(USART1);
-//		USART_SendData(USART1, ch);
-//		
-//		switch (status)
-//		{
-//			case 0:                       
-//				if (ch == 'A')        
-//					status++;
-//				break;
-//				
-//			case 1:
-//				if (ch == 'C')
-//					status++;
-//				else
-//					status = 0;
-//				break;
-//				
-//			case 2: 
-//				if (ch == 'P')
-//					status++;                  //ACPC + [id] + data[4] + extra[3]
-//				else if (ch == 'C')
-//					status += 10;              //ACCT + [id] + extra[7]
-//				else
-//					status = 0;
-//				break;
-//				
-//			case 3:                            /*ACPC begin from here*/  
-//				if (ch == 'C')
-//					status++;
-//				else
-//					status = 0;
-//				break;
-//				
-//			case 4:
-//				id = ch;
-//				status++;
-//				break;
-//			
-//			case 5:
-//			case 6:
-//			case 7:
-//			case 8:
-//			case 9:
-//				
-//			case 10:
-//				if(status < 9)
-//				{
-//					dataConvert.data8[status - 5] = ch;
-//				}
-//				status++;
-//				break;
-
-//			case 11:
-//				switch(id % 5)
-//				{
-//					case 0:
-//						roll[id / 5] = dataConvert.dataf;
-//						temAngle = (45.0f - dataConvert.dataf);
-//						if(temAngle < 0.0f)
-//						{
-//							temAngle = 0.0f;
-//						}
-//						if(temAngle > 45.0f)
-//						{
-//							temAngle = 45.0f;
-//						}
-//						PosCrl(7, 0, (int32_t)(temAngle * 56.8889f));  //横滚  45f -> 0f
-//						break;
-//						
-//					case 1:
-//						pitch[id / 5] = dataConvert.dataf;
-//						temAngle = dataConvert.dataf + 6.0f;
-//						if(temAngle < 0.0f)
-//						{
-//							temAngle = 0.0f;
-//						}
-//						if(temAngle > 36.0f)
-//						{
-//							temAngle = 36.0f;
-//						}
-//						PosCrl(8, 0, (int32_t)(temAngle * 76.8f));     //俯仰 -6f -> 30f
-//						break;
-//					
-//					case 2:
-//						yaw[id / 5] = dataConvert.dataf;
-//						temAngle = 45.0f - dataConvert.dataf;
-//						if(temAngle < 0.0f)
-//						{
-//							temAngle = 0.0f;
-//						}
-//						if(temAngle > 90.0f)
-//						{
-//							temAngle = 90.0f;
-//						}
-//						PosCrl(6, 0, (int32_t)(temAngle * 62.57778f));  //航向 -45f -> 45f
-//						break;
-//						
-//					case 3:
-//						speed1[id / 5] = dataConvert.data32;
-//						VelCrl(11, 4096 * dataConvert.data32);
-//						break;
-//					case 4:
-//						speed2[id / 5] = dataConvert.data32;
-//						VelCrl(10, 4096 * dataConvert.data32);
-//						break;
-//					default:
-//						id = 0xff;
-//						break;
-//				}
-//				status = 0;
-//				id = 0xff;
-//				break;
-//			case 12:                              /*ACCT begin from here*/
-//				if (ch == 'T')
-//					status++;
-//				else
-//					status = 0;
-//				break;
-//			case 13:
-//				id = ch;
-//				status++;
-//				break;
-//			case 14:
-//				extraCounter++;
-//				if (extraCounter == 6)
-//				{
-//					status++;
-//					extraCounter = 0;
-//				}
-//				break;
-//			default:
-//				ACCTid = id;
-//				switch(ACCTid)
-//				{
-//					case 1:
-//						if (launcherStatus == 0)
-//						{
-//							launcherPos += 2048;
-//							PosCrl(9, 0, launcherPos); 
-//							launcherStatus = 1;
-//						}
-//						ACCTid = 0;
-//						break;
-//						
-//					case 2:
-////						PosCrl(9,1,2048);
-//						ACCTid = 0;
-//						break;
-//				}
-//				status = 0;
-//				id = 0xff;
-//				break;					
-//		}
-//	 }
-//	OSIntExit();
-//}
+	if(USART_GetITStatus(UART4, USART_IT_RXNE) == SET)   
+	{
+		uint8_t ch;
+		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
+		ch = USART_ReceiveData(UART4);
+		USART_SendData(UART4, ch);
+		
+		switch (status)
+		{
+			case 0:                       
+				if (ch == 'A')        
+					status++;
+				break;
+			case 1:
+				if (ch == 'C')
+					status++;
+				else
+					status = 0;
+				break;
+			case 2: 
+				if (ch == 'P')
+					status++;                  //ACPC + [id] + data[4] + extra[3]
+				else if (ch == 'C')
+					status += 10;              //ACCT + [id] + extra[7]
+				else
+					status = 0;
+				break;
+			case 3:                            /*ACPC begin from here*/  
+				if (ch == 'C')
+					status++;
+				else
+					status = 0;
+				break;	
+			case 4:
+				id = ch;
+				status++;
+				break;
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				if(status < 9)
+					dataConvert.data8[status - 5] = ch;
+				status++;
+				break;
+			case 11:
+				switch(id % 5)
+				{
+					case 0:
+						roll[id / 5] = dataConvert.dataf;
+						temAngle = dataConvert.dataf;
+						if(temAngle < 0.0f)		temAngle = 0.0f;
+						if(temAngle > 45.0f)		temAngle = 45.0f;
+						PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+						break;
+					case 1:
+						pitch[id / 5] = dataConvert.dataf;
+						temAngle = dataConvert.dataf;
+						if(temAngle < 15.0f)		temAngle = 15.0f;
+						if(temAngle > 40.0f)		temAngle = 40.0f;
+						PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
+						break;
+					case 2:
+						yaw[id / 5] = dataConvert.dataf;
+						temAngle = dataConvert.dataf;
+						if(temAngle < -50.0f)		temAngle = -50.0f;
+						if(temAngle > 50.0f)		temAngle = 50.0f;
+						PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
+						break;
+					case 3:
+						speed1[id / 5] = dataConvert.data32;
+						VelCrl(4, -4096*dataConvert.data32);
+						break;
+					case 4:
+						speed2[id / 5] = dataConvert.data32;
+						VelCrl(5,  4096*dataConvert.data32);
+						break;
+					default:
+						id = 0xff;
+						break;
+				}
+				status = 0;
+				id = 0xff;
+				break;
+			case 12:                              /*ACCT begin from here*/
+				if (ch == 'T')
+					status++;
+				else
+					status = 0;
+				break;
+			case 13:
+				id = ch;
+				status++;
+				break;
+			case 14:
+				extraCounter++;
+				if (extraCounter == 6)
+				{
+					status++;
+					extraCounter = 0;
+				}
+				break;
+			default:
+				ACCTid = id;
+				switch(ACCTid)
+				{
+					case 1:
+						PosCrl(9,1,2048);
+						ACCTid = 0;
+						break;
+					case 2:
+						PosCrl(9,1,2048);
+						ACCTid = 0;
+						break;
+				}
+				status = 0;
+				id = 0xff;
+				break;					
+		}
+	 }
+	OSIntExit();
+}
 
 /****************陀螺仪串口接受中断****start****************/
 
@@ -566,21 +519,7 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 	OSIntExit();
 }
 
-/******************蓝牙串口****************/
-void UART4_IRQHandler(void)
-{	  
-	OS_CPU_SR  cpu_sr;
-	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
-	OSIntNesting++;
-	OS_EXIT_CRITICAL();
-	
-	if(USART_GetITStatus(UART4, USART_IT_RXNE) == SET)   
-	{	
-		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
-	}
-	 
-	OSIntExit();
-}
+
 
 /*********************************WIFI*************************/
 /**************************************************************/

@@ -16,6 +16,7 @@ extern u16 USART5_RX_STA;   						//接收数据状态
 void u5_printf(char* fmt, ...);
 
 void USART1_Init(uint32_t BaudRate);
+void UART4_Init(uint32_t BaudRate);
 void USART3_Init(uint32_t BaudRate);
 void UART5_Init(uint32_t BaudRate);
 void USART_OUT(USART_TypeDef* USARTx, const uint8_t *Data,...);

@@ -35,6 +35,7 @@
 ===============================================================
 */
 static float posX = 0;
+extern float amendX;
 
 void SetPosX(float value)
 {
@@ -43,7 +44,7 @@ void SetPosX(float value)
 
 float GetPosX(void)
 {
-	return posX;
+	return posX + amendX;
 }
 
 /*

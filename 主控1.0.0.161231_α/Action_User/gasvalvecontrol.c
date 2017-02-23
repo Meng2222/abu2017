@@ -1,5 +1,6 @@
 #include  "can.h"
 #include "gasvalvecontrol.h"
+#include "gpio.h"
 
 /**
 * @brief  气阀控制
@@ -10,7 +11,6 @@
 */
 void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 {
-	uint8_t i = 0;
 	uint8_t data = 0x00;
 	uint8_t mbox;
 	CanTxMsg TxMessage;
@@ -30,8 +30,11 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 //夹子开
 void ClampOpen(void)
 {
-	GasValveControl(1 , 6 , 0);
-	GasValveControl(1 , 5 , 1);
+	if (!KEYSWITCH)
+	{
+		GasValveControl(1 , 6 , 0);
+		GasValveControl(1 , 5 , 1);
+	}
 }
 //夹子关
 void ClampClose(void)
@@ -39,16 +42,22 @@ void ClampClose(void)
 	GasValveControl(1 , 6 , 1);
 	GasValveControl(1 , 5 , 0);
 }
-//翻
+//夹子翻
 void ClampRotate(void)
 {
 		GasValveControl(1 , 8 , 1);//往上翻
 }
+//夹子复位
+void ClampReset(void)
+{
+		GasValveControl(1 , 8 , 0);//往上翻
+}
+
 //左推盘
 void LeftPush(void)
 {
 		GasValveControl(1 , 1 , 0);//左推盘收
-		GasValveControl(1 , 2 , 1);//左推
+		GasValveControl(1 , 2 , 1);//左推	
 }
 void LeftBack(void)
 {

@@ -24,7 +24,7 @@
 //车轮半径 单位:mm
 #define WHEELRADIUS 76.0f
 //姿态修正时绕轮旋转半径 单位:mm
-#define ROTATERAD   500.0f
+#define ROTATERAD   815.0f
 
 //减速比
 #define REDUCTION (299.0f/14.0f)
@@ -34,28 +34,14 @@
 
 //电机最大速度   单位:脉冲/s
 #define MAXVEL 250000.0f
-//电机最大加速度 单位:mm/s^2
-#define MAXACC 5000.0f
-//正常运动最大距离误差   单位:mm
-#define MAXPOSERR 50.0f
+//电机最大加速度  单位:脉冲/s^2
+#define MAXACC 3000000.0f
+
 //机器人特殊情况制动速度   单位:mm/s
 #define INSANESPEED 3000.0f
 
-
-/*
-============================================================
-                关于操作指令反馈的宏定义           
-============================================================
-*/
-
-//函数正常运行
-#define RETURNOK 		 1
-//无效变量
-#define INVALIDPARM      0
-//有效变量
-#define VALIDPARM 		 1
-//变量超出范围
-#define OUTOFRANGE 	    -2
+//运动完成时停车速度    单位:mm/s
+#define ENDSPEED 120.0f
 
 
 /*
@@ -68,7 +54,7 @@
 #define PPOSE 1.0f
 
 //速度闭环PID
-#define PVEL 8.0f
+#define PVEL 5.0f
 
 
 /*
@@ -109,6 +95,13 @@ typedef struct
 	float v3;
 }wheelSpeed_t;
 
+//速度规划的理论值结构体
+typedef struct
+{
+	float dist;
+	float speed;
+	float pos;
+}expData_t;
 
 /* Exported functions ------------------------------------------------------- */
 
@@ -118,26 +111,13 @@ typedef struct
 ============================================================
 */
 
-/**
-  * @brief  计算各电机加速度
-  * @param  carAcc:机器人的合加速度
-  * @param  angle:机器人平移方向角
-  * @retval mototAcc:四轮电机加速度
-  */
+//计算各电机加速度
 motorAcc_t CalcMotorAcc(float carAcc,float angle);
 
-/**
-  * @brief  配置电机加速度
-  * @param  motorAcc:四轮电机加速度结构体
-  * @retval None
-  */
+//配置电机加速度
 void SetMotorAcc(motorAcc_t motorAcc);
 
-/**
-  * @brief  在三个轮子上输出电机速度
-  * @param  speed:三轮电机速度结构体
-  * @retval None
-  */
+//在三个轮子上输出电机速度
 void ThreeWheelVelControl(wheelSpeed_t speed);
 
 /*
@@ -146,19 +126,23 @@ void ThreeWheelVelControl(wheelSpeed_t speed);
 ============================================================
 */
 
-/**
-  * @brief  脉冲速度转化为标准单位速度
-  * @param  pulse:速度 脉冲/s
-  * @retval vel:速度   mm/s
-  */
+//脉冲速度转化为标准单位速度
 float Pulse2Vel(float pulse);
 
-/**
-  * @brief  标准单位速度转化为脉冲速度
-  * @param  vel:速度   mm/s
-  * @retval pulse:速度 脉冲/s
-  */
+//标准单位速度转化为脉冲速度
 float Vel2Pulse(float vel);
+
+/*
+============================================================
+                      过程量控制与调节            
+============================================================
+*/
+
+//轨迹理论值计算函数
+void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
+
+//速度调节函数
+void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX);
 
 /*
 ============================================================
@@ -166,24 +150,14 @@ float Vel2Pulse(float vel);
 ============================================================
 */
 
-/**
-  * @brief  电机制动抱死
-  * @param  None
-  * @retval None
-  */
+//电机制动抱死
 void LockWheel(void);
 
-/**
-  * @brief  匀加减速运动控制函数
-  * @param  velX:x方向速度     mm/s
-  * @param  startPos:起始位置  mm
-  * @param  targetPos:目标位置 mm
-  * @param  accX:x方向加速度   mm/s^2
-  * @retval RETURNOK:状态宏定义
-  * @attention
-  *         此函数没有停车语句
-  */
-int Move(float velX, float startPos, float targetPos, float accX);
+//x方向定速移动函数
+void MoveX(float velX);
+
+//运动函数
+void Move(float velX, float startPos, float targetPos, float accX);
 
 #endif
 

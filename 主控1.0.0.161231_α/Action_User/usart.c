@@ -129,6 +129,50 @@ void USART3_Init(uint32_t BaudRate)
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器、
 }
 
+void UART4_Init(uint32_t BaudRate)
+{
+    GPIO_InitTypeDef 	GPIO_InitStructure;
+	USART_InitTypeDef   USART_InitStructure;
+	NVIC_InitTypeDef 	NVIC_InitStructure;
+	
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC,ENABLE); //使能GPIOB时钟
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4,ENABLE);//使能USART1时钟
+ 
+	//串口3对应引脚复用映射
+	GPIO_PinAFConfig(GPIOC,GPIO_PinSource10,GPIO_AF_UART4); //GPIOC10复用为USART1
+	GPIO_PinAFConfig(GPIOC,GPIO_PinSource11,GPIO_AF_UART4); //GPIOC11复用为USART1
+	
+	//USART1端口配置
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11; //GPIOC10与GPIOC11
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	//速度50MHz
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽复用输出
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉
+	GPIO_Init(GPIOC,&GPIO_InitStructure); //初始化
+
+   //USART1 初始化设置
+	USART_InitStructure.USART_BaudRate = BaudRate;//波特率设置
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//字长为8位数据格式
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;//一个停止位
+	USART_InitStructure.USART_Parity = USART_Parity_No;//无奇偶校验位
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//收发模式
+    USART_Init(UART4, &USART_InitStructure); //初始化串口1
+	
+	USART_ClearFlag(UART4, USART_FLAG_TC);
+	
+
+	//Usart1 NVIC 配置
+    NVIC_InitStructure.NVIC_IRQChannel = UART4_IRQn;//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority =1;		//子优先级3
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
+
+	USART_ITConfig(UART4, USART_IT_RXNE, ENABLE);//开启相关中断
+    USART_Cmd(UART4, ENABLE);  //使能串口1 	
+
+}
 
 
  /****************************************************************************
@@ -297,7 +341,7 @@ void UART5_Init(uint32_t BaudRate)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
 
   //若使用蓝牙屏掉此句
-// USART_DeInit(UART5);  //复位串口5
+  USART_DeInit(UART5);  //复位串口5
 	
   /* Connect PXx to USARTx_Tx*/
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
@@ -336,9 +380,9 @@ void UART5_Init(uint32_t BaudRate)
 	//以下三句若使用蓝牙需屛掉
 	//使能USART5接收中断,
 	
-	//TIM7_Int_Init(1000-1,8400-1);		//100ms中断
-	//USART5_RX_STA=0;		//清零
-	//TIM_Cmd(TIM7, DISABLE); //关闭定时器7
+	TIM7_Int_Init(1000-1,8400-1);		//100ms中断
+	USART5_RX_STA=0;		//清零
+	TIM_Cmd(TIM7, DISABLE); //关闭定时器7
 }
 
 
