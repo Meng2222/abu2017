@@ -54,13 +54,26 @@ void ClampReset(void)
 }
 
 //左推盘
+int pushFlag =0;
+extern int pushTimer;
 void LeftPush(void)
 {
+		pushFlag=1;
 		GasValveControl(1 , 1 , 0);//左推盘收
-		GasValveControl(1 , 2 , 1);//左推	
+		if(pushTimer<=50)
+		{
+
+			GasValveControl(1 , 2 , 1);//左推	
+		}
+		else if(pushTimer >50)
+		{
+			GasValveControl(1 , 2 , 0);
+		}
+		if(pushTimer>=100)pushTimer=0;
 }
 void LeftBack(void)
 {
+		pushFlag=0;
 		GasValveControl(1 , 1 , 1);//左推盘收
 		GasValveControl(1 , 2 , 0);//左推
 }

@@ -47,7 +47,7 @@
 #include "stm32f4xx_exti.h"
 #include "elmo.h"
 #include "action_math.h"
-
+#include "gasvalvecontrol.h"
 /************************************************************/
 /****************驱动器CAN1接口模块****start******************/
 union Position
@@ -169,9 +169,9 @@ extern  OS_EVENT 		*PeriodSem;
 
 float moveTimer = 0.0f;
 uint8_t moveTimFlag = 0;
-
+extern int pushFlag;
 uint8_t semTimer = 0;
-
+int pushTimer =0;
 void TIM2_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -185,12 +185,17 @@ void TIM2_IRQHandler(void)
 			moveTimer += 0.001f;
 		}	
 		
+		if(pushFlag==1)
+		{
+			pushTimer++;
+		}
 		semTimer++;
 		if (semTimer == 10)
 		{
 			OSSemPost(PeriodSem);
 			semTimer = 0;
 		}
+		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 	OSIntExit();
@@ -277,13 +282,14 @@ float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
 int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
-
+int shootFlag = 0;
 void UART4_IRQHandler(void)
 {	 
 	static int	status = 0;
 	static uint8_t id = 0xff;
 	static int extraCounter = 0;                  //count extra byte
-	
+
+
 	static union
 	{
 		uint8_t data8[4];
@@ -303,7 +309,6 @@ void UART4_IRQHandler(void)
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
 		USART_SendData(UART4, ch);
-		
 		switch (status)
 		{
 			case 0:                       
@@ -406,11 +411,13 @@ void UART4_IRQHandler(void)
 				switch(ACCTid)
 				{
 					case 1:
-						PosCrl(9,1,2048);
+						GasValveControl(1,5,1);	
+						shootFlag = 1;
 						ACCTid = 0;
 						break;
 					case 2:
-						PosCrl(9,1,2048);
+						GasValveControl(1, 5 , 1);
+						shootFlag = 1;
 						ACCTid = 0;
 						break;
 				}
@@ -516,6 +523,22 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 				break;		 
 		}	 	 
 	}
+	else
+	{
+			USART_ClearITPendingBit( USART3,USART_IT_PE);
+			USART_ClearITPendingBit( USART3,USART_IT_TXE);
+			USART_ClearITPendingBit( USART3,USART_IT_TC);
+			//USART_ClearITPendingBit( USART3,USART_IT_RXNE);
+			USART_ClearITPendingBit( USART3,USART_IT_ORE_RX);
+			USART_ClearITPendingBit( USART3,USART_IT_IDLE);
+			USART_ClearITPendingBit( USART3,USART_IT_LBD);
+			USART_ClearITPendingBit( USART3,USART_IT_CTS);
+			USART_ClearITPendingBit( USART3,USART_IT_ERR);
+			USART_ClearITPendingBit( USART3,USART_IT_ORE_ER);
+			USART_ClearITPendingBit( USART3,USART_IT_NE);
+			USART_ClearITPendingBit( USART3,USART_IT_FE);
+			USART_ReceiveData(USART3);
+	}	
 	OSIntExit();
 }
 

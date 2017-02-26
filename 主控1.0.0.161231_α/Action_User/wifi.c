@@ -142,7 +142,7 @@ void atk_8266_init(void)
 
 	atk_8266_send_cmd("AT+CIPMUX=0","OK",20);   //0：单连接，1：多连接
 	sprintf((char*)p,"AT+CIPSTART=\"TCP\",\"%s\",%s",(u8*)ipp,(u8*)portnum);    //配置目标TCP服务器
-  while(atk_8266_send_cmd(p,"OK",200));
+    while(atk_8266_send_cmd(p,"OK",200));
 
 	atk_8266_send_cmd("AT+CIPMODE=1","OK",200);      //传输模式为：透传	
 	

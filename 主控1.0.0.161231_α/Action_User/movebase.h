@@ -33,12 +33,12 @@
 #define STDPULSE 2000.0f
 
 //电机最大速度   单位:脉冲/s
-#define MAXVEL 250000.0f
+#define INSANEVEL 400000.0f
 //电机最大加速度  单位:脉冲/s^2
 #define MAXACC 3000000.0f
 
 //机器人特殊情况制动速度   单位:mm/s
-#define INSANESPEED 3000.0f
+#define MAXSPEED 4000.0f
 
 //运动完成时停车速度    单位:mm/s
 #define ENDSPEED 120.0f
@@ -52,9 +52,8 @@
 
 //姿态修正PID
 #define PPOSE 1.0f
-
 //速度闭环PID
-#define PVEL 5.0f
+#define PVEL 10.0f
 
 
 /*
@@ -157,7 +156,7 @@ void LockWheel(void);
 void MoveX(float velX);
 
 //运动函数
-void Move(float velX, float startPos, float targetPos, float accX);
+void MoveTo(float targetPos, float velX, float accX);
 
 #endif
 

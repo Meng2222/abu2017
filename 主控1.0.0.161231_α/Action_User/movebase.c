@@ -240,7 +240,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	expSpeedp = outputSpeed;
 	
 	/*特殊情况导致速度极不安全时紧急制动*/
-	if(fabs(outputSpeed) > INSANESPEED)
+	if(fabs(outputSpeed) > MAXSPEED)
 	{
 		while(1)
 		{
@@ -269,6 +269,15 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		pSpeedOut->v1 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		pSpeedOut->v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		pSpeedOut->v3 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
+	}
+	
+	//防止电机速度超过极限速度
+	if(fabs(pSpeedOut->v1) > INSANEVEL || fabs(pSpeedOut->v2) > INSANEVEL || fabs(pSpeedOut->v3) > INSANEVEL)
+	{
+		while(1)
+		{
+			LockWheel();
+		}
 	}
 }
 
@@ -317,32 +326,35 @@ void MoveX(float velX)
 		speedOut.v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.v3 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
 	}
+	
 	ThreeWheelVelControl(speedOut);
 }
 
 /**
   * @brief  匀加减速运动控制函数
-  * @param  velX:x方向速度     mm/s
-  * @param  startPos:起始位置  mm
   * @param  targetPos:目标位置 mm
+  * @param  velX:x方向速度     mm/s
   * @param  accX:x方向加速度   mm/s^2
-  * @retval RETURNOK:状态宏定义
+  * @retval None
   * @attention
   *         此函数没有停车语句
   */
 
-void Move(float velX, float startPos, float targetPos, float accX)
+void MoveTo(float targetPos, float velX, float accX)
 {
 	//速度控制需要的过程变量
-	static float formerStartPos = 23333.0f;                 //formerStartPos:判断起始位置改变
+	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
+	static float startPos = 0.0f;
 	expData_t expData = {0.0f, 0.0f, 0.0f};
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
-
+	extern int mv1, mv2, mv3;
 	
 	//新运动过程初始化
-	if(formerStartPos != startPos)
-	{
-		formerStartPos = startPos;
+	if(formerTargetPos != targetPos)
+	{	
+		formerTargetPos = targetPos;
+		
+		startPos = GetPosX();
 		if (velX >= 0)
 		{
 			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
@@ -360,6 +372,10 @@ void Move(float velX, float startPos, float targetPos, float accX)
 
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
+	
+	mv1 = speedOut.v1;
+	mv2 = speedOut.v2;
+	mv3 = speedOut.v3;
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);

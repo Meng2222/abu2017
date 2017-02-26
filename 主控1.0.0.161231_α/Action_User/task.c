@@ -55,17 +55,16 @@ void ConfigTask(void)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	
 	//定时器初始化
-	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms
+	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	TIM_Delayms(TIM5, 1500);	
 	
 	//串口初始化
-//	UART4_Init(115200);
-//	USART1_Init(115200);
-	UART5_Init(115200);		//调试用蓝牙	
-	USART3_Init(115200);    //陀螺仪	
-	TIM_Delayms(TIM5, 10000);	
+	UART4_Init(115200);     //蓝牙手柄
+	UART5_Init(115200);		//调试用wifi	
+	USART3_Init(115200);    //定位系统
+//	TIM_Delayms(TIM5, 10000);	
 	
-//	atk_8266_init();
+	
 	KeyInit();
 	PhotoelectricityInit();
 	BeepInit();
@@ -74,48 +73,46 @@ void ConfigTask(void)
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
     //电机初始化及使能
-	elmo_Init();
-	
-	elmo_Enable(1);
-	elmo_Enable(2);
-	elmo_Enable(3);
-
-//	elmo_Enable(4);
-//	elmo_Enable(5);
-//	elmo_Enable(6);
-//	elmo_Enable(7);
-//	elmo_Enable(8);
-//	elmo_Enable(9);
-//	elmo_Enable(10);
-//	elmo_Enable(11);
-	
-	Vel_cfg(1, 100000, 100000);
-	Vel_cfg(2, 100000, 100000);
-	Vel_cfg(3, 100000, 100000);
-
-//	Pos_cfg(6,5000,5000,30000);//俯仰
-//	Pos_cfg(7,5000,5000,30000);//翻滚
-//	Pos_cfg(8,5000,5000,30000);//航向
+//	elmo_Init();
 //	
-//	Pos_cfg(9,250000,250000,10000);//推盘(9,250000,250000,25000)
-//	
-//	Vel_cfg(4,300000,300000);	//
-//	Vel_cfg(5,300000,300000);	//
+//	elmo_Enable(1);
+//	elmo_Enable(2);
+//	elmo_Enable(3);
+
+	elmo_Enable(4);
+	elmo_Enable(5);
+	elmo_Enable(6);
+	elmo_Enable(7);
+	elmo_Enable(8);
+	
+//	Vel_cfg(1, 100000, 100000);
+//	Vel_cfg(2, 100000, 100000);
+//	Vel_cfg(3, 100000, 100000);
+
+	Vel_cfg(4,300000,300000);	//
+	Vel_cfg(5,300000,300000);	//
+
+	Pos_cfg(6,5000,5000,30000);//俯仰
+	Pos_cfg(7,5000,5000,30000);//翻滚
+	Pos_cfg(8,5000,5000,30000);//航向
 	
 	TIM_Delayms(TIM5, 50);
 
-//	ClampOpen();
-//	LeftBack();
-//	RightBack();
-//	ClampReset();
+	
+//	atk_8266_init();
+//	u5_printf("mv1  mv2  mv3    realmv1  realmv2  realmv3    x\r\n");
+	
+	ClampClose();
+	LeftBack();
+	RightBack();
+	ClampReset();
 
-//	u5_printf("expSpeed  expSpeedp  realSpeed  rate angle\r\n");
-	
+
+
 	BEEP_ON;
-	TIM_Delayms(TIM5, 100);
+	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
-	
-	
+
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
@@ -124,22 +121,21 @@ void ConfigTask(void)
                         行走移动任务
 ===============================================================
 */
-uint8_t launcherStatus = 0;
-extern int32_t launcherPos;
 extern float speed;
 extern float position[4];
-float cl_angle(float ex, float act);
 static uint16_t timeCounter = 0;
 static uint16_t timeCounterL = 0;
 static uint16_t timeCounterR = 0;
-static uint16_t flagL = 1;
-static uint16_t flagR = 1;
+static uint16_t flagL = 0;
+static uint16_t flagR = 0;
+extern int shootFlag;
+static int shootCounter = 0;
 float amendX = 0.0f;
 uint8_t amendXFlag = 0;
-float tempX = 0.0f;
 extern uint8_t moveTimFlag;
 int expSpeed = 0;
 int expSpeedp = 0;
+int mv1 = 0, mv2 = 0, mv3 = 0;
 
 typedef enum
 {
@@ -162,31 +158,75 @@ void WalkTask(void)
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
-	
-		
+		if(shootFlag ==1 )shootCounter++;
+		if(shootCounter>=50)
+		{
+			GasValveControl(1,5,0);
+			shootCounter =0;
+			shootFlag=0;
+		}
+
+
+
 		switch (status)
 		{
 			//准备阶段
 			case getReady:
 				
-			   if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
-			   {
-				   status++;
-			   }
-//				if (PHOTOSENSORLEFTUP && !PHOTOSENSORRIGHTUP)
+//				if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
 //				{
-//					ClampOpen();
+//					status++;
 //				}
-//				else if (!PHOTOSENSORLEFTUP && PHOTOSENSORRIGHTUP)
+				if (PHOTOSENSORRIGHTUP)
+				{
+					flagL = 1;
+				}
+				if (flagL == 1)
+				{
+					if (timeCounterL <= 80)
+					{
+						LeftPush();
+					}
+					else if (timeCounterL > 80)
+					{
+						LeftBack();
+					}
+					timeCounterL++;
+					if (timeCounterL >= 200)
+					{
+						timeCounterL = 0;
+						flagL = 0;
+					}
+				}
+				
+//				if (PHOTOSENSORRIGHTUP)
 //				{
-//					ClampClose();
+//					flagR = 1;
+//				}
+//				if (flagR == 1)
+//				{
+//					if (timeCounterR == 3)
+//					{
+//						RightPush();
+//					}
+//					if (timeCounterR == 60)
+//					{
+//						RightBack();
+//					}
+//					timeCounterR++;
+//					if (timeCounterR >= 200)
+//					{
+//						timeCounterR = 0;
+//						flagR = 0;
+//					}
+//					
 //				}
 			   
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
 
-			    Move(-2000.0f, tempX, -13079.29f, 1000.0f);
+			    MoveTo(-13079.29f, -3000.0f, 1200.0f);
 
 				if (GetPosX() <= -12900.0f && PHOTOSENSORRIGHT && PHOTOSENSORLEFT)
 				{
@@ -195,6 +235,7 @@ void WalkTask(void)
 						amendX = -13079.29f - GetPosX();
 						amendXFlag = 1;
 					}
+					moveTimFlag = 0;
 					BEEP_ON;
 					status++;					
 				}
@@ -206,8 +247,6 @@ void WalkTask(void)
 				MoveX(-ENDSPEED);
 				if (GetPosX() <= -13146.58f)
 				{
-					tempX = GetPosX();
-					moveTimFlag = 0;
 					BEEP_OFF;
 					status++;
 				}	
@@ -223,17 +262,17 @@ void WalkTask(void)
 				{
 //					ClampRotate();
 					timeCounter = 0;
-					if (KEYSWITCH)
-					{
+//					if (KEYSWITCH)
+//					{
 						status++;
-					}
+//					}
 				}
 				break;
 			
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                Move(2000.0f, tempX, -6573.29f, 1000.0f);
-//			
+                MoveTo(/*-6573.29f*/0.0f, 3000.0f, 1200.0f);
+			
 //				if (flagL == 1)
 //				{
 //					if (timeCounterL == 3)
@@ -268,10 +307,9 @@ void WalkTask(void)
 //					
 //				}
 				
-			    if (GetPosX() >= -6573.29f)
+			    if (GetPosX() >= /*-6573.29f*/0.0f)
 				{
 					LockWheel();
-					tempX = GetPosX();
 					moveTimFlag = 0;
 					status++;
 				}
@@ -279,6 +317,10 @@ void WalkTask(void)
 			
 			//发射飞盘
 			case launch:
+				if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
+				{
+					status = goToLoadingArea;
+				}
 //				if (flagL == 1)
 //				{
 //					if (timeCounterL == 3)
@@ -322,7 +364,7 @@ void WalkTask(void)
 //		ReadActualVel(3);
 //		
 //        //蓝牙 or wifi调试输出
-//		u5_printf("%d  %d  %d  %d  %d  %d\r\n", expSpeed, expSpeedp, (int)GetVel(), 
-//			      (int)GetMotorVelRate(), (int)GetMotorVelAng());
+//		u5_printf("%d  %d  %d    %d  %d  %d    %d\r\n", mv1, mv2, mv3,
+//            	  (int)GetMotorVel(1), (int)GetMotorVel(2), (int)GetMotorVel(3), (int)GetPosX());
 	} 
 }	

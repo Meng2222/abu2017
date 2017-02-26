@@ -131,21 +131,25 @@ void SetMotorVel(float *value)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		motorVel[i] = Pulse2Vel(value[i]);
+		motorVel[i] = value[i];
 	}
 }
+
+//三轮各自的脉冲速度
 float GetMotorVel(int motorNum)
 {
 	return motorVel[motorNum - 1];
 }
+
+//合速度向量的速率和夹角
 float GetMotorVelRate(void)
 {
-	motorVelRate = sqrtf(pow(motorVel[1], 2) + pow(motorVel[0] - motorVel[2], 2) / 3);
+	motorVelRate = sqrtf(pow(motorVel[1], 2) + pow(motorVel[0] - motorVel[2], 2) / 3.0f);
 	return motorVelRate;
 }
 float GetMotorVelAng(void)
 {
-	motorVelAng = atan2f(sqrtf(3) * motorVel[1], motorVel[0] - motorVel[2]) / PI * 180.0f;
+	motorVelAng = -atan2f(sqrtf(3) * motorVel[1], motorVel[0] - motorVel[2]) / PI * 180.0f;
 	return motorVelAng;
 }
 
