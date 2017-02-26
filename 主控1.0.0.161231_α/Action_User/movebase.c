@@ -130,16 +130,13 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	float distConst = 0.0f, timeConst = 0.0f;
 	float distDec = 0.0f, timeDec = 0.0f;
 	
-	targetDist = fabs(targetPos - startPos);
-	
-	
 	//计算理论距离和理论速度的绝对值
-	
+	targetDist = fabs(targetPos - startPos);
+	timeAcc = fabs(velX) / accX;
+	distAcc = 0.5f * accX * pow(timeAcc, 2);
 	/*梯形速度规划部分*/
 	if (2.0f * distAcc < targetDist)
 	{
-		timeAcc = fabs(velX) / accX;
-		distAcc = 0.5f * accX * pow(timeAcc, 2);
 		timeDec = timeAcc - ENDSPEED / accX;
 		distDec = distAcc - pow(ENDSPEED, 2) / (2 * accX);
 		distConst = targetDist - distAcc - distDec;
@@ -164,7 +161,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		}
 		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
 		{
-			pExpData->dist = ENDSPEED * ((timeAcc + timeConst + timeDec) - moveTimer);
+			pExpData->dist = ENDSPEED * (moveTimer-(timeAcc + timeConst + timeDec));
 			pExpData->speed = ENDSPEED;
 		}
 	}
