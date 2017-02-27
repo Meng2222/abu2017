@@ -161,7 +161,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		}
 		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
 		{
-			pExpData->dist = ENDSPEED * (moveTimer-(timeAcc + timeConst + timeDec));
+			pExpData->dist = ENDSPEED * ((timeAcc + timeConst + timeDec)-moveTimer);
 			pExpData->speed = ENDSPEED;
 		}
 	}

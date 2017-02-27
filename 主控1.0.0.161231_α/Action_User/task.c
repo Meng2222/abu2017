@@ -159,7 +159,7 @@ void WalkTask(void)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		if(shootFlag ==1 )shootCounter++;
-		if(shootCounter>=50)
+		if(shootCounter>=100)
 		{
 			GasValveControl(1,5,0);
 			shootCounter =0;
