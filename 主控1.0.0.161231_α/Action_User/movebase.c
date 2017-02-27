@@ -257,15 +257,15 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	//姿态修正
 	if(GetAngle() > 0)
 	{
-		pSpeedOut->v1 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->v3 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
+		pSpeedOut->v1 -= Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle()));
+		pSpeedOut->v2 -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		pSpeedOut->v3 -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 	}
 	else if(GetAngle() < 0)
 	{
-		pSpeedOut->v1 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->v3 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
+		pSpeedOut->v1 -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		pSpeedOut->v2 -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		pSpeedOut->v3 -= Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
 	}
 	
 	//防止电机速度超过极限速度

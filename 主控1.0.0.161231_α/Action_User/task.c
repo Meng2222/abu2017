@@ -364,7 +364,7 @@ void WalkTask(void)
 //		ReadActualVel(3);
 //		
 //        //À¶ÑÀ or wifiµ÷ÊÔÊä³ö
-//		u5_printf("%d  %d  %d    %d  %d  %d    %d\r\n", mv1, mv2, mv3,
-//            	  (int)GetMotorVel(1), (int)GetMotorVel(2), (int)GetMotorVel(3), (int)GetPosX());
+//		u5_printf("%d	%d	%d	%d	%d	%d	%d	%d	%d\r\n", mv1, mv2, mv3,
+//            	  (int)GetMotorVel(1), (int)GetMotorVel(2), (int)GetMotorVel(3), (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
 	} 
 }	
