@@ -282,11 +282,11 @@ float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
 int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
-int shootFlag = 0;
+int shootFlagL = 0 , shootFlagR = 0 , shootFlagU = 0;
 void UART4_IRQHandler(void)
 {	 
 	static int	status = 0;
-	static uint8_t id = 0xff;
+	static uint8_t id = 0xff ,id2 = 0xff;
 	static int extraCounter = 0;                  //count extra byte
 
 
@@ -340,13 +340,16 @@ void UART4_IRQHandler(void)
 				status++;
 				break;
 			case 5:
+				id2 = ch;				//◊Û   ¥Ú«Ú0 ¥Ú≈Ã3 »”6  ”“ ¥Ú«Ú1 ¥Ú≈Ã4 »”7  …œ ¥Ú«Ú2 ¥Ú≈Ã5 »”8
+				status++;
+			break;
 			case 6:
 			case 7:
 			case 8:
 			case 9:
 			case 10:
-				if(status < 9)
-					dataConvert.data8[status - 5] = ch;
+				if(status < 10)
+					dataConvert.data8[status - 6] = ch;
 				status++;
 				break;
 			case 11:
@@ -355,31 +358,122 @@ void UART4_IRQHandler(void)
 					case 0:
 						roll[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf;
-						if(temAngle < 0.0f)		temAngle = 0.0f;
-						if(temAngle > 45.0f)		temAngle = 45.0f;
-						PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+//						if(temAngle < 0.0f)		temAngle = 0.0f;
+//						if(temAngle > 45.0f)		temAngle = 45.0f;
+//						PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+						switch(id2 % 3)
+						{	
+							case 0:
+							if(temAngle < 0.0f)		temAngle = 0.0f;
+							if(temAngle > 45.0f)		temAngle = 45.0f;
+							PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+							break;
+							case 1:
+							if(temAngle < 0.0f)		temAngle = 0.0f;
+							if(temAngle > 45.0f)		temAngle = 45.0f;
+							//PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+							break;
+							case 2:
+							if(temAngle < 0.0f)		temAngle = 0.0f;
+							if(temAngle > 45.0f)		temAngle = 45.0f;
+							//PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+							break;
+							default:
+								id2 = 0xff;
+							break;
+						}
 						break;
 					case 1:
 						pitch[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf;
-						if(temAngle < 15.0f)		temAngle = 15.0f;
-						if(temAngle > 40.0f)		temAngle = 40.0f;
-						PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
+//						if(temAngle < 15.0f)		temAngle = 15.0f;
+//						if(temAngle > 40.0f)		temAngle = 40.0f;
+//						PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
+						switch(id2 % 3)
+						{	
+							case 0:
+							if(temAngle < 15.0f)		temAngle = 15.0f;
+							if(temAngle > 40.0f)		temAngle = 40.0f;
+							PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
+							break;
+							case 1:
+							if(temAngle < 15.0f)		temAngle = 15.0f;
+							if(temAngle > 40.0f)		temAngle = 40.0f;
+							//PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
+							case 2:
+							if(temAngle < -20.0f)		temAngle = -20.0f;
+							if(temAngle > 20.0f)		temAngle = 20.0f;
+							PosCrl(11,0,(int32_t)((20.0f + temAngle) * 141.0844f));
+							break;
+							default:
+								id2=0xff;
+							break;
+						}
 						break;
 					case 2:
 						yaw[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf;
-						if(temAngle < -50.0f)		temAngle = -50.0f;
-						if(temAngle > 50.0f)		temAngle = 50.0f;
-						PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
+//						if(temAngle < -50.0f)		temAngle = -50.0f;
+//						if(temAngle > 50.0f)		temAngle = 50.0f;
+//						PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
+						switch(id2 % 3)
+						{	
+							case 0:
+							if(temAngle < -50.0f)		temAngle = -50.0f;
+							if(temAngle > 50.0f)		temAngle = 50.0f;
+							PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
+							break;
+							case 1:
+							if(temAngle < -50.0f)		temAngle = -50.0f;
+							if(temAngle > 50.0f)		temAngle = 50.0f;
+							//PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
+							break;
+							case 2:
+							if(temAngle < -20.0f)		temAngle = -20.0f;
+							if(temAngle > 20.0f)		temAngle = 20.0f;
+							PosCrl(10,0,(int32_t)((20.0f + temAngle) * 102.4f));
+							break;
+							default:
+								id2 = 0xff;
+							break;
+						}
 						break;
 					case 3:
 						speed1[id / 5] = dataConvert.data32;
-						VelCrl(4, -4096*dataConvert.data32);
+//						VelCrl(4, -4096*dataConvert.data32);
+
+						switch(id2 % 3)
+						{
+							case 0:
+								VelCrl(4, -4096*dataConvert.data32);
+							break;
+							case 1:
+							break;
+							case 2:
+								VelCrl(9, -4096*dataConvert.data32);
+							break;
+							default:
+								id2 = 0xff;
+							break;
+						}
 						break;
 					case 4:
 						speed2[id / 5] = dataConvert.data32;
-						VelCrl(5,  4096*dataConvert.data32);
+//						VelCrl(5,  4096*dataConvert.data32);
+
+						switch(id2 % 3)
+						{
+							case 0:
+								VelCrl(5,  4096*dataConvert.data32);
+							break;
+							case 1:
+							break;
+							case 2:
+							break;
+							default:
+								id2 = 0xff;
+							break;
+						}
 						break;
 					default:
 						id = 0xff;
@@ -387,6 +481,7 @@ void UART4_IRQHandler(void)
 				}
 				status = 0;
 				id = 0xff;
+				id2 = 0xff;
 				break;
 			case 12:                              /*ACCT begin from here*/
 				if (ch == 'T')
@@ -399,6 +494,10 @@ void UART4_IRQHandler(void)
 				status++;
 				break;
 			case 14:
+				id2 = ch;
+				status++;
+			break;
+			case 15:
 				extraCounter++;
 				if (extraCounter == 6)
 				{
@@ -411,13 +510,25 @@ void UART4_IRQHandler(void)
 				switch(ACCTid)
 				{
 					case 1:
-						GasValveControl(1,5,1);	
-						shootFlag = 1;
-						ACCTid = 0;
+						switch(id2 % 3)
+						{
+							case 0:
+							GasValveControl(1,5,1);	
+							shootFlagL = 1;
+							break;
+							case 1:
+								shootFlagR=1;
+								break;
+							case 2:
+								GasValveControl(2,8,1);	
+								shootFlagU = 1;								
+								break;
+							ACCTid = 0;
+						}
 						break;
 					case 2:
 						GasValveControl(1, 5 , 1);
-						shootFlag = 1;
+						shootFlagL = 1;
 						ACCTid = 0;
 						break;
 				}

@@ -84,6 +84,9 @@ void ConfigTask(void)
 	elmo_Enable(6);
 	elmo_Enable(7);
 	elmo_Enable(8);
+	elmo_Enable(9);
+	elmo_Enable(10);
+	elmo_Enable(11);
 	
 //	Vel_cfg(1, 100000, 100000);
 //	Vel_cfg(2, 100000, 100000);
@@ -96,8 +99,20 @@ void ConfigTask(void)
 	Pos_cfg(7,5000,5000,30000);//·­¹ö
 	Pos_cfg(8,5000,5000,30000);//º½Ïò
 	
-	TIM_Delayms(TIM5, 50);
+	Vel_cfg(9,300000,300000);
+	Pos_cfg(10,5000,5000,30000);//º½Ïò
+	Pos_cfg(11,5000,5000,30000);//¸©Ñö
+	
+//	PosCrl(10,0,(int32_t)((20.0f + 10.0f) * 102.4f));
+//	PosCrl(11,0,(int32_t)((20.0f + 10.0f) * 141.0844f));
+	VelCrl(9, -4096*20);
 
+//	TIM_Delayms(TIM5, 500);
+//	GasValveControl(2,8,1);//ÉÏÇ¹ÍÆµ¯
+//	TIM_Delayms(TIM5, 500);
+//	GasValveControl(2,8,0);//ÉÏÇ¹
+	
+	TIM_Delayms(TIM5, 50);
 	
 //	atk_8266_init();
 //	u5_printf("mv1  mv2  mv3    realmv1  realmv2  realmv3    x\r\n");
@@ -128,15 +143,14 @@ static uint16_t timeCounterL = 0;
 static uint16_t timeCounterR = 0;
 static uint16_t flagL = 0;
 static uint16_t flagR = 0;
-extern int shootFlag;
-static int shootCounter = 0;
+extern int shootFlagL , shootFlagR , shootFlagU;
+static int shootCounterL = 0 , shootCounterR = 0 , shootCounterU = 0;
 float amendX = 0.0f;
 uint8_t amendXFlag = 0;
 extern uint8_t moveTimFlag;
 int expSpeed = 0;
 int expSpeedp = 0;
 int mv1 = 0, mv2 = 0, mv3 = 0;
-
 typedef enum
 {
 	getReady,
@@ -158,14 +172,27 @@ void WalkTask(void)
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
-		if(shootFlag ==1 )shootCounter++;
-		if(shootCounter>=100)
+		if(shootFlagL ==1 )shootCounterL++;
+		if(shootCounterL>=100)
 		{
 			GasValveControl(1,5,0);
-			shootCounter =0;
-			shootFlag=0;
+			shootCounterL =0;
+			shootFlagL=0;
 		}
-
+		if(shootFlagR ==1 )shootCounterR++;
+		if(shootCounterR>=100)
+		{
+			shootCounterR =0;
+			shootFlagR=0;
+		}
+		if(shootFlagU ==1 )shootCounterU++;
+		if(shootCounterU>=100)
+		{
+			GasValveControl(2,8,0);
+			shootCounterU =0;
+			shootFlagU=0;
+		}
+		
 
 
 		switch (status)
