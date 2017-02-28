@@ -401,9 +401,9 @@ void UART4_IRQHandler(void)
 							if(temAngle > 40.0f)		temAngle = 40.0f;
 							//PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
 							case 2:
-							if(temAngle < -20.0f)		temAngle = -20.0f;
-							if(temAngle > 20.0f)		temAngle = 20.0f;
-							PosCrl(11,0,(int32_t)((20.0f + temAngle) * 141.0844f));
+							if(temAngle < -10.0f)		temAngle = -10.0f;
+							if(temAngle > 40.0f)		temAngle = 40.0f;
+							PosCrl(11,0,(int32_t)((10.0f + temAngle) * 141.0844f));
 							break;
 							default:
 								id2=0xff;
@@ -491,47 +491,25 @@ void UART4_IRQHandler(void)
 				break;
 			case 13:
 				id = ch;
-				status++;
-				break;
-			case 14:
-				id2 = ch;
-				status++;
-			break;
-			case 15:
-				extraCounter++;
-				if (extraCounter == 6)
-				{
-					status++;
-					extraCounter = 0;
-				}
-				break;
-			default:
-				ACCTid = id;
-				switch(ACCTid)
+				switch(id)
 				{
 					case 1:
-						switch(id2 % 3)
-						{
-							case 0:
-							GasValveControl(1,5,1);	
-							shootFlagL = 1;
-							break;
-							case 1:
-								shootFlagR=1;
-								break;
-							case 2:
-								GasValveControl(2,8,1);	
-								shootFlagU = 1;								
-								break;
-							ACCTid = 0;
-						}
+						GasValveControl(1,5,1);	
+						shootFlagL = 1;
 						break;
 					case 2:
-						GasValveControl(1, 5 , 1);
-						shootFlagL = 1;
-						ACCTid = 0;
+						//GasValveControl(1, 5 , 1);
+						shootFlagR = 1;
+						break;
+					case 3:
+						GasValveControl(2,8,1);
+						shootFlagU = 1;
 						break;
 				}
+				status=0;
+
+			default:
+				ACCTid = id;    
 				status = 0;
 				id = 0xff;
 				break;					
@@ -639,7 +617,6 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 			USART_ClearITPendingBit( USART3,USART_IT_PE);
 			USART_ClearITPendingBit( USART3,USART_IT_TXE);
 			USART_ClearITPendingBit( USART3,USART_IT_TC);
-			//USART_ClearITPendingBit( USART3,USART_IT_RXNE);
 			USART_ClearITPendingBit( USART3,USART_IT_ORE_RX);
 			USART_ClearITPendingBit( USART3,USART_IT_IDLE);
 			USART_ClearITPendingBit( USART3,USART_IT_LBD);
@@ -654,7 +631,26 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 }
 
 
+/***********************摄像头****************************/
+void USART6_IRQHandler(void)       //更新频率200Hz
+{	 
+	static uint8_t ch;
+	static uint8_t count = 0;
+	static uint8_t i = 0;
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
 
+	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
+	{
+		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
+		ch=USART_ReceiveData(USART6);
+		USART_SendData(USART6, ch);
+	}
+	
+	OSIntExit();
+}
 /*********************************WIFI*************************/
 /**************************************************************/
 

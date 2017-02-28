@@ -62,6 +62,7 @@ void ConfigTask(void)
 	UART4_Init(115200);     //蓝牙手柄
 	UART5_Init(115200);		//调试用wifi	
 	USART3_Init(115200);    //定位系统
+	USART6_Init(115200);	//摄像头
 //	TIM_Delayms(TIM5, 10000);	
 	
 	
@@ -105,7 +106,7 @@ void ConfigTask(void)
 	
 //	PosCrl(10,0,(int32_t)((20.0f + 10.0f) * 102.4f));
 //	PosCrl(11,0,(int32_t)((20.0f + 10.0f) * 141.0844f));
-	VelCrl(9, -4096*20);
+//	VelCrl(9, -4096*20);
 
 //	TIM_Delayms(TIM5, 500);
 //	GasValveControl(2,8,1);//上枪推弹

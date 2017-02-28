@@ -58,18 +58,18 @@ int pushFlag =0;
 extern int pushTimer;
 void LeftPush(void)
 {
-		pushFlag=1;
+//		pushFlag=1;
 		GasValveControl(1 , 1 , 0);//ื๓อฦลฬสี
-		if(pushTimer<=50)
-		{
+//		if(pushTimer<=50)
+//		{
 
 			GasValveControl(1 , 2 , 1);//ื๓อฦ	
-		}
-		else if(pushTimer >50)
-		{
-			GasValveControl(1 , 2 , 0);
-		}
-		if(pushTimer>=100)pushTimer=0;
+//		}
+//		else if(pushTimer >50)
+//		{
+//			GasValveControl(1 , 2 , 0);
+//		}
+//		if(pushTimer>=100)pushTimer=0;
 }
 void LeftBack(void)
 {
