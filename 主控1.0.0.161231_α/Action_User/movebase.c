@@ -65,8 +65,14 @@ void SetMotorAcc(motorAcc_t motorAcc)
   * @param  speed:三轮电机速度结构体
   * @retval None
   */
+
+extern int mv1, mv2, mv3;
+
 void ThreeWheelVelControl(wheelSpeed_t speed)
 {
+	mv1 = speed.v1;
+	mv2 = speed.v2;
+	mv3 = speed.v3;
     VelCrl(1, -speed.v1);
     VelCrl(2, -speed.v2);
     VelCrl(3, -speed.v3);
@@ -313,7 +319,7 @@ void MoveX(float velX)
 	//姿态修正
 	if(GetAngle() > 0)
 	{
-		speedOut.v1 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle()));
+		speedOut.v1 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.v3 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 	}
@@ -321,7 +327,7 @@ void MoveX(float velX)
 	{
 		speedOut.v1 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.v2 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.v3 += Vel2Pulse(0.0f      * ANGTORAD(PPOSE * GetAngle())); 
+		speedOut.v3 += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 	}
 	
 	ThreeWheelVelControl(speedOut);
@@ -344,7 +350,6 @@ void MoveTo(float targetPos, float velX, float accX)
 	static float startPos = 0.0f;
 	expData_t expData = {0.0f, 0.0f, 0.0f};
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
-	extern int mv1, mv2, mv3;
 	
 	//新运动过程初始化
 	if(formerTargetPos != targetPos)
@@ -370,9 +375,7 @@ void MoveTo(float targetPos, float velX, float accX)
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
 	
-	mv1 = speedOut.v1;
-	mv2 = speedOut.v2;
-	mv3 = speedOut.v3;
+
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);

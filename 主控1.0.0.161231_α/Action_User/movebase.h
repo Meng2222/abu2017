@@ -51,9 +51,9 @@
 */
 
 //姿态修正PID
-#define PPOSE 1.0f
+#define PPOSE 5.0f
 //速度闭环PID
-#define PVEL 10.0f
+#define PVEL 8.0f
 
 
 /*

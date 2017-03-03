@@ -172,6 +172,7 @@ uint8_t moveTimFlag = 0;
 extern int pushFlag;
 uint8_t semTimer = 0;
 int pushTimer =0;
+int clampOpenFlag = 0 , clampCounter = 0;
 void TIM2_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -184,7 +185,10 @@ void TIM2_IRQHandler(void)
 		{
 			moveTimer += 0.001f;
 		}	
-		
+		if(clampOpenFlag==1)
+		{
+			clampCounter++;
+		}
 		if(pushFlag==1)
 		{
 			pushTimer++;
@@ -440,8 +444,6 @@ void UART4_IRQHandler(void)
 						break;
 					case 3:
 						speed1[id / 5] = dataConvert.data32;
-//						VelCrl(4, -4096*dataConvert.data32);
-
 						switch(id2 % 3)
 						{
 							case 0:
@@ -459,8 +461,6 @@ void UART4_IRQHandler(void)
 						break;
 					case 4:
 						speed2[id / 5] = dataConvert.data32;
-//						VelCrl(5,  4096*dataConvert.data32);
-
 						switch(id2 % 3)
 						{
 							case 0:
@@ -630,11 +630,13 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 	OSIntExit();
 }
 
-
+u8 region[9]={0};
+u8 region_many=0;
+int state=0;
 /***********************摄像头****************************/
 void USART6_IRQHandler(void)       //更新频率200Hz
 {	 
-	static uint8_t ch;
+	static uint8_t Res;
 	static uint8_t count = 0;
 	static uint8_t i = 0;
 	OS_CPU_SR  cpu_sr;
@@ -645,8 +647,35 @@ void USART6_IRQHandler(void)       //更新频率200Hz
 	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
 	{
 		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
-		ch=USART_ReceiveData(USART6);
-		USART_SendData(USART6, ch);
+		Res=USART_ReceiveData(USART6);	
+
+			switch(state)
+			{
+				case 0:
+					if(Res=='a')
+					{
+						state=1;
+						region_many=0;
+					}
+					break;
+				case 1:
+					if(Res=='b')
+					{
+						state=0;
+					}
+					else
+					{						
+						region[region_many]=Res;
+						region_many++;
+//						PosCrl(10,0,(int32_t)((20.0f + temAngle) * 102.4f));
+//						PosCrl(11,0,(int32_t)((10.0f + temAngle) * 141.0844f));
+//						VelCrl(9, -4096*dataConvert.data32);//电机
+//						GasValveControl(2,8,1);
+//						shootFlagU = 1; 
+					}
+					break;
+			}
+		
 	}
 	
 	OSIntExit();

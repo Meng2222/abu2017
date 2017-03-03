@@ -63,7 +63,7 @@ void ConfigTask(void)
 	UART5_Init(115200);		//调试用wifi	
 	USART3_Init(115200);    //定位系统
 	USART6_Init(115200);	//摄像头
-//	TIM_Delayms(TIM5, 10000);	
+	TIM_Delayms(TIM5, 10000);	
 	
 	
 	KeyInit();
@@ -74,11 +74,11 @@ void ConfigTask(void)
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
     //电机初始化及使能
-//	elmo_Init();
-//	
-//	elmo_Enable(1);
-//	elmo_Enable(2);
-//	elmo_Enable(3);
+	elmo_Init();
+	
+	elmo_Enable(1);
+	elmo_Enable(2);
+	elmo_Enable(3);
 
 	elmo_Enable(4);
 	elmo_Enable(5);
@@ -89,9 +89,9 @@ void ConfigTask(void)
 	elmo_Enable(10);
 	elmo_Enable(11);
 	
-//	Vel_cfg(1, 100000, 100000);
-//	Vel_cfg(2, 100000, 100000);
-//	Vel_cfg(3, 100000, 100000);
+	Vel_cfg(1, 100000, 100000);
+	Vel_cfg(2, 100000, 100000);
+	Vel_cfg(3, 100000, 100000);
 
 	Vel_cfg(4,300000,300000);	//
 	Vel_cfg(5,300000,300000);	//
@@ -104,9 +104,6 @@ void ConfigTask(void)
 	Pos_cfg(10,5000,5000,30000);//航向
 	Pos_cfg(11,5000,5000,30000);//俯仰
 	
-//	PosCrl(10,0,(int32_t)((20.0f + 10.0f) * 102.4f));
-//	PosCrl(11,0,(int32_t)((20.0f + 10.0f) * 141.0844f));
-//	VelCrl(9, -4096*20);
 
 //	TIM_Delayms(TIM5, 500);
 //	GasValveControl(2,8,1);//上枪推弹
@@ -115,8 +112,8 @@ void ConfigTask(void)
 	
 	TIM_Delayms(TIM5, 50);
 	
-//	atk_8266_init();
-//	u5_printf("mv1  mv2  mv3    realmv1  realmv2  realmv3    x\r\n");
+	atk_8266_init();
+	u5_printf("mv1 mv2 mv3 realmv1 realmv2 realmv3 x y angle\r\n");
 	
 	ClampClose();
 	LeftBack();
@@ -124,10 +121,10 @@ void ConfigTask(void)
 	ClampReset();
 
 
-
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
+
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -142,7 +139,7 @@ extern float position[4];
 static uint16_t timeCounter = 0;
 static uint16_t timeCounterL = 0;
 static uint16_t timeCounterR = 0;
-static uint16_t flagL = 0;
+static uint16_t flagL = 1;
 static uint16_t flagR = 0;
 extern int shootFlagL , shootFlagR , shootFlagU;
 static int shootCounterL = 0 , shootCounterR = 0 , shootCounterU = 0;
@@ -152,6 +149,7 @@ extern uint8_t moveTimFlag;
 int expSpeed = 0;
 int expSpeedp = 0;
 int mv1 = 0, mv2 = 0, mv3 = 0;
+static int loadFlag = 0; 
 typedef enum
 {
 	getReady,
@@ -179,6 +177,7 @@ void WalkTask(void)
 			GasValveControl(1,5,0);
 			shootCounterL =0;
 			shootFlagL=0;
+			loadFlag = 1;
 		}
 		if(shootFlagR ==1 )shootCounterR++;
 		if(shootCounterR>=100)
@@ -194,38 +193,55 @@ void WalkTask(void)
 			shootFlagU=0;
 		}
 		
-
+		if(loadFlag==1)
+		{
+			if (timeCounterL <= 150&&timeCounterL>=70)
+			{
+				LeftPush();
+			}
+			else if (timeCounterL > 150)
+			{
+				LeftBack();
+			}
+			timeCounterL++;
+			if (timeCounterL >= 200)
+			{
+				timeCounterL = 0;
+				loadFlag = 0;
+			}
+		}
 
 		switch (status)
 		{
 			//准备阶段
 			case getReady:
 				
-//				if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
+				if (PHOTOSENSORLEFTUP)
+				{
+//					ClampOpen();
+					status++;
+				}
+//				if (PHOTOSENSORRIGHTUP)
 //				{
-//					status++;
+//					flagL = 1;
 //				}
-				if (PHOTOSENSORRIGHTUP)
-				{
-					flagL = 1;
-				}
-				if (flagL == 1)
-				{
-					if (timeCounterL <= 80)
-					{
-						LeftPush();
-					}
-					else if (timeCounterL > 80)
-					{
-						LeftBack();
-					}
-					timeCounterL++;
-					if (timeCounterL >= 200)
-					{
-						timeCounterL = 0;
-						flagL = 0;
-					}
-				}
+//				if (flagL == 1)
+//				{
+//					if (timeCounterL <= 80)
+//					{
+//						LeftPush();
+//					}
+//					else if (timeCounterL > 80)
+//					{
+//						LeftBack();
+//					}
+//					timeCounterL++;
+//					if (timeCounterL >= 200)
+//					{
+//						timeCounterL = 0;
+//						flagL = 0;
+//					}
+//				}
 				
 //				if (PHOTOSENSORRIGHTUP)
 //				{
@@ -254,13 +270,13 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 
-			    MoveTo(-13079.29f, -3000.0f, 1200.0f);
+			    MoveTo(-12776.96f, -1500.0f, 1200.0f);
 
-				if (GetPosX() <= -12900.0f && PHOTOSENSORRIGHT && PHOTOSENSORLEFT)
+				if (GetPosX() <= -12700.0f && PHOTOSENSORRIGHT && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
 					{
-						amendX = -13079.29f - GetPosX();
+						amendX = -12776.96f - GetPosX();
 						amendXFlag = 1;
 					}
 					moveTimFlag = 0;
@@ -273,7 +289,7 @@ void WalkTask(void)
 			//停车
 			case stopRobot:
 				MoveX(-ENDSPEED);
-				if (GetPosX() <= -13146.58f)
+				if (GetPosX() <= -13026.96f)
 				{
 					BEEP_OFF;
 					status++;
@@ -283,23 +299,22 @@ void WalkTask(void)
 			//装载飞盘
 			case load:
 				LockWheel();
-//                ClampClose();
-				timeCounter++;
-			    
+                ClampClose();
+				timeCounter++;			    
 			    if (timeCounter >= 100)
 				{
-//					ClampRotate();
+					ClampRotate();
 					timeCounter = 0;
 //					if (KEYSWITCH)
 //					{
-						status++;
+//						status++;
 //					}
 				}
 				break;
 			
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveTo(/*-6573.29f*/0.0f, 3000.0f, 1200.0f);
+                MoveTo(-6459.14f, 1500.0f, 1200.0f);
 			
 //				if (flagL == 1)
 //				{
@@ -335,7 +350,7 @@ void WalkTask(void)
 //					
 //				}
 				
-			    if (GetPosX() >= /*-6573.29f*/0.0f)
+			    if (GetPosX() >= -6459.14f)
 				{
 					LockWheel();
 					moveTimFlag = 0;
@@ -345,26 +360,28 @@ void WalkTask(void)
 			
 			//发射飞盘
 			case launch:
-				if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
-				{
-					status = goToLoadingArea;
-				}
-//				if (flagL == 1)
+				LockWheel();
+//				if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
 //				{
-//					if (timeCounterL == 3)
-//					{
-//						LeftPush();
-//					}
-//					if (timeCounterL == 60)
-//					{
-//						LeftBack();
-//					}
-//					timeCounterL++;
-//					if (timeCounterL >= 200)
-//					{
-//						timeCounterL = 0;
-//					}
+//					status = goToLoadingArea;
 //				}
+				if (flagL == 1)
+				{
+					if (timeCounterL == 3)
+					{
+						LeftPush();
+					}
+					if (timeCounterL == 60)
+					{
+						LeftBack();
+					}
+					timeCounterL++;
+					if (timeCounterL >= 200)
+					{
+						timeCounterL = 0;
+						flagL=0;
+					}
+				}
 //				if (flagR == 1)
 //				{
 //					if (timeCounterR == 3)
@@ -379,20 +396,25 @@ void WalkTask(void)
 //					if (timeCounterR >= 200)
 //					{
 //						timeCounterR = 0;
-//					}
-//					
+//					}				
 //				}
 				break;
 			
 			default:
 				break;		
 		}
-//		ReadActualVel(1);
-//		ReadActualVel(2);
-//		ReadActualVel(3);
-//		
+		ReadActualVel(1);
+		ReadActualVel(2);
+		ReadActualVel(3);
+		if(GetPosX()<=-13200.0f)
+		{
+			while(1)
+			{
+				LockWheel();
+			}
+		}
 //        //蓝牙 or wifi调试输出
-//		u5_printf("%d	%d	%d	%d	%d	%d	%d	%d	%d\r\n", mv1, mv2, mv3,
-//            	  (int)GetMotorVel(1), (int)GetMotorVel(2), (int)GetMotorVel(3), (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
+		u5_printf("%d %d %d %d %d %d %d %d %d %d %d %d\r\n", mv1, mv2, mv3,
+            	  (int)GetMotorVel(1), (int)GetMotorVel(2), (int)GetMotorVel(3), (int)GetPosX(),(int)GetPosY(),(int)GetAngle(),PHOTOSENSORLEFT,PHOTOSENSORRIGHT,status);
 	} 
 }	

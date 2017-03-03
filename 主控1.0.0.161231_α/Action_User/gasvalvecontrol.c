@@ -28,19 +28,33 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 	while ((CAN_TransmitStatus(CAN2, mbox) != CAN_TxStatus_Ok));
 }
 //夹子开
+extern int clampOpenFlag , clampCounter;
 void ClampOpen(void)
 {
 	if (!KEYSWITCH)
 	{
 		GasValveControl(1 , 6 , 0);
-		GasValveControl(1 , 5 , 1);
+		clampOpenFlag=1;
+		if(clampCounter<=20)
+		{
+			GasValveControl(2 , 12 , 1);
+		}
+		else if(clampCounter<=100)
+		{
+			GasValveControl(2 , 12 , 0);		
+		}
+		else
+		{
+			clampCounter=0;
+		}
 	}
 }
 //夹子关
 void ClampClose(void)
 {
+	clampOpenFlag = 0 ;
 	GasValveControl(1 , 6 , 1);
-	GasValveControl(1 , 5 , 0);
+	GasValveControl(2 , 12 , 0);
 }
 //夹子翻
 void ClampRotate(void)
