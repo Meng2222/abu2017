@@ -70,12 +70,16 @@ extern int mv1, mv2, mv3;
 
 void ThreeWheelVelControl(wheelSpeed_t speed)
 {
-	mv1 = speed.v1;
-	mv2 = speed.v2;
-	mv3 = speed.v3;
+	  mv1 = speed.v1;
+	  mv2 = speed.v2;
+	  mv3 = speed.v3;
     VelCrl(1, -speed.v1);
     VelCrl(2, -speed.v2);
     VelCrl(3, -speed.v3);
+//	VelCrl(1, 0);
+//    VelCrl(2, 0);
+//    VelCrl(3, 0);
+
 }
 
 /*
@@ -252,7 +256,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}
 	
 	velX = outputSpeed;
-	velY = fabs(0.07f * velX) + 100.0f;
+	velY = fabs(0.07f * velX) /*+ 100.0f*/;
 	
 	//速度分配至各轮
 	pSpeedOut->v1 = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);

@@ -21,6 +21,7 @@
 ===============================================================
 */
 OS_EVENT *PeriodSem;
+extern float gCurrent[3];
 
 void App_Task()
 {
@@ -109,11 +110,12 @@ void ConfigTask(void)
 //	GasValveControl(2,8,1);//上枪推弹
 //	TIM_Delayms(TIM5, 500);
 //	GasValveControl(2,8,0);//上枪
-	
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 	
+	
 	atk_8266_init();
-	u5_printf("mv1 mv2 mv3 realmv1 realmv2 realmv3 x y angle\r\n");
+	u5_printf("I1    I2    I3    Y\r\n");
 	
 	ClampClose();
 	LeftBack();
@@ -171,6 +173,7 @@ void WalkTask(void)
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
+		GPIO_SetBits(GPIOC, GPIO_Pin_9);
 		if(shootFlagL ==1 )shootCounterL++;
 		if(shootCounterL>=100)
 		{
@@ -214,11 +217,10 @@ void WalkTask(void)
 		switch (status)
 		{
 			//准备阶段
-			case getReady:
-				
-				if (PHOTOSENSORLEFTUP)
+			case getReady:				
+				if (PHOTOSENSORRIGHT)
 				{
-//					ClampOpen();
+					ClampOpen();
 					status++;
 				}
 //				if (PHOTOSENSORRIGHTUP)
@@ -270,9 +272,8 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 
-			    MoveTo(-12776.96f, -1500.0f, 1200.0f);
-
-				if (GetPosX() <= -12700.0f && PHOTOSENSORRIGHT && PHOTOSENSORLEFT)
+			    MoveTo(-12776.96f, -1500.0f, 2400.0f);
+				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFTUP && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
 					{
@@ -403,18 +404,24 @@ void WalkTask(void)
 			default:
 				break;		
 		}
-		ReadActualVel(1);
-		ReadActualVel(2);
-		ReadActualVel(3);
-		if(GetPosX()<=-13200.0f)
-		{
-			while(1)
-			{
-				LockWheel();
-			}
-		}
+//		ReadActualVel(1);
+//		ReadActualVel(2);
+//		ReadActualVel(3);
+		ReadActualCurrent(1);
+		ReadActualCurrent(2);
+		ReadActualCurrent(3);
+		
+//		if(GetPosX()<=-13200.0f)
+//		{
+//			while(1)
+//			{
+//				LockWheel();
+//			}
+//		}
 //        //蓝牙 or wifi调试输出
-		u5_printf("%d %d %d %d %d %d %d %d %d %d %d %d\r\n", mv1, mv2, mv3,
-            	  (int)GetMotorVel(1), (int)GetMotorVel(2), (int)GetMotorVel(3), (int)GetPosX(),(int)GetPosY(),(int)GetAngle(),PHOTOSENSORLEFT,PHOTOSENSORRIGHT,status);
+		//电流单位为0.1A，在CAN接收中断中处理过
+		u5_printf("%d    %d    %d    %d\r\n", (int)gCurrent[0], (int)gCurrent[1], (int)gCurrent[2],(int)GetPosY());
+//		u5_printf("%d    %d    %d\r\n", (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
+		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 	} 
 }	

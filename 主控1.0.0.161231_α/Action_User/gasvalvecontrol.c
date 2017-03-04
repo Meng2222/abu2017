@@ -34,6 +34,7 @@ void ClampOpen(void)
 	if (!KEYSWITCH)
 	{
 		GasValveControl(1 , 6 , 0);
+//		GasValveControl(2 , 12 , 1);
 		clampOpenFlag=1;
 		if(clampCounter<=20)
 		{

@@ -73,7 +73,7 @@ int16_t vell_right,vell_left;
 float speed;
 float Speed[3];
 float position[4];
-
+float gCurrent[3] = {0.0f};
 void CAN1_RX0_IRQHandler(void)
 {
 	
@@ -107,6 +107,23 @@ void CAN1_RX0_IRQHandler(void)
 				Speed[2] = msg.data32[1];
 			}
 			SetMotorVel(Speed);
+		}
+		if(msg.data32[0] == 0x80005149)
+		{
+			if(StdId == 0x281) 
+			{
+				//将单位转化为0.1A
+				gCurrent[0] = msg.dataf[1]*10.0f;
+			}
+			if(StdId == 0x282) 
+			{
+				gCurrent[1] = msg.dataf[1]*10.0f;	
+			}
+			if(StdId == 0x283) 
+			{
+				gCurrent[2] = msg.dataf[1]*10.0f;
+			}
+			//SetMotorVel(Speed);
 		}
 	}
 	if(StdId==0x286 || StdId==0x287 || StdId==0x288 ||  StdId==0x289)
