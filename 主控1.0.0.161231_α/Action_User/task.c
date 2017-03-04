@@ -1,4 +1,4 @@
-#include <includes.h>
+ï»¿#include <includes.h>
 #include <app_cfg.h>
 #include "misc.h"
 #include "stm32f4xx_gpio.h"
@@ -17,7 +17,7 @@
 
 /*
 ===============================================================
-                        ĞÅºÅÁ¿¶¨Òå
+                        ä¿¡å·é‡å®šä¹‰
 ===============================================================
 */
 OS_EVENT *PeriodSem;
@@ -26,13 +26,13 @@ extern float gCurrent[3];
 void App_Task()
 {
 	CPU_INT08U  os_err;
-	os_err = os_err;          /*·ÀÖ¹¾¯¸æ...*/
+	os_err = os_err;          /*é˜²æ­¢è­¦å‘Š...*/
 	
-	/*´´½¨ĞÅºÅÁ¿*/
+	/*åˆ›å»ºä¿¡å·é‡*/
     PeriodSem				=	OSSemCreate(0);
 
-    /*´´½¨ÈÎÎñ*/	
-	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*³õÊ¼»¯ÈÎÎñ*/
+    /*åˆ›å»ºä»»åŠ¡*/	
+	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*åˆå§‹åŒ–ä»»åŠ¡*/
 	                      	(void          * ) 0,							
 													(OS_STK        * )&App_ConfigStk[Config_TASK_START_STK_SIZE-1],		
 													(INT8U           ) Config_TASK_START_PRIO  );	
@@ -46,7 +46,7 @@ void App_Task()
 
 /*
 ===============================================================
-                        ³õÊ¼»¯ÈÎÎñ
+                        åˆå§‹åŒ–ä»»åŠ¡
 ===============================================================
 */
 void ConfigTask(void)
@@ -55,16 +55,16 @@ void ConfigTask(void)
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	
-	//¶¨Ê±Æ÷³õÊ¼»¯
-	TIM_Init(TIM2, 99, 839, 0, 0);   //1msÖ÷¶¨Ê±Æ÷
+	//å®šæ—¶å™¨åˆå§‹åŒ–
+	TIM_Init(TIM2, 99, 839, 0, 0);   //1msä¸»å®šæ—¶å™¨
 	TIM_Delayms(TIM5, 1500);	
 	
-	//´®¿Ú³õÊ¼»¯
-	UART4_Init(115200);     //À¶ÑÀÊÖ±ú
-	UART5_Init(115200);		//µ÷ÊÔÓÃwifi	
-	USART3_Init(115200);    //¶¨Î»ÏµÍ³
-	USART6_Init(115200);	//ÉãÏñÍ·
-	TIM_Delayms(TIM5, 10000);	
+	//ä¸²å£åˆå§‹åŒ–
+	UART4_Init(115200);     //è“ç‰™æ‰‹æŸ„
+	UART5_Init(115200);		//è°ƒè¯•ç”¨wifi	
+	USART3_Init(115200);    //å®šä½ç³»ç»Ÿ
+	USART6_Init(115200);	//æ‘„åƒå¤´
+//	TIM_Delayms(TIM5, 10000);	
 	
 	
 	KeyInit();
@@ -74,42 +74,42 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
-    //µç»ú³õÊ¼»¯¼°Ê¹ÄÜ
-	elmo_Init();
-	
-	elmo_Enable(1);
-	elmo_Enable(2);
-	elmo_Enable(3);
+//    //ç”µæœºåˆå§‹åŒ–åŠä½¿èƒ½
+//	elmo_Init();
+//	
+//	elmo_Enable(1);
+//	elmo_Enable(2);
+//	elmo_Enable(3);
 
-	elmo_Enable(4);
-	elmo_Enable(5);
-	elmo_Enable(6);
-	elmo_Enable(7);
-	elmo_Enable(8);
-	elmo_Enable(9);
-	elmo_Enable(10);
-	elmo_Enable(11);
-	
-//	Vel_cfg(1, 100000, 100000);
-//	Vel_cfg(2, 100000, 100000);
-//	Vel_cfg(3, 100000, 100000);
+//	elmo_Enable(4);
+//	elmo_Enable(5);
+//	elmo_Enable(6);
+//	elmo_Enable(7);
+//	elmo_Enable(8);
+//	elmo_Enable(9);
+//	elmo_Enable(10);
+//	elmo_Enable(11);
+//	
+////	Vel_cfg(1, 100000, 100000);
+////	Vel_cfg(2, 100000, 100000);
+////	Vel_cfg(3, 100000, 100000);
 
-	Vel_cfg(4,300000,300000);	//
-	Vel_cfg(5,300000,300000);	//
+//	Vel_cfg(4,300000,300000);	//
+//	Vel_cfg(5,300000,300000);	//
 
-	Pos_cfg(6,5000,5000,30000);//¸©Ñö
-	Pos_cfg(7,5000,5000,30000);//·­¹ö
-	Pos_cfg(8,5000,5000,30000);//º½Ïò
-	
-	Vel_cfg(9,300000,300000);
-	Pos_cfg(10,5000,5000,30000);//º½Ïò
-	Pos_cfg(11,5000,5000,30000);//¸©Ñö
+//	Pos_cfg(6,5000,5000,30000);//ä¿¯ä»°
+//	Pos_cfg(7,5000,5000,30000);//ç¿»æ»š
+//	Pos_cfg(8,5000,5000,30000);//èˆªå‘
+//	
+//	Vel_cfg(9,300000,300000);
+//	Pos_cfg(10,5000,5000,30000);//èˆªå‘
+//	Pos_cfg(11,5000,5000,30000);//ä¿¯ä»°
 	
 
 //	TIM_Delayms(TIM5, 500);
-//	GasValveControl(2,8,1);//ÉÏÇ¹ÍÆµ¯
+//	GasValveControl(2,8,1);//ä¸Šæªæ¨å¼¹
 //	TIM_Delayms(TIM5, 500);
-//	GasValveControl(2,8,0);//ÉÏÇ¹
+//	GasValveControl(2,8,0);//ä¸Šæª
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 	
@@ -133,7 +133,7 @@ void ConfigTask(void)
 
 /*
 ===============================================================
-                        ĞĞ×ßÒÆ¶¯ÈÎÎñ
+                        è¡Œèµ°ç§»åŠ¨ä»»åŠ¡
 ===============================================================
 */
 extern float speed;
@@ -196,54 +196,54 @@ void WalkTask(void)
 			shootFlagU=0;
 		}
 		
-		if(loadFlag==1)
-		{
-			if (timeCounterL <= 150&&timeCounterL>=70)
-			{
-				LeftPush();
-			}
-			else if (timeCounterL > 150)
-			{
-				LeftBack();
-			}
-			timeCounterL++;
-			if (timeCounterL >= 200)
-			{
-				timeCounterL = 0;
-				loadFlag = 0;
-			}
-		}
+//		if(loadFlag==1)
+//		{
+//			if (timeCounterL <= 150&&timeCounterL>=70)
+//			{
+//				LeftPush();
+//			}
+//			else if (timeCounterL > 150)
+//			{
+//				LeftBack();
+//			}
+//			timeCounterL++;
+//			if (timeCounterL >= 200)
+//			{
+//				timeCounterL = 0;
+//				loadFlag = 0;
+//			}
+//		}
 
 		switch (status)
 		{
-			//×¼±¸½×¶Î
+			//å‡†å¤‡é˜¶æ®µ
 			case getReady:				
+//				if (PHOTOSENSORRIGHT)
+//				{
+//					ClampOpen();
+//					status++;
+//				}
 				if (PHOTOSENSORRIGHT)
 				{
-					ClampOpen();
-					status++;
+					flagL = 1;
 				}
-//				if (PHOTOSENSORRIGHTUP)
-//				{
-//					flagL = 1;
-//				}
-//				if (flagL == 1)
-//				{
-//					if (timeCounterL <= 80)
-//					{
-//						LeftPush();
-//					}
-//					else if (timeCounterL > 80)
-//					{
-//						LeftBack();
-//					}
-//					timeCounterL++;
-//					if (timeCounterL >= 200)
-//					{
-//						timeCounterL = 0;
-//						flagL = 0;
-//					}
-//				}
+				if (flagL == 1)
+				{
+					if (timeCounterL <= 80)
+					{
+						LeftPush();
+					}
+					else if (timeCounterL > 80)
+					{
+						LeftBack();
+					}
+					timeCounterL++;
+					if (timeCounterL >= 200)
+					{
+						timeCounterL = 0;
+						flagL = 0;
+					}
+				}
 				
 //				if (PHOTOSENSORRIGHTUP)
 //				{
@@ -269,7 +269,7 @@ void WalkTask(void)
 //				}
 			   
 				break;
-			//´Ó³ö·¢Çø×ßÏò×°ÔØÇø
+			//ä»å‡ºå‘åŒºèµ°å‘è£…è½½åŒº
 			case goToLoadingArea:
 
 			    MoveTo(-12776.96f, -2000.0f, 2400.0f);
@@ -287,7 +287,7 @@ void WalkTask(void)
 
 				break;
 			
-			//Í£³µ
+			//åœè½¦
 			case stopRobot:
 				MoveX(-ENDSPEED);
 				if (GetPosX() <= -13026.96f)
@@ -297,7 +297,7 @@ void WalkTask(void)
 				}	
 				break;
 				
-			//×°ÔØ·ÉÅÌ
+			//è£…è½½é£ç›˜
 			case load:
 				LockWheel();
                 ClampClose();
@@ -313,7 +313,7 @@ void WalkTask(void)
 				}
 				break;
 			
-            //´Ó×°ÔØÇø×ßÏò·¢ÉäÇø				
+            //ä»è£…è½½åŒºèµ°å‘å‘å°„åŒº				
 			case goToLaunchingArea:
                 MoveTo(-6459.14f, 2000.0f, 1200.0f);
 			
@@ -359,7 +359,7 @@ void WalkTask(void)
 				}
 				break;
 			
-			//·¢Éä·ÉÅÌ
+			//å‘å°„é£ç›˜
 			case launch:
 				LockWheel();
 //				if (PHOTOSENSORLEFTUP || PHOTOSENSORRIGHTUP)
@@ -418,8 +418,8 @@ void WalkTask(void)
 //				LockWheel();
 //			}
 //		}
-//        //À¶ÑÀ or wifiµ÷ÊÔÊä³ö
-		//µçÁ÷µ¥Î»Îª0.1A£¬ÔÚCAN½ÓÊÕÖĞ¶ÏÖĞ´¦Àí¹ı
+//        //è“ç‰™ or wifiè°ƒè¯•è¾“å‡º
+		//ç”µæµå•ä½ä¸º0.1Aï¼Œåœ¨CANæ¥æ”¶ä¸­æ–­ä¸­å¤„ç†è¿‡
 //		u5_printf("%d    %d    %d    %d\r\n", (int)gCurrent[0], (int)gCurrent[1], (int)gCurrent[2],(int)GetPosY());
 //		u5_printf("%d    %d    %d\r\n", (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
