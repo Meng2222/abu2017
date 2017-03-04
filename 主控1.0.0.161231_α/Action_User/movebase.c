@@ -56,8 +56,8 @@ motorAcc_t CalcMotorAcc(float carAcc, float angle)
 void SetMotorAcc(motorAcc_t motorAcc)
 {
 	Vel_cfg(1,motorAcc.wheel1,motorAcc.wheel1);
-    Vel_cfg(2,motorAcc.wheel2,motorAcc.wheel2);
-	Vel_cfg(3,motorAcc.wheel3,motorAcc.wheel3);
+    Vel_cfg(3,motorAcc.wheel2,motorAcc.wheel2);
+	Vel_cfg(2,motorAcc.wheel3,motorAcc.wheel3);
 }
 
 /**
@@ -74,8 +74,8 @@ void ThreeWheelVelControl(wheelSpeed_t speed)
 	  mv2 = speed.v2;
 	  mv3 = speed.v3;
     VelCrl(1, -speed.v1);
-    VelCrl(2, -speed.v2);
-    VelCrl(3, -speed.v3);
+    VelCrl(3, -speed.v2);
+    VelCrl(2, -speed.v3);
 //	VelCrl(1, 0);
 //    VelCrl(2, 0);
 //    VelCrl(3, 0);

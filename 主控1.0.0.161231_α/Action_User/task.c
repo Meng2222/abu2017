@@ -90,9 +90,9 @@ void ConfigTask(void)
 	elmo_Enable(10);
 	elmo_Enable(11);
 	
-	Vel_cfg(1, 100000, 100000);
-	Vel_cfg(2, 100000, 100000);
-	Vel_cfg(3, 100000, 100000);
+//	Vel_cfg(1, 100000, 100000);
+//	Vel_cfg(2, 100000, 100000);
+//	Vel_cfg(3, 100000, 100000);
 
 	Vel_cfg(4,300000,300000);	//
 	Vel_cfg(5,300000,300000);	//
@@ -114,8 +114,8 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 50);
 	
 	
-	atk_8266_init();
-	u5_printf("I1    I2    I3    Y\r\n");
+//	atk_8266_init();
+//	u5_printf("I1    I2    I3    Y\r\n");
 	
 	ClampClose();
 	LeftBack();
@@ -272,7 +272,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 
-			    MoveTo(-12776.96f, -1500.0f, 2400.0f);
+			    MoveTo(-12776.96f, -2000.0f, 2400.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFTUP && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -304,18 +304,18 @@ void WalkTask(void)
 				timeCounter++;			    
 			    if (timeCounter >= 100)
 				{
-					ClampRotate();
+//					ClampRotate();
 					timeCounter = 0;
 //					if (KEYSWITCH)
 //					{
-//						status++;
+						status++;
 //					}
 				}
 				break;
 			
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveTo(-6459.14f, 1500.0f, 1200.0f);
+                MoveTo(-6459.14f, 2000.0f, 1200.0f);
 			
 //				if (flagL == 1)
 //				{
@@ -366,23 +366,23 @@ void WalkTask(void)
 //				{
 //					status = goToLoadingArea;
 //				}
-				if (flagL == 1)
-				{
-					if (timeCounterL == 3)
-					{
-						LeftPush();
-					}
-					if (timeCounterL == 60)
-					{
-						LeftBack();
-					}
-					timeCounterL++;
-					if (timeCounterL >= 200)
-					{
-						timeCounterL = 0;
-						flagL=0;
-					}
-				}
+//				if (flagL == 1)
+//				{
+//					if (timeCounterL == 3)
+//					{
+//						LeftPush();
+//					}
+//					if (timeCounterL == 60)
+//					{
+//						LeftBack();
+//					}
+//					timeCounterL++;
+//					if (timeCounterL >= 200)
+//					{
+//						timeCounterL = 0;
+//						flagL=0;
+//					}
+//				}
 //				if (flagR == 1)
 //				{
 //					if (timeCounterR == 3)
@@ -420,7 +420,7 @@ void WalkTask(void)
 //		}
 //        //蓝牙 or wifi调试输出
 		//电流单位为0.1A，在CAN接收中断中处理过
-		u5_printf("%d    %d    %d    %d\r\n", (int)gCurrent[0], (int)gCurrent[1], (int)gCurrent[2],(int)GetPosY());
+//		u5_printf("%d    %d    %d    %d\r\n", (int)gCurrent[0], (int)gCurrent[1], (int)gCurrent[2],(int)GetPosY());
 //		u5_printf("%d    %d    %d\r\n", (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 	} 
