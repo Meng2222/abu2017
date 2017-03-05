@@ -78,7 +78,7 @@ void LeftPush(void)
 //		if(pushTimer<=50)
 //		{
 
-			GasValveControl(1 , 2 , 1);//×óÍÆ	
+		GasValveControl(1 , 2 , 1);//×óÍÆ	
 //		}
 //		else if(pushTimer >50)
 //		{

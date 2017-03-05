@@ -124,10 +124,10 @@ float GetVel(void)
                          motor vel
 ===============================================================
 */
-static float motorVel[3] = {0.0f, 0.0f, 0.0f};
+static uint8_t motorVel[3] = {53, 53, 53};
 static float motorVelRate = 0.0f, motorVelAng = 0.0f;
 
-void SetMotorVel(float *value)
+void SetMotorVel(uint8_t *value)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -136,7 +136,7 @@ void SetMotorVel(float *value)
 }
 
 //三轮各自的脉冲速度
-float GetMotorVel(int motorNum)
+uint8_t GetMotorVel(int motorNum)
 {
 	return motorVel[motorNum - 1];
 }

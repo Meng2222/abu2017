@@ -35,8 +35,8 @@ float GetAngle(void);
 void UpdateVel(void);
 float GetVel(void);
 
-void SetMotorVel(float *value);
-float GetMotorVel(int motorNum);
+void SetMotorVel(uint8_t *value);
+uint8_t GetMotorVel(int motorNum);
 float GetMotorVelRate(void);
 float GetMotorVelAng(void);
 

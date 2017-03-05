@@ -1,4 +1,4 @@
-﻿#include <includes.h>
+#include <includes.h>
 #include <app_cfg.h>
 #include "misc.h"
 #include "stm32f4xx_gpio.h"
@@ -9,6 +9,7 @@
 #include "can.h"
 #include "elmo.h"
 #include "action_math.h"
+#include "stm32f4xx_it.h"
 #include "GET_SET.h"
 #include "stm32f4xx_usart.h"
 #include "gasvalvecontrol.h"
@@ -21,8 +22,10 @@
 ===============================================================
 */
 OS_EVENT *PeriodSem;
-extern float gCurrent[3];
-
+extern uint8_t gCurrent[3];
+extern uint8_t Speed[3];
+extern uint8_t gTemperature[3];
+extern SendVel sendVel1,sendVel2,sendVel3;
 void App_Task()
 {
 	CPU_INT08U  os_err;
@@ -51,6 +54,8 @@ void App_Task()
 */
 void ConfigTask(void)
 {	
+	uint8_t aaaa=33;
+	int PowerResetFlag = 0 , LowResetFlag = 0;
 	CPU_INT08U  os_err;	
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
@@ -90,9 +95,9 @@ void ConfigTask(void)
 //	elmo_Enable(10);
 //	elmo_Enable(11);
 //	
-////	Vel_cfg(1, 100000, 100000);
-////	Vel_cfg(2, 100000, 100000);
-////	Vel_cfg(3, 100000, 100000);
+//	Vel_cfg(1, 100000, 100000);
+//	Vel_cfg(2, 100000, 100000);
+//	Vel_cfg(3, 100000, 100000);
 
 //	Vel_cfg(4,300000,300000);	//
 //	Vel_cfg(5,300000,300000);	//
@@ -115,8 +120,17 @@ void ConfigTask(void)
 	
 	
 //	atk_8266_init();
-//	u5_printf("I1    I2    I3    Y\r\n");
-	
+//	u5_printf("I1    I2    I3\r\n");
+//	USART_SendData(UART5,gCurrent[0]);
+//	USART_SendData(UART5,gCurrent[1]);
+//	USART_SendData(UART5,gCurrent[2]);
+//	USART_SendData(UART5,aaaa);
+//	USART_SendData(UART5, 0x0d);	   
+//	USART_SendData(UART5, 0x0a);	   
+
+////	USART_OUT(UART5,"%s %s %s", gCurrent[0], gCurrent[1], gCurrent[2]);
+////	u5_printf("%c    %c    %c\r\n", gCurrent[0], gCurrent[1], gCurrent[2]);
+//	u5_printf("I1    I2    I3\r\n");
 	ClampClose();
 	LeftBack();
 	RightBack();
@@ -126,7 +140,10 @@ void ConfigTask(void)
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
-
+	PowerResetFlag = RCC_GetFlagStatus(RCC_FLAG_PORRST);
+	LowResetFlag = RCC_GetFlagStatus(RCC_FLAG_BORRST);
+//	if(PowerResetFlag||LowResetFlag==1)BEEP_ON;
+	RCC_ClearFlag();
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -151,7 +168,7 @@ extern uint8_t moveTimFlag;
 int expSpeed = 0;
 int expSpeedp = 0;
 int mv1 = 0, mv2 = 0, mv3 = 0;
-static int loadFlag = 0; 
+static int loadFlag = 0 , sendFlag = 0; 
 typedef enum
 {
 	getReady,
@@ -223,22 +240,25 @@ void WalkTask(void)
 //					ClampOpen();
 //					status++;
 //				}
+//				VelCrl(1, 5000);
+//				VelCrl(2, 5000);
+//				VelCrl(3, 5000);
 				if (PHOTOSENSORRIGHT)
 				{
 					flagL = 1;
 				}
 				if (flagL == 1)
 				{
-					if (timeCounterL <= 80)
+					if (timeCounterL <= 40)
 					{
 						LeftPush();
 					}
-					else if (timeCounterL > 80)
+					else if (timeCounterL > 40)
 					{
 						LeftBack();
 					}
 					timeCounterL++;
-					if (timeCounterL >= 200)
+					if (timeCounterL >= 80)
 					{
 						timeCounterL = 0;
 						flagL = 0;
@@ -304,12 +324,12 @@ void WalkTask(void)
 				timeCounter++;			    
 			    if (timeCounter >= 100)
 				{
-//					ClampRotate();
+					ClampRotate();
 					timeCounter = 0;
-//					if (KEYSWITCH)
-//					{
+					if (KEYSWITCH)
+					{
 						status++;
-//					}
+					}
 				}
 				break;
 			
@@ -317,39 +337,41 @@ void WalkTask(void)
 			case goToLaunchingArea:
                 MoveTo(-6459.14f, 2000.0f, 1200.0f);
 			
-//				if (flagL == 1)
-//				{
-//					if (timeCounterL == 3)
-//					{
-//						LeftPush();
-//					}
-//					if (timeCounterL == 60)
-//					{
-//						LeftBack();
-//					}
-//					timeCounterL++;
-//					if (timeCounterL >= 200)
-//					{
-//						timeCounterL = 0;
-//					}
-//				}
-//				if (flagR == 1)
-//				{
-//					if (timeCounterR == 3)
-//					{
-//						RightPush();
-//					}
-//					if (timeCounterR == 60)
-//					{
-//						RightBack();
-//					}
-//					timeCounterR++;
-//					if (timeCounterR >= 200)
-//					{
-//						timeCounterR = 0;
-//					}
-//					
-//				}
+				if (flagL == 1)
+				{
+					if (timeCounterL == 3)
+					{
+						LeftPush();
+					}
+					if (timeCounterL == 60)
+					{
+						LeftBack();
+					}
+					timeCounterL++;
+					if (timeCounterL >= 200)
+					{
+						timeCounterL = 0;
+						flagL=0;
+					}
+				}
+				if (flagR == 1)
+				{
+					if (timeCounterR == 3)
+					{
+						RightPush();
+					}
+					if (timeCounterR == 60)
+					{
+						RightBack();
+					}
+					timeCounterR++;
+					if (timeCounterR >= 200)
+					{
+						timeCounterR = 0;
+						flagR=0;
+					}
+					
+				}
 				
 			    if (GetPosX() >= -6459.14f)
 				{
@@ -404,13 +426,17 @@ void WalkTask(void)
 			default:
 				break;		
 		}
+		
 //		ReadActualVel(1);
 //		ReadActualVel(2);
 //		ReadActualVel(3);
-		ReadActualCurrent(1);
-		ReadActualCurrent(2);
-		ReadActualCurrent(3);
-		
+//		ReadActualCurrent(1);
+//		ReadActualCurrent(2);
+//		ReadActualCurrent(3);
+//		ReadActualTemperature(1);
+//		ReadActualTemperature(2);
+//		ReadActualTemperature(3);
+
 //		if(GetPosX()<=-13200.0f)
 //		{
 //			while(1)
@@ -420,8 +446,23 @@ void WalkTask(void)
 //		}
 //        //蓝牙 or wifi调试输出
 		//电流单位为0.1A，在CAN接收中断中处理过
-//		u5_printf("%d    %d    %d    %d\r\n", (int)gCurrent[0], (int)gCurrent[1], (int)gCurrent[2],(int)GetPosY());
-//		u5_printf("%d    %d    %d\r\n", (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
+		if(status == getReady)
+		{
+			if(sendFlag==0)
+			{
+				u5_printf("%c %c %c %c%c %c%c %c%c %c %c %c\r\n", gCurrent[0], gCurrent[1], gCurrent[2],
+																  sendVel1.vel[0],sendVel1.vel[1],sendVel2.vel[0],sendVel2.vel[1],sendVel3.vel[0],sendVel3.vel[1],
+																  gTemperature[0],gTemperature[1],gTemperature[2]);
+				sendFlag =1;
+			}
+		}
+		else
+		{
+				u5_printf("%c %c %c %c%c %c%c %c%c %c %c %c\r\n", gCurrent[0], gCurrent[1], gCurrent[2], 
+																  sendVel1.vel[0],sendVel1.vel[1],sendVel2.vel[0],sendVel2.vel[1],sendVel3.vel[0],sendVel3.vel[1],
+																  gTemperature[0],gTemperature[1],gTemperature[2]);
+		}
+		//		u5_printf("%d    %d    %d\r\n", (int)GetPosX(),(int)GetPosY(),(int)GetAngle());
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 	} 
 }	

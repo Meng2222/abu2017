@@ -48,6 +48,7 @@
 #include "elmo.h"
 #include "action_math.h"
 #include "gasvalvecontrol.h"
+#include "movebase.h"
 /************************************************************/
 /****************驱动器CAN1接口模块****start******************/
 union Position
@@ -67,13 +68,17 @@ union MSG
 	float dataf[2];
 }msg;
 
+
+SendVel sendVel1 , sendVel2 , sendVel3;
+
 uint16_t encoder_right,encoder_left;
 int16_t vell_right,vell_left;
 
 float speed;
-float Speed[3];
+uint8_t Speed[3] = {53,53,53};
 float position[4];
-float gCurrent[3] = {0.0f};
+uint8_t gCurrent[3] = {53,53,53};
+uint16_t gTemperature[3] = {0};
 void CAN1_RX0_IRQHandler(void)
 {
 	
@@ -96,32 +101,49 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(StdId == 0x281) 
 			{
-				Speed[0] = msg.data32[1];
+				Speed[0] = (uint16_t)(Pulse2Vel(msg.data32[1])+30000.0f);
+				sendVel1.vel16=Speed[0];
 			}
 			if(StdId == 0x282) 
 			{
-				Speed[1] = msg.data32[1];	
+				Speed[1] = (uint16_t)(Pulse2Vel(msg.data32[1])+30000.0f);	
+				sendVel2.vel16=Speed[1];
 			}
 			if(StdId == 0x283) 
 			{
-				Speed[2] = msg.data32[1];
+				Speed[2] = (uint16_t)(Pulse2Vel(msg.data32[1])+30000.0f);
+				sendVel3.vel16=Speed[2];
 			}
-			SetMotorVel(Speed);
 		}
 		if(msg.data32[0] == 0x80005149)
 		{
 			if(StdId == 0x281) 
 			{
-				//将单位转化为0.1A
-				gCurrent[0] = msg.dataf[1]*10.0f;
+				gCurrent[0] = (uint8_t)(msg.dataf[1]+53.5f);
 			}
 			if(StdId == 0x282) 
 			{
-				gCurrent[1] = msg.dataf[1]*10.0f;	
+				gCurrent[1] = (uint8_t)(msg.dataf[1]+53.5f);	
 			}
 			if(StdId == 0x283) 
 			{
-				gCurrent[2] = msg.dataf[1]*10.0f;
+				gCurrent[2] = (uint8_t)(msg.dataf[1]+53.5f);
+			}
+			//SetMotorVel(Speed);
+		}
+		if(msg.data32[0] == 0x00014954)
+		{
+			if(StdId == 0x281) 
+			{
+				gTemperature[0] = (uint8_t)(msg.data32[1]+20)/*(uint8_t)(msg.dataf[1]+53.5f)*/;
+			}
+			if(StdId == 0x282) 
+			{
+				gTemperature[1] = (uint8_t)(msg.data32[1]+20)/*(uint8_t)(msg.dataf[1]+53.5f)*/;	
+			}
+			if(StdId == 0x283) 
+			{
+				gTemperature[2] = (uint8_t)(msg.data32[1]+20)/*(uint8_t)(msg.dataf[1]+53.5f)*/;
 			}
 			//SetMotorVel(Speed);
 		}

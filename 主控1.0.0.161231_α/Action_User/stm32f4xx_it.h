@@ -51,7 +51,11 @@ float GetPOSX(void);
 float GetPOSY(void);
 float GetdAngle(void);
 
-
+typedef union
+{
+	unsigned short vel16;
+	unsigned char vel[2];
+}SendVel;
 #ifdef __cplusplus
 }
 #endif

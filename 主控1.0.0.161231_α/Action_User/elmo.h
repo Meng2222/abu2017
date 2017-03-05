@@ -25,6 +25,8 @@ void ReadActualPos(uint8_t ElmoNum);
 void ReadActualVoltage(uint8_t ElmoNum);
 void ReadActualCurrent(uint8_t ElmoNum);
 void ReadActualVel(uint8_t ElmoNum);
+void ReadActualTemperature(uint8_t ElmoNum);
+
 void velCrl(uint8_t DriverNum,int vel);
 
 #endif 
