@@ -1,4 +1,4 @@
-﻿/**
+/**
   ******************************************************************************
   * @file      movebase.h
   * @author    ST42 & Meng22
@@ -94,6 +94,29 @@ typedef struct
 	float v3;
 }wheelSpeed_t;
 
+typedef struct
+{
+	float current1;
+	float current2;
+	float current3;
+}wheelCurrent_t;
+
+//电机定子表面温度，单位摄氏度
+typedef struct
+{
+	float temerature1;
+	float temerature2;
+	float temerature3;
+}motorTemperature_t;
+
+//驱动器内部mosfet温度，单位摄氏度
+typedef struct
+{
+	float temerature1;
+	float temerature2;
+	float temerature3;
+}driverTemperature_t;
+
 //速度规划的理论值结构体
 typedef struct
 {
@@ -102,6 +125,51 @@ typedef struct
 	float pos;
 }expData_t;
 
+typedef struct
+{
+	float yawAng;
+	float pitchAng;
+	float rollAng;
+	float vel1;
+	float vel2;
+	int gunNum;
+}shootCtr_t;
+
+//机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
+typedef struct 
+{
+	//机器人走行轮子目标线速度，范围【-30，30】，单位0.1m/s
+	wheelSpeed_t targetSpeed;
+	//机器人走行轮子实际线速度，范围【-30，30】，单位0.1m/s
+	wheelSpeed_t actualSpeed;
+	//机器人走行轮子目标线加速度速度，范围【-30，30】，单位0.1m/s2
+	motorAcc_t targetAcc;
+	//机器人走行轮子实际线加速度速度，范围【-30，30】，单位0.1m/s2
+	motorAcc_t actualAcc;
+	//机器人走行轮子目标电机电流，范围【-200，200】，单位0.1A
+	wheelCurrent_t targetCurrent;
+	//机器人走行轮子实际电机电流，范围【-200，200】，单位0.1A， fix me
+	wheelCurrent_t acturalCurrent;
+	
+	//电机定子温度，目前只写了走行的3个电机温度，fix me
+	motorTemperature_t motorTemperature;
+	//驱动器温度，目前只写了走行的3个驱动器温度，fix me
+	driverTemperature_t driverTemperature;
+
+	//机器人目标角度，逆时针为正，范围【-180，180】，单位度
+	float targetAngle;
+	//机器人实际角度，逆时针为正，范围【-180，180】，单位度
+	float actualAngle;
+	//机器人X方向目标位置，出发前进方向位X正方向，单位毫米
+	float targetXPos;
+	//机器人X方向实际位置，出发前进方向位X正方向，单位毫米
+	float actualXPos;
+	//机器人Y方向目标位置，出发前进右侧方向位Y正方向，单位毫米
+	float targetYPos;
+	//机器人Y方向实际位置，出发前进右侧方向位Y正方向，单位毫米
+	float actualYPos;
+	
+}robot_t;
 /* Exported functions ------------------------------------------------------- */
 
 /*
@@ -157,6 +225,9 @@ void MoveX(float velX);
 
 //运动函数
 void MoveTo(float targetPos, float velX, float accX);
+
+
+void ShootCtr(shootCtr_t *shootPara);
 
 #endif
 

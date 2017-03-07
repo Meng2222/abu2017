@@ -66,20 +66,13 @@ void SetMotorAcc(motorAcc_t motorAcc)
   * @retval None
   */
 
-extern int mv1, mv2, mv3;
+
 
 void ThreeWheelVelControl(wheelSpeed_t speed)
 {
-	  mv1 = speed.v1;
-	  mv2 = speed.v2;
-	  mv3 = speed.v3;
-    VelCrl(1, -speed.v1);
-    VelCrl(3, -speed.v2);
-    VelCrl(2, -speed.v3);
-//	VelCrl(1, 0);
-//    VelCrl(2, 0);
-//    VelCrl(3, 0);
-
+	VelCrl(1, -speed.v1);
+	VelCrl(3, -speed.v2);
+	VelCrl(2, -speed.v3);
 }
 
 /*
@@ -131,7 +124,7 @@ float Vel2Pulse(float vel)
   */
 extern float moveTimer;
 extern uint8_t moveTimFlag;
-extern int expSpeed;
+
 
 void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
 {
@@ -214,7 +207,6 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		pExpData->pos = startPos + targetDist - pExpData->dist;
 	}
 	
-	expSpeed = pExpData->speed;
 }
 
 
@@ -228,7 +220,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
   *         None
   */
 
-extern int expSpeedp;
+
 
 void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 {
@@ -244,7 +236,6 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
-	expSpeedp = outputSpeed;
 	
 	/*特殊情况导致速度极不安全时紧急制动*/
 	if(fabs(outputSpeed) > MAXSPEED)
@@ -383,4 +374,42 @@ void MoveTo(float targetPos, float velX, float accX)
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
+}
+//发射参数
+shootCtr_t shootParam[15]={{45.0f,16.0f,-45.2f,89.0f,21.0f,1},
+						   {42.0f,33.6f,-47.5f,84.0f,21.0f,1},
+						   {33.5f,17.7f,-23.8f,104.0f,19.0f,1},
+						   {33.5f,32.5f,-22.1f,84.0f,20.0f,1},
+						   {32.8f,32.5f,-22.6f,81.0f,24.0f,1},
+						   {26.5f,26.9f,-3.7f,93.0f,15.0f,1},
+						   {26.2f,34.0f,1.4f,83.0f,24.0f,1},
+						   {36.3f,14.8f,36.1f,92.0f,23.0f,1},
+						   {37.3f,15.0f,35.6f,90.0f,23.0f,1},
+						   {34.0f,16.0f,-7.3f,110.0f,18.0f,1},
+						   {37.9f,36.7f,-15.3f,106.0f,20.0f,1},
+						   {34.0f,20.0f,-7.3f,111.0f,18.0f,1},
+						   {37.4f,34.7f,-10.8f,110.0f,27.0f,1},
+						   {32.0f,30.0f,-1.6f,106.0f,27.0f,1},
+						   {23.3f,19.4f,0.0f,94.0f,8.0f,1}};
+//发射函数，用于控制枪上电机
+void ShootCtr(shootCtr_t *shootPara)
+{
+	if(shootPara->yawAng < -50.0f)shootPara->yawAng = -50.0f;
+	if(shootPara->yawAng> 50.0f)shootPara->yawAng= 50.0f;
+	if(shootPara->pitchAng < 15.0f)shootPara->pitchAng= 15.0f;
+	if(shootPara->pitchAng> 40.0f)shootPara->pitchAng= 40.0f;
+	if(shootPara->rollAng < 0.0f)shootPara->rollAng= 0.0f;
+	if(shootPara->rollAng> 45.0f)shootPara->rollAng= 45.0f;
+	switch(shootPara->gunNum)
+	{
+		case 1:
+			PosCrl(8,0,(int32_t)((50.0f + shootPara->yawAng) * 102.4f));
+			PosCrl(6,0,(int32_t)((shootPara->pitchAng - 15.0f) * 141.0844f));
+			PosCrl(7,0,(int32_t)(shootPara->rollAng* 141.0844f));
+			VelCrl(4, -4096*shootPara->vel1);
+			VelCrl(5,  4096*shootPara->vel2);
+			break;
+		default:
+			break;
+	}
 }

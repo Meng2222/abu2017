@@ -122,8 +122,7 @@ void atk_8266_at_response(u8 mode)
 //ATK-ESP8266模块测试主函数
 void atk_8266_init(void)
 {
-	u8 res=0;	
-  char p[128];//申请32字节内存
+	char p[128];//申请32字节内存
 	while(atk_8266_send_cmd("AT","OK",20))//检查WIFI模块是否在线
 	{
 		atk_8266_quit_trans();//退出透传
@@ -133,10 +132,8 @@ void atk_8266_init(void)
 		
 	atk_8266_send_cmd("AT+CWMODE=2","OK",20);
 	atk_8266_send_cmd("AT+RST","OK",20);
-	TIM_Delayms(TIM5,4000);//delay_ms(1000);//延时2s等待模块重启
-////	delay_ms(1000);//
-////	delay_ms(1000);
-////	delay_ms(1000);
+	TIM_Delayms(TIM5,4000);//延时2s等待模块重启
+
 	sprintf((char*)p,"AT+CWSAP=\"%s\",\"%s\",1,4",wifiap_ssid,wifiap_password);    //配置模块AP模式无线参数
 	atk_8266_send_cmd(p,"OK",1000);
 

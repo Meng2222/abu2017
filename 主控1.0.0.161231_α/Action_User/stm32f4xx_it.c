@@ -49,18 +49,8 @@
 #include "action_math.h"
 #include "gasvalvecontrol.h"
 #include "movebase.h"
-/************************************************************/
-/****************驱动器CAN1接口模块****start******************/
-union Position
-{
-	uint8_t  Data8[2];
-	uint16_t Data16;
-}pos;
-union Vell
-{
-	uint8_t  Data8[2];
-	int16_t  Data16;
-}vell;
+
+//用来处理CAN接收数据
 union MSG
 {
 	uint8_t data8[8];
@@ -68,17 +58,13 @@ union MSG
 	float dataf[2];
 }msg;
 
+//声明外部变量
+extern robot_t gRobot;
 
-SendVel sendVel1 , sendVel2 , sendVel3;
-
-uint16_t encoder_right,encoder_left;
-int16_t vell_right,vell_left;
-
+ 
 float speed;
-uint8_t Speed[3] = {53,53,53};
 float position[4];
-uint8_t gCurrent[3] = {53,53,53};
-uint16_t gTemperature[3] = {0};
+
 void CAN1_RX0_IRQHandler(void)
 {
 	
@@ -101,53 +87,54 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(StdId == 0x281) 
 			{
-				Speed[0] = (uint16_t)(Pulse2Vel(msg.data32[1])+30000.0f);
-				sendVel1.vel16=Speed[0];
+				//下面代码除以100为了将m/s转换为0.1m/s，fix me
+				gRobot.actualSpeed.v1 =(Pulse2Vel(msg.data32[1]))/100;
 			}
 			if(StdId == 0x282) 
 			{
-				Speed[1] = (uint16_t)(Pulse2Vel(msg.data32[1])+30000.0f);	
-				sendVel2.vel16=Speed[1];
+				gRobot.actualSpeed.v2 =(Pulse2Vel(msg.data32[1]))/100;
+
 			}
 			if(StdId == 0x283) 
 			{
-				Speed[2] = (uint16_t)(Pulse2Vel(msg.data32[1])+30000.0f);
-				sendVel3.vel16=Speed[2];
+				gRobot.actualSpeed.v3 =(Pulse2Vel(msg.data32[1]))/100;
 			}
 		}
 		if(msg.data32[0] == 0x80005149)
 		{
 			if(StdId == 0x281) 
 			{
-				gCurrent[0] = (uint8_t)(msg.dataf[1]+53.5f);
+				//msg.dataf[1]是单位为安培的浮点数
+				gRobot.acturalCurrent.current1 = (msg.dataf[1]);
 			}
 			if(StdId == 0x282) 
 			{
-				gCurrent[1] = (uint8_t)(msg.dataf[1]+53.5f);	
+				gRobot.acturalCurrent.current2 = (msg.dataf[1]);
 			}
 			if(StdId == 0x283) 
 			{
-				gCurrent[2] = (uint8_t)(msg.dataf[1]+53.5f);
+				gRobot.acturalCurrent.current3 = (msg.dataf[1]);
 			}
-			//SetMotorVel(Speed);
 		}
 		if(msg.data32[0] == 0x00014954)
 		{
 			if(StdId == 0x281) 
 			{
-				gTemperature[0] = (uint8_t)(msg.data32[1]+20)/*(uint8_t)(msg.dataf[1]+53.5f)*/;
+				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考elmo手册
+				gRobot.driverTemperature.temerature1 = (msg.data32[1]);
 			}
 			if(StdId == 0x282) 
 			{
-				gTemperature[1] = (uint8_t)(msg.data32[1]+20)/*(uint8_t)(msg.dataf[1]+53.5f)*/;	
+				gRobot.driverTemperature.temerature2 = (msg.data32[1]);
 			}
 			if(StdId == 0x283) 
 			{
-				gTemperature[2] = (uint8_t)(msg.data32[1]+20)/*(uint8_t)(msg.dataf[1]+53.5f)*/;
+				gRobot.driverTemperature.temerature3 = (msg.data32[1]);
 			}
-			//SetMotorVel(Speed);
+
 		}
 	}
+	//读取枪上电机状态信息，暂时不用
 	if(StdId==0x286 || StdId==0x287 || StdId==0x288 ||  StdId==0x289)
 	{
 		for(i = 0; i < 8; i++)
@@ -202,15 +189,19 @@ void CAN1_RX0_IRQHandler(void)
 /************************************************************/
 
 /*************定时器2******start************/
-//每1ms调用一次  用于读取编码器的值和计算坐标
+
 
 extern  OS_EVENT 		*PeriodSem;
-
+//走行用时间变量
 float moveTimer = 0.0f;
 uint8_t moveTimFlag = 0;
+
 extern int pushFlag;
+//信号量计时用变量
 uint8_t semTimer = 0;
+//控制推弹给气时间，暂时没有使用
 int pushTimer =0;
+//控制夹子张开给气时间，暂时没有使用
 int clampOpenFlag = 0 , clampCounter = 0;
 void TIM2_IRQHandler(void)
 {
@@ -218,6 +209,7 @@ void TIM2_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
+	
 	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
 		if (moveTimFlag == 1)
@@ -245,7 +237,6 @@ void TIM2_IRQHandler(void)
 }
 
 
-//定时器1  左编码器中断
 void TIM1_UP_TIM10_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -259,7 +250,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
 	OSIntExit();
 }
 
-//定时器8  右编码器中断
+
 void TIM8_UP_TIM13_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -273,8 +264,6 @@ void TIM8_UP_TIM13_IRQHandler(void)
 	OSIntExit();
 }
 
-/********************************************************/
-/*****************普通定时TIM5*****Start*****************/
 void TIM5_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -301,10 +290,7 @@ void TIM3_IRQHandler(void)
 	}
 	OSIntExit();
 }
-
-
-
-//定时器4  
+ 
 void TIM4_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -320,12 +306,17 @@ void TIM4_IRQHandler(void)
 
 
 /*************************与平板通信**************************/
+//横滚
 float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//俯仰
 float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//航向
 float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//速度
 int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
 int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
 int shootFlagL = 0 , shootFlagR = 0 , shootFlagU = 0;
+
 void UART4_IRQHandler(void)
 {	 
 	static int	status = 0;
@@ -339,8 +330,10 @@ void UART4_IRQHandler(void)
 		int32_t data32;
 		float   dataf;
 	}dataConvert;
+	
 	static int ACCTid = 0;
 	float temAngle = 0.0f;
+	
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -351,7 +344,9 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
+		
 		USART_SendData(UART4, ch);
+		
 		switch (status)
 		{
 			case 0:                       
@@ -366,7 +361,7 @@ void UART4_IRQHandler(void)
 				break;
 			case 2: 
 				if (ch == 'P')
-					status++;                  //ACPC + [id] + data[4] + extra[3]
+					status++;                  //ACPC + [id1] + [id2] + data[4] + extra[3]
 				else if (ch == 'C')
 					status += 10;              //ACCT + [id] + extra[7]
 				else
@@ -401,9 +396,6 @@ void UART4_IRQHandler(void)
 					case 0:
 						roll[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf;
-//						if(temAngle < 0.0f)		temAngle = 0.0f;
-//						if(temAngle > 45.0f)		temAngle = 45.0f;
-//						PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
 						switch(id2 % 3)
 						{	
 							case 0:
@@ -429,9 +421,6 @@ void UART4_IRQHandler(void)
 					case 1:
 						pitch[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf;
-//						if(temAngle < 15.0f)		temAngle = 15.0f;
-//						if(temAngle > 40.0f)		temAngle = 40.0f;
-//						PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
 						switch(id2 % 3)
 						{	
 							case 0:
@@ -456,9 +445,6 @@ void UART4_IRQHandler(void)
 					case 2:
 						yaw[id / 5] = dataConvert.dataf;
 						temAngle = dataConvert.dataf;
-//						if(temAngle < -50.0f)		temAngle = -50.0f;
-//						if(temAngle > 50.0f)		temAngle = 50.0f;
-//						PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
 						switch(id2 % 3)
 						{	
 							case 0:
@@ -635,12 +621,15 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 					yangle = yangle;
 					pos_x  = pos_x ;
 					pos_y  = pos_y ;
-
+					
 					w_z    = w_z   ;
 					 
 					SetPosX(-pos_x);
 					SetPosY(-pos_y);
 					SetAngle(zangle);
+					gRobot.actualAngle = zangle;
+					gRobot.actualXPos = -pos_x;
+					gRobot.actualYPos = -pos_y;
 					UpdateVel();
 				}
 				count = 0;
@@ -673,7 +662,7 @@ u8 region[9]={0};
 u8 region_many=0;
 int state=0;
 /***********************摄像头****************************/
-void USART6_IRQHandler(void)       //更新频率200Hz
+void USART6_IRQHandler(void)       
 {	 
 	static uint8_t Res;
 	static uint8_t count = 0;

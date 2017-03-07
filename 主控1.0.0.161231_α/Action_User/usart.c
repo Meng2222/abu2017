@@ -443,7 +443,7 @@ void u5_printf(char* fmt, ...)
 	i = strlen((const char*)USART5_TX_BUF);//此次发送数据的长度
 	for(j = 0; j < i; j++)//循环发送数据
 	{
-	  while(USART_GetFlagStatus(UART5,USART_FLAG_TC) == RESET);  //等待上次传输完成 
+		while(USART_GetFlagStatus(UART5,USART_FLAG_TC) == RESET);  //等待上次传输完成 
 		USART_SendData(UART5, (uint8_t)USART5_TX_BUF[j]); 	 //发送数据到串口5
 	}
 }

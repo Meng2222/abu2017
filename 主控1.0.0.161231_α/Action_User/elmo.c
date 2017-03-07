@@ -455,7 +455,7 @@ void ReadActualVel(uint8_t ElmoNum)
 	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//等待238us
 }
-
+//读取电机温度
 void ReadActualTemperature(uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={    				 

@@ -211,9 +211,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>190</LineNumber>
+          <LineNumber>197</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218650</Address>
+          <Address>134218898</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -222,23 +222,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>C:\Users\Dreamer\Desktop\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/task.c\190</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>143</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134219492</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\Dreamer\Desktop\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/task.c\143</Expression>
+          <Expression>\\STM32F407_ACTION\../Action_User/task.c\197</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -281,6 +265,11 @@
           <count>7</count>
           <WinNumber>1</WinNumber>
           <ItemText>LowResetFlag,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gRobot</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -344,7 +333,7 @@
         <aPa1>0</aPa1>
         <AscS4>0</AscS4>
         <aSer4>0</aSer4>
-        <StkLoc>0</StkLoc>
+        <StkLoc>1</StkLoc>
         <TrcWin>0</TrcWin>
         <newCpu>0</newCpu>
         <uProt>0</uProt>
@@ -938,7 +927,7 @@
 
   <Group>
     <GroupName>Doc</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
