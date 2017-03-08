@@ -28,33 +28,18 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 	while ((CAN_TransmitStatus(CAN2, mbox) != CAN_TxStatus_Ok));
 }
 //夹子开
-extern int clampOpenFlag , clampCounter;
 void ClampOpen(void)
 {
 	if (!KEYSWITCH)
 	{
 		GasValveControl(1 , 6 , 0);
-//		GasValveControl(2 , 12 , 1);
-		clampOpenFlag=1;
-		if(clampCounter<=20)
-		{
-			GasValveControl(2 , 12 , 1);
-		}
-		else if(clampCounter<=100)
-		{
-			GasValveControl(2 , 12 , 0);		
-		}
-		else
-		{
-			clampCounter=0;
-		}
+		GasValveControl(2 , 12 , 1);
 	}
 }
 //夹子关
 void ClampClose(void)
 {
-	clampOpenFlag = 0 ;
-	GasValveControl(1 , 6 , 1);
+ 	GasValveControl(1 , 6 , 1);
 	GasValveControl(2 , 12 , 0);
 }
 //夹子翻
@@ -65,42 +50,30 @@ void ClampRotate(void)
 //夹子复位
 void ClampReset(void)
 {
-		GasValveControl(1 , 8 , 0);//往上翻
+	GasValveControl(1 , 8 , 0);//往上翻
 }
 
 //左推盘
-int pushFlag =0;
-extern int pushTimer;
+
 void LeftPush(void)
 {
-//		pushFlag=1;
-		GasValveControl(1 , 1 , 0);//左推盘收
-//		if(pushTimer<=50)
-//		{
-
-		GasValveControl(1 , 2 , 1);//左推	
-//		}
-//		else if(pushTimer >50)
-//		{
-//			GasValveControl(1 , 2 , 0);
-//		}
-//		if(pushTimer>=100)pushTimer=0;
+	GasValveControl(1 , 1 , 0);//左推盘收
+	GasValveControl(1 , 2 , 1);//左推	
 }
 void LeftBack(void)
 {
-		pushFlag=0;
-		GasValveControl(1 , 1 , 1);//左推盘收
-		GasValveControl(1 , 2 , 0);//左推
+	GasValveControl(1 , 1 , 1);//左推盘收
+	GasValveControl(1 , 2 , 0);//左推
 }
 //右推盘
 void RightPush(void)
 {
-		GasValveControl(1 , 3 , 0);//右收
-		GasValveControl(1 , 4 , 1);//右推
+	GasValveControl(1 , 3 , 0);//右收
+	GasValveControl(1 , 4 , 1);//右推
 }
 void RightBack(void)
 {
-		GasValveControl(1 , 3 , 1);//右收
-		GasValveControl(1 , 4 , 0);//右推
+	GasValveControl(1 , 3 , 1);//右收
+	GasValveControl(1 , 4 , 0);//右推
 }
 

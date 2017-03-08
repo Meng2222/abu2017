@@ -420,9 +420,9 @@ uint8_t CAN_TxMsg(CAN_TypeDef* CANx,
 	for(i=0;i<len;i++)
 		TxMessage.Data[i]=Msg[i];			 // 第一帧信息 
   
-	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us	
+	mbox= CAN_Transmit(CANx, &TxMessage);         	
 	i=0;
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//等待238us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 	return 1;		
 }
 

@@ -9,8 +9,6 @@
 #include "stm32f4xx_usart.h"
 #include "timer.h"
 
-#define LENGTH 3
-
 
 //串口发送缓存区 	
 __align(8) u8 USART5_TX_BUF[USART5_MAX_SEND_LEN]; 	//发送缓冲,最大USART3_MAX_SEND_LEN字节  	  

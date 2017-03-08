@@ -19,7 +19,7 @@
 
 
 //精确延时函数调用wait
-void  wait(uint32_t n)
+void wait(uint32_t n)
 {
 	do{
 	n--;

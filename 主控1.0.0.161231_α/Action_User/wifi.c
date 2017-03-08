@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "timer.h"
 #include <string.h>
-#include "GET_SET.h"
 
 //连接端口号:8086,可自行修改为其他端口.
 const u8* portnum=(u8*)"8086";
@@ -156,24 +155,10 @@ void atk_8266_init(void)
 //    其他,错误代码
 u8 atk_8266_wifiap_test(void)
 {
-	//u8 *p;
-	//char p[32]="dddddd";  //申请32字节内存
-	u8 res=0;		
-  int a=(int)(GetPosX()*100);
-  int b=(int)(GetPosY()*100);
-	int c=(int)(100*GetAngle());
-//	
-//while(1)
-//{
-	if(res<100)res++;
-	else res=0;
-	
-  u5_printf("s=%d\r\n",a);
-	res++;
-	u5_printf("s=%d\r\n",b);
-	res++;
-	u5_printf("s=%d\r\n",c);
-//}
-					
-	return res;		
+
+	u5_printf("s=%d\r\n",100);
+	u5_printf("s=%d\r\n",101);
+	u5_printf("s=%d\r\n",102);
+		
+	return 0;		
 } 

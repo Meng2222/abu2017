@@ -40,15 +40,14 @@
 #include "usart.h"
 #include "timer.h"
 #include "can.h"
-#include "GET_SET.h"
 #include "String.h"
 #include "stm32f4xx_dma.h"
 #include "gpio.h"
 #include "stm32f4xx_exti.h"
 #include "elmo.h"
-#include "action_math.h"
 #include "gasvalvecontrol.h"
 #include "movebase.h"
+#include "robot.h"
 
 //用来处理CAN接收数据
 union MSG
@@ -61,81 +60,82 @@ union MSG
 //声明外部变量
 extern robot_t gRobot;
 
- 
-float speed;
-float position[4];
-
 void CAN1_RX0_IRQHandler(void)
 {
 	
 	OS_CPU_SR  cpu_sr;
-	static uint8_t buffer[8];
-	static uint32_t StdId=0;
+	uint8_t buffer[8];
+	uint32_t StdId=0;
+	uint8_t canNodeId = 0;
 	int32_t i = 0;
 
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 	CAN_RxMsg(CAN1, &StdId, buffer, 8);
-
-	if(StdId==0x281 || StdId==0x282 || StdId==0x283)     //get speed value
+	canNodeId = StdId - SDO_RESPONSE_COB_ID_BASE;
+	
+	if(canNodeId==LEFT_WHEEL_ID || canNodeId==FORWARD_WHEEL_ID || canNodeId==BACKWARD_WHEEL_ID)     //get speed value
 	{
+		//fix me, if length not 8
 		for(i = 0; i < 8; i++)
 			msg.data8[i] = buffer[i];
 
 		if(msg.data32[0] == 0x00005856)
 		{
-			if(StdId == 0x281) 
+			if(canNodeId == LEFT_WHEEL_ID) 
 			{
 				//下面代码除以100为了将m/s转换为0.1m/s，fix me
-				gRobot.actualSpeed.v1 =(Pulse2Vel(msg.data32[1]))/100;
+				gRobot.moveBase.actualSpeed.leftWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
 			}
-			if(StdId == 0x282) 
+			if(canNodeId == FORWARD_WHEEL_ID) 
 			{
-				gRobot.actualSpeed.v2 =(Pulse2Vel(msg.data32[1]))/100;
+				gRobot.moveBase.actualSpeed.forwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
 
 			}
-			if(StdId == 0x283) 
+			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
-				gRobot.actualSpeed.v3 =(Pulse2Vel(msg.data32[1]))/100;
+				gRobot.moveBase.actualSpeed.backwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
 			}
 		}
+		
 		if(msg.data32[0] == 0x80005149)
 		{
-			if(StdId == 0x281) 
+			//msg.dataf[1]是单位为安培的浮点数
+			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				//msg.dataf[1]是单位为安培的浮点数
-				gRobot.acturalCurrent.current1 = (msg.dataf[1]);
+				gRobot.moveBase.acturalCurrent.leftWheelCurrent = (msg.dataf[1]);
 			}
-			if(StdId == 0x282) 
+			if(canNodeId == FORWARD_WHEEL_ID) 
 			{
-				gRobot.acturalCurrent.current2 = (msg.dataf[1]);
+				gRobot.moveBase.acturalCurrent.forwardWheelCurrent = (msg.dataf[1]);
 			}
-			if(StdId == 0x283) 
+			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
-				gRobot.acturalCurrent.current3 = (msg.dataf[1]);
+				gRobot.moveBase.acturalCurrent.backwardWheelCurrent = (msg.dataf[1]);
 			}
 		}
 		if(msg.data32[0] == 0x00014954)
 		{
-			if(StdId == 0x281) 
+			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考elmo手册
-				gRobot.driverTemperature.temerature1 = (msg.data32[1]);
+				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考almo手册
+				gRobot.moveBase.driverTemperature.leftWheelDriverTemperature = (msg.data32[1]);
 			}
-			if(StdId == 0x282) 
+			if(canNodeId == FORWARD_WHEEL_ID) 
 			{
-				gRobot.driverTemperature.temerature2 = (msg.data32[1]);
+				gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature = (msg.data32[1]);
 			}
-			if(StdId == 0x283) 
+			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
-				gRobot.driverTemperature.temerature3 = (msg.data32[1]);
+				gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature = (msg.data32[1]);
 			}
 
 		}
 	}
-	//读取枪上电机状态信息，暂时不用
-	if(StdId==0x286 || StdId==0x287 || StdId==0x288 ||  StdId==0x289)
+	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
+	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
+		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID)
 	{
 		for(i = 0; i < 8; i++)
 		{
@@ -144,29 +144,28 @@ void CAN1_RX0_IRQHandler(void)
 
 		if(msg.data32[0] == 0x40005856)
 		{
-			if(StdId == 0x289) 
+			if(canNodeId == LEFT_GUN_LEFT_ID) 
 			{
-				speed = msg.data32[1];
+				gRobot.leftGun.actualPose.speed1 = LeftGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == LEFT_GUN_RIGHT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
 			}
 		}
-		
 		if(msg.data32[0] == 0x40005850)
 		{
-			if(StdId == 0x286) 
+			if(canNodeId == LEFT_GUN_PITCH_ID) 
 			{
-				position[0] = 45 - (msg.data32[1] - 249) * 0.01598;    //航向
+				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //航向
 			}
-			if(StdId == 0x287) 
+			if(StdId == LEFT_GUN_ROLL_ID) 
 			{
-				position[1] = 45 - (msg.data32[1] - 1082) * 0.01758;    //横滚
+				gRobot.leftGun.actualPose.roll = LeftGunRollInverseTransform(msg.data32[1]);    //横滚
 			}
-			if(StdId == 0x288) 
+			if(StdId == LEFT_GUN_YAW_ID) 
 			{
-				position[2] = (msg.data32[1] - 1125) * 0.01302 - 6;    //俯仰
-			}
-			if(StdId == 0x289) 
-			{
-				position[3] = msg.data32[1];
+				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //俯仰
 			}
 		}
 	}
@@ -185,51 +184,34 @@ void CAN1_RX0_IRQHandler(void)
 	OSIntExit();
 }
 
-/****************驱动器CAN1接口模块****end******************/
-/************************************************************/
-
 /*************定时器2******start************/
-
+//每1ms调用一次
 
 extern  OS_EVENT 		*PeriodSem;
-//走行用时间变量
-float moveTimer = 0.0f;
-uint8_t moveTimFlag = 0;
 
-extern int pushFlag;
-//信号量计时用变量
-uint8_t semTimer = 0;
-//控制推弹给气时间，暂时没有使用
-int pushTimer =0;
-//控制夹子张开给气时间，暂时没有使用
-int clampOpenFlag = 0 , clampCounter = 0;
 void TIM2_IRQHandler(void)
 {
+	#define PERIOD_COUNTER 10
+	//用来计数10次，产生10ms的定时器
+	static uint8_t periodCounter = PERIOD_COUNTER;
+	
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
+
 	
 	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
-		if (moveTimFlag == 1)
-		{
-			moveTimer += 0.001f;
-		}	
-		if(clampOpenFlag==1)
-		{
-			clampCounter++;
-		}
-		if(pushFlag==1)
-		{
-			pushTimer++;
-		}
-		semTimer++;
-		if (semTimer == 10)
+		//更新10ms计数器
+		periodCounter--;
+		if (periodCounter == 0)
 		{
 			OSSemPost(PeriodSem);
-			semTimer = 0;
+			periodCounter = PERIOD_COUNTER;
 		}
+		
+		
 		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
@@ -277,7 +259,6 @@ void TIM5_IRQHandler(void)
 	OSIntExit();
 }
 
-
 void TIM3_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
@@ -304,35 +285,27 @@ void TIM4_IRQHandler(void)
 	OSIntExit();
 }
 
-
 /*************************与平板通信**************************/
-//横滚
-float roll[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//俯仰
-float pitch[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//航向
-float yaw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//速度
-int32_t speed1[7] = {0, 0, 0, 0, 0, 0, 0};
-int32_t speed2[7] = {0, 0, 0, 0, 0, 0, 0};
-int shootFlagL = 0 , shootFlagR = 0 , shootFlagU = 0;
-
+//fix me 
+/*
+*ACPC + [数据类型类型] + [枪号] + [数据]
+*数据类型：roll(0)/patch(1)/yaw(2)/speed1(3)/speed2(4)
+*数据：yaw data/patch data/roll data/speed1 data/speed2 data
+*枪号：0左枪 1右枪 2上枪
+*/
 void UART4_IRQHandler(void)
 {	 
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
-	static int extraCounter = 0;                  //count extra byte
-
 
 	static union
 	{
 		uint8_t data8[4];
 		int32_t data32;
 		float   dataf;
-	}dataConvert;
+	}data;
 	
-	static int ACCTid = 0;
-	float temAngle = 0.0f;
+	float targetAngle = 0.0f;
 	
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
@@ -361,9 +334,9 @@ void UART4_IRQHandler(void)
 				break;
 			case 2: 
 				if (ch == 'P')
-					status++;                  //ACPC + [id1] + [id2] + data[4] + extra[3]
+					status++;                  //ACPC + [id1] + [id2] + data[4]
 				else if (ch == 'C')
-					status += 10;              //ACCT + [id] + extra[7]
+					status += 10;              //ACCT + [id]
 				else
 					status = 0;
 				break;
@@ -387,55 +360,53 @@ void UART4_IRQHandler(void)
 			case 9:
 			case 10:
 				if(status < 10)
-					dataConvert.data8[status - 6] = ch;
+					data.data8[status - 6] = ch;
 				status++;
 				break;
 			case 11:
 				switch(id % 5)
 				{
+					//roll
 					case 0:
-						roll[id / 5] = dataConvert.dataf;
-						temAngle = dataConvert.dataf;
+ 						targetAngle = data.dataf;
+
 						switch(id2 % 3)
 						{	
 							case 0:
-							if(temAngle < 0.0f)		temAngle = 0.0f;
-							if(temAngle > 45.0f)		temAngle = 45.0f;
-							PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
+							//左枪
+							gRobot.leftGun.targetPose.roll = targetAngle;
+							//1~7表示7个着陆台，转换为0~6
+							gRobot.leftGun.targetPlant = id/5;
 							break;
 							case 1:
-							if(temAngle < 0.0f)		temAngle = 0.0f;
-							if(temAngle > 45.0f)		temAngle = 45.0f;
-							//PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
-							break;
+							if(targetAngle < 0.0f)		targetAngle = 0.0f;
+							if(targetAngle > 45.0f)		targetAngle = 45.0f;
+ 							break;
 							case 2:
-							if(temAngle < 0.0f)		temAngle = 0.0f;
-							if(temAngle > 45.0f)		temAngle = 45.0f;
-							//PosCrl(7,0,(int32_t)(temAngle * 141.0844f));
-							break;
+							if(targetAngle < 0.0f)		targetAngle = 0.0f;
+							if(targetAngle > 45.0f)		targetAngle = 45.0f;
+ 							break;
 							default:
 								id2 = 0xff;
 							break;
 						}
 						break;
 					case 1:
-						pitch[id / 5] = dataConvert.dataf;
-						temAngle = dataConvert.dataf;
+						//pitch
+ 						targetAngle = data.dataf;
+ 
 						switch(id2 % 3)
 						{	
 							case 0:
-							if(temAngle < 15.0f)		temAngle = 15.0f;
-							if(temAngle > 40.0f)		temAngle = 40.0f;
-							PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
+							gRobot.leftGun.targetPose.pitch = targetAngle;
 							break;
 							case 1:
-							if(temAngle < 15.0f)		temAngle = 15.0f;
-							if(temAngle > 40.0f)		temAngle = 40.0f;
-							//PosCrl(6,0,(int32_t)((temAngle - 15.0f) * 141.0844f));
-							case 2:
-							if(temAngle < -10.0f)		temAngle = -10.0f;
-							if(temAngle > 40.0f)		temAngle = 40.0f;
-							PosCrl(11,0,(int32_t)((10.0f + temAngle) * 141.0844f));
+							if(targetAngle < 15.0f)		targetAngle = 15.0f;
+							if(targetAngle > 40.0f)		targetAngle = 40.0f;
+ 							case 2:
+							if(targetAngle < -10.0f)		targetAngle = -10.0f;
+							if(targetAngle > 40.0f)		targetAngle = 40.0f;
+							PosCrl(11,0,(int32_t)((10.0f + targetAngle) * 141.0844f));
 							break;
 							default:
 								id2=0xff;
@@ -443,24 +414,22 @@ void UART4_IRQHandler(void)
 						}
 						break;
 					case 2:
-						yaw[id / 5] = dataConvert.dataf;
-						temAngle = dataConvert.dataf;
+						//yaw
+ 						targetAngle = data.dataf;
+ 
 						switch(id2 % 3)
 						{	
 							case 0:
-							if(temAngle < -50.0f)		temAngle = -50.0f;
-							if(temAngle > 50.0f)		temAngle = 50.0f;
-							PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
+							gRobot.leftGun.targetPose.yaw = targetAngle;
 							break;
 							case 1:
-							if(temAngle < -50.0f)		temAngle = -50.0f;
-							if(temAngle > 50.0f)		temAngle = 50.0f;
-							//PosCrl(8,0,(int32_t)((50.0f + temAngle) * 102.4f));
-							break;
+							if(targetAngle < -50.0f)		targetAngle = -50.0f;
+							if(targetAngle > 50.0f)		targetAngle = 50.0f;
+ 							break;
 							case 2:
-							if(temAngle < -20.0f)		temAngle = -20.0f;
-							if(temAngle > 20.0f)		temAngle = 20.0f;
-							PosCrl(10,0,(int32_t)((20.0f + temAngle) * 102.4f));
+							if(targetAngle < -20.0f)		targetAngle = -20.0f;
+							if(targetAngle > 20.0f)		targetAngle = 20.0f;
+							PosCrl(10,0,(int32_t)((20.0f + targetAngle) * 102.4f));
 							break;
 							default:
 								id2 = 0xff;
@@ -468,16 +437,16 @@ void UART4_IRQHandler(void)
 						}
 						break;
 					case 3:
-						speed1[id / 5] = dataConvert.data32;
-						switch(id2 % 3)
+ 						switch(id2 % 3)
 						{
 							case 0:
-								VelCrl(4, -4096*dataConvert.data32);
+								gRobot.leftGun.targetPose.speed1 = data.data32;
+
 							break;
 							case 1:
 							break;
 							case 2:
-								VelCrl(9, -4096*dataConvert.data32);
+								VelCrl(9, -4096*data.data32);
 							break;
 							default:
 								id2 = 0xff;
@@ -485,11 +454,10 @@ void UART4_IRQHandler(void)
 						}
 						break;
 					case 4:
-						speed2[id / 5] = dataConvert.data32;
-						switch(id2 % 3)
+ 						switch(id2 % 3)
 						{
 							case 0:
-								VelCrl(5,  4096*dataConvert.data32);
+								gRobot.leftGun.targetPose.speed2 = data.data32;
 							break;
 							case 1:
 							break;
@@ -519,22 +487,20 @@ void UART4_IRQHandler(void)
 				switch(id)
 				{
 					case 1:
-						GasValveControl(1,5,1);	
-						shootFlagL = 1;
+						//通知左枪开枪任务执行开枪动作
+						gRobot.leftGun.shoot = GUN_START_SHOOT;
 						break;
 					case 2:
 						//GasValveControl(1, 5 , 1);
-						shootFlagR = 1;
 						break;
 					case 3:
-						GasValveControl(2,8,1);
-						shootFlagU = 1;
+						//通知上面枪开枪任务执行开枪动作
+						gRobot.upperGun.shoot = GUN_START_SHOOT;
 						break;
 				}
 				status=0;
 
 			default:
-				ACCTid = id;    
 				status = 0;
 				id = 0xff;
 				break;					
@@ -543,14 +509,8 @@ void UART4_IRQHandler(void)
 	OSIntExit();
 }
 
-/****************陀螺仪串口接受中断****start****************/
+/****************陀螺仪串口接受中断********************/
 
-static float pos_x  = 0;
-static float pos_y  = 0;
-static float zangle = 0;
-static float xangle = 0;
-static float yangle = 0;
-static float w_z    = 0;
 void USART3_IRQHandler(void)       //更新频率200Hz
 {	 
 	static uint8_t ch;
@@ -561,6 +521,7 @@ void USART3_IRQHandler(void)       //更新频率200Hz
     }posture;
 	static uint8_t count = 0;
 	static uint8_t i = 0;
+	
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -610,27 +571,12 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 			case 4:
 				if(ch == 0x0d)
 				{
-					zangle = posture.ActVal[0];
-					xangle = posture.ActVal[1];
-					yangle = posture.ActVal[2];
-					pos_x  = posture.ActVal[3];
-					pos_y  = posture.ActVal[4];
-					w_z    = posture.ActVal[5];
-					 
-					xangle = xangle;
-					yangle = yangle;
-					pos_x  = pos_x ;
-					pos_y  = pos_y ;
-					
-					w_z    = w_z   ;
-					 
-					SetPosX(-pos_x);
-					SetPosY(-pos_y);
-					SetAngle(zangle);
-					gRobot.actualAngle = zangle;
-					gRobot.actualXPos = -pos_x;
-					gRobot.actualYPos = -pos_y;
-					UpdateVel();
+					gRobot.moveBase.actualAngle = posture.ActVal[0];
+					posture.ActVal[1];
+					posture.ActVal[2];
+					gRobot.moveBase.actualXPos  = posture.ActVal[3];
+					gRobot.moveBase.actualYPos  = posture.ActVal[4];
+					posture.ActVal[5];
 				}
 				count = 0;
 				break;
@@ -658,15 +604,24 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 	OSIntExit();
 }
 
-u8 region[9]={0};
-u8 region_many=0;
-int state=0;
-/***********************摄像头****************************/
-void USART6_IRQHandler(void)       
+/*
+* name:
+* function:
+* params:
+* notes:
+*/
+void USART6_IRQHandler(void)        
 {	 
-	static uint8_t Res;
-	static uint8_t count = 0;
-	static uint8_t i = 0;
+#define HEADER1 0x80
+#define HEADER2 0x80
+	
+#define HEADER_STATE1 0
+#define HEADER_STATE2 1
+#define DATA_STATE 2
+
+	static uint8_t data = 0;
+ 	static int state = 0;
+
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -675,35 +630,34 @@ void USART6_IRQHandler(void)
 	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
 	{
 		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
-		Res=USART_ReceiveData(USART6);	
+		data = USART_ReceiveData(USART6);	
 
-			switch(state)
-			{
-				case 0:
-					if(Res=='a')
-					{
-						state=1;
-						region_many=0;
-					}
-					break;
-				case 1:
-					if(Res=='b')
-					{
-						state=0;
-					}
-					else
-					{						
-						region[region_many]=Res;
-						region_many++;
-//						PosCrl(10,0,(int32_t)((20.0f + temAngle) * 102.4f));
-//						PosCrl(11,0,(int32_t)((10.0f + temAngle) * 141.0844f));
-//						VelCrl(9, -4096*dataConvert.data32);//电机
-//						GasValveControl(2,8,1);
-//						shootFlagU = 1; 
-					}
-					break;
-			}
-		
+		switch(state)
+		{
+			case HEADER_STATE1:
+				if(data == HEADER1)
+				{
+					state++;
+				}
+				break;
+			case HEADER_STATE2:
+				if(data == HEADER2)
+				{
+					state++;
+				}
+				else
+				{						
+					state=0;
+				}
+				break;
+			case DATA_STATE: 
+				//更新7号着陆台飞盘位置, fix me
+				data;
+				state = 0;
+				break;
+			default:
+				break;
+		}	
 	}
 	
 	OSIntExit();

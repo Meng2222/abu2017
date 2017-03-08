@@ -48,6 +48,8 @@ static 	void  WalkTask(void);
 #define  APP_TASK_START_PRIO                               10u
 #define  Config_TASK_START_PRIO                            11u
 #define  Walk_TASK_PRIO                                    12u
+#define  LEFT_GUN_AUTO_SHOOT_TASK_PRIO                     13u
+#define  RIGHT_GUN_SHOOT_TASK_PRIO                    14u
 
 
 
@@ -60,7 +62,9 @@ static 	void  WalkTask(void);
 */
 #define  APP_TASK_START_STK_SIZE                          256u
 #define  Config_TASK_START_STK_SIZE                       1024u
-#define  Walk_TASK_STK_SIZE                                8192u
+#define  Walk_TASK_STK_SIZE                               8192u
+#define  LEFT_GUN_AUTO_SHOOT_STK_SIZE                     1024u
+#define  RIGHT_GUN_SHOOT_STK_SIZE                  1024u
 
 /*
 *********************************************************************************************************
@@ -68,9 +72,7 @@ static 	void  WalkTask(void);
 *                             
 *********************************************************************************************************
 */
-static  OS_STK  App_TaskStartStk[APP_TASK_START_STK_SIZE];
-static  OS_STK  App_ConfigStk[Config_TASK_START_STK_SIZE];
-static  OS_STK  WalkTaskStk[Walk_TASK_STK_SIZE];
+
 
 
 /*

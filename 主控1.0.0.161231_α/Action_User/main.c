@@ -1,19 +1,20 @@
 #include  <includes.h>
 #include <app_cfg.h>
 
+static  OS_STK  App_TaskStartStk[APP_TASK_START_STK_SIZE];
 
 
 INT32S main (void)
 {
-    CPU_INT08U  os_err;
-	  os_err = os_err; /* prevent warning... */
-	
-    /* Note:  由于使用UCOS, 在OS运行之前运行,注意别使能任何中断. */
-	  CPU_IntDis();                     /* Disable all ints until we are ready to accept them.  */
+	CPU_INT08U  os_err;
+	os_err = os_err; /* prevent warning... */
 
-    OSInit();                        /* Initialize "uC/OS-II, The Real-Time Kernel".         */
+	/* Note:  由于使用UCOS, 在OS运行之前运行,注意别使能任何中断. */
+	CPU_IntDis();                     /* Disable all ints until we are ready to accept them.  */
+
+	OSInit();                        /* Initialize "uC/OS-II, The Real-Time Kernel".         */
 	
-	  os_err = OSTaskCreateExt((void (*)(void *)) App_TaskStart,  /* Create the start task.                               */
+	os_err = OSTaskCreateExt((void (*)(void *)) App_TaskStart,  /* Create the start task.                               */
 						 (void          * ) 0,
 						 (OS_STK        * )&App_TaskStartStk[APP_TASK_START_STK_SIZE - 1],
 						 (INT8U           ) APP_TASK_START_PRIO,
