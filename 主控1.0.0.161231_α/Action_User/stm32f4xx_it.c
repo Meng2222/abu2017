@@ -153,19 +153,19 @@ void CAN1_RX0_IRQHandler(void)
 				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
 			}
 		}
-		if(msg.data32[0] == 0x40005850)
+		if(msg.data32[0] == 0x00005850)
 		{
 			if(canNodeId == LEFT_GUN_PITCH_ID) 
 			{
-				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //º½Ïò
+				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //¸©Ñö
 			}
-			if(StdId == LEFT_GUN_ROLL_ID) 
+			if(canNodeId == LEFT_GUN_ROLL_ID) 
 			{
 				gRobot.leftGun.actualPose.roll = LeftGunRollInverseTransform(msg.data32[1]);    //ºá¹ö
 			}
-			if(StdId == LEFT_GUN_YAW_ID) 
+			if(canNodeId == LEFT_GUN_YAW_ID) 
 			{
-				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //¸©Ñö
+				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //º½Ïò
 			}
 		}
 	}

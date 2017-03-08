@@ -16,6 +16,13 @@
 #define RIGHT_GUN 2
 #define UPPER_GUN 3
 
+//左枪组ID号
+#define LEFT_GUN_GROUP_ID 101
+//右枪组ID号
+#define RIGHT_GUN_GROUP_ID 102
+//上面枪组ID号
+#define UPPER_GUN_GROUP_ID 103
+
 #define GUN_AUTO_MODE 0
 #define GUN_MANUAL_MODE 1
 

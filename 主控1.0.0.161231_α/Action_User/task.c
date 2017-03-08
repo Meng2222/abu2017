@@ -131,7 +131,7 @@ void ConfigTask(void)
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 	
-	
+	ROBOT_Init();
 	//atk_8266_init();
 
 	ClampClose();
@@ -144,7 +144,6 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 	
-	ROBOT_Init();
 	
 	OSTaskSuspend(OS_PRIO_SELF);
 }

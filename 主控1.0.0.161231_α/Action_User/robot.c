@@ -21,11 +21,15 @@ static void LeftGunInit(void)
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.leftGun.maxPoseLimit.yaw = 50.0f;
 	gRobot.leftGun.maxPoseLimit.roll = 45.0f;
+	gRobot.leftGun.maxPoseLimit.speed1=200.0f;
+	gRobot.leftGun.maxPoseLimit.speed2=200.0f;
+
 	
 	gRobot.leftGun.minPoseLimit.pitch = 15.0f;
 	gRobot.leftGun.minPoseLimit.yaw = -50.0f;
 	gRobot.leftGun.minPoseLimit.roll = 0.0f;
-	
+	gRobot.leftGun.minPoseLimit.speed1=0.0f;
+	gRobot.leftGun.minPoseLimit.speed2=0.0f;	
 	
 	//fix me, should be defined as macro
 	gRobot.leftGun.bulletNumber = MAX_BULLET_NUMBER;
@@ -76,10 +80,14 @@ static void RightGunInit(void)
 	gRobot.rightGun.maxPoseLimit.pitch = 0.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 0.0f;
 	gRobot.rightGun.maxPoseLimit.roll = 0.0f;
+	gRobot.rightGun.maxPoseLimit.speed1=0.0f;
+	gRobot.rightGun.maxPoseLimit.speed2=0.0f;
 	
 	gRobot.rightGun.minPoseLimit.pitch = 0.0f;
 	gRobot.rightGun.minPoseLimit.yaw = 0.0f;
 	gRobot.rightGun.minPoseLimit.roll = 0.0f;
+	gRobot.rightGun.minPoseLimit.speed1=0.0f;
+	gRobot.rightGun.minPoseLimit.speed2=0.0f;
 	
 	//fix me, should be defined as macro
 	gRobot.rightGun.bulletNumber = MAX_BULLET_NUMBER;
@@ -129,10 +137,14 @@ static void UpperGunInit(void)
 	gRobot.upperGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.upperGun.maxPoseLimit.yaw = 20.0f;
 	gRobot.upperGun.maxPoseLimit.roll = 0.0f;
+	gRobot.upperGun.maxPoseLimit.speed1=200.0f;
+	gRobot.upperGun.maxPoseLimit.speed2=0.0f;
 	
 	gRobot.upperGun.minPoseLimit.pitch = -10.0f;
 	gRobot.upperGun.minPoseLimit.yaw = -20.0f;
 	gRobot.upperGun.minPoseLimit.roll = 0.0f;
+	gRobot.upperGun.minPoseLimit.speed1=0.0f;
+	gRobot.upperGun.minPoseLimit.speed2=0.0f;
 	
 	//fix me, should be defined as macro
 	gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER;
@@ -186,7 +198,7 @@ int32_t LeftGunYawTransform(float yaw)
 */
 float LeftGunYawInverseTransform(int position)
 {
-	return position/102.4f - 50.0f;
+	return (float)position/102.4f - 50.0f;
 }
 
 /*
@@ -213,7 +225,7 @@ int32_t LeftGunPitchTransform(float pitch)
 */
 float LeftGunPitchInverseTransform(int position)
 {
-	return position/141.0844f + 15.0f;
+	return (float)position/141.0844f + 15.0f;
 }
 
 /*
@@ -239,7 +251,7 @@ int32_t LeftGunRollTransform(float roll)
 */
 float LeftGunRollInverseTransform(int position)
 {
-	return position/141.0844f;
+	return (float)position/141.0844f;
 }
 
 /*
@@ -251,7 +263,9 @@ float LeftGunRollInverseTransform(int position)
 */
 int32_t LeftGunLeftSpeedTransform(float speed)
 {
-	//fix me, 添加参数合法性检测
+	
+	if(speed > gRobot.leftGun.maxPoseLimit.speed1) speed = gRobot.leftGun.maxPoseLimit.speed1;	
+	if(speed < gRobot.leftGun.minPoseLimit.speed1) speed = gRobot.leftGun.minPoseLimit.speed1;
 	return -4096*speed;
 }
 
@@ -277,7 +291,8 @@ float LeftGunLeftSpeedInverseTransform(int speed)
 */
 int32_t LeftGunRightSpeedTransform(float speed)
 {
-	//fix me, 添加参数合法性检测
+	if(speed > gRobot.leftGun.maxPoseLimit.speed2) speed = gRobot.leftGun.maxPoseLimit.speed2;	
+	if(speed < gRobot.leftGun.minPoseLimit.speed2) speed = gRobot.leftGun.minPoseLimit.speed2;
 	return 4096*speed;
 }
 
@@ -520,9 +535,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 	while(timeout--)
 	{
 		//fix me,发送5组命令需要200us*5，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
-		ReadActualPos(LEFT_GUN_ROLL_ID);
-		ReadActualPos(LEFT_GUN_PITCH_ID);
-		ReadActualPos(LEFT_GUN_YAW_ID);
+		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
+		ReadActualPos(LEFT_GUN_GROUP_ID);		
 		ReadActualVel(LEFT_GUN_LEFT_ID);
 		ReadActualVel(LEFT_GUN_RIGHT_ID);
 		OSTimeDly(5);
