@@ -118,10 +118,10 @@ gun_pose_t gRightGunPosDatabase[CHAMPER_BULLET_MAX_FEATURE_STATE][LAND_NUMBER] =
 gun_pose_t gUpperGunPosDatabase[BULLET_TYPE_NUMBER][LAND_NUMBER] = \
 {
 	//第1种子弹状态，对应的7个着陆台的枪的姿态
-	{{-5.5f, -0.2f, 0.0f, 107.0f, 0.0f},
-	{-5.5f, -0.2f, 0.0f, 107.0f, 0.0f},
-	{-10.0f, -0.2f, 0.0f, 107.0f, 0.0f},
-	{-4.4f, 0.3f, 0.0f, 106.0f, 0.0f},
+	{{-4.7f, -0.3f, 0.0f, 111.0f, 0.0f},
+	{-0.2f, 0.1f, 0.0f, 116.0f, 0.0f},
+	{-0.2f, -0.9f, 0.0f, 116.0f, 0.0f},
+	{3.9f, -0.9f, 0.0f, 116.0f, 0.0f},
 	{-1.1f, -0.3f, 0.0f, 106.0f, 0.0f},
 	{-5.4f, -0.3f, 0.0f, 101.0f, 0.0f},
 	{-5.4f, -0.3f, 0.0f, 101.0f, 0.0f}},

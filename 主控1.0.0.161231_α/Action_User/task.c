@@ -181,7 +181,7 @@ void WalkTask(void)
 
 				//检查手动or自动
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
-		gRobot.upperGun.mode = GUN_MANUAL_MODE;
+		gRobot.upperGun.mode = GUN_AUTO_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			if(gRobot.upperGun.shoot == GUN_START_SHOOT) shootFlag = 1;
@@ -279,7 +279,7 @@ void LeftGunShootTask(void)
 	os_err = os_err;
 
     //OSSemSet(PeriodSem, 0, &os_err);
-	gRobot.leftGun.mode = GUN_MANUAL_MODE;
+	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)

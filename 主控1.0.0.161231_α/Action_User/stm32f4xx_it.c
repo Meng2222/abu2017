@@ -424,6 +424,7 @@ void UART4_IRQHandler(void)
 							break;
 							case 1:
 							gRobot.rightGun.targetPose.pitch = targetAngle;
+							break;
  							case 2:
 							gRobot.upperGun.targetPose.pitch = targetAngle;
 							break;
@@ -518,7 +519,7 @@ void UART4_IRQHandler(void)
 						break;
 				}
 				status=0;
-
+			break;
 			default:
 				status = 0;
 				id = 0xff;
