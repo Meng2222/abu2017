@@ -106,8 +106,13 @@ gun_pose_t gRightGunPosDatabase[CHAMPER_BULLET_MAX_FEATURE_STATE][LAND_NUMBER] =
 gun_pose_t gUpperGunPosDatabase[BULLET_TYPE_NUMBER][LAND_NUMBER] = \
 {
 	//第1种子弹状态，对应的7个着陆台的枪的姿态
-	{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f},{5.0f, 6.0f, 7.0f, 8.0f, 9.0f},{0.1f, 0.2f, 0.3f, 0.4f, 0.5f},{0.6f, 0.7f, 0.8f, 0.9f, 1.0f},
-	{0.1f, 1.1f, 2.1f, 3.1f, 4.1f},{5.1f, 6.1f, 7.1f, 8.1f, 9.1f},{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}},
+	{{-5.5f, -0.2f, 0.0f, 107.0f, 0.0f},
+	{-5.5f, -0.2f, 0.0f, 107.0f, 0.0f},
+	{-10.0f, -0.2f, 0.0f, 107.0f, 0.0f},
+	{-4.4f, 0.3f, 0.0f, 106.0f, 0.0f},
+	{-1.1f, -0.3f, 0.0f, 106.0f, 0.0f},
+	{-5.4f, -0.3f, 0.0f, 101.0f, 0.0f},
+	{-5.4f, -0.3f, 0.0f, 101.0f, 0.0f}},
 	
 	//第2种子弹状态，对应的7个着陆台的枪的姿态
 	{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f},{5.0f, 6.0f, 7.0f, 8.0f, 9.0f},{0.1f, 0.2f, 0.3f, 0.4f, 0.5f},{0.6f, 0.7f, 0.8f, 0.9f, 1.0f},
@@ -163,3 +168,4 @@ shoot_command_t gUpperGunShootCmds = \
 {
 	{PLANT1, PLANT2, PLANT3, PLANT4, PLANT5, PLANT6, PLANT7, PLANT1, PLANT2, PLANT3}
 };
+

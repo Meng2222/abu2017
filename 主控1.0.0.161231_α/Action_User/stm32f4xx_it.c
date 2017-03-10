@@ -135,7 +135,9 @@ void CAN1_RX0_IRQHandler(void)
 	}
 	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
-		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID)
+		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
+		canNodeId == RIGHT_GUN_ROLL_ID || canNodeId == RIGHT_GUN_YAW_ID || canNodeId == RIGHT_GUN_LEFT_ID|| \
+		canNodeId ==RIGHT_GUN_RIGHT_ID)
 	{
 		for(i = 0; i < 8; i++)
 		{
@@ -152,6 +154,14 @@ void CAN1_RX0_IRQHandler(void)
 			{
 				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
 			}
+			if(canNodeId == RIGHT_GUN_LEFT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed1 = RightGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_RIGHT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed2 = RightGunRightSpeedInverseTransform(msg.data32[1]);
+			}		
 		}
 		if(msg.data32[0] == 0x00005850)
 		{
@@ -166,6 +176,18 @@ void CAN1_RX0_IRQHandler(void)
 			if(canNodeId == LEFT_GUN_YAW_ID) 
 			{
 				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+			if(canNodeId == RIGHT_GUN_PITCH_ID) 
+			{
+				gRobot.rightGun.actualPose.pitch = RightGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == RIGHT_GUN_ROLL_ID) 
+			{
+				gRobot.rightGun.actualPose.roll = RightGunRollInverseTransform(msg.data32[1]);    //横滚
+			}
+			if(canNodeId == RIGHT_GUN_YAW_ID) 
+			{
+				gRobot.rightGun.actualPose.yaw = RightGunYawInverseTransform(msg.data32[1]);    //航向
 			}
 		}
 	}
@@ -610,6 +632,7 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 * params:
 * notes:
 */
+u8 receive_data=0;
 void USART6_IRQHandler(void)        
 {	 
 #define HEADER1 0x80
@@ -652,7 +675,15 @@ void USART6_IRQHandler(void)
 				break;
 			case DATA_STATE: 
 				//更新7号着陆台飞盘位置, fix me
-				data;
+				receive_data=data;
+				gRobot.platePosOnLand7.area0 = data&0x01;
+				gRobot.platePosOnLand7.area1 = data&0x02;
+				gRobot.platePosOnLand7.area2 = data&0x04;
+				gRobot.platePosOnLand7.area3 = data&0x08;
+				gRobot.platePosOnLand7.area4 = data&0x10;
+				gRobot.platePosOnLand7.area5 = data&0x20;
+				gRobot.platePosOnLand7.area6 = data&0x40;
+				gRobot.upperGun.shoot=GUN_START_SHOOT;
 				state = 0;
 				break;
 			default:

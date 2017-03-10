@@ -103,7 +103,7 @@ static void RightGunInit(void)
 	//右枪自动发射命令集合，里面为投射柱子的顺序
 	gRobot.rightGun.shootCommand = (shoot_command_t *)&gRightGunShootCmds;
 	//目标着陆台设置为0,
-	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
+	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
 	//枪膛子弹状态，无子弹
 	gRobot.rightGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
@@ -155,12 +155,12 @@ static void UpperGunInit(void)
 	//枪未进行瞄准
 	gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
 	//自动模式
-	gRobot.upperGun.mode = GUN_MANUAL_MODE;
+	gRobot.upperGun.mode = GUN_AUTO_MODE;
 	gRobot.upperGun.gunPoseDatabase = (gun_pose_t **)gUpperGunPosDatabase;
 	//上面枪自动发射命令集合，里面为投射柱子的顺序
 	gRobot.upperGun.shootCommand = (shoot_command_t *)&gUpperGunShootCmds;
 	//目标着陆台设置为7
-	gRobot.leftGun.targetPlant = 7;
+	gRobot.upperGun.targetPlant = 7;
 	//枪膛子弹状态，无子弹
 	gRobot.upperGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
@@ -212,7 +212,6 @@ int32_t LeftGunPitchTransform(float pitch)
 {
 	if(pitch > gRobot.leftGun.maxPoseLimit.pitch) pitch = gRobot.leftGun.maxPoseLimit.pitch;	
 	if(pitch < gRobot.leftGun.minPoseLimit.pitch) pitch = gRobot.leftGun.minPoseLimit.pitch;
-
 	return (int32_t)((pitch - 15.0f) * 141.0844f);
 }
 
@@ -316,9 +315,25 @@ float LeftGunRightSpeedInverseTransform(int speed)
 *
 *注意：
 */
-static float RightGunYawTransform(float yaw)
+int32_t RightGunYawTransform(float yaw)
 {
-	
+	//fix me ,tansform may be different from LeftGun 
+	if(yaw > gRobot.rightGun.maxPoseLimit.yaw) yaw = gRobot.rightGun.maxPoseLimit.yaw;	
+	if(yaw < gRobot.rightGun.minPoseLimit.yaw) yaw = gRobot.rightGun.minPoseLimit.yaw;
+	return (int32_t)((50.0f + yaw) * 102.4f);
+}
+
+/*
+*名称：RightGunYawInverseTransform
+*功能：右枪yaw轴角度反变换，由脉冲转化为角度
+*参数：
+*
+*注意：
+*/
+float RightGunYawInverseTransform(float position)
+{
+	//fix me ,tansform may be different from LeftGun 
+	return (int32_t)(position/102.4f-50.0f);
 }
 
 /*
@@ -328,9 +343,25 @@ static float RightGunYawTransform(float yaw)
 *
 *注意：
 */
-static float RightGunPitchTransform(float pitch)
+int32_t RightGunPitchTransform(float pitch)
 {
-	
+	//fix me ,tansform may be different from LeftGun 
+	if(pitch > gRobot.rightGun.maxPoseLimit.pitch) pitch = gRobot.rightGun.maxPoseLimit.pitch;	
+	if(pitch < gRobot.rightGun.minPoseLimit.pitch) pitch = gRobot.rightGun.minPoseLimit.pitch;
+	return (int32_t)((pitch - 15.0f) * 141.0844f);	
+}
+
+/*
+*名称：RightGunPitchInverseTransform
+*功能：右枪pitch轴角度反变换，由脉冲转化为角度
+*参数：
+*
+*注意：
+*/
+float RightGunPitchInverseTransform(float position)
+{
+	//fix me ,tansform may be different from LeftGun 
+	return (int32_t)(position/141.0844f+15.0f);
 }
 
 /*
@@ -340,12 +371,81 @@ static float RightGunPitchTransform(float pitch)
 *
 *注意：
 */
-static float RightGunRollTransform(float roll)
+int32_t RightGunRollTransform(float roll)
 {
-	
+	//fix me ,tansform may be different from LeftGun 
+	if(roll > gRobot.rightGun.maxPoseLimit.roll) roll = gRobot.rightGun.maxPoseLimit.roll;	
+	if(roll < gRobot.rightGun.minPoseLimit.roll) roll = gRobot.rightGun.minPoseLimit.roll;
+	return (int32_t)(roll * 141.0844f);
 }
 
+/*
+*名称：RightGunRollInverseTransform
+*功能：右枪roll轴角度反变换，由脉冲转化为角度
+*参数：
+*
+*注意：
+*/
+float RightGunRollInverseTransform(float position)
+{
+	//fix me ,tansform may be different from LeftGun 
+	return (int32_t)(position/141.0844f);
+}
 
+/*
+*名称：RightGunLeftSpeedTransform
+*功能：右枪左传送带速度转换，由转每秒转化为脉冲/s
+*参数：
+*
+*注意：
+*/
+int32_t RightGunLeftSpeedTransform(float speed)
+{
+	//fix me ,tansform may be different from LeftGun 
+	if(speed > gRobot.rightGun.maxPoseLimit.speed1) speed = gRobot.rightGun.maxPoseLimit.speed1;	
+	if(speed < gRobot.rightGun.minPoseLimit.speed1) speed = gRobot.rightGun.minPoseLimit.speed1;
+	return -4096*speed;
+}
+
+/*
+*名称：RightGunLeftSpeedInverseTransform
+*功能：右枪左传送带速度反变换，由脉冲转化为转每秒
+*参数：
+*
+*注意：
+*/
+float RightGunLeftSpeedInverseTransform(float speed)
+{
+	//fix me ,tansform may be different from LeftGun 
+	return (int32_t)(speed/-4096.0f);
+}
+
+/*
+*名称：RightGunRightSpeedTransform
+*功能：右枪右传送带速度转换， 由转每秒转化为脉冲/s
+*
+*注意：
+*/
+int32_t RightGunRightSpeedTransform(float speed)
+{
+	//fix me ,tansform may be different from LeftGun 
+	if(speed > gRobot.rightGun.maxPoseLimit.speed2) speed = gRobot.rightGun.maxPoseLimit.speed2;	
+	if(speed < gRobot.rightGun.minPoseLimit.speed2) speed = gRobot.rightGun.minPoseLimit.speed2;
+	return -4096*speed;
+}
+
+/*
+*名称：RightGunRightSpeedInverseTransform
+*功能：右枪左传送带速度反变换，由脉冲转化为转每秒
+*参数：
+*
+*注意：
+*/
+float RightGunRightSpeedInverseTransform(float speed)
+{
+	//fix me ,tansform may be different from LeftGun 
+	return (int32_t)(speed/-4096.0f);
+}
 /*
 *名称：UpperGunYawTransform
 *功能：上面枪yaw轴角度转换到位置，结果将发送给其位置环
@@ -353,9 +453,12 @@ static float RightGunRollTransform(float roll)
 *
 *注意：
 */
-static float UpperGunYawTransform(float yaw)
+int32_t UpperGunYawTransform(float yaw)
 {
-	
+	//fix me ,tansform may be different from LeftGun 
+	if(yaw > gRobot.upperGun.maxPoseLimit.yaw) yaw = gRobot.upperGun.maxPoseLimit.yaw;	
+	if(yaw < gRobot.upperGun.minPoseLimit.yaw) yaw = gRobot.upperGun.minPoseLimit.yaw;
+	return (int32_t)((20.0f + yaw) * 102.4f);
 }
 
 /*
@@ -365,11 +468,28 @@ static float UpperGunYawTransform(float yaw)
 *
 *注意：
 */
-static float UpperGunPitchTransform(float pitch)
+int32_t UpperGunPitchTransform(float pitch)
 {
-	
+	//fix me ,tansform may be different from LeftGun 
+	if(pitch > gRobot.upperGun.maxPoseLimit.pitch) pitch = gRobot.upperGun.maxPoseLimit.pitch;	
+	if(pitch < gRobot.upperGun.minPoseLimit.pitch) pitch = gRobot.upperGun.minPoseLimit.pitch;
+	return (int32_t)((10.0f+pitch) * 141.0844f);	
 }
 
+/*
+*名称：UpperGunLeftSpeedTransform
+*功能：上枪左传送带速度转化函数
+*参数：
+*
+*注意：
+*/
+int32_t UpperGunLeftSpeedTransform(float speed)
+{
+	//fix me ,tansform may be different from LeftGun 
+	if(speed > gRobot.upperGun.maxPoseLimit.speed1) speed = gRobot.upperGun.maxPoseLimit.speed1;	
+	if(speed < gRobot.upperGun.minPoseLimit.speed1) speed = gRobot.upperGun.minPoseLimit.speed1;
+	return -4096*speed;
+}
 
 /*
 *名称：ROBOT_Init
@@ -501,16 +621,26 @@ status_t ROBOT_GunAim(unsigned char gun)
 			PosCrl(LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.targetPose.pitch));			
 			PosCrl(LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gRobot.leftGun.targetPose.roll));	
 
-			//fix me, maybe out of range
 			VelCrl(LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gRobot.leftGun.targetPose.speed1));
 			VelCrl(LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gRobot.leftGun.targetPose.speed2));
 
 			break;
 		case RIGHT_GUN:
+			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 			if(gRobot.rightGun.champerBulletState == CHAMPER_BULLET_EMPTY_STATE) return GUN_NO_BULLET_ERROR;
+			PosCrl(RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.targetPose.yaw));
+			PosCrl(RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.targetPose.pitch));			
+			PosCrl(RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.targetPose.roll));	
+
+			VelCrl(RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRobot.rightGun.targetPose.speed1));
+			VelCrl(RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRobot.rightGun.targetPose.speed2));
 			break;
 		case UPPER_GUN:
 			if(gRobot.upperGun.champerBulletState == CHAMPER_BULLET_EMPTY_STATE) return GUN_NO_BULLET_ERROR;
+			PosCrl(UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(gRobot.upperGun.targetPose.yaw));
+			PosCrl(UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gRobot.upperGun.targetPose.pitch));			
+
+			VelCrl(UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(gRobot.upperGun.targetPose.speed1));
 			break;
 		default:
 			break;
@@ -541,20 +671,20 @@ status_t ROBOT_LeftGunCheckAim(void)
 		ReadActualVel(LEFT_GUN_RIGHT_ID);
 		OSTimeDly(5);
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5 || \
-			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5)
+		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
+			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
 		{
 			continue;
 		}
 		
-		if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5 || \
-			gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5)
+		if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f || \
+			gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
 		{
 			continue;
 		}
 		
-		if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5 || \
-			gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5)
+		if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f || \
+			gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5f)
 		{
 			continue;
 		}
@@ -566,6 +696,57 @@ status_t ROBOT_LeftGunCheckAim(void)
 		break;
 	}
 	gRobot.leftGun.ready = GUN_AIM_DONE;
+	return GUN_NO_ERROR;
+}
+
+/*
+*名称：ROBOT_RightGunCheckAim
+*功能：检查瞄准是否已完成，不同枪分开检测为了防止重入，
+*因为此函数中需要设计超时
+*参数：
+*none
+*status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
+*注意：
+*/
+status_t ROBOT_RightGunCheckAim(void)
+{
+	//超时时间为100*5*10ms，1秒
+	int timeout = 100;
+
+	while(timeout--)
+	{
+		//fix me,发送3组命令需要200us*3，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
+		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
+		ReadActualPos(RIGHT_GUN_GROUP_ID);		
+		ReadActualVel(RIGHT_GUN_LEFT_ID);
+		ReadActualVel(RIGHT_GUN_RIGHT_ID);
+		OSTimeDly(5);
+		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
+		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
+			gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
+		{
+			continue;
+		}
+		
+		if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f || \
+			gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
+		{
+			continue;
+		}
+		
+		if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f || \
+			gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.5f)
+		{
+			continue;
+		}
+		
+		//这里检查传送带的速度，暂时没有加
+		
+		
+		//运行到这里，表示都满足指标，跳出循环
+		break;
+	}
+	gRobot.rightGun.ready = GUN_AIM_DONE;
 	return GUN_NO_ERROR;
 }
 
@@ -593,6 +774,15 @@ status_t ROBOT_GunShoot(unsigned char gun, unsigned char mode)
 			}
 			break;
 		case RIGHT_GUN:
+			if(gRobot.rightGun.ready == GUN_AIM_DONE)
+			{
+				//fix me there should be a GasValveControl
+				OSTimeDly(100);
+				//fix me there should be a GasValveControl
+				gRobot.rightGun.shootTimes++;
+				//fix me, 应该检查子弹是否用完
+				gRobot.rightGun.bulletNumber--;
+			}
 			break;
 		case UPPER_GUN:
 			GasValveControl(2,8,1);
@@ -663,6 +853,10 @@ status_t ROBOT_GunHome(unsigned char gun)
 		OSTimeDly(200);
 			break;
 		case RIGHT_GUN:
+			PosCrl(RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
+			PosCrl(RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
+			PosCrl(RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
+			OSTimeDly(200);
 			break;
 		case UPPER_GUN:
 			break;

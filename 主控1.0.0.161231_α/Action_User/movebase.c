@@ -66,7 +66,7 @@ float Vel2Pulse(float vel)
 void MOVEBASE_Init(void)
 {
 	
-//    //电机初始化及使能
+    //电机初始化及使能
 	elmo_Init();
 	
 	elmo_Enable(1);

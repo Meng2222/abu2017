@@ -1,5 +1,5 @@
 /****************************************Copyright (c)****************************************************
-**                                      
+**
 **                                 http://www.powermcu.com
 **
 **--------------File Info---------------------------------------------------------------------------------
@@ -13,16 +13,16 @@
 ** Descriptions:            The original version
 **
 **--------------------------------------------------------------------------------------------------------
-** Modified by:             
-** Modified date:           
-** Version:                 
-** Descriptions:            
+** Modified by:
+** Modified date:
+** Version:
+** Descriptions:
 **
 *********************************************************************************************************/
 
 #ifndef  __APP_CFG_H__
 #define  __APP_CFG_H__
-#include  <os_cpu.h>					  
+#include  <os_cpu.h>
 /*
 *********************************************************************************************************
 *                                       MODULE ENABLE / DISABLE
@@ -36,7 +36,7 @@
 */
 extern  void  App_Task(void);
 
-static  void  App_TaskStart(void); 
+static  void  App_TaskStart(void);
 static 	void  ConfigTask(void);
 static 	void  WalkTask(void);
 /*
@@ -45,11 +45,11 @@ static 	void  WalkTask(void);
 *********************************************************************************************************
 */
 
-#define  APP_TASK_START_PRIO                               10u
-#define  Config_TASK_START_PRIO                            11u
-#define  Walk_TASK_PRIO                                    12u
-#define  LEFT_GUN_AUTO_SHOOT_TASK_PRIO                     13u
-#define  RIGHT_GUN_SHOOT_TASK_PRIO                    14u
+#define  APP_TASK_START_PRIO						10u
+#define  Config_TASK_START_PRIO						11u
+#define  Walk_TASK_PRIO								12u
+#define  LEFT_GUN_AUTO_SHOOT_TASK_PRIO				13u
+#define  RIGHT_GUN_SHOOT_TASK_PRIO					14u
 
 
 
@@ -60,16 +60,16 @@ static 	void  WalkTask(void);
 *                             Size of the task stacks (# of OS_STK entries)
 *********************************************************************************************************
 */
-#define  APP_TASK_START_STK_SIZE                          256u
-#define  Config_TASK_START_STK_SIZE                       1024u
-#define  Walk_TASK_STK_SIZE                               8192u
-#define  LEFT_GUN_AUTO_SHOOT_STK_SIZE                     1024u
-#define  RIGHT_GUN_SHOOT_STK_SIZE                  1024u
+#define  APP_TASK_START_STK_SIZE					256u
+#define  Config_TASK_START_STK_SIZE					1024u
+#define  Walk_TASK_STK_SIZE							8192u
+#define  LEFT_GUN_AUTO_SHOOT_STK_SIZE				1024u
+#define  RIGHT_GUN_SHOOT_STK_SIZE					1024u
 
 /*
 *********************************************************************************************************
 *                                            TASK STACK
-*                             
+*
 *********************************************************************************************************
 */
 
