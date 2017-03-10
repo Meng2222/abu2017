@@ -112,6 +112,7 @@ void App_Task()
                         初始化任务
 ===============================================================
 */
+
 void ConfigTask(void)
 {
 	CPU_INT08U  os_err;
@@ -154,9 +155,9 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-//	OSTaskSuspend(LEFT_GUN_AUTO_SHOOT_TASK_PRIO);
-	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(Walk_TASK_PRIO);
+	OSTaskSuspend(LEFT_GUN_AUTO_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -180,6 +181,7 @@ void WalkTask(void)
 
 				//检查手动or自动
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
+		gRobot.upperGun.mode = GUN_MANUAL_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			if(gRobot.upperGun.shoot == GUN_START_SHOOT) shootFlag = 1;
@@ -248,15 +250,16 @@ void WalkTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(LEFT_GUN);
-				ROBOT_LeftGunCheckAim();
+				ROBOT_GunAim(UPPER_GUN);
+//				ROBOT_LeftGunCheckAim();
+				OSTimeDly(100);
 				//此函数内无延迟,更新shoot状态
-				ROBOT_GunShoot(LEFT_GUN, GUN_MANUAL_MODE);
+				ROBOT_GunShoot(UPPER_GUN, GUN_MANUAL_MODE);
 				//此函数有延迟
-				ROBOT_GunHome(LEFT_GUN);
+//				ROBOT_GunHome(LEFT_GUN);
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
-				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 			}
 		}
 		else

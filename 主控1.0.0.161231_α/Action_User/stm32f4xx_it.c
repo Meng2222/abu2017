@@ -401,12 +401,12 @@ void UART4_IRQHandler(void)
 							gRobot.leftGun.targetPlant = id/5;
 							break;
 							case 1:
-							if(targetAngle < 0.0f)		targetAngle = 0.0f;
-							if(targetAngle > 45.0f)		targetAngle = 45.0f;
+							gRobot.rightGun.targetPose.roll = targetAngle;
+							//1~7表示7个着陆台，转换为0~6
+							gRobot.rightGun.targetPlant = id/5;
  							break;
 							case 2:
-							if(targetAngle < 0.0f)		targetAngle = 0.0f;
-							if(targetAngle > 45.0f)		targetAngle = 45.0f;
+
  							break;
 							default:
 								id2 = 0xff;
@@ -423,12 +423,9 @@ void UART4_IRQHandler(void)
 							gRobot.leftGun.targetPose.pitch = targetAngle;
 							break;
 							case 1:
-							if(targetAngle < 15.0f)		targetAngle = 15.0f;
-							if(targetAngle > 40.0f)		targetAngle = 40.0f;
+							gRobot.rightGun.targetPose.pitch = targetAngle;
  							case 2:
-							if(targetAngle < -10.0f)		targetAngle = -10.0f;
-							if(targetAngle > 40.0f)		targetAngle = 40.0f;
-							PosCrl(11,0,(int32_t)((10.0f + targetAngle) * 141.0844f));
+							gRobot.upperGun.targetPose.pitch = targetAngle;
 							break;
 							default:
 								id2=0xff;
@@ -445,13 +442,10 @@ void UART4_IRQHandler(void)
 							gRobot.leftGun.targetPose.yaw = targetAngle;
 							break;
 							case 1:
-							if(targetAngle < -50.0f)		targetAngle = -50.0f;
-							if(targetAngle > 50.0f)		targetAngle = 50.0f;
+							gRobot.rightGun.targetPose.yaw = targetAngle;
  							break;
 							case 2:
-							if(targetAngle < -20.0f)		targetAngle = -20.0f;
-							if(targetAngle > 20.0f)		targetAngle = 20.0f;
-							PosCrl(10,0,(int32_t)((20.0f + targetAngle) * 102.4f));
+							gRobot.upperGun.targetPose.yaw = targetAngle;
 							break;
 							default:
 								id2 = 0xff;
@@ -466,9 +460,10 @@ void UART4_IRQHandler(void)
 
 							break;
 							case 1:
+								gRobot.rightGun.targetPose.speed1 = data.data32;
 							break;
 							case 2:
-								VelCrl(9, -4096*data.data32);
+								gRobot.upperGun.targetPose.speed1 = data.data32;
 							break;
 							default:
 								id2 = 0xff;
@@ -482,6 +477,7 @@ void UART4_IRQHandler(void)
 								gRobot.leftGun.targetPose.speed2 = data.data32;
 							break;
 							case 1:
+								gRobot.rightGun.targetPose.speed2 = data.data32;
 							break;
 							case 2:
 							break;
@@ -513,7 +509,8 @@ void UART4_IRQHandler(void)
 						gRobot.leftGun.shoot = GUN_START_SHOOT;
 						break;
 					case 2:
-						//GasValveControl(1, 5 , 1);
+						//通知右枪开枪任务执行开枪动作
+						gRobot.rightGun.shoot = GUN_START_SHOOT;
 						break;
 					case 3:
 						//通知上面枪开枪任务执行开枪动作

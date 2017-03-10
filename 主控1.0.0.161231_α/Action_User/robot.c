@@ -77,14 +77,14 @@ static void RightGunInit(void)
 	gRobot.rightGun.targetPose.roll = 0.0f;
 	
 	//fix me, current no data 
-	gRobot.rightGun.maxPoseLimit.pitch = 0.0f;
-	gRobot.rightGun.maxPoseLimit.yaw = 0.0f;
-	gRobot.rightGun.maxPoseLimit.roll = 0.0f;
-	gRobot.rightGun.maxPoseLimit.speed1=0.0f;
-	gRobot.rightGun.maxPoseLimit.speed2=0.0f;
+	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
+	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
+	gRobot.rightGun.maxPoseLimit.roll = 45.0f;
+	gRobot.rightGun.maxPoseLimit.speed1=200.0f;
+	gRobot.rightGun.maxPoseLimit.speed2=200.0f;
 	
-	gRobot.rightGun.minPoseLimit.pitch = 0.0f;
-	gRobot.rightGun.minPoseLimit.yaw = 0.0f;
+	gRobot.rightGun.minPoseLimit.pitch = 15.0f;
+	gRobot.rightGun.minPoseLimit.yaw = -50.0f;
 	gRobot.rightGun.minPoseLimit.roll = 0.0f;
 	gRobot.rightGun.minPoseLimit.speed1=0.0f;
 	gRobot.rightGun.minPoseLimit.speed2=0.0f;
@@ -431,7 +431,7 @@ int32_t RightGunRightSpeedTransform(float speed)
 	//fix me ,tansform may be different from LeftGun 
 	if(speed > gRobot.rightGun.maxPoseLimit.speed2) speed = gRobot.rightGun.maxPoseLimit.speed2;	
 	if(speed < gRobot.rightGun.minPoseLimit.speed2) speed = gRobot.rightGun.minPoseLimit.speed2;
-	return -4096*speed;
+	return 4096*speed;
 }
 
 /*
@@ -717,9 +717,12 @@ status_t ROBOT_RightGunCheckAim(void)
 	{
 		//fix me,发送3组命令需要200us*3，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
 		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
-		ReadActualPos(RIGHT_GUN_GROUP_ID);		
-		ReadActualVel(RIGHT_GUN_LEFT_ID);
-		ReadActualVel(RIGHT_GUN_RIGHT_ID);
+//		ReadActualPos(RIGHT_GUN_GROUP_ID);		
+//		ReadActualVel(RIGHT_GUN_LEFT_ID);
+//		ReadActualVel(RIGHT_GUN_RIGHT_ID);
+		ReadActualPos(LEFT_GUN_GROUP_ID);		
+		ReadActualVel(LEFT_GUN_LEFT_ID);
+		ReadActualVel(LEFT_GUN_RIGHT_ID);
 		OSTimeDly(5);
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
@@ -777,8 +780,10 @@ status_t ROBOT_GunShoot(unsigned char gun, unsigned char mode)
 			if(gRobot.rightGun.ready == GUN_AIM_DONE)
 			{
 				//fix me there should be a GasValveControl
+				GasValveControl(1,5,1);	
 				OSTimeDly(100);
 				//fix me there should be a GasValveControl
+				GasValveControl(1,5,0);	
 				gRobot.rightGun.shootTimes++;
 				//fix me, 应该检查子弹是否用完
 				gRobot.rightGun.bulletNumber--;
@@ -853,9 +858,12 @@ status_t ROBOT_GunHome(unsigned char gun)
 		OSTimeDly(200);
 			break;
 		case RIGHT_GUN:
-			PosCrl(RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
-			PosCrl(RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
-			PosCrl(RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
+//			PosCrl(RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
+//			PosCrl(RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
+//			PosCrl(RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
+			PosCrl(LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
+			PosCrl(LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
+			PosCrl(LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 			OSTimeDly(200);
 			break;
 		case UPPER_GUN:
