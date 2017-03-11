@@ -4,7 +4,7 @@
   * @author    ST42 & Meng22
   * @version   V2.0.0
   * @date      2017/02/07
-  * @brief     Robocon2017�˶�����
+  * @brief     Robocon2017运动控制
   ******************************************************************************
   * @attention
   *            None
@@ -27,14 +27,14 @@
 
 /*
 ============================================================
-         ���٣�mm/s������ת�٣�����/s����ת��             
+         车速（mm/s）与电机转速（脉冲/s）的转换             
 ============================================================
 */
 
 /**
-  * @brief  �����ٶ�ת��Ϊ��׼��λ�ٶ�
-  * @param  pulse:�ٶ� ����/s
-  * @retval vel:�ٶ� mm/s
+  * @brief  脉冲速度转化为标准单位速度
+  * @param  pulse:速度 脉冲/s
+  * @retval vel:速度 mm/s
   */
 float Pulse2Vel(float pulse)
 {
@@ -44,9 +44,9 @@ float Pulse2Vel(float pulse)
 }
 
 /**
-  * @brief  ��׼��λ�ٶ�ת��Ϊ�����ٶ�
-  * @param  vel:�ٶ� mm/s
-  * @retval velpulse:�ٶ� ����/s
+  * @brief  标准单位速度转化为脉冲速度
+  * @param  vel:速度 mm/s
+  * @retval velpulse:速度 脉冲/s
   */
 float Vel2Pulse(float vel)
 {
@@ -56,17 +56,17 @@ float Vel2Pulse(float vel)
 }
 
 /*
-*���ƣ�MOVEBASE_Init
-*���ܣ������˵��̳�ʼ������ʼ�����е������λϵͳ�����̴�����
-*��ʼ������Ҫ��������״̬�л�Ϊ�ѳ�ʼ��
-*������none
-*ע�⣺�˺������Եȴ���λϵͳ��ʼ����ɣ�Ҳ�ɲ��ȴ���������ȴ�����Ҫ
-*�ڶ�λϵͳ���յ���Ч���ݺ󣬸��»�����״̬Ϊ��ʼ����������߼���Ҫע��
+*名称：MOVEBASE_Init
+*功能：机器人底盘初始化，初始化走行电机、定位系统，底盘传感器
+*初始化后，需要将机器人状态切换为已初始化
+*参数：none
+*注意：此函数可以等待定位系统初始化完成，也可不等待，如果不等待，需要
+*在定位系统接收到有效数据后，更新机器人状态为初始化。这里的逻辑需要注意
 */
 void MOVEBASE_Init(void)
 {
 	
-    //�����ʼ����ʹ��
+    //电机初始化及使能
 	elmo_Init();
 	
 	elmo_Enable(1);
@@ -81,10 +81,10 @@ void MOVEBASE_Init(void)
 
 /*
 *MOVEBASE_Run
-*���ܣ��˺�������������������л����˵�����
-*���ݻ�����״̬�ľ������з�ʽ��ͬʱҲ����»����˵�״̬
-*������none
-*ע�⣺�˺���ÿ���������ڵ���һ��
+*功能：此函数完成整个比赛过程中机器人的走行
+*根据机器人状态的决定走行方式，同时也会更新机器人的状态
+*参数：none
+*注意：此函数每个控制周期调用一次
 */
 void MOVEBASE_Run(void)
 {

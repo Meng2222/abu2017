@@ -1,7 +1,7 @@
 #ifndef __ELMO_H
 #define __ELMO_H
 #include "stm32f4xx.h"
-#define   POS_REL  1    //相对位置方式POS_REL = 1 绝对位置方式POS_ABS = 0
+#define   POS_REL  1    //鐩稿浣嶇疆鏂瑰紡POS_REL = 1 缁濆浣嶇疆鏂瑰紡POS_ABS = 0
 #define   POS_ABS  0 
 #define SDO_RESPONSE_COB_ID_BASE 0x280
 

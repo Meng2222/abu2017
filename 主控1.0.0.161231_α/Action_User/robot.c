@@ -9,7 +9,7 @@ robot_t gRobot = {0};
 
 /*
 ============================================================
-                          Ç¹³õÊ¼»¯ 
+                          æžªåˆå§‹åŒ– 
 ============================================================
 */
 
@@ -36,27 +36,27 @@ static void LeftGunInit(void)
 	gRobot.leftGun.minPoseLimit.speed1=0.0f;
 	gRobot.leftGun.minPoseLimit.speed2=0.0f;	
 	
-	//Ç¹Î´½øÐÐÃé×¼
+	//æžªæœªè¿›è¡Œçž„å‡†
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-	//×Ô¶¯Ä£Ê½
+	//è‡ªåŠ¨æ¨¡å¼
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
-	//×Óµ¯Êý
+	//å­å¼¹æ•°
 	gRobot.leftGun.bulletNumber = MAX_BULLET_NUMBER_LEFT;
-	//Ç¹ÌÅ×Óµ¯×´Ì¬£¬ÎÞ×Óµ¯
+	//æžªè†›å­å¼¹çŠ¶æ€ï¼Œæ— å­å¼¹
 	gRobot.leftGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
 	gRobot.leftGun.champerErrerState = 0;
-	//Ç¹Í£Ö¹Éä»÷
+	//æžªåœæ­¢å°„å‡»
 	gRobot.leftGun.shoot = GUN_STOP_SHOOT;
-	//×óÇ¹×ËÌ¬Êý¾Ý¿â
+	//å·¦æžªå§¿æ€æ•°æ®åº“
 	gRobot.leftGun.gunPoseDatabase = (gun_pose_t **)gLeftGunPosDatabase;
-	//×óÇ¹×Ô¶¯·¢ÉäÃüÁî¼¯ºÏ£¬ÀïÃæÎªÍ¶ÉäÖù×ÓµÄË³Ðò
+	//å·¦æžªè‡ªåŠ¨å‘å°„å‘½ä»¤é›†åˆï¼Œé‡Œé¢ä¸ºæŠ•å°„æŸ±å­çš„é¡ºåº
 	gRobot.leftGun.shootCommand = (shoot_command_t *)&gLeftGunShootCmds;
-	//Ä¿±ê×ÅÂ½Ì¨ÉèÖÃÎªÎÞÐ§Ì¨
+	//ç›®æ ‡ç€é™†å°è®¾ç½®ä¸ºæ— æ•ˆå°
 	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
-	//Ä¿±ê´òÅÌÇøÉèÖÃÎªÎÞÐ§Çø
+	//ç›®æ ‡æ‰“ç›˜åŒºè®¾ç½®ä¸ºæ— æ•ˆåŒº
 	gRobot.leftGun.targetZone = INVALID_ZONE_NUMBER;
-	//Éä»÷´ÎÊýÎª0
+	//å°„å‡»æ¬¡æ•°ä¸º0
 	gRobot.leftGun.shootTimes = 0;
 	
 	elmo_Enable(LEFT_GUN_LEFT_ID);
@@ -69,9 +69,9 @@ static void LeftGunInit(void)
 	Vel_cfg(LEFT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(LEFT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(LEFT_GUN_PITCH_ID, 5000,5000,30000);//¸©Ñö
-	Pos_cfg(LEFT_GUN_ROLL_ID, 5000,5000,30000);//·­¹ö
-	Pos_cfg(LEFT_GUN_YAW_ID,5000,5000,30000);//º½Ïò
+	Pos_cfg(LEFT_GUN_PITCH_ID, 5000,5000,30000);//ä¿¯ä»°
+	Pos_cfg(LEFT_GUN_ROLL_ID, 5000,5000,30000);//ç¿»æ»š
+	Pos_cfg(LEFT_GUN_YAW_ID,5000,5000,30000);//èˆªå‘
 	
 
 }
@@ -99,27 +99,27 @@ static void RightGunInit(void)
 	gRobot.rightGun.minPoseLimit.speed1=0.0f;
 	gRobot.rightGun.minPoseLimit.speed2=0.0f;
 	
-	//Ç¹Î´½øÐÐÃé×¼
+	//æžªæœªè¿›è¡Œçž„å‡†
 	gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-	//×Ô¶¯Ä£Ê½
+	//è‡ªåŠ¨æ¨¡å¼
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
-	//×î´ó×Óµ¯Êý
+	//æœ€å¤§å­å¼¹æ•°
 	gRobot.rightGun.bulletNumber = MAX_BULLET_NUMBER_RIGHT;
-	//Ç¹ÌÅ×Óµ¯×´Ì¬£¬ÎÞ×Óµ¯
+	//æžªè†›å­å¼¹çŠ¶æ€ï¼Œæ— å­å¼¹
 	gRobot.rightGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
 	gRobot.rightGun.champerErrerState = 0;
-	//Ç¹Í£Ö¹Éä»÷
+	//æžªåœæ­¢å°„å‡»
 	gRobot.rightGun.shoot = GUN_STOP_SHOOT;
-	//ÓÒÇ¹×ËÌ¬Êý¾Ý¿â
+	//å³æžªå§¿æ€æ•°æ®åº“
 	gRobot.rightGun.gunPoseDatabase = (gun_pose_t **)gRightGunPosDatabase;
-	//ÓÒÇ¹×Ô¶¯·¢ÉäÃüÁî¼¯ºÏ£¬ÀïÃæÎªÍ¶ÉäÖù×ÓµÄË³Ðò
+	//å³æžªè‡ªåŠ¨å‘å°„å‘½ä»¤é›†åˆï¼Œé‡Œé¢ä¸ºæŠ•å°„æŸ±å­çš„é¡ºåº
 	gRobot.rightGun.shootCommand = (shoot_command_t *)&gRightGunShootCmds;
-	//Ä¿±ê×ÅÂ½Ì¨ÉèÖÃÎªÎÞÐ§Ì¨
+	//ç›®æ ‡ç€é™†å°è®¾ç½®ä¸ºæ— æ•ˆå°
 	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
-	//Ä¿±ê´òÅÌÇøÉèÖÃÎªÎÞÐ§Çø
+	//ç›®æ ‡æ‰“ç›˜åŒºè®¾ç½®ä¸ºæ— æ•ˆåŒº
 	gRobot.rightGun.targetZone = INVALID_ZONE_NUMBER;
-	//Éä»÷´ÎÊýÎª0
+	//å°„å‡»æ¬¡æ•°ä¸º0
 	gRobot.rightGun.shootTimes = 0;
 	
 	elmo_Enable(RIGHT_GUN_LEFT_ID);
@@ -132,9 +132,9 @@ static void RightGunInit(void)
 	Vel_cfg(RIGHT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(RIGHT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(RIGHT_GUN_PITCH_ID, 5000,5000,30000);//¸©Ñö
-	Pos_cfg(RIGHT_GUN_ROLL_ID, 5000,5000,30000);//·­¹ö
-	Pos_cfg(RIGHT_GUN_YAW_ID,5000,5000,30000);//º½Ïò
+	Pos_cfg(RIGHT_GUN_PITCH_ID, 5000,5000,30000);//ä¿¯ä»°
+	Pos_cfg(RIGHT_GUN_ROLL_ID, 5000,5000,30000);//ç¿»æ»š
+	Pos_cfg(RIGHT_GUN_YAW_ID,5000,5000,30000);//èˆªå‘
 }
 
 static void UpperGunInit(void)
@@ -159,27 +159,27 @@ static void UpperGunInit(void)
 	gRobot.upperGun.minPoseLimit.speed1=0.0f;
 	gRobot.upperGun.minPoseLimit.speed2=0.0f;
 	
-	//Ç¹Î´½øÐÐÃé×¼
+	//æžªæœªè¿›è¡Œçž„å‡†
 	gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
-	//×Ô¶¯Ä£Ê½
+	//è‡ªåŠ¨æ¨¡å¼
 	gRobot.upperGun.mode = GUN_MANUAL_MODE;
-	//×î´ó×Óµ¯Êý
+	//æœ€å¤§å­å¼¹æ•°
 	gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER;
-	//Ç¹ÌÅ×Óµ¯×´Ì¬£¬ÎÞ×Óµ¯
+	//æžªè†›å­å¼¹çŠ¶æ€ï¼Œæ— å­å¼¹
 	gRobot.upperGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
 	gRobot.upperGun.champerErrerState = 0;
-	//Ç¹Í£Ö¹Éä»÷
+	//æžªåœæ­¢å°„å‡»
 	gRobot.upperGun.shoot = GUN_STOP_SHOOT;
-	//ÉÏÇ¹×ËÌ¬Êý¾Ý¿â
+	//ä¸Šæžªå§¿æ€æ•°æ®åº“
 	gRobot.upperGun.gunPoseDatabase = (gun_pose_t **)gUpperGunPosDatabase;
-	//ÉÏÃæÇ¹×Ô¶¯·¢ÉäÃüÁî¼¯ºÏ£¬ÀïÃæÎªÍ¶ÉäÖù×ÓµÄË³Ðò
+	//ä¸Šé¢æžªè‡ªåŠ¨å‘å°„å‘½ä»¤é›†åˆï¼Œé‡Œé¢ä¸ºæŠ•å°„æŸ±å­çš„é¡ºåº
 	gRobot.upperGun.shootCommand = (shoot_command_t *)&gUpperGunShootCmds;
-	//Ä¿±ê×ÅÂ½Ì¨ÉèÖÃÎªÎÞÐ§Ì¨
+	//ç›®æ ‡ç€é™†å°è®¾ç½®ä¸ºæ— æ•ˆå°
 	gRobot.upperGun.targetPlant = INVALID_PLANT_NUMBER;
-	//Ä¿±ê´òÅÌÇøÉèÖÃÎªÎÞÐ§Çø
+	//ç›®æ ‡æ‰“ç›˜åŒºè®¾ç½®ä¸ºæ— æ•ˆåŒº
 	gRobot.upperGun.targetZone = INVALID_ZONE_NUMBER;
-	//Éä»÷´ÎÊýÎª0
+	//å°„å‡»æ¬¡æ•°ä¸º0
 	gRobot.upperGun.shootTimes = 0;
 	
 	elmo_Enable(UPPER_GUN_LEFT_ID);
@@ -187,22 +187,22 @@ static void UpperGunInit(void)
 	elmo_Enable(UPPER_GUN_PITCH_ID);
 	
 	Vel_cfg(UPPER_GUN_LEFT_ID,300000,300000);
-	Pos_cfg(UPPER_GUN_YAW_ID,5000,5000,30000);//º½Ïò
-	Pos_cfg(UPPER_GUN_PITCH_ID,5000,5000,30000);//¸©Ñö
+	Pos_cfg(UPPER_GUN_YAW_ID,5000,5000,30000);//èˆªå‘
+	Pos_cfg(UPPER_GUN_PITCH_ID,5000,5000,30000);//ä¿¯ä»°
 }
 
 /*
 ============================================================
-                   Ç¹²ÎÊý±ä»»ÓëÄæ±ä»»            
+                   æžªå‚æ•°å˜æ¢ä¸Žé€†å˜æ¢            
 ============================================================
 */
 
 /*
-*Ãû³Æ£ºLeftGunYawTransform
-*¹¦ÄÜ£º×óÇ¹yawÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šLeftGunYawTransform
+*åŠŸèƒ½ï¼šå·¦æžªyawè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t LeftGunYawTransform(float yaw)
 {
@@ -212,11 +212,11 @@ int32_t LeftGunYawTransform(float yaw)
 }
 
 /*
-*Ãû³Æ£ºLeftGunYawInverseTransform
-*¹¦ÄÜ£º×óÇ¹yawÖáÎ»ÖÃ×ª»»µ½½Ç¶È
-*²ÎÊý£º
-*position:ÖáµÄ¾ø¶ÔÎ»ÖÃpulse
-*×¢Òâ£º
+*åç§°ï¼šLeftGunYawInverseTransform
+*åŠŸèƒ½ï¼šå·¦æžªyawè½´ä½ç½®è½¬æ¢åˆ°è§’åº¦
+*å‚æ•°ï¼š
+*position:è½´çš„ç»å¯¹ä½ç½®pulse
+*æ³¨æ„ï¼š
 */
 float LeftGunYawInverseTransform(int32_t position)
 {
@@ -224,11 +224,11 @@ float LeftGunYawInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºLeftGunPitchTransform
-*¹¦ÄÜ£º×óÇ¹pitchÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šLeftGunPitchTransform
+*åŠŸèƒ½ï¼šå·¦æžªpitchè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t LeftGunPitchTransform(float pitch)
 {
@@ -238,11 +238,11 @@ int32_t LeftGunPitchTransform(float pitch)
 }
 
 /*
-*Ãû³Æ£ºLeftGunPitchInverseTransform
-*¹¦ÄÜ£º×óÇ¹pitchÖáÎ»ÖÃ×ª»»µ½½Ç¶È
-*²ÎÊý£º
-*position:ÖáµÄ¾ø¶ÔÎ»ÖÃpulse
-*×¢Òâ£º
+*åç§°ï¼šLeftGunPitchInverseTransform
+*åŠŸèƒ½ï¼šå·¦æžªpitchè½´ä½ç½®è½¬æ¢åˆ°è§’åº¦
+*å‚æ•°ï¼š
+*position:è½´çš„ç»å¯¹ä½ç½®pulse
+*æ³¨æ„ï¼š
 */
 float LeftGunPitchInverseTransform(int32_t position)
 {
@@ -250,11 +250,11 @@ float LeftGunPitchInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºLeftGunRollTransform
-*¹¦ÄÜ£º×óÇ¹rollÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šLeftGunRollTransform
+*åŠŸèƒ½ï¼šå·¦æžªrollè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t LeftGunRollTransform(float roll)
 {
@@ -264,11 +264,11 @@ int32_t LeftGunRollTransform(float roll)
 }
 
 /*
-*Ãû³Æ£ºLeftGunRollInverseTransform
-*¹¦ÄÜ£º×óÇ¹rollÖáÎ»ÖÃ×ª»»µ½½Ç¶È
-*²ÎÊý£º
-*position:ÖáµÄ¾ø¶ÔÎ»ÖÃpulse
-*×¢Òâ£º
+*åç§°ï¼šLeftGunRollInverseTransform
+*åŠŸèƒ½ï¼šå·¦æžªrollè½´ä½ç½®è½¬æ¢åˆ°è§’åº¦
+*å‚æ•°ï¼š
+*position:è½´çš„ç»å¯¹ä½ç½®pulse
+*æ³¨æ„ï¼š
 */
 float LeftGunRollInverseTransform(int32_t position)
 {
@@ -276,11 +276,11 @@ float LeftGunRollInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºLeftGunLeftSpeedTransform
-*¹¦ÄÜ£º×óÇ¹×ó´«ËÍ´øËÙ¶È×ª»»£¬m/s µ½pulse/s
-*²ÎÊý£º
+*åç§°ï¼šLeftGunLeftSpeedTransform
+*åŠŸèƒ½ï¼šå·¦æžªå·¦ä¼ é€å¸¦é€Ÿåº¦è½¬æ¢ï¼Œm/s åˆ°pulse/s
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t LeftGunLeftSpeedTransform(float speed)
 {
@@ -291,24 +291,24 @@ int32_t LeftGunLeftSpeedTransform(float speed)
 }
 
 /*
-*Ãû³Æ£ºLeftGunLeftSpeedInverseTransform
-*¹¦ÄÜ£º×óÇ¹×ó´«ËÍ´øËÙ¶ÈÄæ±ä»»£¬pulse/sµ½m/s 
-*²ÎÊý£º
+*åç§°ï¼šLeftGunLeftSpeedInverseTransform
+*åŠŸèƒ½ï¼šå·¦æžªå·¦ä¼ é€å¸¦é€Ÿåº¦é€†å˜æ¢ï¼Œpulse/såˆ°m/s 
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float LeftGunLeftSpeedInverseTransform(int32_t speed)
 {
-	//fix me, Ìí¼Ó²ÎÊýºÏ·¨ÐÔ¼ì²â
+	//fix me, æ·»åŠ å‚æ•°åˆæ³•æ€§æ£€æµ‹
 	return -(float)speed/4096;
 }
 
 /*
-*Ãû³Æ£ºLeftGunRightSpeedTransform
-*¹¦ÄÜ£º×óÇ¹ÓÒ´«ËÍ´øËÙ¶È×ª»»£¬m/s µ½pulse/s
-*²ÎÊý£º
+*åç§°ï¼šLeftGunRightSpeedTransform
+*åŠŸèƒ½ï¼šå·¦æžªå³ä¼ é€å¸¦é€Ÿåº¦è½¬æ¢ï¼Œm/s åˆ°pulse/s
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t LeftGunRightSpeedTransform(float speed)
 {
@@ -318,24 +318,24 @@ int32_t LeftGunRightSpeedTransform(float speed)
 }
 
 /*
-*Ãû³Æ£ºLeftGunRightSpeedInverseTransform
-*¹¦ÄÜ£º×óÇ¹ÓÒ´«ËÍ´øËÙ¶ÈÄæ±ä»»£¬pulse/sµ½m/s 
-*²ÎÊý£º
+*åç§°ï¼šLeftGunRightSpeedInverseTransform
+*åŠŸèƒ½ï¼šå·¦æžªå³ä¼ é€å¸¦é€Ÿåº¦é€†å˜æ¢ï¼Œpulse/såˆ°m/s 
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float LeftGunRightSpeedInverseTransform(int32_t speed)
 {
-	//fix me, Ìí¼Ó²ÎÊýºÏ·¨ÐÔ¼ì²â
+	//fix me, æ·»åŠ å‚æ•°åˆæ³•æ€§æ£€æµ‹
 	return (float)speed/4096;
 }
 
 /*
-*Ãû³Æ£ºRightGunYawTransform
-*¹¦ÄÜ£ºÓÒÇ¹yawÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šRightGunYawTransform
+*åŠŸèƒ½ï¼šå³æžªyawè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t RightGunYawTransform(float yaw)
 {
@@ -346,11 +346,11 @@ int32_t RightGunYawTransform(float yaw)
 }
 
 /*
-*Ãû³Æ£ºRightGunYawInverseTransform
-*¹¦ÄÜ£ºÓÒÇ¹yawÖá½Ç¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª½Ç¶È
-*²ÎÊý£º
+*åç§°ï¼šRightGunYawInverseTransform
+*åŠŸèƒ½ï¼šå³æžªyawè½´è§’åº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè§’åº¦
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float RightGunYawInverseTransform(int32_t position)
 {
@@ -359,11 +359,11 @@ float RightGunYawInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºRightGunPitchTransform
-*¹¦ÄÜ£ºÓÒÇ¹pitchÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šRightGunPitchTransform
+*åŠŸèƒ½ï¼šå³æžªpitchè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t RightGunPitchTransform(float pitch)
 {
@@ -374,11 +374,11 @@ int32_t RightGunPitchTransform(float pitch)
 }
 
 /*
-*Ãû³Æ£ºRightGunPitchInverseTransform
-*¹¦ÄÜ£ºÓÒÇ¹pitchÖá½Ç¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª½Ç¶È
-*²ÎÊý£º
+*åç§°ï¼šRightGunPitchInverseTransform
+*åŠŸèƒ½ï¼šå³æžªpitchè½´è§’åº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè§’åº¦
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float RightGunPitchInverseTransform(int32_t position)
 {
@@ -387,11 +387,11 @@ float RightGunPitchInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºRightGunRollTransform
-*¹¦ÄÜ£ºÓÒÇ¹rollÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šRightGunRollTransform
+*åŠŸèƒ½ï¼šå³æžªrollè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t RightGunRollTransform(float roll)
 {
@@ -402,11 +402,11 @@ int32_t RightGunRollTransform(float roll)
 }
 
 /*
-*Ãû³Æ£ºRightGunRollInverseTransform
-*¹¦ÄÜ£ºÓÒÇ¹rollÖá½Ç¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª½Ç¶È
-*²ÎÊý£º
+*åç§°ï¼šRightGunRollInverseTransform
+*åŠŸèƒ½ï¼šå³æžªrollè½´è§’åº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè§’åº¦
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float RightGunRollInverseTransform(int32_t position)
 {
@@ -415,11 +415,11 @@ float RightGunRollInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºRightGunLeftSpeedTransform
-*¹¦ÄÜ£ºÓÒÇ¹×ó´«ËÍ´øËÙ¶È×ª»»£¬ÓÉ×ªÃ¿Ãë×ª»¯ÎªÂö³å/s
-*²ÎÊý£º
+*åç§°ï¼šRightGunLeftSpeedTransform
+*åŠŸèƒ½ï¼šå³æžªå·¦ä¼ é€å¸¦é€Ÿåº¦è½¬æ¢ï¼Œç”±è½¬æ¯ç§’è½¬åŒ–ä¸ºè„‰å†²/s
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t RightGunLeftSpeedTransform(float speed)
 {
@@ -430,11 +430,11 @@ int32_t RightGunLeftSpeedTransform(float speed)
 }
 
 /*
-*Ãû³Æ£ºRightGunLeftSpeedInverseTransform
-*¹¦ÄÜ£ºÓÒÇ¹×ó´«ËÍ´øËÙ¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª×ªÃ¿Ãë
-*²ÎÊý£º
+*åç§°ï¼šRightGunLeftSpeedInverseTransform
+*åŠŸèƒ½ï¼šå³æžªå·¦ä¼ é€å¸¦é€Ÿåº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè½¬æ¯ç§’
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float RightGunLeftSpeedInverseTransform(int32_t speed)
 {
@@ -443,10 +443,10 @@ float RightGunLeftSpeedInverseTransform(int32_t speed)
 }
 
 /*
-*Ãû³Æ£ºRightGunRightSpeedTransform
-*¹¦ÄÜ£ºÓÒÇ¹ÓÒ´«ËÍ´øËÙ¶È×ª»»£¬ ÓÉ×ªÃ¿Ãë×ª»¯ÎªÂö³å/s
+*åç§°ï¼šRightGunRightSpeedTransform
+*åŠŸèƒ½ï¼šå³æžªå³ä¼ é€å¸¦é€Ÿåº¦è½¬æ¢ï¼Œ ç”±è½¬æ¯ç§’è½¬åŒ–ä¸ºè„‰å†²/s
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t RightGunRightSpeedTransform(float speed)
 {
@@ -457,11 +457,11 @@ int32_t RightGunRightSpeedTransform(float speed)
 }
 
 /*
-*Ãû³Æ£ºRightGunRightSpeedInverseTransform
-*¹¦ÄÜ£ºÓÒÇ¹×ó´«ËÍ´øËÙ¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª×ªÃ¿Ãë
-*²ÎÊý£º
+*åç§°ï¼šRightGunRightSpeedInverseTransform
+*åŠŸèƒ½ï¼šå³æžªå·¦ä¼ é€å¸¦é€Ÿåº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè½¬æ¯ç§’
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float RightGunRightSpeedInverseTransform(int32_t speed)
 {
@@ -469,11 +469,11 @@ float RightGunRightSpeedInverseTransform(int32_t speed)
 	return (float)speed / 4096.0f;
 }
 /*
-*Ãû³Æ£ºUpperGunYawTransform
-*¹¦ÄÜ£ºÉÏÃæÇ¹yawÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šUpperGunYawTransform
+*åŠŸèƒ½ï¼šä¸Šé¢æžªyawè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t UpperGunYawTransform(float yaw)
 { 
@@ -483,11 +483,11 @@ int32_t UpperGunYawTransform(float yaw)
 }
 
 /*
-*Ãû³Æ£ºUpperGunYawInverseTransform
-*¹¦ÄÜ£ºÉÏÇ¹yawÖá½Ç¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª½Ç¶È
-*²ÎÊý£º
+*åç§°ï¼šUpperGunYawInverseTransform
+*åŠŸèƒ½ï¼šä¸Šæžªyawè½´è§’åº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè§’åº¦
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float UpperGunYawInverseTransform(int32_t position)
 {
@@ -495,11 +495,11 @@ float UpperGunYawInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºUpperGunPitchTransform
-*¹¦ÄÜ£ºÉÏÃæÇ¹pitchÖá½Ç¶È×ª»»µ½Î»ÖÃ£¬½á¹û½«·¢ËÍ¸øÆäÎ»ÖÃ»·
-*²ÎÊý£º
+*åç§°ï¼šUpperGunPitchTransform
+*åŠŸèƒ½ï¼šä¸Šé¢æžªpitchè½´è§’åº¦è½¬æ¢åˆ°ä½ç½®ï¼Œç»“æžœå°†å‘é€ç»™å…¶ä½ç½®çŽ¯
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t UpperGunPitchTransform(float pitch)
 {
@@ -509,11 +509,11 @@ int32_t UpperGunPitchTransform(float pitch)
 }
 
 /*
-*Ãû³Æ£ºRightGunPitchInverseTransform
-*¹¦ÄÜ£ºÉÏÇ¹pitchÖá½Ç¶È·´±ä»»£¬ÓÉÂö³å×ª»¯Îª½Ç¶È
-*²ÎÊý£º
+*åç§°ï¼šRightGunPitchInverseTransform
+*åŠŸèƒ½ï¼šä¸Šæžªpitchè½´è§’åº¦åå˜æ¢ï¼Œç”±è„‰å†²è½¬åŒ–ä¸ºè§’åº¦
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float UpperGunPitchInverseTransform(int32_t position)
 {
@@ -521,11 +521,11 @@ float UpperGunPitchInverseTransform(int32_t position)
 }
 
 /*
-*Ãû³Æ£ºUpperGunLeftSpeedTransform
-*¹¦ÄÜ£ºÉÏÇ¹×ó´«ËÍ´øËÙ¶È×ª»¯º¯Êý
-*²ÎÊý£º
+*åç§°ï¼šUpperGunLeftSpeedTransform
+*åŠŸèƒ½ï¼šä¸Šæžªå·¦ä¼ é€å¸¦é€Ÿåº¦è½¬åŒ–å‡½æ•°
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 int32_t UpperGunLeftSpeedTransform(float speed)
 {
@@ -535,11 +535,11 @@ int32_t UpperGunLeftSpeedTransform(float speed)
 }
 
 /*
-*Ãû³Æ£ºUpperGunLeftSpeedInverseTransform
-*¹¦ÄÜ£ºÉÏÇ¹×ó´«ËÍ´øËÙ¶ÈÄæ±ä»»£¬pulse/sµ½m/s 
-*²ÎÊý£º
+*åç§°ï¼šUpperGunLeftSpeedInverseTransform
+*åŠŸèƒ½ï¼šä¸Šæžªå·¦ä¼ é€å¸¦é€Ÿåº¦é€†å˜æ¢ï¼Œpulse/såˆ°m/s 
+*å‚æ•°ï¼š
 *
-*×¢Òâ£º
+*æ³¨æ„ï¼š
 */
 float UpperGunLeftSpeedInverseTransform(int32_t speed)
 {
@@ -548,15 +548,15 @@ float UpperGunLeftSpeedInverseTransform(int32_t speed)
 
 /*
 ============================================================
-                   »úÆ÷ÈË¶¯×÷Á÷³Ìº¯Êý            
+                   æœºå™¨äººåŠ¨ä½œæµç¨‹å‡½æ•°            
 ============================================================
 */
 
 /*
-*Ãû³Æ£ºROBOT_Init
-*¹¦ÄÜ£º»úÆ÷ÈË³õÊ¼»¯£¬³õÊ¼»¯µ×ÅÌ£¬³õÊ¼»¯Ç¹£¬³õÊ¼»¯
-*²ÎÊý£ºnone
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ÐèÒªÉÏ×Óµ¯£¬ÒòÎªÊÇÊÖ¶¯ÉÏµ¯
+*åç§°ï¼šROBOT_Init
+*åŠŸèƒ½ï¼šæœºå™¨äººåˆå§‹åŒ–ï¼Œåˆå§‹åŒ–åº•ç›˜ï¼Œåˆå§‹åŒ–æžªï¼Œåˆå§‹åŒ–
+*å‚æ•°ï¼šnone
+*æ³¨æ„ï¼šä¸Šé¢çš„æžªä¸éœ€è¦ä¸Šå­å¼¹ï¼Œå› ä¸ºæ˜¯æ‰‹åŠ¨ä¸Šå¼¹
 */
 status_t ROBOT_Init(void)
 {
@@ -576,11 +576,11 @@ status_t ROBOT_Init(void)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunLoad
-*¹¦ÄÜ£º°²×°µ¯¼Ð£¬¼´×¥È¡×Óµ¯¹ý³Ì
-*²ÎÊý£º
-*status:GUN_NO_ERROR£¬GUN_RELOAD_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ÐèÒªÉÏ×Óµ¯£¬ÒòÎªÊÇÊÖ¶¯ÉÏµ¯
+*åç§°ï¼šROBOT_GunLoad
+*åŠŸèƒ½ï¼šå®‰è£…å¼¹å¤¹ï¼Œå³æŠ“å–å­å¼¹è¿‡ç¨‹
+*å‚æ•°ï¼š
+*status:GUN_NO_ERRORï¼ŒGUN_RELOAD_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æžªä¸éœ€è¦ä¸Šå­å¼¹ï¼Œå› ä¸ºæ˜¯æ‰‹åŠ¨ä¸Šå¼¹
 */
 status_t ROBOT_GunLoad(void)
 {
@@ -590,11 +590,11 @@ status_t ROBOT_GunLoad(void)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunOpenSafety
-*¹¦ÄÜ£ºÀ­¿ªÇ¹±£ÏÕ£¬×Óµ¯°²×°ºÃºó²ÅÄÜ½øÐÐ´Ë²½Öè
-*²ÎÊý£º
-*status:GUN_NO_ERROR£¬GUN_OPEN_SAFETY_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ÐèÒª
+*åç§°ï¼šROBOT_GunOpenSafety
+*åŠŸèƒ½ï¼šæ‹‰å¼€æžªä¿é™©ï¼Œå­å¼¹å®‰è£…å¥½åŽæ‰èƒ½è¿›è¡Œæ­¤æ­¥éª¤
+*å‚æ•°ï¼š
+*status:GUN_NO_ERRORï¼ŒGUN_OPEN_SAFETY_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æžªä¸éœ€è¦
 */
 status_t ROBOT_GunOpenSafety(void)
 {
@@ -603,12 +603,12 @@ status_t ROBOT_GunOpenSafety(void)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunReload
-*¹¦ÄÜ£º¸øÇ¹ÉÏµ¯£¬Ã¿´ÎÉä»÷Ç°ÐèÒªÉÏµ¯Ò»´Î
-*²ÎÊý£º
+*åç§°ï¼šROBOT_GunReload
+*åŠŸèƒ½ï¼šç»™æžªä¸Šå¼¹ï¼Œæ¯æ¬¡å°„å‡»å‰éœ€è¦ä¸Šå¼¹ä¸€æ¬¡
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR£¬GUN_RELOAD_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ÐèÒªÉÏ×Óµ¯
+*status:GUN_NO_ERRORï¼ŒGUN_RELOAD_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æžªä¸éœ€è¦ä¸Šå­å¼¹
 */
 status_t ROBOT_GunReload(unsigned char gun)
 {
@@ -633,12 +633,12 @@ status_t ROBOT_GunReload(unsigned char gun)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunReload
-*¹¦ÄÜ£º¸ù¾ÝÇ¹ÌÅ´«¸ÐÆ÷£¬¼ì²â×Óµ¯×´Ì¬£¬¾ö¶¨ºóÃæ¿ªÇ¹µÄ¾ßÌå²ÎÊý
-*²ÎÊý£º
+*åç§°ï¼šROBOT_GunReload
+*åŠŸèƒ½ï¼šæ ¹æ®æžªè†›ä¼ æ„Ÿå™¨ï¼Œæ£€æµ‹å­å¼¹çŠ¶æ€ï¼Œå†³å®šåŽé¢å¼€æžªçš„å…·ä½“å‚æ•°
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR£¬GUN_RELOAD_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ÐèÒªÉÏ×Óµ¯£¬ÒòÎªÊÇÊÖ¶¯ÉÏµ¯
+*status:GUN_NO_ERRORï¼ŒGUN_RELOAD_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æžªä¸éœ€è¦ä¸Šå­å¼¹ï¼Œå› ä¸ºæ˜¯æ‰‹åŠ¨ä¸Šå¼¹
 */
 status_t ROBOT_GunCheckBulletState(unsigned char gun)
 {
@@ -661,16 +661,16 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunAim
-*¹¦ÄÜ£ºÃé×¼£¬Ä¿±ê¸Ä±äºóÐèÒªÏÈµ÷ÓÃ´Ë½Ó¿ÚÀ´ÖØÐÂÃé×¼
-*²ÎÊý£º
+*åç§°ï¼šROBOT_GunAim
+*åŠŸèƒ½ï¼šçž„å‡†ï¼Œç›®æ ‡æ”¹å˜åŽéœ€è¦å…ˆè°ƒç”¨æ­¤æŽ¥å£æ¥é‡æ–°çž„å‡†
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:GUN_NO_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹Ä¿Ç°»úÐµÉÏÃ»ÓÐroll£¬Ã»ÓÐÓÒ²à´«ËÍ´øspeed2
+*æ³¨æ„ï¼šä¸Šé¢çš„æžªç›®å‰æœºæ¢°ä¸Šæ²¡æœ‰rollï¼Œæ²¡æœ‰å³ä¾§ä¼ é€å¸¦speed2
 */
 status_t ROBOT_GunAim(unsigned char gun)
 {
-	//ÕâÀïÓ¦¸Ã±£Ö¤Ç¹ÌÅÀïÓÐ×Óµ¯£¡£¡£¡,fix me£¬¼ì²â²ÎÊýºÏ·¨ÐÔ
+	//è¿™é‡Œåº”è¯¥ä¿è¯æžªè†›é‡Œæœ‰å­å¼¹ï¼ï¼ï¼,fix meï¼Œæ£€æµ‹å‚æ•°åˆæ³•æ€§
 	
 	switch(gun)
 	{
@@ -711,28 +711,28 @@ status_t ROBOT_GunAim(unsigned char gun)
 }
 
 /*
-*Ãû³Æ£ºROBOT_LeftGunCheckAim
-*¹¦ÄÜ£º¼ì²éÃé×¼ÊÇ·ñÒÑÍê³É£¬²»Í¬Ç¹·Ö¿ª¼ì²âÎªÁË·ÀÖ¹ÖØÈë£¬
-*ÒòÎª´Ëº¯ÊýÖÐÐèÒªÉè¼Æ³¬Ê±
-*²ÎÊý£º
+*åç§°ï¼šROBOT_LeftGunCheckAim
+*åŠŸèƒ½ï¼šæ£€æŸ¥çž„å‡†æ˜¯å¦å·²å®Œæˆï¼Œä¸åŒæžªåˆ†å¼€æ£€æµ‹ä¸ºäº†é˜²æ­¢é‡å…¥ï¼Œ
+*å› ä¸ºæ­¤å‡½æ•°ä¸­éœ€è¦è®¾è®¡è¶…æ—¶
+*å‚æ•°ï¼š
 *none
-*status:GUN_AIM_IN_PROCESS£¬ GUN_AIM_DONE
-*×¢Òâ£º
+*status:GUN_AIM_IN_PROCESSï¼Œ GUN_AIM_DONE
+*æ³¨æ„ï¼š
 */
 status_t ROBOT_LeftGunCheckAim(void)
 {
-	//³¬Ê±Ê±¼äÎª100*5*10ms£¬1Ãë
+	//è¶…æ—¶æ—¶é—´ä¸º100*5*10msï¼Œ1ç§’
 	int timeout = 100;
 
 	while(timeout--)
 	{
-		//fix me,·¢ËÍ5×éÃüÁîÐèÒª200us*5£¬¼ÓÉÏ·µ»ØµÄ5Ö¡Êý¾Ý£¬»á´ïµ½2ms£¬ÕâÀï×îºÃÊ¹ÓÃ×éIDÊµÏÖ£¬ÐèÒªÇý¶¯Æ÷Ö§³Ö
-		//fix me ÈýÖáÎ»ÖÃÒÑ¾­Ö§³Ö×éID£¬×éIDÔÚrobot.hÖÐ¶¨Òå
+		//fix me,å‘é€5ç»„å‘½ä»¤éœ€è¦200us*5ï¼ŒåŠ ä¸Šè¿”å›žçš„5å¸§æ•°æ®ï¼Œä¼šè¾¾åˆ°2msï¼Œè¿™é‡Œæœ€å¥½ä½¿ç”¨ç»„IDå®žçŽ°ï¼Œéœ€è¦é©±åŠ¨å™¨æ”¯æŒ
+		//fix me ä¸‰è½´ä½ç½®å·²ç»æ”¯æŒç»„IDï¼Œç»„IDåœ¨robot.hä¸­å®šä¹‰
 		ReadActualPos(LEFT_GUN_GROUP_ID);		
 		ReadActualVel(LEFT_GUN_LEFT_ID);
 		ReadActualVel(LEFT_GUN_RIGHT_ID);
 		OSTimeDly(5);
-		//fix me,¼ì²éÇ¹Î»×ËÊÇ·ñµ½Î»£¬ºóÃæÐèÒªÔÚÇ¹½á¹¹ÌåÖÐÔö¼Ó¿ÉÈÝÈÌÎó²î£¬È»ºó·â×°³Éº¯Êý¼ì²â
+		//fix me,æ£€æŸ¥æžªä½å§¿æ˜¯å¦åˆ°ä½ï¼ŒåŽé¢éœ€è¦åœ¨æžªç»“æž„ä½“ä¸­å¢žåŠ å¯å®¹å¿è¯¯å·®ï¼Œç„¶åŽå°è£…æˆå‡½æ•°æ£€æµ‹
 		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
 			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
 		{
@@ -751,10 +751,10 @@ status_t ROBOT_LeftGunCheckAim(void)
 			continue;
 		}
 		
-		//ÕâÀï¼ì²é´«ËÍ´øµÄËÙ¶È£¬ÔÝÊ±Ã»ÓÐ¼Ó
+		//è¿™é‡Œæ£€æŸ¥ä¼ é€å¸¦çš„é€Ÿåº¦ï¼Œæš‚æ—¶æ²¡æœ‰åŠ 
 		
 		
-		//ÔËÐÐµ½ÕâÀï£¬±íÊ¾¶¼Âú×ãÖ¸±ê£¬Ìø³öÑ­»·
+		//è¿è¡Œåˆ°è¿™é‡Œï¼Œè¡¨ç¤ºéƒ½æ»¡è¶³æŒ‡æ ‡ï¼Œè·³å‡ºå¾ªçŽ¯
 		break;
 	}
 	gRobot.leftGun.ready = GUN_AIM_DONE;
@@ -762,23 +762,23 @@ status_t ROBOT_LeftGunCheckAim(void)
 }
 
 /*
-*Ãû³Æ£ºROBOT_RightGunCheckAim
-*¹¦ÄÜ£º¼ì²éÃé×¼ÊÇ·ñÒÑÍê³É£¬²»Í¬Ç¹·Ö¿ª¼ì²âÎªÁË·ÀÖ¹ÖØÈë£¬
-*ÒòÎª´Ëº¯ÊýÖÐÐèÒªÉè¼Æ³¬Ê±
-*²ÎÊý£º
+*åç§°ï¼šROBOT_RightGunCheckAim
+*åŠŸèƒ½ï¼šæ£€æŸ¥çž„å‡†æ˜¯å¦å·²å®Œæˆï¼Œä¸åŒæžªåˆ†å¼€æ£€æµ‹ä¸ºäº†é˜²æ­¢é‡å…¥ï¼Œ
+*å› ä¸ºæ­¤å‡½æ•°ä¸­éœ€è¦è®¾è®¡è¶…æ—¶
+*å‚æ•°ï¼š
 *none
-*status:GUN_AIM_IN_PROCESS£¬ GUN_AIM_DONE
-*×¢Òâ£º
+*status:GUN_AIM_IN_PROCESSï¼Œ GUN_AIM_DONE
+*æ³¨æ„ï¼š
 */
 status_t ROBOT_RightGunCheckAim(void)
 {
-	//³¬Ê±Ê±¼äÎª100*5*10ms£¬1Ãë
+	//è¶…æ—¶æ—¶é—´ä¸º100*5*10msï¼Œ1ç§’
 	int timeout = 100;
 
 	while(timeout--)
 	{
-		//fix me,·¢ËÍ3×éÃüÁîÐèÒª200us*3£¬¼ÓÉÏ·µ»ØµÄ5Ö¡Êý¾Ý£¬»á´ïµ½2ms£¬ÕâÀï×îºÃÊ¹ÓÃ×éIDÊµÏÖ£¬ÐèÒªÇý¶¯Æ÷Ö§³Ö
-		//fix me ÈýÖáÎ»ÖÃÒÑ¾­Ö§³Ö×éID£¬×éIDÔÚrobot.hÖÐ¶¨Òå
+		//fix me,å‘é€3ç»„å‘½ä»¤éœ€è¦200us*3ï¼ŒåŠ ä¸Šè¿”å›žçš„5å¸§æ•°æ®ï¼Œä¼šè¾¾åˆ°2msï¼Œè¿™é‡Œæœ€å¥½ä½¿ç”¨ç»„IDå®žçŽ°ï¼Œéœ€è¦é©±åŠ¨å™¨æ”¯æŒ
+		//fix me ä¸‰è½´ä½ç½®å·²ç»æ”¯æŒç»„IDï¼Œç»„IDåœ¨robot.hä¸­å®šä¹‰
 //		ReadActualPos(RIGHT_GUN_GROUP_ID);		
 //		ReadActualVel(RIGHT_GUN_LEFT_ID);
 //		ReadActualVel(RIGHT_GUN_RIGHT_ID);
@@ -786,7 +786,7 @@ status_t ROBOT_RightGunCheckAim(void)
 		ReadActualVel(LEFT_GUN_LEFT_ID);
 		ReadActualVel(LEFT_GUN_RIGHT_ID);
 		OSTimeDly(5);
-		//fix me,¼ì²éÇ¹Î»×ËÊÇ·ñµ½Î»£¬ºóÃæÐèÒªÔÚÇ¹½á¹¹ÌåÖÐÔö¼Ó¿ÉÈÝÈÌÎó²î£¬È»ºó·â×°³Éº¯Êý¼ì²â
+		//fix me,æ£€æŸ¥æžªä½å§¿æ˜¯å¦åˆ°ä½ï¼ŒåŽé¢éœ€è¦åœ¨æžªç»“æž„ä½“ä¸­å¢žåŠ å¯å®¹å¿è¯¯å·®ï¼Œç„¶åŽå°è£…æˆå‡½æ•°æ£€æµ‹
 		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
 			gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
 		{
@@ -805,10 +805,10 @@ status_t ROBOT_RightGunCheckAim(void)
 			continue;
 		}
 		
-		//ÕâÀï¼ì²é´«ËÍ´øµÄËÙ¶È£¬ÔÝÊ±Ã»ÓÐ¼Ó
+		//è¿™é‡Œæ£€æŸ¥ä¼ é€å¸¦çš„é€Ÿåº¦ï¼Œæš‚æ—¶æ²¡æœ‰åŠ 
 		
 		
-		//ÔËÐÐµ½ÕâÀï£¬±íÊ¾¶¼Âú×ãÖ¸±ê£¬Ìø³öÑ­»·
+		//è¿è¡Œåˆ°è¿™é‡Œï¼Œè¡¨ç¤ºéƒ½æ»¡è¶³æŒ‡æ ‡ï¼Œè·³å‡ºå¾ªçŽ¯
 		break;
 	}
 	gRobot.rightGun.ready = GUN_AIM_DONE;
@@ -816,51 +816,52 @@ status_t ROBOT_RightGunCheckAim(void)
 }
 
 /*
-*Ãû³Æ£ºROBOT_UpperGunCheckAim
-*¹¦ÄÜ£º¼ì²éÃé×¼ÊÇ·ñÒÑÍê³É£¬²»Í¬Ç¹·Ö¿ª¼ì²âÎªÁË·ÀÖ¹ÖØÈë£¬
-*ÒòÎª´Ëº¯ÊýÖÐÐèÒªÉè¼Æ³¬Ê±
-*²ÎÊý£º
+*åç§°ï¼šROBOT_UpperGunCheckAim
+*åŠŸèƒ½ï¼šæ£€æŸ¥çž„å‡†æ˜¯å¦å·²å®Œæˆï¼Œä¸åŒæžªåˆ†å¼€æ£€æµ‹ä¸ºäº†é˜²æ­¢é‡å…¥ï¼Œ
+*å› ä¸ºæ­¤å‡½æ•°ä¸­éœ€è¦è®¾è®¡è¶…æ—¶
+*å‚æ•°ï¼š
 *none
-*status:GUN_AIM_IN_PROCESS£¬ GUN_AIM_DONE
-*×¢Òâ£º
+*status:GUN_AIM_IN_PROCESSï¼Œ GUN_AIM_DONE
+*æ³¨æ„ï¼š
 */
 status_t ROBOT_UpperGunCheckAim(void)
 {
-	//³¬Ê±Ê±¼äÎª100*5*10ms£¬5Ãë
+	//è¶…æ—¶æ—¶é—´ä¸º100*5*10msï¼Œ5ç§’
 	int timeout = 100;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	
 	while(timeout--)
 	{
-		//¼ì²é·ÀÊØÌ¨ÉÏÅÌ×´Ì¬µÄ±ä»¯£¬Èç¹ûÓÐ¸Ä±äÁ¢¼´Ìø³öÑ­»·ÖØÐÂ´òÅÌ
+		//æ£€æŸ¥é˜²å®ˆå°ä¸Šç›˜çŠ¶æ€çš„å˜åŒ–ï¼Œå¦‚æžœæœ‰æ”¹å˜ç«‹å³è·³å‡ºå¾ªçŽ¯é‡æ–°æ‰“ç›˜
+		//fix me è€¦åˆå¤ªé«˜
 		if (lastTargetZone != gRobot.upperGun.targetZone)
 		{
 			gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 			break;
 		}
 		
-		//fix me ÈýÖáÎ»ÖÃÒÑ¾­Ö§³Ö×éID£¬×éIDÔÚrobot.hÖÐ¶¨Òå
+		//fix me ä¸‰è½´ä½ç½®å·²ç»æ”¯æŒç»„IDï¼Œç»„IDåœ¨robot.hä¸­å®šä¹‰
 		ReadActualPos(UPPER_GUN_GROUP_ID);
 		ReadActualVel(UPPER_GUN_LEFT_ID);
 		OSTimeDly(5);
 		
-		//fix me,¼ì²éÇ¹Î»×ËÊÇ·ñµ½Î»£¬ºóÃæÐèÒªÔÚÇ¹½á¹¹ÌåÖÐÔö¼Ó¿ÉÈÝÈÌÎó²î£¬È»ºó·â×°³Éº¯Êý¼ì²â
-		if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5 || \
-			gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 0.5)
+		//fix me,æ£€æŸ¥æžªä½å§¿æ˜¯å¦åˆ°ä½ï¼ŒåŽé¢éœ€è¦åœ¨æžªç»“æž„ä½“ä¸­å¢žåŠ å¯å®¹å¿è¯¯å·®ï¼Œç„¶åŽå°è£…æˆå‡½æ•°æ£€æµ‹
+		if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f || \
+			gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 0.5f)
 		{
 			continue;
 		}
 		
-		if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.5 || \
-			gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.5)
+		if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.5f || \
+			gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.5f)
 		{
 			continue;
 		}
 		
-		//ÕâÀï¼ì²é´«ËÍ´øµÄËÙ¶È£¬ÔÝÊ±Ã»ÓÐ¼Ó
+		//è¿™é‡Œæ£€æŸ¥ä¼ é€å¸¦çš„é€Ÿåº¦ï¼Œæš‚æ—¶æ²¡æœ‰åŠ 
 		
 		
-		//ÔËÐÐµ½ÕâÀï£¬±íÊ¾¶¼Âú×ãÖ¸±ê£¬Ìø³öÑ­»·
+		//è¿è¡Œåˆ°è¿™é‡Œï¼Œè¡¨ç¤ºéƒ½æ»¡è¶³æŒ‡æ ‡ï¼Œè·³å‡ºå¾ªçŽ¯
 		gRobot.upperGun.shoot = GUN_START_SHOOT;
 		break;
 	}
@@ -872,11 +873,11 @@ status_t ROBOT_UpperGunCheckAim(void)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunShoot
-*¹¦ÄÜ£º¿ªÇ¹£¬¿ªÇ¹Ç°ÐèÒªÈ·±£×Óµ¯ÉÏÌÅ£¬À­¿ª±£ÏÕ£¬Ç¹Ö§¼ÜÒÑ¾­¾ÍÐ÷
-*²ÎÊý£º
+*åç§°ï¼šROBOT_GunShoot
+*åŠŸèƒ½ï¼šå¼€æžªï¼Œå¼€æžªå‰éœ€è¦ç¡®ä¿å­å¼¹ä¸Šè†›ï¼Œæ‹‰å¼€ä¿é™©ï¼Œæžªæ”¯æž¶å·²ç»å°±ç»ª
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*status:GUN_NO_ERROR£¬GUN_CHAMPER_ERROR£¬ GUN_NO_BULLET_ERROR£¬ GUN_NO_READY_ERROR
+*status:GUN_NO_ERRORï¼ŒGUN_CHAMPER_ERRORï¼Œ GUN_NO_BULLET_ERRORï¼Œ GUN_NO_READY_ERROR
 */
 status_t ROBOT_GunShoot(unsigned char gun)
 {
@@ -889,7 +890,7 @@ status_t ROBOT_GunShoot(unsigned char gun)
 				OSTimeDly(100);
 				GasValveControl(1,5,0);	
 				gRobot.leftGun.shootTimes++;
-				//fix me, Ó¦¸Ã¼ì²é×Óµ¯ÊÇ·ñÓÃÍê
+				//fix me, åº”è¯¥æ£€æŸ¥å­å¼¹æ˜¯å¦ç”¨å®Œ
 				gRobot.leftGun.bulletNumber--;
 			}
 			break;
@@ -902,7 +903,7 @@ status_t ROBOT_GunShoot(unsigned char gun)
 				//fix me there should be a GasValveControl
 				GasValveControl(1,5,0);	
 				gRobot.rightGun.shootTimes++;
-				//fix me, Ó¦¸Ã¼ì²é×Óµ¯ÊÇ·ñÓÃÍê
+				//fix me, åº”è¯¥æ£€æŸ¥å­å¼¹æ˜¯å¦ç”¨å®Œ
 				gRobot.rightGun.bulletNumber--;
 			}
 			break;
@@ -913,7 +914,7 @@ status_t ROBOT_GunShoot(unsigned char gun)
 				OSTimeDly(100);
 				GasValveControl(2,8,0);
 				gRobot.upperGun.shootTimes++;
-				//fix me, Ó¦¸Ã¼ì²é×Óµ¯ÊÇ·ñÓÃÍê
+				//fix me, åº”è¯¥æ£€æŸ¥å­å¼¹æ˜¯å¦ç”¨å®Œ
 				gRobot.leftGun.bulletNumber--;
 			}
 			break;
@@ -925,9 +926,9 @@ status_t ROBOT_GunShoot(unsigned char gun)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunHome
-*¹¦ÄÜ£ºÇ¹¹éÎ»£¬¿ªÇ¹ºóÎªÁË¸üºÃµÄÉÏÌÅÐèÒª¹éÎ»
-*²ÎÊý£º
+*åç§°ï¼šROBOT_GunHome
+*åŠŸèƒ½ï¼šæžªå½’ä½ï¼Œå¼€æžªåŽä¸ºäº†æ›´å¥½çš„ä¸Šè†›éœ€è¦å½’ä½
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:GUN_NO_ERROR
 */
@@ -940,19 +941,19 @@ status_t ROBOT_GunHome(unsigned char gun)
 		PosCrl(LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 		PosCrl(LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 
-		//³¬Ê±Ê±¼äÎª100*5*10ms£¬1Ãë
+		//è¶…æ—¶æ—¶é—´ä¸º100*5*10msï¼Œ1ç§’
 //	int timeout = 100;
 
 //	while(timeout--)
 //	{
-//		//fix me,·¢ËÍ5×éÃüÁîÐèÒª200us*5£¬¼ÓÉÏ·µ»ØµÄ5Ö¡Êý¾Ý£¬»á´ïµ½2ms£¬ÕâÀï×îºÃÊ¹ÓÃ×éIDÊµÏÖ£¬ÐèÒªÇý¶¯Æ÷Ö§³Ö
+//		//fix me,å‘é€5ç»„å‘½ä»¤éœ€è¦200us*5ï¼ŒåŠ ä¸Šè¿”å›žçš„5å¸§æ•°æ®ï¼Œä¼šè¾¾åˆ°2msï¼Œè¿™é‡Œæœ€å¥½ä½¿ç”¨ç»„IDå®žçŽ°ï¼Œéœ€è¦é©±åŠ¨å™¨æ”¯æŒ
 //		ReadActualPos(LEFT_GUN_ROLL_ID);
 //		ReadActualPos(LEFT_GUN_PITCH_ID);
 //		ReadActualPos(LEFT_GUN_YAW_ID);
 //		ReadActualVel(LEFT_GUN_LEFT_ID);
 //		ReadActualVel(LEFT_GUN_RIGHT_ID);
 //		OSTimeDly(5);
-//		//fix me,¼ì²éÇ¹Î»×ËÊÇ·ñµ½Î»£¬ºóÃæÐèÒªÔÚÇ¹½á¹¹ÌåÖÐÔö¼Ó¿ÉÈÝÈÌÎó²î£¬È»ºó·â×°³Éº¯Êý¼ì²â
+//		//fix me,æ£€æŸ¥æžªä½å§¿æ˜¯å¦åˆ°ä½ï¼ŒåŽé¢éœ€è¦åœ¨æžªç»“æž„ä½“ä¸­å¢žåŠ å¯å®¹å¿è¯¯å·®ï¼Œç„¶åŽå°è£…æˆå‡½æ•°æ£€æµ‹
 //		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5 || \
 //			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5)
 //		{
@@ -971,10 +972,10 @@ status_t ROBOT_GunHome(unsigned char gun)
 //			continue;
 //		}
 		
-//		//ÕâÀï¼ì²é´«ËÍ´øµÄËÙ¶È£¬ÔÝÊ±Ã»ÓÐ¼Ó
+//		//è¿™é‡Œæ£€æŸ¥ä¼ é€å¸¦çš„é€Ÿåº¦ï¼Œæš‚æ—¶æ²¡æœ‰åŠ 
 //		
 //		
-//		//ÔËÐÐµ½ÕâÀï£¬±íÊ¾¶¼Âú×ãÖ¸±ê£¬Ìø³öÑ­»·
+//		//è¿è¡Œåˆ°è¿™é‡Œï¼Œè¡¨ç¤ºéƒ½æ»¡è¶³æŒ‡æ ‡ï¼Œè·³å‡ºå¾ªçŽ¯
 //		break;
 //	}
 		OSTimeDly(200);
@@ -994,9 +995,9 @@ status_t ROBOT_GunHome(unsigned char gun)
 }
 
 /*
-*Ãû³Æ£ºROBOT_GunCheckMode
-*¹¦ÄÜ£º¼ì²éÇ¹µÄÄ£Ê½
-*²ÎÊý£º
+*åç§°ï¼šROBOT_GunCheckMode
+*åŠŸèƒ½ï¼šæ£€æŸ¥æžªçš„æ¨¡å¼
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:
 */

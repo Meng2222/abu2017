@@ -1,27 +1,27 @@
 #include "stm32f4xx.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-//�û�������
+//用户配置区
 
-////���Ӷ˿ں�:8086,�������޸�Ϊ�����˿�.
+////连接端口号:8086,可自行修改为其他端口.
 //const u8* portnum=(u8*)"8086";
 //const u8* ipp=(u8*)"192.168.4.2";
 
-//WIFI STAģʽ,����Ҫȥ���ӵ�·�������߲���,��������Լ���·��������,�����޸�.
-//const u8* wifista_ssid=(u8*)"ALIENTEK";			//·����SSID��
-//const u8* wifista_encryption=(u8*)"wpawpa2_aes";	//wpa/wpa2 aes���ܷ�ʽ
-//const u8* wifista_password=(u8*)"15902020353"; 	//��������
+//WIFI STA模式,设置要去连接的路由器无线参数,请根据你自己的路由器设置,自行修改.
+//const u8* wifista_ssid=(u8*)"ALIENTEK";			//路由器SSID号
+//const u8* wifista_encryption=(u8*)"wpawpa2_aes";	//wpa/wpa2 aes加密方式
+//const u8* wifista_password=(u8*)"15902020353"; 	//连接密码
 
-////WIFI APģʽ,ģ���������߲���,�������޸�.
-//const u8* wifiap_ssid=(u8*)"ATK-ESP8266";			//����SSID��
-//const u8* wifiap_encryption=(u8*)"wpawpa2_aes";	//wpa/wpa2 aes���ܷ�ʽ
-//const u8* wifiap_password=(u8*)"12345678"; 		//�������� 
+////WIFI AP模式,模块对外的无线参数,可自行修改.
+//const u8* wifiap_ssid=(u8*)"ATK-ESP8266";			//对外SSID号
+//const u8* wifiap_encryption=(u8*)"wpawpa2_aes";	//wpa/wpa2 aes加密方式
+//const u8* wifiap_password=(u8*)"12345678"; 		//连接密码 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-////4������ģʽ
-//const u8 *ATK_ESP8266_CWMODE_TBL[3]={(u8*)"STAģʽ ",(u8*)"APģʽ ",(u8*)"AP&STAģʽ "};	//ATK-ESP8266,3������ģʽ,Ĭ��Ϊ·����(ROUTER)ģʽ 
-////4�ֹ���ģʽ
-//const u8 *ATK_ESP8266_WORKMODE_TBL[3]={(u8*)"TCP������",(u8*)"TCP�ͻ���",(u8*)" UDP ģʽ"};	//ATK-ESP8266,4�ֹ���ģʽ
-////5�ּ��ܷ�ʽ
+////4个网络模式
+//const u8 *ATK_ESP8266_CWMODE_TBL[3]={(u8*)"STA模式 ",(u8*)"AP模式 ",(u8*)"AP&STA模式 "};	//ATK-ESP8266,3种网络模式,默认为路由器(ROUTER)模式 
+////4种工作模式
+//const u8 *ATK_ESP8266_WORKMODE_TBL[3]={(u8*)"TCP服务器",(u8*)"TCP客户端",(u8*)" UDP 模式"};	//ATK-ESP8266,4种工作模式
+////5种加密方式
 //const u8 *ATK_ESP8266_ECN_TBL[5]={(u8*)"OPEN",(u8*)"WEP",(u8*)"WPA_PSK",(u8*)"WPA2_PSK",(u8*)"WPA_WAP2_PSK"};
 /////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 

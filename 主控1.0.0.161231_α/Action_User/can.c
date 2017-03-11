@@ -48,7 +48,7 @@ void CAN_Config(CAN_TypeDef* CANx,
 
   /* CAN GPIOs configuration */
 	
-	//È·¶¨CAN_RxPin
+	//ç¡®å®šCAN_RxPin
 	
 	switch(CAN_RxPin)
 	{    
@@ -136,7 +136,7 @@ void CAN_Config(CAN_TypeDef* CANx,
 		default: break;
 	}
 
-	//È·¶¨CAN_TxPin
+	//ç¡®å®šCAN_TxPin
 	switch(CAN_TxPin)
 	{    
 		case GPIO_Pin_0:
@@ -416,9 +416,9 @@ uint8_t CAN_TxMsg(CAN_TypeDef* CANx,
 	TxMessage.ExtId=StdId;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
-	TxMessage.DLC=len;						 // ·¢ËÍÁ½Ö¡ĞÅÏ¢
+	TxMessage.DLC=len;						 // å‘é€ä¸¤å¸§ä¿¡æ¯
 	for(i=0;i<len;i++)
-		TxMessage.Data[i]=Msg[i];			 // µÚÒ»Ö¡ĞÅÏ¢ 
+		TxMessage.Data[i]=Msg[i];			 // ç¬¬ä¸€å¸§ä¿¡æ¯ 
   
 	mbox= CAN_Transmit(CANx, &TxMessage);         	
 	i=0;

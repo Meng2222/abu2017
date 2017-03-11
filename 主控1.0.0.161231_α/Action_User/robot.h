@@ -3,27 +3,27 @@
 #include "stdint.h"
 #include "movebase.h"
 /**************************************************************************************
- �궨��
+ 宏定义
 **************************************************************************************/
 
-//��½̨����
+//着陆台个数
 #define LAND_NUMBER 7
-//������ǹ�ĸ���
+//机器人枪的个数
 #define GUN_NUMBER 3
-//�ӵ���ǹ����״̬���࣬�ɹ��ߴ�����
+//子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
-//����̨������
+//防守台分区数
 #define ZONE_NUMBER 4
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
 #define UPPER_GUN				3
 
-//��ǹ��ID��
+//左枪组ID号
 #define LEFT_GUN_GROUP_ID		101
-//��ǹ��ID��
+//右枪组ID号
 #define RIGHT_GUN_GROUP_ID		102
-//����ǹ��ID��
+//上面枪组ID号
 #define UPPER_GUN_GROUP_ID		103
 
 #define GUN_AUTO_MODE			0
@@ -32,114 +32,114 @@
 #define GUN_START_SHOOT 1
 #define GUN_STOP_SHOOT 0
 
-//��ǹ֧��roll��CAN ID
+//左枪支架roll轴CAN ID
 #define LEFT_GUN_ROLL_ID 7
-//��ǹ֧��pitch��CAN ID
+//左枪支架pitch轴CAN ID
 #define LEFT_GUN_PITCH_ID 6
-//��ǹ֧��yaw��CAN ID
+//左枪支架yaw轴CAN ID
 #define LEFT_GUN_YAW_ID 8
-//��ǹ��ഫ�ʹ���CAN ID
+//左枪左侧传送带轴CAN ID
 #define LEFT_GUN_LEFT_ID 4
-//��ǹ�Ҳഫ�ʹ���CAN ID
+//左枪右侧传送带轴CAN ID
 #define LEFT_GUN_RIGHT_ID 5
 
-//��ǹ֧��roll��CAN ID
+//右枪支架roll轴CAN ID
 #define RIGHT_GUN_ROLL_ID 7
-//��ǹ֧��pitch��CAN ID
+//右枪支架pitch轴CAN ID
 #define RIGHT_GUN_PITCH_ID 6
-//��ǹ֧��yaw��CAN ID
+//右枪支架yaw轴CAN ID
 #define RIGHT_GUN_YAW_ID 8
-//��ǹ��ഫ�ʹ���CAN ID
+//右枪左侧传送带轴CAN ID
 #define RIGHT_GUN_LEFT_ID 4
-//��ǹ�Ҳഫ�ʹ���CAN ID
+//右枪右侧传送带轴CAN ID
 #define RIGHT_GUN_RIGHT_ID 5
 
-//����ǹ֧��pitch��CAN ID
+//上面枪支架pitch轴CAN ID
 #define UPPER_GUN_PITCH_ID 11
-//����ǹ֧��yaw��CAN ID
+//上面枪支架yaw轴CAN ID
 #define UPPER_GUN_YAW_ID 10
-//����ǹ��ഫ�ʹ���CAN ID
+//上面枪左侧传送带轴CAN ID
 #define UPPER_GUN_LEFT_ID 9
 
 
-//������
+//射击完成
 #define GUN_NO_ERROR 0
-//ǹ�ſ���
+//枪膛卡弹
 #define GUN_CHAMPER_ERROR -1
-//���п�
+//弹夹空
 #define GUN_NO_BULLET_ERROR -2
-//ǹ��δ��λ�� fix me
+//枪架未就位， fix me
 #define GUN_NO_READY_ERROR -3
-//�ϵ�ʧ��
+//上弹失败
 #define GUN_RELOAD_ERROR -4
-//�򿪱���ʧ��
+//打开保险失败
 #define GUN_OPEN_SAFETY_ERROR -5
 
-//ǹ����ӵ���
+//枪最大子弹数
 #define MAX_BULLET_NUMBER_LEFT 20
 #define MAX_BULLET_NUMBER_RIGHT 20
 #define MAX_BULLET_NUMBER_UPPER 10
-//ǹ����Զ������ӵ�����
+//枪最大自动发射子弹发数
 #define MAX_AUTO_BULLET_NUMBER 10
 
-//��׼δ���
+//瞄准未完成
 #define GUN_AIM_IN_PROCESS 1
-//��׼���
+//瞄准完成
 #define GUN_AIM_DONE 2
 
-//�ӵ����������
+//子弹最大特征数
 #define CHAMPER_BULLET_MAX_FEATURE_STATE 10
 
-//ǹ�����ӵ�
+//枪膛无子弹
 #define CHAMPER_BULLET_EMPTY_STATE 0xff
 
-//ǹ�����ӵ�������0������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征0，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE0_STATE 0
 
-//ǹ�����ӵ�������1������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征1，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE1_STATE 1
 
-//ǹ�����ӵ�������2������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征2，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE2_STATE 2
 
-//ǹ�����ӵ�������3������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征3，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE3_STATE 3
 
-//ǹ�����ӵ�������4������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征4，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE4_STATE 4
 
-//ǹ�����ӵ�������5������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征5，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE5_STATE 5
 
-//ǹ�����ӵ�������6������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征6，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE6_STATE 6
 
-//ǹ�����ӵ�������7������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征7，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE7_STATE 7
 
-//ǹ�����ӵ�������8������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征8，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE8_STATE 8
 
-//ǹ�����ӵ�������9������Ҫ��ϸ���������ݲ�ͬ��״̬�����ǹ����̬
+//枪膛有子弹，特征9，这里要详细描述，根据不同的状态会调节枪的姿态
 #define CHAMPER_BULLET_FEATURE9_STATE 9
 
-//���������ϵ�
+//机器人已上电
 #define ROBOT_STAGE_POWER_ON 0
-//�������Ѿ���ʼ��
+//机器人已经初始化
 #define ROBOT_STAGE_INIT 1
-//�����˴��ڼ��ٹ�����
+//机器人处于加速过程中
 #define ROBOT_STAGE_RUN_ACC 2
-//�����˴��������˶��׶�
+//机器人处于匀速运动阶段
 #define ROBOT_STAGE_RUN_UNIFORM 3
-//�����˽�����ٽ׶�
+//机器人进入减速阶段
 #define ROBOT_STAGE_RUN_DEC 4
-//������ץȡ�ӵ�
+//机器人抓取子弹
 #define ROBOT_STAGE_LOAD_GUN 5
-//�����˽�����ת���ϣ��൱��������
+//机器人将弹夹转向上，相当于拉保险
 #define ROBOT_STAGE_OPEN_GUN_SAFETY 6
-//������ֹͣ���������˶�
+//机器人停止所有走行运动
 #define ROBOT_END_RUNNING 7
-//�����˿�ʼ���
+//机器人开始射击
 #define ROBOT_START_SHOOT 8
 
 #define ROBOT_STATUS_OK 0
@@ -164,111 +164,111 @@
 #define ZONE4 3
 
 
-//ǹ�Զ����ʱ��Ŀ������˳��
+//枪自动射击时，目标柱子顺序
 typedef struct
 {
 	unsigned char cmd[MAX_AUTO_BULLET_NUMBER];
 }shoot_command_t;
 
 /**************************************************************************************
- ���Ͷ���
+ 类型定义
 **************************************************************************************/
 
 typedef int status_t;
 
 typedef struct
 {
-	//ǹ����Ƕ�
+	//枪航向角度
 	float yaw;
-	//ǹ�����Ƕ�
+	//枪俯仰角度
 	float pitch;
-	//ǹ����Ƕ�
+	//枪横滚角度
 	float roll;
 
-	//���ʹ�ת�٣���λת/��
+	//左传送带转速，单位转/秒
 	float speed1;
-	//�Ҵ��ʹ�ת�٣���λת/��
+	//右传送带转速，单位转/秒
 	float speed2;
 }gun_pose_t;
 /*
-* ǹ�ṹ��
+* 枪结构体
 */
 typedef struct
 {
-	//ǹ��Ŀ����̬
+	//枪的目标姿态
 	gun_pose_t targetPose;
-	//ǹ��Ŀ����̬
+	//枪的目标姿态
 	gun_pose_t actualPose;
 	
-	//ǹ��̬����
+	//枪姿态上限
 	gun_pose_t maxPoseLimit;
 	
-	//ǹ��̬����
+	//枪姿态下限
 	gun_pose_t minPoseLimit;
 	
-	//ǹ֧���Ƿ�׼���ã�1����0׼����
+	//枪支架是否准备好：1就绪0准备中
 	unsigned char ready;
 	
-	//ǹ��ģʽ��0�Զ���1�ֶ�
+	//枪的模式：0自动，1手动
 	unsigned char mode;
 	
-	//�������ӵ�������Ϊ���23����������8λ
+	//弹夹内子弹数，因为最多23发，所以用8位
 	unsigned char bulletNumber;
 	
-	//ǹ���ӵ�״̬�����ݲ�ͬ״̬������ǹ��ʽ
+	//枪膛子弹状态，根据不同状态决定开枪方式
 	unsigned char champerBulletState;
 	
-	//ǹ���Ƿ񿨵�:1������0����
+	//枪膛是否卡弹:1卡弹，0正常
 	unsigned char champerErrerState;
 	
-	//������1�����0�����
+	//射击命令：1射击，0不射击
 	unsigned char shoot;
-	//�������char��������4�ı�������Ҫʹ��dummy���룬dummyû���κκ���
+	//如果上面char个数不是4的倍数，需要使用dummy对齐，dummy没有任何含义
 	//unsigned char dummy[2];
 	
-	//gunPosDatabaseָ��ǹ����̬���ݿ⣬���ݿ�洢��database.c�У���ʼ��ʱ��Ҫָ��
+	//gunPosDatabase指向枪的姿态数据库，数据库存储在database.c中，初始化时需要指定
 	gun_pose_t **gunPoseDatabase;
-	//���
+	//命令集
 	shoot_command_t *shootCommand;
-	//Ŀ����½̨�ţ�ֻ�����ֶ�ģʽ�²���Ч���Զ�ģʽ�º���
+	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
-	//����̨������������ǹ����
+	//防守台分区，用于上枪打盘
 	int targetZone;
-	//�������
+	//射击次数
 	int shootTimes;
 	
 }gun_t;
 
 
-//�����˽ṹ���װ�˻����Ĺؼ����ݣ�Ϊȫ�����ݣ��˽ṹ����ʱ���ڴ˴�
+//机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
 typedef struct 
 {	
 	movebase_t moveBase;
-	//���������ǹ
+	//机器人左边枪
 	gun_t leftGun;
-	//�������ұ�ǹ
+	//机器人右边枪
 	gun_t rightGun;
-	//�������ϱ�ǹ
+	//机器人上边枪
 	gun_t upperGun;
 
-	//�����������������Ϊ(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
+	//机器人总射击次数，为(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
 	int shootTimes;
 	
-	//�����������Ľ׶Σ�δ��ʼ������ʼ�������٣����٣����٣�ȡ������ս������ǹ
+	//机器人所处的阶段：未初始化，初始化，加速，匀速，减速，取弹，上战场，开枪
 	int stage;
-	//������״̬���Ƿ���������ѹ�����������¡�
+	//机器人状态，是否正常：低压、过流、过温、
 	int status;
 }robot_t;
 
 /*
-* ��½̨����
+* 着陆台类型
 */
 typedef struct
 {
 	int size;
 }land_t;
 /*
-* ������Ϣ���ߴ磬������½̨
+* 场地信息，尺寸，包含着陆台
 */
 typedef struct
 {
@@ -277,118 +277,118 @@ typedef struct
 
 
 /**************************************************************************************
- �������壬���»����˲����������дrobot_t���͵Ļ�����ʵ������
-����������������ÿ��ǹ�Ĳ���������Ҫ֧������
+ 函数定义，以下机器人操作函数会读写robot_t类型的机器人实例变量
+！！！！！！！！每个枪的操作函数需要支持重入
 **************************************************************************************/
 /*
-*���ƣ�ROBOT_Init
-*���ܣ������˳�ʼ������ʼ�����̣���ʼ��ǹ����ʼ��
-*������none
-*ע�⣺�����ǹ����Ҫ���ӵ�����Ϊ���ֶ��ϵ�
+*名称：ROBOT_Init
+*功能：机器人初始化，初始化底盘，初始化枪，初始化
+*参数：none
+*注意：上面的枪不需要上子弹，因为是手动上弹
 */
 status_t ROBOT_Init(void);
 
 /*
-*���ƣ�ROBOT_GunLoad
-*���ܣ���װ���У���ץȡ�ӵ�����
-*������
-*status:GUN_NO_ERROR��GUN_RELOAD_ERROR
-*ע�⣺�����ǹ����Ҫ���ӵ�����Ϊ���ֶ��ϵ�
+*名称：ROBOT_GunLoad
+*功能：安装弹夹，即抓取子弹过程
+*参数：
+*status:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹，因为是手动上弹
 */
 status_t ROBOT_GunLoad(void);
 
 /*
-*���ƣ�ROBOT_GunOpenSafety
-*���ܣ�����ǹ���գ��ӵ���װ�ú���ܽ��д˲���
-*������
-*status:GUN_NO_ERROR��GUN_OPEN_SAFETY_ERROR
-*ע�⣺�����ǹ����Ҫ
+*名称：ROBOT_GunOpenSafety
+*功能：拉开枪保险，子弹安装好后才能进行此步骤
+*参数：
+*status:GUN_NO_ERROR，GUN_OPEN_SAFETY_ERROR
+*注意：上面的枪不需要
 */
 status_t ROBOT_GunOpenSafety(void);
 
 /*
-*���ƣ�ROBOT_GunReload
-*���ܣ���ǹ�ϵ���ÿ�����ǰ��Ҫ�ϵ�һ��
-*������
+*名称：ROBOT_GunReload
+*功能：给枪上弹，每次射击前需要上弹一次
+*参数：
 *gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR��GUN_RELOAD_ERROR
-*ע�⣺�����ǹ����Ҫ���ӵ�
+*status:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
 */
 status_t ROBOT_GunReload(unsigned char gun);
 
 /*
-*���ƣ�ROBOT_GunReload
-*���ܣ�����ǹ�Ŵ�����������ӵ�״̬���������濪ǹ�ľ������
-*������
+*名称：ROBOT_GunReload
+*功能：根据枪膛传感器，检测子弹状态，决定后面开枪的具体参数
+*参数：
 *gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR��GUN_RELOAD_ERROR
-*ע�⣺�����ǹ����Ҫ���ӵ�����Ϊ���ֶ��ϵ�
+*status:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹，因为是手动上弹
 */
 status_t ROBOT_GunCheckBulletState(unsigned char gun);
 
 /*
-*���ƣ�ROBOT_GunAim
-*���ܣ���׼��Ŀ��ı����Ҫ�ȵ��ô˽ӿ���������׼
-*������
+*名称：ROBOT_GunAim
+*功能：瞄准，目标改变后需要先调用此接口来重新瞄准
+*参数：
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *landId:
 *status:GUN_NO_ERROR
-*ע�⣺�����ǹĿǰ��е��û��roll��û���Ҳഫ�ʹ�speed2
+*注意：上面的枪目前机械上没有roll，没有右侧传送带speed2
 */
 status_t ROBOT_GunAim(unsigned char gun);
 /*
-*���ƣ�ROBOT_LeftGunCheckAim
-*���ܣ������׼�Ƿ������
-*������
+*名称：ROBOT_LeftGunCheckAim
+*功能：检查瞄准是否已完成
+*参数：
 *none
-*status:GUN_AIM_IN_PROCESS�� GUN_AIM_DONE
-*ע�⣺
+*status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
+*注意：
 */
 status_t ROBOT_LeftGunCheckAim(void);
 /*
-*���ƣ�ROBOT_RightGunCheckAim
-*���ܣ������׼�Ƿ�����ɣ���ͬǹ�ֿ����Ϊ�˷�ֹ���룬
-*��Ϊ�˺�������Ҫ��Ƴ�ʱ
-*������
+*名称：ROBOT_RightGunCheckAim
+*功能：检查瞄准是否已完成，不同枪分开检测为了防止重入，
+*因为此函数中需要设计超时
+*参数：
 *none
-*status:GUN_AIM_IN_PROCESS�� GUN_AIM_DONE
-*ע�⣺
+*status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
+*注意：
 */
 status_t ROBOT_RightGunCheckAim(void);
 
 /*
-*���ƣ�ROBOT_UpperGunCheckAim
-*���ܣ������׼�Ƿ������
-*������
+*名称：ROBOT_UpperGunCheckAim
+*功能：检查瞄准是否已完成
+*参数：
 *none
-*status:GUN_AIM_IN_PROCESS�� GUN_AIM_DONE
-*ע�⣺
+*status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
+*注意：
 */
 status_t ROBOT_UpperGunCheckAim(void);
 
 /*
-*���ƣ�ROBOT_GunShoot
-*���ܣ���ǹ����ǹǰ��Ҫȷ���ӵ����ţ��������գ�ǹ֧���Ѿ�����
-*������
+*名称：ROBOT_GunShoot
+*功能：开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
+*参数：
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*status:GUN_NO_ERROR��GUN_CHAMPER_ERROR�� GUN_NO_BULLET_ERROR�� GUN_NO_READY_ERROR
+*status:GUN_NO_ERROR，GUN_CHAMPER_ERROR， GUN_NO_BULLET_ERROR， GUN_NO_READY_ERROR
 */
 status_t ROBOT_GunShoot(unsigned char gun);
 
 
 /*
-*���ƣ�ROBOT_GunHome
-*���ܣ�ǹ��λ����ǹ��Ϊ�˸��õ�������Ҫ��λ
-*������
+*名称：ROBOT_GunHome
+*功能：枪归位，开枪后为了更好的上膛需要归位
+*参数：
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:GUN_NO_ERROR
 */
 status_t ROBOT_GunHome(unsigned char gun);
 
 /*
-*���ƣ�ROBOT_GunCheckMode
-*���ܣ����ǹ��ģʽ
-*������
+*名称：ROBOT_GunCheckMode
+*功能：检查枪的模式
+*参数：
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:
 */
@@ -396,7 +396,7 @@ status_t ROBOT_GunCheckMode(unsigned char gun);
 
 /*
 ============================================================
-                   ǹ�����任����任            
+                   枪参数变换与逆变换            
 ============================================================
 */
 

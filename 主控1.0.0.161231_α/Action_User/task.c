@@ -211,22 +211,23 @@ void LeftGunShootTask(void)
 				//自动射击已完成
 				if(gRobot.leftGun.shoot == GUN_START_SHOOT)
 				{
-					//fix me,此处应该检查着陆台编号是否合法
-					int landId =  gRobot.leftGun.targetPlant;
-					//获取目标位姿
-					gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
 					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 					//子弹上膛,第一次上膛默认位置OK
 					ROBOT_GunReload(LEFT_GUN);
 					//检查并更新子弹状态
 					ROBOT_GunCheckBulletState(LEFT_GUN);
+					
+					//fix me,此处应该检查着陆台编号是否合法
+					int landId =  gRobot.leftGun.targetPlant;
+					//获取目标位姿
+					gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
 
 					//更新枪目标位姿
-					gRobot.leftGun.targetPose.pitch = pose.pitch;
-					gRobot.leftGun.targetPose.roll = pose.roll;
-					gRobot.leftGun.targetPose.yaw = pose.yaw;
-					gRobot.leftGun.targetPose.speed1 = pose.speed1;
-					gRobot.leftGun.targetPose.speed2 = pose.speed2;
+					gRobot.leftGun.targetPose.pitch =	pose.pitch;
+					gRobot.leftGun.targetPose.roll =	pose.roll;
+					gRobot.leftGun.targetPose.yaw =		pose.yaw;
+					gRobot.leftGun.targetPose.speed1 =	pose.speed1;
+					gRobot.leftGun.targetPose.speed2 =	pose.speed2;
 
 					//瞄准，此函数最好瞄准完成后再返回
 					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
@@ -245,15 +246,16 @@ void LeftGunShootTask(void)
 			}
 			else
 			{
-				int landId =  gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes];
-				//获取目标位姿
-				gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
+
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 				//子弹上膛,第一次上膛默认位置OK
 				ROBOT_GunReload(LEFT_GUN);
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(LEFT_GUN);
-
+				
+				int landId =  gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes];
+				//获取目标位姿
+				gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
 				//更新枪目标位姿
 				gRobot.leftGun.targetPose.pitch = pose.pitch;
 				gRobot.leftGun.targetPose.roll = pose.roll;
@@ -328,16 +330,16 @@ void RightGunShootTask(void)
 				//自动射击已完成
 				if(gRobot.rightGun.shoot == GUN_START_SHOOT)
 				{
-					//fix me,此处应该检查着陆台编号是否合法
-					int landId =  gRobot.rightGun.targetPlant;
-					//获取目标位姿
-					gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
 					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 					//子弹上膛,第一次上膛默认位置OK
 					ROBOT_GunReload(RIGHT_GUN);
 					//检查并更新子弹状态
 					ROBOT_GunCheckBulletState(RIGHT_GUN);
 
+					//fix me,此处应该检查着陆台编号是否合法
+					int landId =  gRobot.rightGun.targetPlant;
+					//获取目标位姿
+					gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
 					//更新枪目标位姿
 					gRobot.rightGun.targetPose.pitch = pose.pitch;
 					gRobot.rightGun.targetPose.roll = pose.roll;
@@ -362,15 +364,15 @@ void RightGunShootTask(void)
 			}
 			else
 			{
-				int landId =  gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes];
-				//获取目标位姿
-				gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 				//子弹上膛,第一次上膛默认位置OK
 				ROBOT_GunReload(RIGHT_GUN);
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
-
+				
+				int landId =  gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes];
+				//获取目标位姿
+				gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
 				//更新枪目标位姿
 				gRobot.rightGun.targetPose.pitch = pose.pitch;
 				gRobot.rightGun.targetPose.roll = pose.roll;
