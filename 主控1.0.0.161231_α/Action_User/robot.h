@@ -1,5 +1,6 @@
 #ifndef __ROBOT_H
 #define __ROBOT_H
+#include "stdint.h"
 #include "movebase.h"
 /**************************************************************************************
  宏定义
@@ -11,6 +12,8 @@
 #define GUN_NUMBER 3
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
+//防守台分区数
+#define ZONE_NUMBER 4
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
@@ -73,7 +76,9 @@
 #define GUN_OPEN_SAFETY_ERROR -5
 
 //枪最大子弹数
-#define MAX_BULLET_NUMBER 20
+#define MAX_BULLET_NUMBER_LEFT 20
+#define MAX_BULLET_NUMBER_RIGHT 20
+#define MAX_BULLET_NUMBER_UPPER 10
 //枪最大自动发射子弹发数
 #define MAX_AUTO_BULLET_NUMBER 10
 
@@ -152,6 +157,13 @@
 #define PLANT6 5
 #define PLANT7 6
 
+#define INVALID_ZONE_NUMBER 4
+#define ZONE1 0
+#define ZONE2 1
+#define ZONE3 2
+#define ZONE4 3
+
+
 //枪自动射击时，目标柱子顺序
 typedef struct
 {
@@ -172,8 +184,6 @@ typedef struct
 	float pitch;
 	//枪横滚角度
 	float roll;
-
-	
 
 	//左传送带转速，单位转/秒
 	float speed1;
@@ -218,37 +228,21 @@ typedef struct
 	
 	//gunPosDatabase指向枪的姿态数据库，数据库存储在database.c中，初始化时需要指定
 	gun_pose_t **gunPoseDatabase;
+	//命令集
 	shoot_command_t *shootCommand;
 	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
+	//防守台分区，用于上枪打盘
+	int targetZone;
 	//射击次数
 	int shootTimes;
 	
 }gun_t;
 
-//7#着陆台盘子位置结构体
-typedef struct
-{
-	//区域0是否有盘：0没有，1有
-	unsigned char area0;
-	//区域1是否有盘：0没有，1有
-	unsigned char area1;
-	//区域2是否有盘：0没有，1有
-	unsigned char area2;
-	//区域3是否有盘：0没有，1有
-	unsigned char area3;
-	//区域4是否有盘：0没有，1有
-	unsigned char area4;
-	//区域5是否有盘：0没有，1有
-	unsigned char area5;
-	//区域6是否有盘：0没有，1有
-	unsigned char area6;
-}platePosOnLand7_t;
 
 //机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
 typedef struct 
-{
-	
+{	
 	movebase_t moveBase;
 	//机器人左边枪
 	gun_t leftGun;
@@ -257,11 +251,8 @@ typedef struct
 	//机器人上边枪
 	gun_t upperGun;
 
-	//机器人总涉及次数，为(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
+	//机器人总射击次数，为(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
 	int shootTimes;
-
-	//七号着陆台上盘子位置
-	platePosOnLand7_t platePosOnLand7;
 	
 	//机器人所处的阶段：未初始化，初始化，加速，匀速，减速，取弹，上战场，开枪
 	int stage;
@@ -366,14 +357,23 @@ status_t ROBOT_LeftGunCheckAim(void);
 status_t ROBOT_RightGunCheckAim(void);
 
 /*
+*名称：ROBOT_UpperGunCheckAim
+*功能：检查瞄准是否已完成
+*参数：
+*none
+*status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
+*注意：
+*/
+status_t ROBOT_UpperGunCheckAim(void);
+
+/*
 *名称：ROBOT_GunShoot
 *功能：开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
 *参数：
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*mode: auto or manual
 *status:GUN_NO_ERROR，GUN_CHAMPER_ERROR， GUN_NO_BULLET_ERROR， GUN_NO_READY_ERROR
 */
-status_t ROBOT_GunShoot(unsigned char gun, unsigned char mode);
+status_t ROBOT_GunShoot(unsigned char gun);
 
 
 /*
@@ -394,35 +394,44 @@ status_t ROBOT_GunHome(unsigned char gun);
 */
 status_t ROBOT_GunCheckMode(unsigned char gun);
 
-int LeftGunYawTransform(float position);
-int LeftGunPitchTransform(float position);
-int LeftGunRollTransform(float position);
-int LeftGunLeftSpeedTransform(float speed);
-int LeftGunRightSpeedTransform(float speed);
+/*
+============================================================
+                   枪参数变换与逆变换            
+============================================================
+*/
 
-float LeftGunYawInverseTransform(int position);
-float LeftGunPitchInverseTransform(int position);
-float LeftGunRollInverseTransform(int position);
-float LeftGunLeftSpeedInverseTransform(int speed);
-float LeftGunRightSpeedInverseTransform(int speed);
+int32_t LeftGunYawTransform(float position);
+int32_t LeftGunPitchTransform(float position);
+int32_t LeftGunRollTransform(float position);
+int32_t LeftGunLeftSpeedTransform(float speed);
+int32_t LeftGunRightSpeedTransform(float speed);
+
+float LeftGunYawInverseTransform(int32_t position);
+float LeftGunPitchInverseTransform(int32_t position);
+float LeftGunRollInverseTransform(int32_t position);
+float LeftGunLeftSpeedInverseTransform(int32_t speed);
+float LeftGunRightSpeedInverseTransform(int32_t speed);
 
 
-int RightGunYawTransform(float yaw);
-int RightGunPitchTransform(float pitch);
-int RightGunRollTransform(float roll);
-int RightGunLeftSpeedTransform(float speed);
-int RightGunRightSpeedTransform(float speed);
+int32_t RightGunYawTransform(float yaw);
+int32_t RightGunPitchTransform(float pitch);
+int32_t RightGunRollTransform(float roll);
+int32_t RightGunLeftSpeedTransform(float speed);
+int32_t RightGunRightSpeedTransform(float speed);
 
-float RightGunYawInverseTransform(float position);
-float RightGunPitchInverseTransform(float position);
-float RightGunRollInverseTransform(float position);
-float RightGunLeftSpeedInverseTransform(float speed);
-float RightGunRightSpeedInverseTransform(float speed);
+float RightGunYawInverseTransform(int32_t position);
+float RightGunPitchInverseTransform(int32_t position);
+float RightGunRollInverseTransform(int32_t position);
+float RightGunLeftSpeedInverseTransform(int32_t speed);
+float RightGunRightSpeedInverseTransform(int32_t speed);
 
-int UpperGunLeftSpeedTransform(float speed);
-int UpperGunYawTransform(float yaw);
-int UpperGunPitchTransform(float pitch);
+int32_t UpperGunYawTransform(float yaw);
+int32_t UpperGunPitchTransform(float pitch);
+int32_t UpperGunLeftSpeedTransform(float speed);
 
+float UpperGunYawInverseTransform(int32_t position);
+float UpperGunPitchInverseTransform(int32_t position);
+float UpperGunLeftSpeedInverseTransform(int32_t speed);
 
 //temrary
 void ShootCtr(shootCtr_t *shootPara);

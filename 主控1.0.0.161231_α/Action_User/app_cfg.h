@@ -39,6 +39,10 @@ extern  void  App_Task(void);
 static  void  App_TaskStart(void);
 static 	void  ConfigTask(void);
 static 	void  WalkTask(void);
+static 	void  LeftGunShootTask(void);
+static 	void  RightGunShootTask(void);
+static 	void  UpperGunShootTask(void);
+
 /*
 *********************************************************************************************************
 *                                            TASK PRIORITIES
@@ -48,8 +52,9 @@ static 	void  WalkTask(void);
 #define  APP_TASK_START_PRIO						10u
 #define  Config_TASK_START_PRIO						11u
 #define  Walk_TASK_PRIO								12u
-#define  LEFT_GUN_AUTO_SHOOT_TASK_PRIO				13u
+#define  LEFT_GUN_SHOOT_TASK_PRIO			    	15u
 #define  RIGHT_GUN_SHOOT_TASK_PRIO					14u
+#define  UPPER_GUN_SHOOT_TASK_PRIO					13u
 
 
 
@@ -65,6 +70,7 @@ static 	void  WalkTask(void);
 #define  Walk_TASK_STK_SIZE							8192u
 #define  LEFT_GUN_AUTO_SHOOT_STK_SIZE				1024u
 #define  RIGHT_GUN_SHOOT_STK_SIZE					1024u
+#define  UPPER_GUN_SHOOT_STK_SIZE					1024u
 
 /*
 *********************************************************************************************************

@@ -189,6 +189,14 @@ void CAN1_RX0_IRQHandler(void)
 			{
 				gRobot.rightGun.actualPose.yaw = RightGunYawInverseTransform(msg.data32[1]);    //航向
 			}
+			if(canNodeId == UPPER_GUN_PITCH_ID) 
+			{
+				gRobot.upperGun.actualPose.pitch = UpperGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == UPPER_GUN_YAW_ID) 
+			{
+				gRobot.upperGun.actualPose.yaw = UpperGunYawInverseTransform(msg.data32[1]);    //航向
+			}
 		}
 	}
 	
@@ -592,11 +600,11 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 				if(ch == 0x0d)
 				{
 					gRobot.moveBase.actualAngle = posture.ActVal[0];
-					posture.ActVal[1];
-					posture.ActVal[2];
+					posture.ActVal[1]           = posture.ActVal[1];
+					posture.ActVal[2]           = posture.ActVal[2];
 					gRobot.moveBase.actualXPos  = posture.ActVal[3];
 					gRobot.moveBase.actualYPos  = posture.ActVal[4];
-					posture.ActVal[5];
+					posture.ActVal[5]           = posture.ActVal[5];
 				}
 				count = 0;
 				break;
@@ -648,7 +656,7 @@ void USART6_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
+	if(USART_GetITStatus(USART6, USART_IT_RXNE) == SET)   
 	{
 		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
 		data = USART_ReceiveData(USART6);	
@@ -674,14 +682,7 @@ void USART6_IRQHandler(void)
 			case DATA_STATE: 
 				//更新7号着陆台飞盘位置, fix me
 				receive_data=data;
-				gRobot.platePosOnLand7.area0 = data&0x01;
-				gRobot.platePosOnLand7.area1 = data&0x02;
-				gRobot.platePosOnLand7.area2 = data&0x04;
-				gRobot.platePosOnLand7.area3 = data&0x08;
-				gRobot.platePosOnLand7.area4 = data&0x10;
-				gRobot.platePosOnLand7.area5 = data&0x20;
-				gRobot.platePosOnLand7.area6 = data&0x40;
-				gRobot.upperGun.shoot=GUN_START_SHOOT;
+				gRobot.upperGun.targetZone = data;
 				state = 0;
 				break;
 			default:
