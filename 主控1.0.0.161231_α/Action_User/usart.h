@@ -5,13 +5,13 @@
 #include "stm32f4xx_usart.h"
 
 
-#define USART5_MAX_RECV_LEN		400					//×î´ó½ÓÊÕ»º´æ×Ö½ÚÊý
-#define USART5_MAX_SEND_LEN		400					//×î´ó·¢ËÍ»º´æ×Ö½ÚÊý
-#define USART5_RX_EN 			1					//0,²»½ÓÊÕ;1,½ÓÊÕ.
+#define USART5_MAX_RECV_LEN		400					//æœ€å¤§æŽ¥æ”¶ç¼“å­˜å­—èŠ‚æ•°
+#define USART5_MAX_SEND_LEN		400					//æœ€å¤§å‘é€ç¼“å­˜å­—èŠ‚æ•°
+#define USART5_RX_EN 			1					//0,ä¸æŽ¥æ”¶;1,æŽ¥æ”¶.
 
-extern u8  USART5_RX_BUF[USART5_MAX_RECV_LEN]; 		//½ÓÊÕ»º³å,×î´óUSART3_MAX_RECV_LEN×Ö½Ú
-extern u8  USART5_TX_BUF[USART5_MAX_SEND_LEN]; 		//·¢ËÍ»º³å,×î´óUSART3_MAX_SEND_LEN×Ö½Ú
-extern u16 USART5_RX_STA;   						//½ÓÊÕÊý¾Ý×´Ì¬
+extern u8  USART5_RX_BUF[USART5_MAX_RECV_LEN]; 		//æŽ¥æ”¶ç¼“å†²,æœ€å¤§USART3_MAX_RECV_LENå­—èŠ‚
+extern u8  USART5_TX_BUF[USART5_MAX_SEND_LEN]; 		//å‘é€ç¼“å†²,æœ€å¤§USART3_MAX_SEND_LENå­—èŠ‚
+extern u16 USART5_RX_STA;   						//æŽ¥æ”¶æ•°æ®çŠ¶æ€
 
 void u5_printf(char* fmt, ...);
 

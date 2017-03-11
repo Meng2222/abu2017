@@ -1,26 +1,29 @@
 #ifndef __ROBOT_H
 #define __ROBOT_H
+#include "stdint.h"
 #include "movebase.h"
 /**************************************************************************************
- ºê¶¨Òå
+ å®å®šä¹‰
 **************************************************************************************/
 
-//×ÅÂ½Ì¨¸öÊı
+//ç€é™†å°ä¸ªæ•°
 #define LAND_NUMBER 7
-//»úÆ÷ÈËÇ¹µÄ¸öÊı
+//æœºå™¨äººæªçš„ä¸ªæ•°
 #define GUN_NUMBER 3
-//×Óµ¯ÔÚÇ¹ÌÅÀï×´Ì¬ÖÖÀà£¬ÓÉ¹âÏß´«¸ĞÆ÷
+//å­å¼¹åœ¨æªè†›é‡ŒçŠ¶æ€ç§ç±»ï¼Œç”±å…‰çº¿ä¼ æ„Ÿå™¨
 #define BULLET_TYPE_NUMBER 10
+//é˜²å®ˆå°åˆ†åŒºæ•°
+#define ZONE_NUMBER 4
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
 #define UPPER_GUN				3
 
-//×óÇ¹×éIDºÅ
+//å·¦æªç»„IDå·
 #define LEFT_GUN_GROUP_ID		101
-//ÓÒÇ¹×éIDºÅ
+//å³æªç»„IDå·
 #define RIGHT_GUN_GROUP_ID		102
-//ÉÏÃæÇ¹×éIDºÅ
+//ä¸Šé¢æªç»„IDå·
 #define UPPER_GUN_GROUP_ID		103
 
 #define GUN_AUTO_MODE			0
@@ -29,112 +32,114 @@
 #define GUN_START_SHOOT 1
 #define GUN_STOP_SHOOT 0
 
-//×óÇ¹Ö§¼ÜrollÖáCAN ID
+//å·¦æªæ”¯æ¶rollè½´CAN ID
 #define LEFT_GUN_ROLL_ID 7
-//×óÇ¹Ö§¼ÜpitchÖáCAN ID
+//å·¦æªæ”¯æ¶pitchè½´CAN ID
 #define LEFT_GUN_PITCH_ID 6
-//×óÇ¹Ö§¼ÜyawÖáCAN ID
+//å·¦æªæ”¯æ¶yawè½´CAN ID
 #define LEFT_GUN_YAW_ID 8
-//×óÇ¹×ó²à´«ËÍ´øÖáCAN ID
+//å·¦æªå·¦ä¾§ä¼ é€å¸¦è½´CAN ID
 #define LEFT_GUN_LEFT_ID 4
-//×óÇ¹ÓÒ²à´«ËÍ´øÖáCAN ID
+//å·¦æªå³ä¾§ä¼ é€å¸¦è½´CAN ID
 #define LEFT_GUN_RIGHT_ID 5
 
-//ÓÒÇ¹Ö§¼ÜrollÖáCAN ID
+//å³æªæ”¯æ¶rollè½´CAN ID
 #define RIGHT_GUN_ROLL_ID 7
-//ÓÒÇ¹Ö§¼ÜpitchÖáCAN ID
+//å³æªæ”¯æ¶pitchè½´CAN ID
 #define RIGHT_GUN_PITCH_ID 6
-//ÓÒÇ¹Ö§¼ÜyawÖáCAN ID
+//å³æªæ”¯æ¶yawè½´CAN ID
 #define RIGHT_GUN_YAW_ID 8
-//ÓÒÇ¹×ó²à´«ËÍ´øÖáCAN ID
+//å³æªå·¦ä¾§ä¼ é€å¸¦è½´CAN ID
 #define RIGHT_GUN_LEFT_ID 4
-//ÓÒÇ¹ÓÒ²à´«ËÍ´øÖáCAN ID
+//å³æªå³ä¾§ä¼ é€å¸¦è½´CAN ID
 #define RIGHT_GUN_RIGHT_ID 5
 
-//ÉÏÃæÇ¹Ö§¼ÜpitchÖáCAN ID
+//ä¸Šé¢æªæ”¯æ¶pitchè½´CAN ID
 #define UPPER_GUN_PITCH_ID 11
-//ÉÏÃæÇ¹Ö§¼ÜyawÖáCAN ID
+//ä¸Šé¢æªæ”¯æ¶yawè½´CAN ID
 #define UPPER_GUN_YAW_ID 10
-//ÉÏÃæÇ¹×ó²à´«ËÍ´øÖáCAN ID
+//ä¸Šé¢æªå·¦ä¾§ä¼ é€å¸¦è½´CAN ID
 #define UPPER_GUN_LEFT_ID 9
 
 
-//Éä»÷Íê³É
+//å°„å‡»å®Œæˆ
 #define GUN_NO_ERROR 0
-//Ç¹ÌÅ¿¨µ¯
+//æªè†›å¡å¼¹
 #define GUN_CHAMPER_ERROR -1
-//µ¯¼Ğ¿Õ
+//å¼¹å¤¹ç©º
 #define GUN_NO_BULLET_ERROR -2
-//Ç¹¼ÜÎ´¾ÍÎ»£¬ fix me
+//æªæ¶æœªå°±ä½ï¼Œ fix me
 #define GUN_NO_READY_ERROR -3
-//ÉÏµ¯Ê§°Ü
+//ä¸Šå¼¹å¤±è´¥
 #define GUN_RELOAD_ERROR -4
-//´ò¿ª±£ÏÕÊ§°Ü
+//æ‰“å¼€ä¿é™©å¤±è´¥
 #define GUN_OPEN_SAFETY_ERROR -5
 
-//Ç¹×î´ó×Óµ¯Êı
-#define MAX_BULLET_NUMBER 20
-//Ç¹×î´ó×Ô¶¯·¢Éä×Óµ¯·¢Êı
+//æªæœ€å¤§å­å¼¹æ•°
+#define MAX_BULLET_NUMBER_LEFT 20
+#define MAX_BULLET_NUMBER_RIGHT 20
+#define MAX_BULLET_NUMBER_UPPER 10
+//æªæœ€å¤§è‡ªåŠ¨å‘å°„å­å¼¹å‘æ•°
 #define MAX_AUTO_BULLET_NUMBER 10
 
-//Ãé×¼Î´Íê³É
+//ç„å‡†æœªå®Œæˆ
 #define GUN_AIM_IN_PROCESS 1
-//Ãé×¼Íê³É
+//ç„å‡†å®Œæˆ
 #define GUN_AIM_DONE 2
 
-//×Óµ¯×î´óÌØÕ÷Êı
+//å­å¼¹æœ€å¤§ç‰¹å¾æ•°
 #define CHAMPER_BULLET_MAX_FEATURE_STATE 10
 
-//Ç¹ÌÅÎŞ×Óµ¯
+//æªè†›æ— å­å¼¹
 #define CHAMPER_BULLET_EMPTY_STATE 0xff
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷0£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾0ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE0_STATE 0
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷1£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾1ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE1_STATE 1
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷2£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾2ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE2_STATE 2
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷3£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾3ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE3_STATE 3
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷4£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾4ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE4_STATE 4
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷5£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾5ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE5_STATE 5
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷6£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾6ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE6_STATE 6
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷7£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾7ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE7_STATE 7
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷8£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾8ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE8_STATE 8
 
-//Ç¹ÌÅÓĞ×Óµ¯£¬ÌØÕ÷9£¬ÕâÀïÒªÏêÏ¸ÃèÊö£¬¸ù¾İ²»Í¬µÄ×´Ì¬»áµ÷½ÚÇ¹µÄ×ËÌ¬
+//æªè†›æœ‰å­å¼¹ï¼Œç‰¹å¾9ï¼Œè¿™é‡Œè¦è¯¦ç»†æè¿°ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€ä¼šè°ƒèŠ‚æªçš„å§¿æ€
 #define CHAMPER_BULLET_FEATURE9_STATE 9
 
-//»úÆ÷ÈËÒÑÉÏµç
+//æœºå™¨äººå·²ä¸Šç”µ
 #define ROBOT_STAGE_POWER_ON 0
-//»úÆ÷ÈËÒÑ¾­³õÊ¼»¯
+//æœºå™¨äººå·²ç»åˆå§‹åŒ–
 #define ROBOT_STAGE_INIT 1
-//»úÆ÷ÈË´¦ÓÚ¼ÓËÙ¹ı³ÌÖĞ
+//æœºå™¨äººå¤„äºåŠ é€Ÿè¿‡ç¨‹ä¸­
 #define ROBOT_STAGE_RUN_ACC 2
-//»úÆ÷ÈË´¦ÓÚÔÈËÙÔË¶¯½×¶Î
+//æœºå™¨äººå¤„äºåŒ€é€Ÿè¿åŠ¨é˜¶æ®µ
 #define ROBOT_STAGE_RUN_UNIFORM 3
-//»úÆ÷ÈË½øÈë¼õËÙ½×¶Î
+//æœºå™¨äººè¿›å…¥å‡é€Ÿé˜¶æ®µ
 #define ROBOT_STAGE_RUN_DEC 4
-//»úÆ÷ÈË×¥È¡×Óµ¯
+//æœºå™¨äººæŠ“å–å­å¼¹
 #define ROBOT_STAGE_LOAD_GUN 5
-//»úÆ÷ÈË½«µ¯¼Ğ×ªÏòÉÏ£¬Ïàµ±ÓÚÀ­±£ÏÕ
+//æœºå™¨äººå°†å¼¹å¤¹è½¬å‘ä¸Šï¼Œç›¸å½“äºæ‹‰ä¿é™©
 #define ROBOT_STAGE_OPEN_GUN_SAFETY 6
-//»úÆ÷ÈËÍ£Ö¹ËùÓĞ×ßĞĞÔË¶¯
+//æœºå™¨äººåœæ­¢æ‰€æœ‰èµ°è¡Œè¿åŠ¨
 #define ROBOT_END_RUNNING 7
-//»úÆ÷ÈË¿ªÊ¼Éä»÷
+//æœºå™¨äººå¼€å§‹å°„å‡»
 #define ROBOT_START_SHOOT 8
 
 #define ROBOT_STATUS_OK 0
@@ -152,132 +157,118 @@
 #define PLANT6 5
 #define PLANT7 6
 
-//Ç¹×Ô¶¯Éä»÷Ê±£¬Ä¿±êÖù×ÓË³Ğò
+#define INVALID_ZONE_NUMBER 4
+#define ZONE1 0
+#define ZONE2 1
+#define ZONE3 2
+#define ZONE4 3
+
+
+//æªè‡ªåŠ¨å°„å‡»æ—¶ï¼Œç›®æ ‡æŸ±å­é¡ºåº
 typedef struct
 {
 	unsigned char cmd[MAX_AUTO_BULLET_NUMBER];
 }shoot_command_t;
 
 /**************************************************************************************
- ÀàĞÍ¶¨Òå
+ ç±»å‹å®šä¹‰
 **************************************************************************************/
 
 typedef int status_t;
 
 typedef struct
 {
-	//Ç¹º½Ïò½Ç¶È
+	//æªèˆªå‘è§’åº¦
 	float yaw;
-	//Ç¹¸©Ñö½Ç¶È
+	//æªä¿¯ä»°è§’åº¦
 	float pitch;
-	//Ç¹ºá¹ö½Ç¶È
+	//æªæ¨ªæ»šè§’åº¦
 	float roll;
 
-	
-
-	//×ó´«ËÍ´ø×ªËÙ£¬µ¥Î»×ª/Ãë
+	//å·¦ä¼ é€å¸¦è½¬é€Ÿï¼Œå•ä½è½¬/ç§’
 	float speed1;
-	//ÓÒ´«ËÍ´ø×ªËÙ£¬µ¥Î»×ª/Ãë
+	//å³ä¼ é€å¸¦è½¬é€Ÿï¼Œå•ä½è½¬/ç§’
 	float speed2;
 }gun_pose_t;
 /*
-* Ç¹½á¹¹Ìå
+* æªç»“æ„ä½“
 */
 typedef struct
 {
-	//Ç¹µÄÄ¿±ê×ËÌ¬
+	//æªçš„ç›®æ ‡å§¿æ€
 	gun_pose_t targetPose;
-	//Ç¹µÄÄ¿±ê×ËÌ¬
+	//æªçš„ç›®æ ‡å§¿æ€
 	gun_pose_t actualPose;
 	
-	//Ç¹×ËÌ¬ÉÏÏŞ
+	//æªå§¿æ€ä¸Šé™
 	gun_pose_t maxPoseLimit;
 	
-	//Ç¹×ËÌ¬ÏÂÏŞ
+	//æªå§¿æ€ä¸‹é™
 	gun_pose_t minPoseLimit;
 	
-	//Ç¹Ö§¼ÜÊÇ·ñ×¼±¸ºÃ£º1¾ÍĞ÷0×¼±¸ÖĞ
+	//æªæ”¯æ¶æ˜¯å¦å‡†å¤‡å¥½ï¼š1å°±ç»ª0å‡†å¤‡ä¸­
 	unsigned char ready;
 	
-	//Ç¹µÄÄ£Ê½£º0×Ô¶¯£¬1ÊÖ¶¯
+	//æªçš„æ¨¡å¼ï¼š0è‡ªåŠ¨ï¼Œ1æ‰‹åŠ¨
 	unsigned char mode;
 	
-	//µ¯¼ĞÄÚ×Óµ¯Êı£¬ÒòÎª×î¶à23·¢£¬ËùÒÔÓÃ8Î»
+	//å¼¹å¤¹å†…å­å¼¹æ•°ï¼Œå› ä¸ºæœ€å¤š23å‘ï¼Œæ‰€ä»¥ç”¨8ä½
 	unsigned char bulletNumber;
 	
-	//Ç¹ÌÅ×Óµ¯×´Ì¬£¬¸ù¾İ²»Í¬×´Ì¬¾ö¶¨¿ªÇ¹·½Ê½
+	//æªè†›å­å¼¹çŠ¶æ€ï¼Œæ ¹æ®ä¸åŒçŠ¶æ€å†³å®šå¼€æªæ–¹å¼
 	unsigned char champerBulletState;
 	
-	//Ç¹ÌÅÊÇ·ñ¿¨µ¯:1¿¨µ¯£¬0Õı³£
+	//æªè†›æ˜¯å¦å¡å¼¹:1å¡å¼¹ï¼Œ0æ­£å¸¸
 	unsigned char champerErrerState;
 	
-	//Éä»÷ÃüÁî£º1Éä»÷£¬0²»Éä»÷
+	//å°„å‡»å‘½ä»¤ï¼š1å°„å‡»ï¼Œ0ä¸å°„å‡»
 	unsigned char shoot;
-	//Èç¹ûÉÏÃæchar¸öÊı²»ÊÇ4µÄ±¶Êı£¬ĞèÒªÊ¹ÓÃdummy¶ÔÆë£¬dummyÃ»ÓĞÈÎºÎº¬Òå
+	//å¦‚æœä¸Šé¢charä¸ªæ•°ä¸æ˜¯4çš„å€æ•°ï¼Œéœ€è¦ä½¿ç”¨dummyå¯¹é½ï¼Œdummyæ²¡æœ‰ä»»ä½•å«ä¹‰
 	//unsigned char dummy[2];
 	
-	//gunPosDatabaseÖ¸ÏòÇ¹µÄ×ËÌ¬Êı¾İ¿â£¬Êı¾İ¿â´æ´¢ÔÚdatabase.cÖĞ£¬³õÊ¼»¯Ê±ĞèÒªÖ¸¶¨
+	//gunPosDatabaseæŒ‡å‘æªçš„å§¿æ€æ•°æ®åº“ï¼Œæ•°æ®åº“å­˜å‚¨åœ¨database.cä¸­ï¼Œåˆå§‹åŒ–æ—¶éœ€è¦æŒ‡å®š
 	gun_pose_t **gunPoseDatabase;
+	//å‘½ä»¤é›†
 	shoot_command_t *shootCommand;
-	//Ä¿±ê×ÅÂ½Ì¨ºÅ£¬Ö»ÓĞÔÚÊÖ¶¯Ä£Ê½ÏÂ²ÅÉúĞ§£¬×Ô¶¯Ä£Ê½ÏÂºöÂÔ
+	//ç›®æ ‡ç€é™†å°å·ï¼Œåªæœ‰åœ¨æ‰‹åŠ¨æ¨¡å¼ä¸‹æ‰ç”Ÿæ•ˆï¼Œè‡ªåŠ¨æ¨¡å¼ä¸‹å¿½ç•¥
 	int targetPlant;
-	//Éä»÷´ÎÊı
+	//é˜²å®ˆå°åˆ†åŒºï¼Œç”¨äºä¸Šæªæ‰“ç›˜
+	int targetZone;
+	//å°„å‡»æ¬¡æ•°
 	int shootTimes;
 	
 }gun_t;
 
-//7#×ÅÂ½Ì¨ÅÌ×ÓÎ»ÖÃ½á¹¹Ìå
-typedef struct
-{
-	//ÇøÓò0ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area0;
-	//ÇøÓò1ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area1;
-	//ÇøÓò2ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area2;
-	//ÇøÓò3ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area3;
-	//ÇøÓò4ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area4;
-	//ÇøÓò5ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area5;
-	//ÇøÓò6ÊÇ·ñÓĞÅÌ£º0Ã»ÓĞ£¬1ÓĞ
-	unsigned char area6;
-}platePosOnLand7_t;
 
-//»úÆ÷ÈË½á¹¹Ìå·â×°ÁË»úÆ÷µÄ¹Ø¼üÊı¾İ£¬ÎªÈ«¾ÖÊı¾İ£¬´Ë½á¹¹ÌåÔİÊ±·ÅÔÚ´Ë´¦
+//æœºå™¨äººç»“æ„ä½“å°è£…äº†æœºå™¨çš„å…³é”®æ•°æ®ï¼Œä¸ºå…¨å±€æ•°æ®ï¼Œæ­¤ç»“æ„ä½“æš‚æ—¶æ”¾åœ¨æ­¤å¤„
 typedef struct 
-{
-	
+{	
 	movebase_t moveBase;
-	//»úÆ÷ÈË×ó±ßÇ¹
+	//æœºå™¨äººå·¦è¾¹æª
 	gun_t leftGun;
-	//»úÆ÷ÈËÓÒ±ßÇ¹
+	//æœºå™¨äººå³è¾¹æª
 	gun_t rightGun;
-	//»úÆ÷ÈËÉÏ±ßÇ¹
+	//æœºå™¨äººä¸Šè¾¹æª
 	gun_t upperGun;
 
-	//»úÆ÷ÈË×ÜÉæ¼°´ÎÊı£¬Îª(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
+	//æœºå™¨äººæ€»å°„å‡»æ¬¡æ•°ï¼Œä¸º(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
 	int shootTimes;
-
-	//ÆßºÅ×ÅÂ½Ì¨ÉÏÅÌ×ÓÎ»ÖÃ
-	platePosOnLand7_t platePosOnLand7;
 	
-	//»úÆ÷ÈËËù´¦µÄ½×¶Î£ºÎ´³õÊ¼»¯£¬³õÊ¼»¯£¬¼ÓËÙ£¬ÔÈËÙ£¬¼õËÙ£¬È¡µ¯£¬ÉÏÕ½³¡£¬¿ªÇ¹
+	//æœºå™¨äººæ‰€å¤„çš„é˜¶æ®µï¼šæœªåˆå§‹åŒ–ï¼Œåˆå§‹åŒ–ï¼ŒåŠ é€Ÿï¼ŒåŒ€é€Ÿï¼Œå‡é€Ÿï¼Œå–å¼¹ï¼Œä¸Šæˆ˜åœºï¼Œå¼€æª
 	int stage;
-	//»úÆ÷ÈË×´Ì¬£¬ÊÇ·ñÕı³££ºµÍÑ¹¡¢¹ıÁ÷¡¢¹ıÎÂ¡¢
+	//æœºå™¨äººçŠ¶æ€ï¼Œæ˜¯å¦æ­£å¸¸ï¼šä½å‹ã€è¿‡æµã€è¿‡æ¸©ã€
 	int status;
 }robot_t;
 
 /*
-* ×ÅÂ½Ì¨ÀàĞÍ
+* ç€é™†å°ç±»å‹
 */
 typedef struct
 {
 	int size;
 }land_t;
 /*
-* ³¡µØĞÅÏ¢£¬³ß´ç£¬°üº¬×ÅÂ½Ì¨
+* åœºåœ°ä¿¡æ¯ï¼Œå°ºå¯¸ï¼ŒåŒ…å«ç€é™†å°
 */
 typedef struct
 {
@@ -286,143 +277,161 @@ typedef struct
 
 
 /**************************************************************************************
- º¯Êı¶¨Òå£¬ÒÔÏÂ»úÆ÷ÈË²Ù×÷º¯Êı»á¶ÁĞ´robot_tÀàĞÍµÄ»úÆ÷ÈËÊµÀı±äÁ¿
-£¡£¡£¡£¡£¡£¡£¡£¡Ã¿¸öÇ¹µÄ²Ù×÷º¯ÊıĞèÒªÖ§³ÖÖØÈë
+ å‡½æ•°å®šä¹‰ï¼Œä»¥ä¸‹æœºå™¨äººæ“ä½œå‡½æ•°ä¼šè¯»å†™robot_tç±»å‹çš„æœºå™¨äººå®ä¾‹å˜é‡
+ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼æ¯ä¸ªæªçš„æ“ä½œå‡½æ•°éœ€è¦æ”¯æŒé‡å…¥
 **************************************************************************************/
 /*
-*Ãû³Æ£ºROBOT_Init
-*¹¦ÄÜ£º»úÆ÷ÈË³õÊ¼»¯£¬³õÊ¼»¯µ×ÅÌ£¬³õÊ¼»¯Ç¹£¬³õÊ¼»¯
-*²ÎÊı£ºnone
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ĞèÒªÉÏ×Óµ¯£¬ÒòÎªÊÇÊÖ¶¯ÉÏµ¯
+*åç§°ï¼šROBOT_Init
+*åŠŸèƒ½ï¼šæœºå™¨äººåˆå§‹åŒ–ï¼Œåˆå§‹åŒ–åº•ç›˜ï¼Œåˆå§‹åŒ–æªï¼Œåˆå§‹åŒ–
+*å‚æ•°ï¼šnone
+*æ³¨æ„ï¼šä¸Šé¢çš„æªä¸éœ€è¦ä¸Šå­å¼¹ï¼Œå› ä¸ºæ˜¯æ‰‹åŠ¨ä¸Šå¼¹
 */
 status_t ROBOT_Init(void);
 
 /*
-*Ãû³Æ£ºROBOT_GunLoad
-*¹¦ÄÜ£º°²×°µ¯¼Ğ£¬¼´×¥È¡×Óµ¯¹ı³Ì
-*²ÎÊı£º
-*status:GUN_NO_ERROR£¬GUN_RELOAD_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ĞèÒªÉÏ×Óµ¯£¬ÒòÎªÊÇÊÖ¶¯ÉÏµ¯
+*åç§°ï¼šROBOT_GunLoad
+*åŠŸèƒ½ï¼šå®‰è£…å¼¹å¤¹ï¼Œå³æŠ“å–å­å¼¹è¿‡ç¨‹
+*å‚æ•°ï¼š
+*status:GUN_NO_ERRORï¼ŒGUN_RELOAD_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æªä¸éœ€è¦ä¸Šå­å¼¹ï¼Œå› ä¸ºæ˜¯æ‰‹åŠ¨ä¸Šå¼¹
 */
 status_t ROBOT_GunLoad(void);
 
 /*
-*Ãû³Æ£ºROBOT_GunOpenSafety
-*¹¦ÄÜ£ºÀ­¿ªÇ¹±£ÏÕ£¬×Óµ¯°²×°ºÃºó²ÅÄÜ½øĞĞ´Ë²½Öè
-*²ÎÊı£º
-*status:GUN_NO_ERROR£¬GUN_OPEN_SAFETY_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ĞèÒª
+*åç§°ï¼šROBOT_GunOpenSafety
+*åŠŸèƒ½ï¼šæ‹‰å¼€æªä¿é™©ï¼Œå­å¼¹å®‰è£…å¥½åæ‰èƒ½è¿›è¡Œæ­¤æ­¥éª¤
+*å‚æ•°ï¼š
+*status:GUN_NO_ERRORï¼ŒGUN_OPEN_SAFETY_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æªä¸éœ€è¦
 */
 status_t ROBOT_GunOpenSafety(void);
 
 /*
-*Ãû³Æ£ºROBOT_GunReload
-*¹¦ÄÜ£º¸øÇ¹ÉÏµ¯£¬Ã¿´ÎÉä»÷Ç°ĞèÒªÉÏµ¯Ò»´Î
-*²ÎÊı£º
+*åç§°ï¼šROBOT_GunReload
+*åŠŸèƒ½ï¼šç»™æªä¸Šå¼¹ï¼Œæ¯æ¬¡å°„å‡»å‰éœ€è¦ä¸Šå¼¹ä¸€æ¬¡
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR£¬GUN_RELOAD_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ĞèÒªÉÏ×Óµ¯
+*status:GUN_NO_ERRORï¼ŒGUN_RELOAD_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æªä¸éœ€è¦ä¸Šå­å¼¹
 */
 status_t ROBOT_GunReload(unsigned char gun);
 
 /*
-*Ãû³Æ£ºROBOT_GunReload
-*¹¦ÄÜ£º¸ù¾İÇ¹ÌÅ´«¸ĞÆ÷£¬¼ì²â×Óµ¯×´Ì¬£¬¾ö¶¨ºóÃæ¿ªÇ¹µÄ¾ßÌå²ÎÊı
-*²ÎÊı£º
+*åç§°ï¼šROBOT_GunReload
+*åŠŸèƒ½ï¼šæ ¹æ®æªè†›ä¼ æ„Ÿå™¨ï¼Œæ£€æµ‹å­å¼¹çŠ¶æ€ï¼Œå†³å®šåé¢å¼€æªçš„å…·ä½“å‚æ•°
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR£¬GUN_RELOAD_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹²»ĞèÒªÉÏ×Óµ¯£¬ÒòÎªÊÇÊÖ¶¯ÉÏµ¯
+*status:GUN_NO_ERRORï¼ŒGUN_RELOAD_ERROR
+*æ³¨æ„ï¼šä¸Šé¢çš„æªä¸éœ€è¦ä¸Šå­å¼¹ï¼Œå› ä¸ºæ˜¯æ‰‹åŠ¨ä¸Šå¼¹
 */
 status_t ROBOT_GunCheckBulletState(unsigned char gun);
 
 /*
-*Ãû³Æ£ºROBOT_GunAim
-*¹¦ÄÜ£ºÃé×¼£¬Ä¿±ê¸Ä±äºóĞèÒªÏÈµ÷ÓÃ´Ë½Ó¿ÚÀ´ÖØĞÂÃé×¼
-*²ÎÊı£º
+*åç§°ï¼šROBOT_GunAim
+*åŠŸèƒ½ï¼šç„å‡†ï¼Œç›®æ ‡æ”¹å˜åéœ€è¦å…ˆè°ƒç”¨æ­¤æ¥å£æ¥é‡æ–°ç„å‡†
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *landId:
 *status:GUN_NO_ERROR
-*×¢Òâ£ºÉÏÃæµÄÇ¹Ä¿Ç°»úĞµÉÏÃ»ÓĞroll£¬Ã»ÓĞÓÒ²à´«ËÍ´øspeed2
+*æ³¨æ„ï¼šä¸Šé¢çš„æªç›®å‰æœºæ¢°ä¸Šæ²¡æœ‰rollï¼Œæ²¡æœ‰å³ä¾§ä¼ é€å¸¦speed2
 */
 status_t ROBOT_GunAim(unsigned char gun);
 /*
-*Ãû³Æ£ºROBOT_LeftGunCheckAim
-*¹¦ÄÜ£º¼ì²éÃé×¼ÊÇ·ñÒÑÍê³É
-*²ÎÊı£º
+*åç§°ï¼šROBOT_LeftGunCheckAim
+*åŠŸèƒ½ï¼šæ£€æŸ¥ç„å‡†æ˜¯å¦å·²å®Œæˆ
+*å‚æ•°ï¼š
 *none
-*status:GUN_AIM_IN_PROCESS£¬ GUN_AIM_DONE
-*×¢Òâ£º
+*status:GUN_AIM_IN_PROCESSï¼Œ GUN_AIM_DONE
+*æ³¨æ„ï¼š
 */
 status_t ROBOT_LeftGunCheckAim(void);
 /*
-*Ãû³Æ£ºROBOT_RightGunCheckAim
-*¹¦ÄÜ£º¼ì²éÃé×¼ÊÇ·ñÒÑÍê³É£¬²»Í¬Ç¹·Ö¿ª¼ì²âÎªÁË·ÀÖ¹ÖØÈë£¬
-*ÒòÎª´Ëº¯ÊıÖĞĞèÒªÉè¼Æ³¬Ê±
-*²ÎÊı£º
+*åç§°ï¼šROBOT_RightGunCheckAim
+*åŠŸèƒ½ï¼šæ£€æŸ¥ç„å‡†æ˜¯å¦å·²å®Œæˆï¼Œä¸åŒæªåˆ†å¼€æ£€æµ‹ä¸ºäº†é˜²æ­¢é‡å…¥ï¼Œ
+*å› ä¸ºæ­¤å‡½æ•°ä¸­éœ€è¦è®¾è®¡è¶…æ—¶
+*å‚æ•°ï¼š
 *none
-*status:GUN_AIM_IN_PROCESS£¬ GUN_AIM_DONE
-*×¢Òâ£º
+*status:GUN_AIM_IN_PROCESSï¼Œ GUN_AIM_DONE
+*æ³¨æ„ï¼š
 */
 status_t ROBOT_RightGunCheckAim(void);
 
 /*
-*Ãû³Æ£ºROBOT_GunShoot
-*¹¦ÄÜ£º¿ªÇ¹£¬¿ªÇ¹Ç°ĞèÒªÈ·±£×Óµ¯ÉÏÌÅ£¬À­¿ª±£ÏÕ£¬Ç¹Ö§¼ÜÒÑ¾­¾ÍĞ÷
-*²ÎÊı£º
-*gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*mode: auto or manual
-*status:GUN_NO_ERROR£¬GUN_CHAMPER_ERROR£¬ GUN_NO_BULLET_ERROR£¬ GUN_NO_READY_ERROR
+*åç§°ï¼šROBOT_UpperGunCheckAim
+*åŠŸèƒ½ï¼šæ£€æŸ¥ç„å‡†æ˜¯å¦å·²å®Œæˆ
+*å‚æ•°ï¼š
+*none
+*status:GUN_AIM_IN_PROCESSï¼Œ GUN_AIM_DONE
+*æ³¨æ„ï¼š
 */
-status_t ROBOT_GunShoot(unsigned char gun, unsigned char mode);
+status_t ROBOT_UpperGunCheckAim(void);
+
+/*
+*åç§°ï¼šROBOT_GunShoot
+*åŠŸèƒ½ï¼šå¼€æªï¼Œå¼€æªå‰éœ€è¦ç¡®ä¿å­å¼¹ä¸Šè†›ï¼Œæ‹‰å¼€ä¿é™©ï¼Œæªæ”¯æ¶å·²ç»å°±ç»ª
+*å‚æ•°ï¼š
+*gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
+*status:GUN_NO_ERRORï¼ŒGUN_CHAMPER_ERRORï¼Œ GUN_NO_BULLET_ERRORï¼Œ GUN_NO_READY_ERROR
+*/
+status_t ROBOT_GunShoot(unsigned char gun);
 
 
 /*
-*Ãû³Æ£ºROBOT_GunHome
-*¹¦ÄÜ£ºÇ¹¹éÎ»£¬¿ªÇ¹ºóÎªÁË¸üºÃµÄÉÏÌÅĞèÒª¹éÎ»
-*²ÎÊı£º
+*åç§°ï¼šROBOT_GunHome
+*åŠŸèƒ½ï¼šæªå½’ä½ï¼Œå¼€æªåä¸ºäº†æ›´å¥½çš„ä¸Šè†›éœ€è¦å½’ä½
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:GUN_NO_ERROR
 */
 status_t ROBOT_GunHome(unsigned char gun);
 
 /*
-*Ãû³Æ£ºROBOT_GunCheckMode
-*¹¦ÄÜ£º¼ì²éÇ¹µÄÄ£Ê½
-*²ÎÊı£º
+*åç§°ï¼šROBOT_GunCheckMode
+*åŠŸèƒ½ï¼šæ£€æŸ¥æªçš„æ¨¡å¼
+*å‚æ•°ï¼š
 *gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
 *status:
 */
 status_t ROBOT_GunCheckMode(unsigned char gun);
 
-int LeftGunYawTransform(float position);
-int LeftGunPitchTransform(float position);
-int LeftGunRollTransform(float position);
-int LeftGunLeftSpeedTransform(float speed);
-int LeftGunRightSpeedTransform(float speed);
+/*
+============================================================
+                   æªå‚æ•°å˜æ¢ä¸é€†å˜æ¢            
+============================================================
+*/
 
-float LeftGunYawInverseTransform(int position);
-float LeftGunPitchInverseTransform(int position);
-float LeftGunRollInverseTransform(int position);
-float LeftGunLeftSpeedInverseTransform(int speed);
-float LeftGunRightSpeedInverseTransform(int speed);
+int32_t LeftGunYawTransform(float position);
+int32_t LeftGunPitchTransform(float position);
+int32_t LeftGunRollTransform(float position);
+int32_t LeftGunLeftSpeedTransform(float speed);
+int32_t LeftGunRightSpeedTransform(float speed);
+
+float LeftGunYawInverseTransform(int32_t position);
+float LeftGunPitchInverseTransform(int32_t position);
+float LeftGunRollInverseTransform(int32_t position);
+float LeftGunLeftSpeedInverseTransform(int32_t speed);
+float LeftGunRightSpeedInverseTransform(int32_t speed);
 
 
-int RightGunYawTransform(float yaw);
-int RightGunPitchTransform(float pitch);
-int RightGunRollTransform(float roll);
-int RightGunLeftSpeedTransform(float speed);
-int RightGunRightSpeedTransform(float speed);
+int32_t RightGunYawTransform(float yaw);
+int32_t RightGunPitchTransform(float pitch);
+int32_t RightGunRollTransform(float roll);
+int32_t RightGunLeftSpeedTransform(float speed);
+int32_t RightGunRightSpeedTransform(float speed);
 
-float RightGunYawInverseTransform(float position);
-float RightGunPitchInverseTransform(float position);
-float RightGunRollInverseTransform(float position);
-float RightGunLeftSpeedInverseTransform(float speed);
-float RightGunRightSpeedInverseTransform(float speed);
+float RightGunYawInverseTransform(int32_t position);
+float RightGunPitchInverseTransform(int32_t position);
+float RightGunRollInverseTransform(int32_t position);
+float RightGunLeftSpeedInverseTransform(int32_t speed);
+float RightGunRightSpeedInverseTransform(int32_t speed);
 
-int UpperGunLeftSpeedTransform(float speed);
-int UpperGunYawTransform(float yaw);
-int UpperGunPitchTransform(float pitch);
+int32_t UpperGunYawTransform(float yaw);
+int32_t UpperGunPitchTransform(float pitch);
+int32_t UpperGunLeftSpeedTransform(float speed);
 
+float UpperGunYawInverseTransform(int32_t position);
+float UpperGunPitchInverseTransform(int32_t position);
+float UpperGunLeftSpeedInverseTransform(int32_t speed);
 
 //temrary
 void ShootCtr(shootCtr_t *shootPara);

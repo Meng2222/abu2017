@@ -66,21 +66,21 @@ void ADC1mixed_DMA_Config(void)
 	ADC_CommonInit(&ADC_CommonInitStructure);
 	
 		/* ADC1 Init ****************************************************************/
-	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;	//12Î»¾«¶È
-	ADC_InitStructure.ADC_ScanConvMode = ENABLE;			//¶àÍ¨µÀ,Ê¹ÓÃÉ¨ÃèÄ£Ê½
-	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;		//Á¬Ğø×ª»»
-	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;//×ª»»ÓÉÈí¼ş´¥·¢
-	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;	//Êı¾İÓÒ¶ÔÆë
-	ADC_InitStructure.ADC_NbrOfConversion = TOTALLASERNUM;				//Ë³Ğò½øĞĞ¹æÔò×ª»»µÄADCÍ¨µÀÊıÄ¿
+	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;	//12ä½ç²¾åº¦
+	ADC_InitStructure.ADC_ScanConvMode = ENABLE;			//å¤šé€šé“,ä½¿ç”¨æ‰«ææ¨¡å¼
+	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;		//è¿ç»­è½¬æ¢
+	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;//è½¬æ¢ç”±è½¯ä»¶è§¦å‘
+	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;	//æ•°æ®å³å¯¹é½
+	ADC_InitStructure.ADC_NbrOfConversion = TOTALLASERNUM;				//é¡ºåºè¿›è¡Œè§„åˆ™è½¬æ¢çš„ADCé€šé“æ•°ç›®
 	ADC_Init(ADC1, &ADC_InitStructure);
 
 	
 	/* ADC1 regular channel13 configuration *************************************/
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_144Cycles);	//1,Îª¹æÔò²ÉÑùË³ĞòÖµ,ÎªADCµÄ¸÷Í¨µÀµÄ²ÉÑùË³Ğò,Ö»Ê¹ÓÃÁËÒ»¸öÍ¨µÀ,ËùÒÔÉèÎª1
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_144Cycles);	//2,Îª¹æÔò²ÉÑùË³ĞòÖµ,ÎªADCµÄ¸÷Í¨µÀµÄ²ÉÑùË³Ğò,Ö»Ê¹ÓÃÁËÒ»¸öÍ¨µÀ,ËùÒÔÉèÎª1
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_144Cycles);	//1,ä¸ºè§„åˆ™é‡‡æ ·é¡ºåºå€¼,ä¸ºADCçš„å„é€šé“çš„é‡‡æ ·é¡ºåº,åªä½¿ç”¨äº†ä¸€ä¸ªé€šé“,æ‰€ä»¥è®¾ä¸º1
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_144Cycles);	//2,ä¸ºè§„åˆ™é‡‡æ ·é¡ºåºå€¼,ä¸ºADCçš„å„é€šé“çš„é‡‡æ ·é¡ºåº,åªä½¿ç”¨äº†ä¸€ä¸ªé€šé“,æ‰€ä»¥è®¾ä¸º1
 	//ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_144Cycles);	
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 3, ADC_SampleTime_144Cycles);	//2,Îª¹æÔò²ÉÑùË³ĞòÖµ,ÎªADCµÄ¸÷Í¨µÀµÄ²ÉÑùË³Ğò,Ö»Ê¹ÓÃÁËÒ»¸öÍ¨µÀ,ËùÒÔÉèÎª1
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 4, ADC_SampleTime_144Cycles);	//2,Îª¹æÔò²ÉÑùË³ĞòÖµ,ÎªADCµÄ¸÷Í¨µÀµÄ²ÉÑùË³Ğò,Ö»Ê¹ÓÃÁËÒ»¸öÍ¨µÀ,ËùÒÔÉèÎª1
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 3, ADC_SampleTime_144Cycles);	//2,ä¸ºè§„åˆ™é‡‡æ ·é¡ºåºå€¼,ä¸ºADCçš„å„é€šé“çš„é‡‡æ ·é¡ºåº,åªä½¿ç”¨äº†ä¸€ä¸ªé€šé“,æ‰€ä»¥è®¾ä¸º1
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 4, ADC_SampleTime_144Cycles);	//2,ä¸ºè§„åˆ™é‡‡æ ·é¡ºåºå€¼,ä¸ºADCçš„å„é€šé“çš„é‡‡æ ·é¡ºåº,åªä½¿ç”¨äº†ä¸€ä¸ªé€šé“,æ‰€ä»¥è®¾ä¸º1
 	
 	/* Enable DMA request after last transfer (Single-ADC mode) */
 	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
@@ -114,7 +114,7 @@ void AverageValue(void)
 		
 	for(j=0;j<TOTALLASERNUM;j++)
 	{
-		for(ADi=0;ADi<9;ADi++)							  //Ã°ÅİÅÅĞò   ÓÉĞ¡µ½´ó
+		for(ADi=0;ADi<9;ADi++)							  //å†’æ³¡æ’åº   ç”±å°åˆ°å¤§
 		{
 			for(ADj=0;ADj<9-ADi;ADj++)
 			{
@@ -128,16 +128,16 @@ void AverageValue(void)
 		}
 	}
 	
-	/************************¸üĞÂÊı¾İ ****************************/
+	/************************æ›´æ–°æ•°æ® ****************************/
 	
   for(j=0;j<TOTALLASERNUM;j++)
 	{
-		Laser[j]=(ADdatabuffer[4][j]+ADdatabuffer[5][j]/*+ADdatabuffer0[6]*/)>>1;		//Çó¼¤¹â¾ùÖµ
-		/* 0ºÅ¶æ»ú×ó²àµÄ¼¤¹â */
-		/* 1ºÅ¶æ»úÓÒ²àµÄ¼¤¹â */
-		/* 2ºÅµ×ÅÌ×ó²à¼¤¹â   */
-		/* 3ºÅµ×ÅÌÓÒ²à¼¤¹â   */
-		/* 4ºÅ¿¿½øÖù×ÓÊ±±§Öù×ÓÓÃµÄ¼¤¹â*/
+		Laser[j]=(ADdatabuffer[4][j]+ADdatabuffer[5][j]/*+ADdatabuffer0[6]*/)>>1;		//æ±‚æ¿€å…‰å‡å€¼
+		/* 0å·èˆµæœºå·¦ä¾§çš„æ¿€å…‰ */
+		/* 1å·èˆµæœºå³ä¾§çš„æ¿€å…‰ */
+		/* 2å·åº•ç›˜å·¦ä¾§æ¿€å…‰   */
+		/* 3å·åº•ç›˜å³ä¾§æ¿€å…‰   */
+		/* 4å·é è¿›æŸ±å­æ—¶æŠ±æŸ±å­ç”¨çš„æ¿€å…‰*/
 	}
 }
 

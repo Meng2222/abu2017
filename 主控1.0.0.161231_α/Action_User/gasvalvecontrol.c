@@ -3,10 +3,10 @@
 #include "gpio.h"
 
 /**
-* @brief  Æø·§¿ØÖÆ
-* @param  boardNum£ºÆø·§°åºÅ
-* @param  valveNum£ºÆø·§ºÅ
-* @param  valveState£º Æø·§×´Ì¬£¬0Îª¹Ø£¬1Îª¿ª
+* @brief  æ°”é˜€æ§åˆ¶
+* @param  boardNumï¼šæ°”é˜€æ¿å·
+* @param  valveNumï¼šæ°”é˜€å·
+* @param  valveStateï¼š æ°”é˜€çŠ¶æ€ï¼Œ0ä¸ºå…³ï¼Œ1ä¸ºå¼€
 * @author ACTION
 */
 void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
@@ -27,7 +27,7 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 	mbox = CAN_Transmit(CAN2, &TxMessage);         
 	while ((CAN_TransmitStatus(CAN2, mbox) != CAN_TxStatus_Ok));
 }
-//¼Ğ×Ó¿ª
+//å¤¹å­å¼€
 void ClampOpen(void)
 {
 	if (!KEYSWITCH)
@@ -36,44 +36,44 @@ void ClampOpen(void)
 		GasValveControl(2 , 12 , 1);
 	}
 }
-//¼Ğ×Ó¹Ø
+//å¤¹å­å…³
 void ClampClose(void)
 {
  	GasValveControl(1 , 6 , 1);
 	GasValveControl(2 , 12 , 0);
 }
-//¼Ğ×Ó·­
+//å¤¹å­ç¿»
 void ClampRotate(void)
 {
-		GasValveControl(1 , 8 , 1);//ÍùÉÏ·­
+		GasValveControl(1 , 8 , 1);//å¾€ä¸Šç¿»
 }
-//¼Ğ×Ó¸´Î»
+//å¤¹å­å¤ä½
 void ClampReset(void)
 {
-	GasValveControl(1 , 8 , 0);//ÍùÉÏ·­
+	GasValveControl(1 , 8 , 0);//å¾€ä¸Šç¿»
 }
 
-//×óÍÆÅÌ
+//å·¦æ¨ç›˜
 
 void LeftPush(void)
 {
-	GasValveControl(1 , 1 , 0);//×óÍÆÅÌÊÕ
-	GasValveControl(1 , 2 , 1);//×óÍÆ	
+	GasValveControl(1 , 1 , 0);//å·¦æ¨ç›˜æ”¶
+	GasValveControl(1 , 2 , 1);//å·¦æ¨	
 }
 void LeftBack(void)
 {
-	GasValveControl(1 , 1 , 1);//×óÍÆÅÌÊÕ
-	GasValveControl(1 , 2 , 0);//×óÍÆ
+	GasValveControl(1 , 1 , 1);//å·¦æ¨ç›˜æ”¶
+	GasValveControl(1 , 2 , 0);//å·¦æ¨
 }
-//ÓÒÍÆÅÌ
+//å³æ¨ç›˜
 void RightPush(void)
 {
-	GasValveControl(1 , 3 , 0);//ÓÒÊÕ
-	GasValveControl(1 , 4 , 1);//ÓÒÍÆ
+	GasValveControl(1 , 3 , 0);//å³æ”¶
+	GasValveControl(1 , 4 , 1);//å³æ¨
 }
 void RightBack(void)
 {
-	GasValveControl(1 , 3 , 1);//ÓÒÊÕ
-	GasValveControl(1 , 4 , 0);//ÓÒÍÆ
+	GasValveControl(1 , 3 , 1);//å³æ”¶
+	GasValveControl(1 , 4 , 0);//å³æ¨
 }
 

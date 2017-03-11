@@ -9,7 +9,7 @@ INT32S main (void)
 	CPU_INT08U  os_err;
 	os_err = os_err; /* prevent warning... */
 
-	/* Note:  ÓÉÓÚÊ¹ÓÃUCOS, ÔÚOSÔËÐÐÖ®Ç°ÔËÐÐ,×¢Òâ±ðÊ¹ÄÜÈÎºÎÖÐ¶Ï. */
+	/* Note:  ç”±äºŽä½¿ç”¨UCOS, åœ¨OSè¿è¡Œä¹‹å‰è¿è¡Œ,æ³¨æ„åˆ«ä½¿èƒ½ä»»ä½•ä¸­æ–­. */
 	CPU_IntDis();                     /* Disable all ints until we are ready to accept them.  */
 
 	OSInit();                        /* Initialize "uC/OS-II, The Real-Time Kernel".         */
@@ -30,7 +30,7 @@ INT32S main (void)
 
 static  void  App_TaskStart ()
 {   
-	  OS_CPU_SysTickInit(SystemCoreClock/OS_TICKS_PER_SEC);                 /* 10ms£¬ÒÑ·ÂÕæ²âÊÔ     */
+	  OS_CPU_SysTickInit(SystemCoreClock/OS_TICKS_PER_SEC);                 /* 10msï¼Œå·²ä»¿çœŸæµ‹è¯•     */
 	
 #if (OS_TASK_STAT_EN > 0)
     OSStatInit();                                            /* Determine CPU capacity.                              */

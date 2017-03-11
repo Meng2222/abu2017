@@ -49,7 +49,7 @@
 #include "movebase.h"
 #include "robot.h"
 
-//ÓÃÀ´´¦ÀíCAN½ÓÊÕÊı¾İ
+//ç”¨æ¥å¤„ç†CANæ¥æ”¶æ•°æ®
 union MSG
 {
 	uint8_t data8[8];
@@ -57,7 +57,7 @@ union MSG
 	float dataf[2];
 }msg;
 
-//ÉùÃ÷Íâ²¿±äÁ¿
+//å£°æ˜å¤–éƒ¨å˜é‡
 extern robot_t gRobot;
 
 void CAN1_RX0_IRQHandler(void)
@@ -85,7 +85,7 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				//ÏÂÃæ´úÂë³ıÒÔ100ÎªÁË½«m/s×ª»»Îª0.1m/s£¬fix me
+				//ä¸‹é¢ä»£ç é™¤ä»¥100ä¸ºäº†å°†m/sè½¬æ¢ä¸º0.1m/sï¼Œfix me
 				gRobot.moveBase.actualSpeed.leftWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
 			}
 			if(canNodeId == FORWARD_WHEEL_ID) 
@@ -101,7 +101,7 @@ void CAN1_RX0_IRQHandler(void)
 		
 		if(msg.data32[0] == 0x80005149)
 		{
-			//msg.dataf[1]ÊÇµ¥Î»Îª°²ÅàµÄ¸¡µãÊı
+			//msg.dataf[1]æ˜¯å•ä½ä¸ºå®‰åŸ¹çš„æµ®ç‚¹æ•°
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
 				gRobot.moveBase.acturalCurrent.leftWheelCurrent = (msg.dataf[1]);
@@ -119,7 +119,7 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				//msg.data32[1]Îªµ¥Î»ÎªÉãÊÏ¶ÈµÄÕûÊı£¬·¶Î§ÊÇ25~135£¬²Î¿¼almoÊÖ²á
+				//msg.data32[1]ä¸ºå•ä½ä¸ºæ‘„æ°åº¦çš„æ•´æ•°ï¼ŒèŒƒå›´æ˜¯25~135ï¼Œå‚è€ƒalmoæ‰‹å†Œ
 				gRobot.moveBase.driverTemperature.leftWheelDriverTemperature = (msg.data32[1]);
 			}
 			if(canNodeId == FORWARD_WHEEL_ID) 
@@ -133,7 +133,7 @@ void CAN1_RX0_IRQHandler(void)
 
 		}
 	}
-	//fix me,¶ÔÓÚ0x28x£¬¿ÉÒÔÍ³Ò»´¦Àí£¬²¢²»ĞèÒªÕâÃ´¶à¸´ÔÓµÄÅĞ¶Ï
+	//fix me,å¯¹äº0x28xï¼Œå¯ä»¥ç»Ÿä¸€å¤„ç†ï¼Œå¹¶ä¸éœ€è¦è¿™ä¹ˆå¤šå¤æ‚çš„åˆ¤æ–­
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
 		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
 		canNodeId == RIGHT_GUN_ROLL_ID || canNodeId == RIGHT_GUN_YAW_ID || canNodeId == RIGHT_GUN_LEFT_ID|| \
@@ -167,27 +167,35 @@ void CAN1_RX0_IRQHandler(void)
 		{
 			if(canNodeId == LEFT_GUN_PITCH_ID) 
 			{
-				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //¸©Ñö
+				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //ä¿¯ä»°
 			}
 			if(canNodeId == LEFT_GUN_ROLL_ID) 
 			{
-				gRobot.leftGun.actualPose.roll = LeftGunRollInverseTransform(msg.data32[1]);    //ºá¹ö
+				gRobot.leftGun.actualPose.roll = LeftGunRollInverseTransform(msg.data32[1]);    //æ¨ªæ»š
 			}
 			if(canNodeId == LEFT_GUN_YAW_ID) 
 			{
-				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //º½Ïò
+				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //èˆªå‘
 			}
 			if(canNodeId == RIGHT_GUN_PITCH_ID) 
 			{
-				gRobot.rightGun.actualPose.pitch = RightGunPitchInverseTransform(msg.data32[1]);    //¸©Ñö
+				gRobot.rightGun.actualPose.pitch = RightGunPitchInverseTransform(msg.data32[1]);    //ä¿¯ä»°
 			}
 			if(canNodeId == RIGHT_GUN_ROLL_ID) 
 			{
-				gRobot.rightGun.actualPose.roll = RightGunRollInverseTransform(msg.data32[1]);    //ºá¹ö
+				gRobot.rightGun.actualPose.roll = RightGunRollInverseTransform(msg.data32[1]);    //æ¨ªæ»š
 			}
 			if(canNodeId == RIGHT_GUN_YAW_ID) 
 			{
-				gRobot.rightGun.actualPose.yaw = RightGunYawInverseTransform(msg.data32[1]);    //º½Ïò
+				gRobot.rightGun.actualPose.yaw = RightGunYawInverseTransform(msg.data32[1]);    //èˆªå‘
+			}
+			if(canNodeId == UPPER_GUN_PITCH_ID) 
+			{
+				gRobot.upperGun.actualPose.pitch = UpperGunPitchInverseTransform(msg.data32[1]);    //ä¿¯ä»°
+			}
+			if(canNodeId == UPPER_GUN_YAW_ID) 
+			{
+				gRobot.upperGun.actualPose.yaw = UpperGunYawInverseTransform(msg.data32[1]);    //èˆªå‘
 			}
 		}
 	}
@@ -206,15 +214,15 @@ void CAN1_RX0_IRQHandler(void)
 	OSIntExit();
 }
 
-/*************¶¨Ê±Æ÷2******start************/
-//Ã¿1msµ÷ÓÃÒ»´Î
+/*************å®šæ—¶å™¨2******start************/
+//æ¯1msè°ƒç”¨ä¸€æ¬¡
 
 extern  OS_EVENT 		*PeriodSem;
 
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
-	//ÓÃÀ´¼ÆÊı10´Î£¬²úÉú10msµÄ¶¨Ê±Æ÷
+	//ç”¨æ¥è®¡æ•°10æ¬¡ï¼Œäº§ç”Ÿ10msçš„å®šæ—¶å™¨
 	static uint8_t periodCounter = PERIOD_COUNTER;
 	
 	OS_CPU_SR  cpu_sr;
@@ -225,7 +233,7 @@ void TIM2_IRQHandler(void)
 	
 	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
-		//¸üĞÂ10ms¼ÆÊıÆ÷
+		//æ›´æ–°10msè®¡æ•°å™¨
 		periodCounter--;
 		if (periodCounter == 0)
 		{
@@ -307,13 +315,13 @@ void TIM4_IRQHandler(void)
 	OSIntExit();
 }
 
-/*************************ÓëÆ½°åÍ¨ĞÅ**************************/
+/*************************ä¸å¹³æ¿é€šä¿¡**************************/
 //fix me 
 /*
-*ACPC + [Êı¾İÀàĞÍÀàĞÍ] + [Ç¹ºÅ] + [Êı¾İ]
-*Êı¾İÀàĞÍ£ºroll(0)/patch(1)/yaw(2)/speed1(3)/speed2(4)
-*Êı¾İ£ºyaw data/patch data/roll data/speed1 data/speed2 data
-*Ç¹ºÅ£º0×óÇ¹ 1ÓÒÇ¹ 2ÉÏÇ¹
+*ACPC + [æ•°æ®ç±»å‹ç±»å‹] + [æªå·] + [æ•°æ®]
+*æ•°æ®ç±»å‹ï¼šroll(0)/patch(1)/yaw(2)/speed1(3)/speed2(4)
+*æ•°æ®ï¼šyaw data/patch data/roll data/speed1 data/speed2 data
+*æªå·ï¼š0å·¦æª 1å³æª 2ä¸Šæª
 */
 void UART4_IRQHandler(void)
 {	 
@@ -373,7 +381,7 @@ void UART4_IRQHandler(void)
 				status++;
 				break;
 			case 5:
-				id2 = ch;				//×ó   ´òÇò0 ´òÅÌ3 ÈÓ6  ÓÒ ´òÇò1 ´òÅÌ4 ÈÓ7  ÉÏ ´òÇò2 ´òÅÌ5 ÈÓ8
+				id2 = ch;				//å·¦   æ‰“çƒ0 æ‰“ç›˜3 æ‰”6  å³ æ‰“çƒ1 æ‰“ç›˜4 æ‰”7  ä¸Š æ‰“çƒ2 æ‰“ç›˜5 æ‰”8
 				status++;
 			break;
 			case 6:
@@ -395,14 +403,14 @@ void UART4_IRQHandler(void)
 						switch(id2 % 3)
 						{	
 							case 0:
-							//×óÇ¹
+							//å·¦æª
 							gRobot.leftGun.targetPose.roll = targetAngle;
-							//1~7±íÊ¾7¸ö×ÅÂ½Ì¨£¬×ª»»Îª0~6
+							//1~7è¡¨ç¤º7ä¸ªç€é™†å°ï¼Œè½¬æ¢ä¸º0~6
 							gRobot.leftGun.targetPlant = id/5;
 							break;
 							case 1:
 							gRobot.rightGun.targetPose.roll = targetAngle;
-							//1~7±íÊ¾7¸ö×ÅÂ½Ì¨£¬×ª»»Îª0~6
+							//1~7è¡¨ç¤º7ä¸ªç€é™†å°ï¼Œè½¬æ¢ä¸º0~6
 							gRobot.rightGun.targetPlant = id/5;
  							break;
 							case 2:
@@ -506,15 +514,15 @@ void UART4_IRQHandler(void)
 				switch(id)
 				{
 					case 1:
-						//Í¨Öª×óÇ¹¿ªÇ¹ÈÎÎñÖ´ĞĞ¿ªÇ¹¶¯×÷
+						//é€šçŸ¥å·¦æªå¼€æªä»»åŠ¡æ‰§è¡Œå¼€æªåŠ¨ä½œ
 						gRobot.leftGun.shoot = GUN_START_SHOOT;
 						break;
 					case 2:
-						//Í¨ÖªÓÒÇ¹¿ªÇ¹ÈÎÎñÖ´ĞĞ¿ªÇ¹¶¯×÷
+						//é€šçŸ¥å³æªå¼€æªä»»åŠ¡æ‰§è¡Œå¼€æªåŠ¨ä½œ
 						gRobot.rightGun.shoot = GUN_START_SHOOT;
 						break;
 					case 3:
-						//Í¨ÖªÉÏÃæÇ¹¿ªÇ¹ÈÎÎñÖ´ĞĞ¿ªÇ¹¶¯×÷
+						//é€šçŸ¥ä¸Šé¢æªå¼€æªä»»åŠ¡æ‰§è¡Œå¼€æªåŠ¨ä½œ
 						gRobot.upperGun.shoot = GUN_START_SHOOT;
 						break;
 				}
@@ -529,9 +537,9 @@ void UART4_IRQHandler(void)
 	OSIntExit();
 }
 
-/****************ÍÓÂİÒÇ´®¿Ú½ÓÊÜÖĞ¶Ï********************/
+/****************é™€èºä»ªä¸²å£æ¥å—ä¸­æ–­********************/
 
-void USART3_IRQHandler(void)       //¸üĞÂÆµÂÊ200Hz
+void USART3_IRQHandler(void)       //æ›´æ–°é¢‘ç‡200Hz
 {	 
 	static uint8_t ch;
 	static union
@@ -592,11 +600,11 @@ void USART3_IRQHandler(void)       //¸üĞÂÆµÂÊ200Hz
 				if(ch == 0x0d)
 				{
 					gRobot.moveBase.actualAngle = posture.ActVal[0];
-					posture.ActVal[1];
-					posture.ActVal[2];
+					posture.ActVal[1]           = posture.ActVal[1];
+					posture.ActVal[2]           = posture.ActVal[2];
 					gRobot.moveBase.actualXPos  = posture.ActVal[3];
 					gRobot.moveBase.actualYPos  = posture.ActVal[4];
-					posture.ActVal[5];
+					posture.ActVal[5]           = posture.ActVal[5];
 				}
 				count = 0;
 				break;
@@ -648,7 +656,7 @@ void USART6_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
+	if(USART_GetITStatus(USART6, USART_IT_RXNE) == SET)   
 	{
 		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
 		data = USART_ReceiveData(USART6);	
@@ -672,16 +680,9 @@ void USART6_IRQHandler(void)
 				}
 				break;
 			case DATA_STATE: 
-				//¸üĞÂ7ºÅ×ÅÂ½Ì¨·ÉÅÌÎ»ÖÃ, fix me
+				//æ›´æ–°7å·ç€é™†å°é£ç›˜ä½ç½®, fix me
 				receive_data=data;
-				gRobot.platePosOnLand7.area0 = data&0x01;
-				gRobot.platePosOnLand7.area1 = data&0x02;
-				gRobot.platePosOnLand7.area2 = data&0x04;
-				gRobot.platePosOnLand7.area3 = data&0x08;
-				gRobot.platePosOnLand7.area4 = data&0x10;
-				gRobot.platePosOnLand7.area5 = data&0x20;
-				gRobot.platePosOnLand7.area6 = data&0x40;
-				gRobot.upperGun.shoot=GUN_START_SHOOT;
+				gRobot.upperGun.targetZone = data;
 				state = 0;
 				break;
 			default:
@@ -694,12 +695,12 @@ void USART6_IRQHandler(void)
 /*********************************WIFI*************************/
 /**************************************************************/
 
-//Í¨¹ıÅĞ¶Ï½ÓÊÕÁ¬Ğø2¸ö×Ö·ûÖ®¼äµÄÊ±¼ä²î²»´óÓÚ100msÀ´¾ö¶¨ÊÇ²»ÊÇÒ»´ÎÁ¬ĞøµÄÊı¾İ.
-//Èç¹û2¸ö×Ö·û½ÓÊÕ¼ä¸ô³¬¹ı100ms,ÔòÈÏÎª²»ÊÇ1´ÎÁ¬ĞøÊı¾İ.Ò²¾ÍÊÇ³¬¹ı100msÃ»ÓĞ½ÓÊÕµ½
-//ÈÎºÎÊı¾İ,Ôò±íÊ¾´Ë´Î½ÓÊÕÍê±Ï.
-//½ÓÊÕµ½µÄÊı¾İ×´Ì¬
-//[15]:0,Ã»ÓĞ½ÓÊÕµ½Êı¾İ;1,½ÓÊÕµ½ÁËÒ»ÅúÊı¾İ.
-//[14:0]:½ÓÊÕµ½µÄÊı¾İ³¤¶È
+//é€šè¿‡åˆ¤æ–­æ¥æ”¶è¿ç»­2ä¸ªå­—ç¬¦ä¹‹é—´çš„æ—¶é—´å·®ä¸å¤§äº100msæ¥å†³å®šæ˜¯ä¸æ˜¯ä¸€æ¬¡è¿ç»­çš„æ•°æ®.
+//å¦‚æœ2ä¸ªå­—ç¬¦æ¥æ”¶é—´éš”è¶…è¿‡100ms,åˆ™è®¤ä¸ºä¸æ˜¯1æ¬¡è¿ç»­æ•°æ®.ä¹Ÿå°±æ˜¯è¶…è¿‡100msæ²¡æœ‰æ¥æ”¶åˆ°
+//ä»»ä½•æ•°æ®,åˆ™è¡¨ç¤ºæ­¤æ¬¡æ¥æ”¶å®Œæ¯•.
+//æ¥æ”¶åˆ°çš„æ•°æ®çŠ¶æ€
+//[15]:0,æ²¡æœ‰æ¥æ”¶åˆ°æ•°æ®;1,æ¥æ”¶åˆ°äº†ä¸€æ‰¹æ•°æ®.
+//[14:0]:æ¥æ”¶åˆ°çš„æ•°æ®é•¿åº¦
 void UART5_IRQHandler(void)
 {
 	u8 res;
@@ -711,32 +712,32 @@ void UART5_IRQHandler(void)
 	{
 		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
 		res = USART_ReceiveData(UART5);		
-		if((USART5_RX_STA&(1 << 15)) == 0)//½ÓÊÕÍêµÄÒ»ÅúÊı¾İ,»¹Ã»ÓĞ±»´¦Àí,Ôò²»ÔÙ½ÓÊÕÆäËûÊı¾İ
+		if((USART5_RX_STA&(1 << 15)) == 0)//æ¥æ”¶å®Œçš„ä¸€æ‰¹æ•°æ®,è¿˜æ²¡æœ‰è¢«å¤„ç†,åˆ™ä¸å†æ¥æ”¶å…¶ä»–æ•°æ®
 		{ 
-			if(USART5_RX_STA<USART5_MAX_RECV_LEN)		//»¹¿ÉÒÔ½ÓÊÕÊı¾İ
+			if(USART5_RX_STA<USART5_MAX_RECV_LEN)		//è¿˜å¯ä»¥æ¥æ”¶æ•°æ®
 			{
-				TIM_SetCounter(TIM7, 0);//¼ÆÊıÆ÷Çå¿Õ        				 
+				TIM_SetCounter(TIM7, 0);//è®¡æ•°å™¨æ¸…ç©º        				 
 				if(USART5_RX_STA == 0)		
-					TIM_Cmd(TIM7, ENABLE);  //Ê¹ÄÜ¶¨Ê±Æ÷7 
-				USART5_RX_BUF[USART5_RX_STA++] = res;		//¼ÇÂ¼½ÓÊÕµ½µÄÖµ	 
+					TIM_Cmd(TIM7, ENABLE);  //ä½¿èƒ½å®šæ—¶å™¨7 
+				USART5_RX_BUF[USART5_RX_STA++] = res;		//è®°å½•æ¥æ”¶åˆ°çš„å€¼	 
 			}
 			else 
 			{
-				USART5_RX_STA |= 1 << 15;					//Ç¿ÖÆ±ê¼Ç½ÓÊÕÍê³É
+				USART5_RX_STA |= 1 << 15;					//å¼ºåˆ¶æ ‡è®°æ¥æ”¶å®Œæˆ
 			} 
 		}
 	}
 	OSIntExit();		
 }
 
-//¶¨Ê±Æ÷7ÖĞ¶Ï·şÎñ³ÌĞò		    
+//å®šæ—¶å™¨7ä¸­æ–­æœåŠ¡ç¨‹åº		    
 void TIM7_IRQHandler(void)
 { 	
-	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)//ÊÇ¸üĞÂÖĞ¶Ï
+	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)//æ˜¯æ›´æ–°ä¸­æ–­
 	{	 			   
-		USART5_RX_STA |= 1 << 15;	//±ê¼Ç½ÓÊÕÍê³É
-		TIM_ClearITPendingBit(TIM7, TIM_IT_Update);  //Çå³ıTIM7¸üĞÂÖĞ¶Ï±êÖ¾    
-		TIM_Cmd(TIM7, DISABLE);  //¹Ø±ÕTIM7 
+		USART5_RX_STA |= 1 << 15;	//æ ‡è®°æ¥æ”¶å®Œæˆ
+		TIM_ClearITPendingBit(TIM7, TIM_IT_Update);  //æ¸…é™¤TIM7æ›´æ–°ä¸­æ–­æ ‡å¿—    
+		TIM_Cmd(TIM7, DISABLE);  //å…³é—­TIM7 
 	}	    
 }
 

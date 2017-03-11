@@ -1,14 +1,14 @@
 #include "elmo.h"
 #include "can.h"
 
- /**************³õÊ¼»¯Çı¶¯Æ÷********************/
+ /**************åˆå§‹åŒ–é©±åŠ¨å™¨********************/
 void elmo_Init()
 {
 	uint32_t data[1][2]={0x00000001,00000000};
 	CAN_TxMsg(CAN1,0x000,(uint8_t*)&data[0],8);
 }
 
-/****************Ê¹ÄÜµç»ú***************************/
+/****************ä½¿èƒ½ç”µæœº***************************/
 void elmo_Enable(uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={    				 
@@ -34,7 +34,7 @@ void elmo_Enable(uint8_t ElmoNum)
 	mbox= CAN_Transmit(CAN1, &TxMessage);        
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 }	
-/**************Ê§ÄÜµç»ú***************************/
+/**************å¤±èƒ½ç”µæœº***************************/
 void elmo_Disable(uint8_t ElmoNum)
 {
 	uint8_t i=0; 
@@ -65,7 +65,7 @@ void elmo_Disable(uint8_t ElmoNum)
 	}	
 
 }	
-/***************ËÙ¶È»·ÅäÖÃ*************************/
+/***************é€Ÿåº¦ç¯é…ç½®*************************/
 void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 {
 	 uint8_t i=0; 
@@ -109,7 +109,7 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 	}
 }
 
-/************ËÙ¶È¿ØÖÆ***************/
+/************é€Ÿåº¦æ§åˆ¶***************/
 void VelCrl(uint8_t ElmoNum,int vel)
 {
 	 uint8_t i=0; 
@@ -142,7 +142,7 @@ void VelCrl(uint8_t ElmoNum,int vel)
 	}
 }
 
-/***************Î»ÖÃ»·ÅäÖÃ*************************/
+/***************ä½ç½®ç¯é…ç½®*************************/
 void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 {
 	uint8_t i=0; 
@@ -203,9 +203,9 @@ void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 	}
 }
 
-/*****************Î»ÖÃ¿ØÖÆ*********************/
-/*******************1´ú±íÏà¶ÔÄ£Ê½****************************/
-/*******************0´ú±í¾ø¶ÔÄ£Ê½****************************/
+/*****************ä½ç½®æ§åˆ¶*********************/
+/*******************1ä»£è¡¨ç›¸å¯¹æ¨¡å¼****************************/
+/*******************0ä»£è¡¨ç»å¯¹æ¨¡å¼****************************/
 void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 {
 	uint8_t i=0; 
@@ -224,9 +224,9 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 
 
 	if(rel_abs==0){
-		data[0][0]= 0x00004150;  //¾ø¶Ô
+		data[0][0]= 0x00004150;  //ç»å¯¹
 	}else{
-		data[0][0]= 0x00005250;   //Ïà¶Ô
+		data[0][0]= 0x00005250;   //ç›¸å¯¹
 	}						
 					 
 	data[0][1]= pos;			 						 
@@ -242,11 +242,11 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 			
 		mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//µÈ´ı238us
+		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//ç­‰å¾…238us
 	}
 
 }
-/* ¶ÁÈ¡µç»úµçÑ¹ */
+/* è¯»å–ç”µæœºç”µå‹ */
 void ReadActualVoltage(uint8_t ElmoNum)
  {
 	 uint32_t data[1][2]={    				 
@@ -273,7 +273,7 @@ void ReadActualVoltage(uint8_t ElmoNum)
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
  }
 
-/* ¶ÁÈ¡µç»úµçÁ÷ */
+/* è¯»å–ç”µæœºç”µæµ */
 void ReadActualCurrent(uint8_t ElmoNum)
  {
 	 uint32_t data[1][2]={    				 
@@ -300,7 +300,7 @@ void ReadActualCurrent(uint8_t ElmoNum)
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
  }
  
-/* ¶ÁÈ¡µç»úÎ»ÖÃ */
+/* è¯»å–ç”µæœºä½ç½® */
 void ReadActualPos(uint8_t ElmoNum)
  {
 	 uint32_t data[1][2]={    				 
@@ -327,7 +327,7 @@ void ReadActualPos(uint8_t ElmoNum)
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
  }
 
-/* ¶ÁÈ¡µç»úËÙ¶È */
+/* è¯»å–ç”µæœºé€Ÿåº¦ */
 void ReadActualVel(uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={    				 
@@ -381,9 +381,9 @@ void ReadActualTemperature(uint8_t ElmoNum)
 }
 
 /**
-  * @brief  ÅäÖÃµç»úËÙ¶È
-  * @param  DriverNum: µç»úºÅ
-  * @param  velData: ËÙ¶ÈÖµ¡£µ¥Î»Îª£ºÂö³åÃ¿Ãë¡££¨Ã¿È¦4096Âö³å£©
+  * @brief  é…ç½®ç”µæœºé€Ÿåº¦
+  * @param  DriverNum: ç”µæœºå·
+  * @param  velData: é€Ÿåº¦å€¼ã€‚å•ä½ä¸ºï¼šè„‰å†²æ¯ç§’ã€‚ï¼ˆæ¯åœˆ4096è„‰å†²ï¼‰
   * @retval None
   * @author Tmax Sco
 **/

@@ -2,14 +2,14 @@
 #define __timer_h
 
 #include "stm32f4xx_tim.h"
-//ºêÑÓÊ±º¯Êı
-#define  SYSCLK        168         //Ö¸Ã÷MCU¹¤×÷ÆµÂÊÎª168MHz
-#define  A             3           //Ò»´ÎÑ­»·Ëù»¨µÄÖÜÆÚÊı
-#define  B             3           //µ÷ÓÃ¡¢³õÊ¼»¯¡¢·µ»Ø×Ü¹²ËùÓÃµÄÖÜÆÚÊı
+//å®å»¶æ—¶å‡½æ•°
+#define  SYSCLK        168         //æŒ‡æ˜MCUå·¥ä½œé¢‘ç‡ä¸º168MHz
+#define  A             3           //ä¸€æ¬¡å¾ªç¯æ‰€èŠ±çš„å‘¨æœŸæ•°
+#define  B             3           //è°ƒç”¨ã€åˆå§‹åŒ–ã€è¿”å›æ€»å…±æ‰€ç”¨çš„å‘¨æœŸæ•°
 #define  delay_us(nus)   wait(((nus)*(SYSCLK)-(B))/(A))
 #define  delay_ms(nms)   delay_us((nms)*1000)
 #define  delay_s(ns)     delay_ms((ns)*1000)
-//¾«È·ÑÓÊ±º¯Êıµ÷ÓÃwait
+//ç²¾ç¡®å»¶æ—¶å‡½æ•°è°ƒç”¨wait
 void  wait(uint32_t n);
 
 void TIM_Init(TIM_TypeDef * TIMx, uint16_t arr, uint16_t psr,uint16_t prepri,uint16_t subpri); 

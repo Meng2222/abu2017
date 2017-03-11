@@ -83,7 +83,7 @@ void GPIO_Init_Pins(GPIO_TypeDef * GPIOx,
 		
 	GPIO_Init(GPIOx, &GPIO_InitStructure);	
 }
-//ÐÐ³Ì¿ª¹Ø PA0
+//è¡Œç¨‹å¼€å…³ PA0
 void KeyInit(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -98,12 +98,12 @@ void KeyInit(void)
 	
 }
 
-//·äÃùÆ÷PE7
+//èœ‚é¸£å™¨PE7
 void BeepInit(void)
 { 
 	GPIO_Init_Pins(GPIOE, GPIO_Pin_7, GPIO_Mode_OUT);
 }
-//¹âµçPA6     PB0    PE8    PE12
+//å…‰ç”µPA6     PB0    PE8    PE12
 void PhotoelectricityInit(void)        
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
