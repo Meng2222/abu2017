@@ -213,7 +213,7 @@ void LeftGunShootTask(void)
 				{
 					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 					//子弹上膛,第一次上膛默认位置OK
-					ROBOT_GunReload(LEFT_GUN);
+					ROBOT_LeftGunReload();
 					//检查并更新子弹状态
 					ROBOT_GunCheckBulletState(LEFT_GUN);
 					
@@ -231,12 +231,12 @@ void LeftGunShootTask(void)
 
 					//瞄准，此函数最好瞄准完成后再返回
 					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-					ROBOT_GunAim(LEFT_GUN);
+					ROBOT_LeftGunAim();
 					ROBOT_LeftGunCheckAim();
 					//
-					ROBOT_GunShoot(LEFT_GUN);
+					ROBOT_LeftGunShoot();
 					//此函数有延迟
-					ROBOT_GunHome(LEFT_GUN);
+					ROBOT_LeftGunHome();
 					gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				}
 				else
@@ -249,7 +249,7 @@ void LeftGunShootTask(void)
 
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 				//子弹上膛,第一次上膛默认位置OK
-				ROBOT_GunReload(LEFT_GUN);
+				ROBOT_LeftGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(LEFT_GUN);
 				
@@ -265,12 +265,12 @@ void LeftGunShootTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(LEFT_GUN);
+				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				//
-				ROBOT_GunShoot(LEFT_GUN);
+				ROBOT_LeftGunShoot();
 				//此函数有延迟
-				ROBOT_GunHome(LEFT_GUN);
+				ROBOT_LeftGunHome();
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -280,7 +280,7 @@ void LeftGunShootTask(void)
 			//子弹上膛
 			if(gRobot.leftGun.shoot == GUN_START_SHOOT)
 			{
-				ROBOT_GunReload(LEFT_GUN);
+				ROBOT_LeftGunReload();
 				//检查并更新子弹状态，训练时需要记录
 				ROBOT_GunCheckBulletState(LEFT_GUN);
 
@@ -288,12 +288,12 @@ void LeftGunShootTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(LEFT_GUN);
+				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				//此函数内无延迟,更新shoot状态
-				ROBOT_GunShoot(LEFT_GUN);
+				ROBOT_LeftGunShoot();
 				//此函数有延迟
-				ROBOT_GunHome(LEFT_GUN);
+				ROBOT_LeftGunHome();
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
@@ -332,7 +332,7 @@ void RightGunShootTask(void)
 				{
 					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 					//子弹上膛,第一次上膛默认位置OK
-					ROBOT_GunReload(RIGHT_GUN);
+					ROBOT_RightGunReload();
 					//检查并更新子弹状态
 					ROBOT_GunCheckBulletState(RIGHT_GUN);
 
@@ -349,12 +349,12 @@ void RightGunShootTask(void)
 
 					//瞄准，此函数最好瞄准完成后再返回
 					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-					ROBOT_GunAim(RIGHT_GUN);
+					ROBOT_RightGunAim();
 					ROBOT_RightGunCheckAim();
 					//
-					ROBOT_GunShoot(RIGHT_GUN);
+					ROBOT_RightGunShoot();
 					//此函数有延迟
-					ROBOT_GunHome(RIGHT_GUN);
+					ROBOT_RightGunHome();
 					gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				}
 				else
@@ -366,7 +366,7 @@ void RightGunShootTask(void)
 			{
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 				//子弹上膛,第一次上膛默认位置OK
-				ROBOT_GunReload(RIGHT_GUN);
+				ROBOT_RightGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
 				
@@ -382,12 +382,12 @@ void RightGunShootTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(RIGHT_GUN);
+				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
 				//
-				ROBOT_GunShoot(RIGHT_GUN);
+				ROBOT_RightGunShoot();
 				//此函数有延迟
-				ROBOT_GunHome(RIGHT_GUN);
+				ROBOT_RightGunHome();
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -397,7 +397,7 @@ void RightGunShootTask(void)
 			//子弹上膛
 			if(gRobot.rightGun.shoot == GUN_START_SHOOT)
 			{
-				ROBOT_GunReload(RIGHT_GUN);
+				ROBOT_RightGunReload();
 				//检查并更新子弹状态，训练时需要记录
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
 
@@ -405,12 +405,12 @@ void RightGunShootTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(RIGHT_GUN);
+				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
 				//此函数内无延迟,更新shoot状态
-				ROBOT_GunShoot(RIGHT_GUN);
+				ROBOT_RightGunShoot();
 				//此函数有延迟
-				ROBOT_GunHome(RIGHT_GUN);
+				ROBOT_RightGunHome();
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
@@ -464,12 +464,12 @@ void UpperGunShootTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(UPPER_GUN);
+				ROBOT_UpperGunAim();
 				OSTimeDly(5);
 				ROBOT_UpperGunCheckAim();
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
-					ROBOT_GunShoot(UPPER_GUN);
+					ROBOT_UpperGunShoot();
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					OSTimeDly(50);
@@ -489,11 +489,11 @@ void UpperGunShootTask(void)
 			{
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				ROBOT_GunAim(UPPER_GUN);
+				ROBOT_UpperGunAim();
 //				ROBOT_LeftGunCheckAim();
 				OSTimeDly(100);
 				//此函数内无延迟,更新shoot状态
-				ROBOT_GunShoot(UPPER_GUN);
+				ROBOT_UpperGunShoot();
 				//此函数有延迟
 //				ROBOT_GunHome(LEFT_GUN);
 
