@@ -148,22 +148,22 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 50);
 
 	ROBOT_Init();
-	//atk_8266_init();
+	atk_8266_init();
 
-	ClampClose();
-	LeftBack();
-	RightBack();
-	ClampReset();
+//	ClampClose();
+//	LeftBack();
+//	RightBack();
+//	ClampReset();
 
 
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-	OSTaskSuspend(Walk_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -178,10 +178,11 @@ void WalkTask(void)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
+
+
 		ReadActualVel(MOVEBASE_BROADCAST_ID);
 		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
 		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
-
 		sendDebugInfo();
 
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
