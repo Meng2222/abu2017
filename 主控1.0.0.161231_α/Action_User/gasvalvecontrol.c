@@ -14,7 +14,7 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 	uint8_t data = 0x00;
 	uint8_t mbox;
 	CanTxMsg TxMessage;
-	TxMessage.StdId = 0x0001 ;					 // standard identifier=0
+	TxMessage.StdId = 0x0001 ;					 // standard identifier=1
 	TxMessage.ExtId = 0x0001 ;				 	 // extended identifier=StdId
 	TxMessage.IDE = CAN_Id_Standard;			 // type of identifier for the message is Standard
 	TxMessage.RTR = CAN_RTR_Data;			 	 // the type of frame for the message that will be transmitted
@@ -56,25 +56,21 @@ void ClampReset(void)
 //左上弹
 void LeftPush(void)
 {
-	GasValveControl(LEFT_RELOAD_RESET_BOARD_ID , LEFT_RELOAD_RESET_IO_ID , 0);//左推盘收
 	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 1);//左推	
 }
 //左上弹复位
 void LeftBack(void)
 {
-	GasValveControl(LEFT_RELOAD_RESET_BOARD_ID , LEFT_RELOAD_RESET_IO_ID , 1);//左推盘收
 	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 0);//左推	
 }
 //右上弹
 void RightPush(void)
 {
-	GasValveControl(RIGHT_RELOAD_RESET_BOARD_ID , RIGHT_RELOAD_RESET_IO_ID , 0);//右收
 	GasValveControl(RIGHT_RELOAD_BOARD_ID ,RIGHT_RELOAD_IO_ID , 1);//右推
 }
 //右上弹复位
 void RightBack(void)
 {
-	GasValveControl(RIGHT_RELOAD_RESET_BOARD_ID , RIGHT_RELOAD_RESET_IO_ID , 1);//右收
 	GasValveControl(RIGHT_RELOAD_BOARD_ID ,RIGHT_RELOAD_IO_ID , 0);//右推
 }
 //左枪发射
