@@ -306,16 +306,24 @@ status_t ROBOT_GunLoad(void);
 */
 status_t ROBOT_GunOpenSafety(void);
 
-/*
-*名称：ROBOT_GunReload
-*功能：给枪上弹，每次射击前需要上弹一次
-*参数：
-*gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR，GUN_RELOAD_ERROR
+/**
+*名称：ROBOT_LeftGunReload
+*功能：左枪上弹，每次射击前需要上弹一次
+*		通过发送CAN命令给间隔一段时间后
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
 *注意：上面的枪不需要上子弹
 */
-status_t ROBOT_GunReload(unsigned char gun);
-
+status_t ROBOT_LeftGunReload(void);
+/**
+*名称：ROBOT_RightGunReload
+*功能：右枪上弹，每次射击前需要上弹一次
+*		通过发送CAN命令给间隔一段时间后
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_RightGunReload(void);
 /*
 *名称：ROBOT_GunReload
 *功能：根据枪膛传感器，检测子弹状态，决定后面开枪的具体参数
@@ -326,16 +334,18 @@ status_t ROBOT_GunReload(unsigned char gun);
 */
 status_t ROBOT_GunCheckBulletState(unsigned char gun);
 
-/*
-*名称：ROBOT_GunAim
-*功能：瞄准，目标改变后需要先调用此接口来重新瞄准
-*参数：
-*gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*landId:
-*status:GUN_NO_ERROR
-*注意：上面的枪目前机械上没有roll，没有右侧传送带speed2
+/**
+*名称： ROBOT_LeftGunAim ROBOT_RightGunAim ROBOT_UpperGunAim
+*功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令
+*	上面的枪目前机械上没有roll，没有右侧传送带speed2
+*	故 ROBOT_LeftGunAim 和 ROBOT_LeftGunAim 各发送5条CAN命令
+*	ROBOT_UpperGunAim仅发送3条CAN命令
+*参数： None
+* @retval status:GUN_NO_ERROR
 */
-status_t ROBOT_GunAim(unsigned char gun);
+status_t ROBOT_LeftGunAim(void);
+status_t ROBOT_RightGunAim(void);
+status_t ROBOT_UpperGunAim(void);
 /*
 *名称：ROBOT_LeftGunCheckAim
 *功能：检查瞄准是否已完成
@@ -366,25 +376,44 @@ status_t ROBOT_RightGunCheckAim(void);
 */
 status_t ROBOT_UpperGunCheckAim(void);
 
-/*
-*名称：ROBOT_GunShoot
-*功能：开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
-*参数：
-*gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*status:GUN_NO_ERROR，GUN_CHAMPER_ERROR， GUN_NO_BULLET_ERROR， GUN_NO_READY_ERROR
+/**
+*名称：ROBOT_LeftGunShoot
+*功能：左枪开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
+*@param None
+*@retval status:GUN_NO_ERROR，GUN_CHAMPER_ERROR， GUN_NO_BULLET_ERROR， GUN_NO_READY_ERROR
 */
-status_t ROBOT_GunShoot(unsigned char gun);
-
-
-/*
-*名称：ROBOT_GunHome
-*功能：枪归位，开枪后为了更好的上膛需要归位
-*参数：
-*gun :LEFT_GUN, RIGHT_GUN, UPPER_GUN
-*status:GUN_NO_ERROR
+status_t ROBOT_LeftGunShoot(void);
+/**
+*名称：ROBOT_RightGunShoot 
+*功能：右枪开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
+*@param None
+*@retval status:GUN_NO_ERROR，GUN_CHAMPER_ERROR， GUN_NO_BULLET_ERROR， GUN_NO_READY_ERROR
 */
-status_t ROBOT_GunHome(unsigned char gun);
+status_t ROBOT_RightGunShoot(void);
+/**
+*名称：ROBOT_UpperGunShoot
+*功能：上枪开枪，开枪前需要确保子弹足够
+*@param None
+*@retval status:GUN_NO_ERROR，GUN_CHAMPER_ERROR， GUN_NO_BULLET_ERROR， GUN_NO_READY_ERROR
+*/
+status_t ROBOT_UpperGunShoot(void);
 
+/**
+*@name ROBOT_LeftGunHome
+*功能：左枪归位，开枪后为了更好的上膛需要归位
+*@param None
+*@retval status:GUN_NO_ERROR
+*@note fix me, 此处发出命令后等待两秒以确保其能够归位，应加位置检测
+*/
+status_t ROBOT_LeftGunHome(void);
+/**
+*@name ROBOT_LeftGunHome
+*功能：左枪归位，开枪后为了更好的上膛需要归位
+*@param None
+*@retval status:GUN_NO_ERROR
+*@note fix me, 此处发出命令后等待两秒以确保其能够归位，应加位置检测
+*/
+status_t ROBOT_RightGunHome(void);
 /*
 *名称：ROBOT_GunCheckMode
 *功能：检查枪的模式
