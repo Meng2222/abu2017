@@ -242,11 +242,11 @@ void LeftGunShootTask(void)
 				else
 				{
 					//自动射击已完成，而且没有收到命令
+					//fix me 此处应该释放CPU， 给优先级低的任务
 				}
 			}
 			else
 			{
-
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 				//子弹上膛,第一次上膛默认位置OK
 				ROBOT_LeftGunReload();
@@ -297,6 +297,10 @@ void LeftGunShootTask(void)
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+			}
+			else
+			{
+					//fix me 此处应该释放CPU， 给优先级低的任务
 			}
 		}
 		else
@@ -360,6 +364,7 @@ void RightGunShootTask(void)
 				else
 				{
 					//自动射击已完成，而且没有收到命令
+					//fix me 此处应该释放CPU， 给优先级低的任务
 				}
 			}
 			else
@@ -414,6 +419,10 @@ void RightGunShootTask(void)
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
+			}
+			else
+			{
+				//fix me 此处应该释放CPU 给优先级低的任务
 			}
 		}
 		else
@@ -499,6 +508,10 @@ void UpperGunShootTask(void)
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
+			}
+			else
+			{
+				//fix me 不开枪时不经过任务调度会卡在此处，优先级落后的任务无法运行
 			}
 		}
 		else
