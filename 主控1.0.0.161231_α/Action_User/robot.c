@@ -900,9 +900,9 @@ status_t ROBOT_UpperGunCheckAim(void)
 */
 status_t ROBOT_LeftGunShoot(void)
 {
-	GasValveControl(1,5,1);	
+	LeftShoot();	
 	OSTimeDly(100);
-	GasValveControl(1,5,0);	
+	LeftShootReset();	
 	gRobot.leftGun.shootTimes++;
 	//fix me, 应该检查子弹是否用完
 	gRobot.leftGun.bulletNumber--;
@@ -919,11 +919,9 @@ status_t ROBOT_RightGunShoot(void)
 {
 	if(gRobot.rightGun.ready == GUN_AIM_DONE)
 	{
-		//fix me there should be a GasValveControl
-		GasValveControl(1,5,1);	
+		RightShoot();	
 		OSTimeDly(100);
-		//fix me there should be a GasValveControl
-		GasValveControl(1,5,0);	
+		RightShootReset();	
 		gRobot.rightGun.shootTimes++;
 		//fix me, 应该检查子弹是否用完
 		gRobot.rightGun.bulletNumber--;
@@ -941,9 +939,9 @@ status_t ROBOT_UpperGunShoot(void)
 {
 	if(gRobot.upperGun.ready == GUN_AIM_DONE)
 	{
-		GasValveControl(2,8,1);
+		UpperShoot();
 		OSTimeDly(50);
-		GasValveControl(2,8,0);
+		UpperShootReset();
 		gRobot.upperGun.shootTimes++;
 		//fix me, 应该检查子弹是否用完
 		gRobot.upperGun.bulletNumber--;
