@@ -539,7 +539,7 @@ void UART4_IRQHandler(void)
 
 /****************陀螺仪串口接受中断********************/
 
-void USART3_IRQHandler(void)       //更新频率200Hz
+void USART6_IRQHandler(void)       //更新频率200Hz
 {	 
 	static uint8_t ch;
 	static union
@@ -555,10 +555,10 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART3, USART_IT_RXNE)==SET)   
+	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
 	{
-		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
-		ch=USART_ReceiveData(USART3);
+		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
+		ch=USART_ReceiveData(USART6);
 		switch(count)
 		{
 			case 0:
@@ -616,18 +616,18 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 	}
 	else
 	{
-			USART_ClearITPendingBit( USART3,USART_IT_PE);
-			USART_ClearITPendingBit( USART3,USART_IT_TXE);
-			USART_ClearITPendingBit( USART3,USART_IT_TC);
-			USART_ClearITPendingBit( USART3,USART_IT_ORE_RX);
-			USART_ClearITPendingBit( USART3,USART_IT_IDLE);
-			USART_ClearITPendingBit( USART3,USART_IT_LBD);
-			USART_ClearITPendingBit( USART3,USART_IT_CTS);
-			USART_ClearITPendingBit( USART3,USART_IT_ERR);
-			USART_ClearITPendingBit( USART3,USART_IT_ORE_ER);
-			USART_ClearITPendingBit( USART3,USART_IT_NE);
-			USART_ClearITPendingBit( USART3,USART_IT_FE);
-			USART_ReceiveData(USART3);
+			USART_ClearITPendingBit( USART6,USART_IT_PE);
+			USART_ClearITPendingBit( USART6,USART_IT_TXE);
+			USART_ClearITPendingBit( USART6,USART_IT_TC);
+			USART_ClearITPendingBit( USART6,USART_IT_ORE_RX);
+			USART_ClearITPendingBit( USART6,USART_IT_IDLE);
+			USART_ClearITPendingBit( USART6,USART_IT_LBD);
+			USART_ClearITPendingBit( USART6,USART_IT_CTS);
+			USART_ClearITPendingBit( USART6,USART_IT_ERR);
+			USART_ClearITPendingBit( USART6,USART_IT_ORE_ER);
+			USART_ClearITPendingBit( USART6,USART_IT_NE);
+			USART_ClearITPendingBit( USART6,USART_IT_FE);
+			USART_ReceiveData(USART6);
 	}	
 	OSIntExit();
 }
@@ -639,7 +639,7 @@ void USART3_IRQHandler(void)       //更新频率200Hz
 * notes:
 */
 u8 receive_data=0;
-void USART6_IRQHandler(void)        
+void USART3_IRQHandler(void)        
 {	 
 #define HEADER1 0x80
 #define HEADER2 0x80
@@ -656,10 +656,10 @@ void USART6_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(USART6, USART_IT_RXNE) == SET)   
+	if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET)   
 	{
-		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
-		data = USART_ReceiveData(USART6);	
+		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
+		data = USART_ReceiveData(USART3);	
 
 		switch(state)
 		{

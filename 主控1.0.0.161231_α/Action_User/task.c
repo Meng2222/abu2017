@@ -73,9 +73,9 @@ void sendDebugInfo(void)
 void CameraInit(void)
 {
 
-	USART_SendData(USART6, 'a');
-	USART_SendData(USART6, 'a');
-	USART_SendData(USART6, 'r');
+	USART_SendData(USART3, 'a');
+	USART_SendData(USART3, 'a');
+	USART_SendData(USART3, 'r');
 }
 
 void App_Task()
@@ -92,7 +92,6 @@ void App_Task()
 													(OS_STK        * )&App_ConfigStk[Config_TASK_START_STK_SIZE-1],
 													(INT8U           ) Config_TASK_START_PRIO);
 
-
 	os_err = OSTaskCreate(	(void (*)(void *)) WalkTask,
 	                      	(void          * ) 0,
 													(OS_STK        * )&WalkTaskStk[Walk_TASK_STK_SIZE-1],
@@ -102,6 +101,7 @@ void App_Task()
 	                      	(void          * ) 0,
 													(OS_STK        * )&LeftGunShootTaskStk[LEFT_GUN_AUTO_SHOOT_STK_SIZE-1],
 													(INT8U           ) LEFT_GUN_SHOOT_TASK_PRIO);
+
 	os_err = OSTaskCreate(	(void (*)(void *)) RightGunShootTask,
 							(void          * ) 0,
 													(OS_STK        * )&RightGunShootTaskStk[RIGHT_GUN_SHOOT_STK_SIZE-1],
@@ -131,8 +131,8 @@ void ConfigTask(void)
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
 	UART5_Init(115200);		//调试用wifi
-	USART3_Init(115200);    //定位系统
-	USART6_Init(115200);	//摄像头
+	USART3_Init(115200);    //摄像头
+	USART6_Init(115200);	//定位系统
 	CameraInit();
 	TIM_Delayms(TIM5, 10000);
 
@@ -147,8 +147,8 @@ void ConfigTask(void)
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
-	ROBOT_Init();
-	atk_8266_init();
+//	ROBOT_Init();
+//	atk_8266_init();
 
 //	ClampClose();
 //	LeftBack();
@@ -160,7 +160,7 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-//	OSTaskSuspend(Walk_TASK_PRIO);
+	OSTaskSuspend(Walk_TASK_PRIO);
 	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -195,7 +195,7 @@ void LeftGunShootTask(void)
 	os_err = os_err;
 
     //OSSemSet(PeriodSem, 0, &os_err);
-	gRobot.leftGun.mode = GUN_AUTO_MODE;
+	gRobot.leftGun.mode = GUN_MANUAL_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -217,7 +217,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunReload();
 					//检查并更新子弹状态
 					ROBOT_GunCheckBulletState(LEFT_GUN);
-					
+
 					//fix me,此处应该检查着陆台编号是否合法
 					int landId =  gRobot.leftGun.targetPlant;
 					//获取目标位姿
@@ -234,7 +234,6 @@ void LeftGunShootTask(void)
 					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 					ROBOT_LeftGunAim();
 					ROBOT_LeftGunCheckAim();
-					//
 					ROBOT_LeftGunShoot();
 					//此函数有延迟
 					ROBOT_LeftGunHome();
@@ -253,7 +252,7 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(LEFT_GUN);
-				
+
 				int landId =  gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes];
 				//获取目标位姿
 				gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
@@ -268,7 +267,6 @@ void LeftGunShootTask(void)
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
-				//
 				ROBOT_LeftGunShoot();
 				//此函数有延迟
 				ROBOT_LeftGunHome();
@@ -375,7 +373,7 @@ void RightGunShootTask(void)
 				ROBOT_RightGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
-				
+
 				int landId =  gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes];
 				//获取目标位姿
 				gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
@@ -439,7 +437,7 @@ void UpperGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	
+
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 1;
 	while(1)
@@ -520,6 +518,6 @@ void UpperGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
-	} 
+	}
 }
 
