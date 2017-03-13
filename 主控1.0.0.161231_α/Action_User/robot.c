@@ -753,8 +753,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 		ReadActualVel(LEFT_GUN_RIGHT_ID);
 		OSTimeDly(5);
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
-			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
+		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 2.0f || \
+			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 2.0f)
 		{
 			continue;
 		}

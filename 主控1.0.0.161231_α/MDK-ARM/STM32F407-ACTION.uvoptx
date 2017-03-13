@@ -173,6 +173,10 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>ARMRTXEVENTFLAGS</Key>
           <Name>-L70 -Z18 -C0 -M0 -T1</Name>
         </SetRegEntry>
@@ -262,15 +266,10 @@
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\STM32F407_ACTION\../Action_User/robot.c\gRobot.platePosOnLand7.area4</ItemText>
-        </Ww>
-        <Ww>
-          <count>12</count>
-          <WinNumber>1</WinNumber>
           <ItemText>CANx</ItemText>
         </Ww>
         <Ww>
-          <count>13</count>
+          <count>12</count>
           <WinNumber>1</WinNumber>
           <ItemText>CANx-&gt;TSR</ItemText>
         </Ww>
