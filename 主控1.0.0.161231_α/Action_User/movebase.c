@@ -90,3 +90,10 @@ void MOVEBASE_Run(void)
 {
 	return;
 }
+
+void MoveY(float speed)
+{
+	VelCrl(1,Vel2Pulse(- speed * 0.8660254f/*cos30*/));
+	VelCrl(3,Vel2Pulse(0));
+	VelCrl(2,Vel2Pulse(+ speed* 0.8660254f/*cos30*/));
+}

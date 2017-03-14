@@ -161,7 +161,7 @@ void ConfigTask(void)
 	RightBack();
 	ClampReset();
 
-
+	MoveY(100.0f);
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
@@ -170,7 +170,7 @@ void ConfigTask(void)
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -253,6 +253,7 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
+					OSTimeDly(5);
 					//自动射击已完成，而且没有收到命令
 					//fix me 此处应该释放CPU， 给优先级低的任务
 				}
@@ -309,6 +310,7 @@ void LeftGunShootTask(void)
 			}
 			else
 			{
+				OSTimeDly(5);
 				//fix me 
 			}
 		}
@@ -372,6 +374,7 @@ void RightGunShootTask(void)
 				}
 				else
 				{
+					OSTimeDly(5);
 					//自动射击已完成，而且没有收到命令
 					//fix me 此处应该释放CPU， 给优先级低的任务
 				}
@@ -408,30 +411,29 @@ void RightGunShootTask(void)
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_MANUAL_MODE)
 		{
-			//子弹上膛
-			if(gRobot.rightGun.shoot == GUN_START_SHOOT)
+			if(gRobot.rightGun.aim == GUN_START_AIM)
 			{
-				ROBOT_RightGunReload();
 				//检查并更新子弹状态，训练时需要记录
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
-
 				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				//此函数内无延迟,更新shoot状态
+				gRobot.rightGun.aim = GUN_STOP_AIM;
+			}
+			else if(gRobot.rightGun.shoot==GUN_START_SHOOT)
+			{
 				ROBOT_RightGunShoot();
-				//此函数有延迟
-				ROBOT_RightGunHome();
-
+				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
+				ROBOT_RightGunReload();
 			}
 			else
 			{
-				//fix me 此处应该释放CPU 给优先级低的任务
+				OSTimeDly(5);
+				//fix me 
 			}
 		}
 		else
@@ -454,7 +456,7 @@ void UpperGunShootTask(void)
 	{
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
-		gRobot.upperGun.mode = GUN_AUTO_MODE;
+		gRobot.upperGun.mode = GUN_MANUAL_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
@@ -495,6 +497,7 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
+				OSTimeDly(5);
 				//fix me 不开枪时不经过任务调度会卡在此处，优先级落后的任务无法运行
 			}
 		}
@@ -502,25 +505,28 @@ void UpperGunShootTask(void)
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_MANUAL_MODE)
 		{
-			//子弹上膛
-			if(gRobot.upperGun.shoot == GUN_START_SHOOT)
+			if(gRobot.upperGun.aim == GUN_START_AIM)
 			{
+				//检查并更新子弹状态，训练时需要记录
+				ROBOT_GunCheckBulletState(UPPER_GUN);
+				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_UpperGunAim();
-//				ROBOT_LeftGunCheckAim();
-				OSTimeDly(100);
-				//此函数内无延迟,更新shoot状态
+				ROBOT_UpperGunCheckAim();
+				gRobot.upperGun.aim = GUN_STOP_AIM;
+			}
+			else if(gRobot.upperGun.shoot==GUN_START_SHOOT)
+			{
 				ROBOT_UpperGunShoot();
-				//此函数有延迟
-//				ROBOT_GunHome(LEFT_GUN);
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 			}
 			else
 			{
-				//fix me 不开枪时不经过任务调度会卡在此处，优先级落后的任务无法运行
+				OSTimeDly(5);
+				//fix me 
 			}
 		}
 		else

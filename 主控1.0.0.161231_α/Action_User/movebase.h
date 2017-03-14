@@ -189,5 +189,7 @@ void MOVEBASE_Init(void);
 *注意：此函数每个控制周期调用一次
 */
 void MOVEBASE_Run(void);
+
+void MoveY(float speed);
 #endif
 
