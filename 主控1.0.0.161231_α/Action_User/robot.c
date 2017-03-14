@@ -48,6 +48,8 @@ static void LeftGunInit(void)
 	gRobot.leftGun.champerErrerState = 0;
 	//枪停止射击
 	gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+	//枪停止瞄准
+	gRobot.leftGun.aim = GUN_STOP_AIM;
 	//左枪姿态数据库
 	gRobot.leftGun.gunPoseDatabase = (gun_pose_t **)gLeftGunPosDatabase;
 	//左枪自动发射命令集合，里面为投射柱子的顺序
@@ -111,6 +113,8 @@ static void RightGunInit(void)
 	gRobot.rightGun.champerErrerState = 0;
 	//枪停止射击
 	gRobot.rightGun.shoot = GUN_STOP_SHOOT;
+	//枪停止瞄准
+	gRobot.rightGun.aim = GUN_STOP_AIM;
 	//右枪姿态数据库
 	gRobot.rightGun.gunPoseDatabase = (gun_pose_t **)gRightGunPosDatabase;
 	//右枪自动发射命令集合，里面为投射柱子的顺序
@@ -171,6 +175,8 @@ static void UpperGunInit(void)
 	gRobot.upperGun.champerErrerState = 0;
 	//枪停止射击
 	gRobot.upperGun.shoot = GUN_STOP_SHOOT;
+	//枪停止瞄准
+	gRobot.upperGun.aim = GUN_STOP_AIM;
 	//上枪姿态数据库
 	gRobot.upperGun.gunPoseDatabase = (gun_pose_t **)gUpperGunPosDatabase;
 	//上面枪自动发射命令集合，里面为投射柱子的顺序
@@ -900,12 +906,15 @@ status_t ROBOT_UpperGunCheckAim(void)
 */
 status_t ROBOT_LeftGunShoot(void)
 {
-	LeftShoot();	
-	OSTimeDly(100);
-	LeftShootReset();	
-	gRobot.leftGun.shootTimes++;
-	//fix me, 应该检查子弹是否用完
-	gRobot.leftGun.bulletNumber--;
+	if(gRobot.leftGun.ready == GUN_AIM_DONE)
+	{
+		LeftShoot();	
+		OSTimeDly(100);
+		LeftShootReset();	
+		gRobot.leftGun.shootTimes++;
+		//fix me, 应该检查子弹是否用完
+		gRobot.leftGun.bulletNumber--;
+	}
 	return GUN_NO_ERROR;
 }
 

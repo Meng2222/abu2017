@@ -288,32 +288,28 @@ void LeftGunShootTask(void)
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_MANUAL_MODE)
 		{
-			//子弹上膛
-			if(gRobot.leftGun.shoot == GUN_START_SHOOT)
+			if(gRobot.leftGun.aim == GUN_START_AIM)
 			{
-				ROBOT_LeftGunReload();
 				//检查并更新子弹状态，训练时需要记录
 				ROBOT_GunCheckBulletState(LEFT_GUN);
-
 				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_LeftGunAim();
-				ROBOT_LeftGunCheckAim();	
-				OSTimeDly(100);
-				//此函数内无延迟,更新shoot状态
+				ROBOT_LeftGunCheckAim();
+				gRobot.leftGun.aim = GUN_STOP_AIM;
+			}
+			else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
+			{
 				ROBOT_LeftGunShoot();
-				OSTimeDly(300);
-				//此函数有延迟
-				ROBOT_LeftGunHome();
-
+				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+				ROBOT_LeftGunReload();
 			}
 			else
 			{
-					//fix me 此处应该释放CPU， 给优先级低的任务
+				//fix me 
 			}
 		}
 		else

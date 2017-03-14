@@ -463,7 +463,6 @@ void UART4_IRQHandler(void)
 						{
 							case 0:
 								gRobot.leftGun.targetPose.speed1 = data.data32;
-
 							break;
 							case 1:
 								gRobot.rightGun.targetPose.speed1 = data.data32;
@@ -481,11 +480,14 @@ void UART4_IRQHandler(void)
 						{
 							case 0:
 								gRobot.leftGun.targetPose.speed2 = data.data32;
+								gRobot.leftGun.aim = GUN_START_AIM;
 							break;
 							case 1:
 								gRobot.rightGun.targetPose.speed2 = data.data32;
+								gRobot.rightGun.aim = GUN_START_AIM;
 							break;
 							case 2:
+								gRobot.upperGun.aim = GUN_START_AIM;								
 							break;
 							default:
 								id2 = 0xff;
