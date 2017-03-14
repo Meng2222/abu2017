@@ -31,8 +31,7 @@ void elmo_Enable(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
 }	
 /**************失能电机***************************/
 void elmo_Disable(uint8_t ElmoNum)
@@ -60,8 +59,7 @@ void elmo_Disable(uint8_t ElmoNum)
 		TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-		mbox= CAN_Transmit(CAN1, &TxMessage);         	
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+		OSCANSendCmd(CAN1, &TxMessage);
 	}	
 
 }	
@@ -104,8 +102,7 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 			TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 			TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 				
-			mbox= CAN_Transmit(CAN1, &TxMessage);         	
-			while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+			OSCANSendCmd(CAN1, &TxMessage);
 	}
 }
 
@@ -137,8 +134,7 @@ void VelCrl(uint8_t ElmoNum,int vel)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 			
-		mbox= CAN_Transmit(CAN1, &TxMessage);        	
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+		OSCANSendCmd(CAN1, &TxMessage);
 	}
 }
 
@@ -198,8 +194,7 @@ void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 			
-		mbox= CAN_Transmit(CAN1, &TxMessage);        	
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+		OSCANSendCmd(CAN1, &TxMessage);
 	}
 }
 
@@ -241,8 +236,7 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 			
-		mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//等待238us
+		OSCANSendCmd(CAN1, &TxMessage);
 	}
 
 }
@@ -269,8 +263,7 @@ void ReadActualVoltage(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         	
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
  }
 
 /* 读取电机电流 */
@@ -296,8 +289,7 @@ void ReadActualCurrent(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         	
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
  }
  
 /* 读取电机位置 */
@@ -323,8 +315,7 @@ void ReadActualPos(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         	
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
  }
 
 /* 读取电机速度 */
@@ -350,8 +341,7 @@ void ReadActualVel(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        	
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
 }
 
 void ReadActualTemperature(uint8_t ElmoNum)
@@ -376,8 +366,7 @@ void ReadActualTemperature(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
 }
 
 /**
@@ -409,7 +398,6 @@ void velCrl(uint8_t DriverNum,int velData)
 	TxMessage.Data[2] = vel.Data8[2];
 	TxMessage.Data[3] = vel.Data8[3];
 		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN1, &TxMessage);
 }	
 

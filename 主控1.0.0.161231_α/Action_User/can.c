@@ -18,7 +18,11 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "String.h"
+#include "ucos_ii.h"
+#include "cpu.h"
+#include "timer.h"
 
+extern OS_EVENT *CANSendMutex;
 
 /**
   * @brief  Initialize the CANx as encoder
@@ -457,7 +461,43 @@ uint8_t CAN_RxMsg(CAN_TypeDef* CANx,
 	return 1;
 }
 
+/**
+  * @brief  利用操作系统互斥型信号量管理CAN发送资源，CAN发送函数
+  * @param  CANx:  CANx, where x can be 1,2.
+  * @param  TxMessage:   a array you want to transmit.
+  * @retval CAN_SEND_OK(whose value is 1), if receive successful
+  * @retval CAN_SEND_ERR(which value is -1), if receive unsuccessful
+**/
 
+int OSCANSendCmd(CAN_TypeDef* CANx, CanTxMsg* TxMessage)
+{
+	CPU_INT08U os_err;
+	uint8_t mailBox = INVALID_CANSEND_MAILBOX;
+	int timeOut = 100;
+	//等待互斥型信号量
+	OSMutexPend(CANSendMutex,0,&os_err);
+	//发送CAN消息
+	mailBox = CAN_Transmit(CANx,TxMessage);
+	//等待发送成功，此处设置了超时限制 100*200us = 20ms
+	while(timeOut--)
+	{
+		TIM_Delayus(TIM5,200);
+		if(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok)
+		{
+			//释放互斥型信号量
+			OSMutexPost(CANSendMutex);
+			return CAN_SEND_OK;
+		}
+		else
+		{
+			continue;
+		}
+	}
+	//释放互斥型信号量
+	OSMutexPost(CANSendMutex);
+	return CAN_SEND_ERR;
+	
+}
 
 
 

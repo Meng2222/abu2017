@@ -22,6 +22,8 @@
 ===============================================================
 */
 OS_EVENT *PeriodSem;
+//定义互斥型信号量用于管理CAN发送资源
+OS_EVENT *CANSendMutex;
 //定义机器人全局变量
 extern robot_t gRobot;
 
@@ -86,6 +88,9 @@ void App_Task()
 	/*创建信号量*/
     PeriodSem				=	OSSemCreate(0);
 
+	//创建互斥型信号量
+	CANSendMutex            =   OSMutexCreate(9,&os_err);
+	
     /*创建任务*/
 	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*初始化任务*/
 	                      	(void          * ) 0,
@@ -134,7 +139,7 @@ void ConfigTask(void)
 	USART3_Init(115200);    //摄像头
 	USART6_Init(115200);	//定位系统
 	CameraInit();
-	TIM_Delayms(TIM5, 10000);
+//	TIM_Delayms(TIM5, 10000);
 
 
 	KeyInit();
@@ -149,15 +154,12 @@ void ConfigTask(void)
 
 
 	ROBOT_Init();
-
-//	ROBOT_Init();
-
 //	atk_8266_init();
 
-//	ClampClose();
-//	LeftBack();
-//	RightBack();
-//	ClampReset();
+	ClampClose();
+	LeftBack();
+	RightBack();
+	ClampReset();
 
 
 	BEEP_ON;
@@ -167,8 +169,6 @@ void ConfigTask(void)
 	OSTaskSuspend(Walk_TASK_PRIO);
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-
-	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
@@ -180,10 +180,10 @@ void WalkTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 
-    OSSemSet(PeriodSem, 0, &os_err);
+//    OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
 	{
-		OSSemPend(PeriodSem, 0, &os_err);
+//		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
 
 
@@ -192,6 +192,11 @@ void WalkTask(void)
 		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
 		sendDebugInfo();
 
+		if(PHOTOSENSORLEFT)
+		{
+			ROBOT_LeftGunReload();
+			OSTimeDly(100);
+		}
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 	}
 }
@@ -295,9 +300,11 @@ void LeftGunShootTask(void)
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				ROBOT_LeftGunAim();
-				ROBOT_LeftGunCheckAim();
+				ROBOT_LeftGunCheckAim();	
+				OSTimeDly(100);
 				//此函数内无延迟,更新shoot状态
 				ROBOT_LeftGunShoot();
+				OSTimeDly(300);
 				//此函数有延迟
 				ROBOT_LeftGunHome();
 

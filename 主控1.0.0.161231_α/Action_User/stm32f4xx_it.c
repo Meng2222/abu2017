@@ -240,9 +240,6 @@ void TIM2_IRQHandler(void)
 			OSSemPost(PeriodSem);
 			periodCounter = PERIOD_COUNTER;
 		}
-		
-		
-		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 	OSIntExit();
