@@ -14,7 +14,6 @@
 #include "gasvalvecontrol.h"
 #include "movebase.h"
 #include "database.h"
-#include "wifi.h"
 
 /*
 ===============================================================
@@ -154,14 +153,14 @@ void ConfigTask(void)
 
 
 	ROBOT_Init();
-//	atk_8266_init();
+
 
 	ClampClose();
 	LeftBack();
 	RightBack();
 	ClampReset();
 
-	MoveY(100.0f);
+//	MoveY(100.0f);
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
@@ -253,9 +252,7 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(5);
-					//自动射击已完成，而且没有收到命令
-					//fix me 此处应该释放CPU， 给优先级低的任务
+					OSTaskSuspend(OS_PRIO_SELF);
 				}
 			}
 			else
@@ -310,8 +307,7 @@ void LeftGunShootTask(void)
 			}
 			else
 			{
-				OSTimeDly(5);
-				//fix me 
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else
@@ -374,9 +370,7 @@ void RightGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(5);
-					//自动射击已完成，而且没有收到命令
-					//fix me 此处应该释放CPU， 给优先级低的任务
+					OSTaskSuspend(OS_PRIO_SELF);
 				}
 			}
 			else
@@ -432,8 +426,7 @@ void RightGunShootTask(void)
 			}
 			else
 			{
-				OSTimeDly(5);
-				//fix me 
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else
@@ -497,8 +490,7 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
-				OSTimeDly(5);
-				//fix me 不开枪时不经过任务调度会卡在此处，优先级落后的任务无法运行
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -525,8 +517,7 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
-				OSTimeDly(5);
-				//fix me 
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else
