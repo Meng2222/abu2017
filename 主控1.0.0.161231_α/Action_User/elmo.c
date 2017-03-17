@@ -379,6 +379,173 @@ void ReadActualTemperature(uint8_t ElmoNum)
 	mbox= CAN_Transmit(CAN1, &TxMessage);        
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 }
+void ReadCurrentLimitFlag(uint8_t ElmoNum)
+{
+	 uint32_t data[1][2]={    				 
+							0x4000434C,0x00000000,      //LC
+						 };
+  uint8_t mbox;	 
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
+	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+    
+	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+}
+
+void ReadVelocityError(uint8_t ElmoNum)
+{
+	 uint32_t data[1][2]={    				 
+							0x40004556,0x00000000,      //LC
+						 };
+  uint8_t mbox;	 
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
+	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+    
+	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+}	
+
+void ReadCommandVelocity(uint8_t ElmoNum)
+{
+	 uint32_t data[1][2]={    				 
+							0x40025644,0x00000000,      //DV[2]
+						 };
+  uint8_t mbox;	 
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
+	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+    
+	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+}
+
+void ReadJoggingVelocity(uint8_t ElmoNum)
+{
+	 uint32_t data[1][2]={    				 
+							0x4000564A,0x00000000,      //JV
+						 };
+  uint8_t mbox;	 
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
+	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+    
+	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+}	
+		
+void ReadUnitMode(uint8_t ElmoNum)
+{
+	 uint32_t data[1][2]={    				 
+							0x40004D55,0x00000000,      //UM
+						 };
+  uint8_t mbox;	 
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
+	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+    
+	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+}
+
+void ReadReferenceMode(uint8_t ElmoNum)
+{
+	 uint32_t data[1][2]={    				 
+							0x40004D52,0x00000000,      //RM
+						 };
+  uint8_t mbox;	 
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
+	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+    
+	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+}
 
 /**
   * @brief  配置电机速度

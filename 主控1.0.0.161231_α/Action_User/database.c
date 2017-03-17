@@ -11,7 +11,7 @@ gun_pose_t gLeftGunPosDatabase[BULLET_TYPE_NUMBER][LAND_NUMBER] = \
 	 //2#着陆台
 	 {0.0f,33.6f, 2.5f,84.0f,21.0f},
 	 //3#着陆台
-	 {45.5f,17.7f, 40.8f,104.0f,19.0f},
+	 {34.5f,9.7f, 2.1f,123.0f,123.0f},
 	 //4#着陆台
 	 {0.5f,32.5f, 2.1f,84.0f,20.0f},
 	 //5#着陆台
@@ -166,7 +166,7 @@ gun_pose_t gUpperGunPosDatabase[BULLET_TYPE_NUMBER][LAND_NUMBER] = \
 //左枪射击柱子的顺序
 shoot_command_t gLeftGunShootCmds = \
 {
-	{PLANT1, PLANT2, PLANT3, PLANT4, PLANT5, PLANT6, PLANT7, PLANT1, PLANT2, PLANT3}
+	{PLANT3, PLANT3, PLANT3, PLANT3, PLANT3, PLANT3, PLANT3, PLANT3, PLANT3, PLANT3}
 };
 
 //右枪射击柱子的顺序

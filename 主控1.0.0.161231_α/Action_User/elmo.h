@@ -26,6 +26,13 @@ void ReadActualVoltage(uint8_t ElmoNum);
 void ReadActualCurrent(uint8_t ElmoNum);
 void ReadActualVel(uint8_t ElmoNum);
 void ReadActualTemperature(uint8_t ElmoNum);
+void ReadCurrentLimitFlag(uint8_t ElmoNum);
+void ReadVelocityError(uint8_t ElmoNum);
+void ReadCommandVelocity(uint8_t ElmoNum);
+void ReadJoggingVelocity(uint8_t ElmoNum);
+void ReadUnitMode(uint8_t ElmoNum);
+void ReadReferenceMode(uint8_t ElmoNum);
+
 
 void velCrl(uint8_t DriverNum,int vel);
 

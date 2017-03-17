@@ -46,7 +46,7 @@
 #define MAXSPEED 4000.0f
 
 //运动完成时停车速度    单位:mm/s
-#define ENDSPEED 120.0f
+#define ENDSPEED 200.0f
 
 
 
@@ -114,14 +114,45 @@ typedef struct
 
 typedef struct
 {
-	float yawAng;
-	float pitchAng;
-	float rollAng;
-	float vel1;
-	float vel2;
-	int gunNum;
-}shootCtr_t;
+	int leftWheelDriverFlag;
+	int forwardWheelDriverFlag;
+	int backwardWheelDriverFlag;
+}driverCurrentLimitFlag_t;
 
+typedef struct
+{
+	int leftMotorVelocityError;
+	int forwardMotorVelocityError;
+	int backwardMotorVelocityError;
+}driverVelocityError_t;
+
+typedef struct
+{
+	int leftDriverCommandVelocity;
+	int forwardDriverCommandVelocity;
+	int backwardDriverCommandVelocity;
+}driverCommandVelocity_t;
+
+typedef struct
+{
+	int leftDriverJoggingVelocity;
+	int forwardDriverJoggingVelocity;
+	int backwardDriverJoggingVelocity;
+}driverJoggingVelocity_t;
+
+typedef struct
+{
+	int leftDriverUnitMode;
+	int forwardDriverUnitMode;
+	int backwardDriverUnitMode;
+}driverUnitMode_t;
+
+typedef struct
+{
+	int leftDriverReferenceMode;
+	int forwardDriverReferenceMode;
+	int backwardDriverReferenceMode;
+}driverReferenceMode_t;
 
 typedef struct
 {
@@ -138,10 +169,23 @@ typedef struct
 	//机器人走行轮子实际电机电流，范围【-200，200】，单位0.1A， fix me
 	wheelCurrent_t acturalCurrent;
 	
+	
 	//电机定子温度，目前只写了走行的3个电机温度，fix me
 	motorTemperature_t motorTemperature;
 	//驱动器温度，目前只写了走行的3个驱动器温度，fix me
 	driverTemperature_t driverTemperature;
+	
+	driverCurrentLimitFlag_t driverCurrentLimitFlag;
+	
+	driverVelocityError_t driverVelocityError;
+	
+	driverCommandVelocity_t driverCommandVelocity;
+	
+	driverJoggingVelocity_t driverJoggingVelocity;
+	
+	driverUnitMode_t driverUnitMode;
+	
+	driverReferenceMode_t driverReferenceMode;
 
 	//机器人目标角度，逆时针为正，范围【-180，180】，单位度
 	float targetAngle;
@@ -189,5 +233,128 @@ void MOVEBASE_Init(void);
 *注意：此函数每个控制周期调用一次
 */
 void MOVEBASE_Run(void);
+
+/*******************旧***************************************/
+
+
+
+/*
+============================================================
+                     闭环用到的宏定义           
+============================================================
+*/
+
+//姿态修正PID
+#define PPOSE 5.0f
+//速度闭环PID
+#define PVEL 6.0f
+
+
+/*
+============================================================
+                        其他宏定义           
+============================================================
+*/
+ 
+#define PI  3.141592653579f
+
+
+/*
+============================================================
+                         单位转换          
+============================================================
+*/
+
+//弧度制和角度制相互转换
+#define ANGTORAD(x) (float)((x) / 180.0f * 3.141592653579f)
+#define RADTOANG(x) (float)((x) / 3.141592653579f * 180.0f)
+
+
+/* Exported types ------------------------------------------------------------*/
+
+//电机失效原因
+typedef struct
+{
+	float state1;
+	float state2;
+	float state3;
+}motorFailureState_t;
+
+//电流限制标志
+typedef struct
+{
+	float flag1;
+	float flag2;
+	float flag3;
+}currentLimitFlag_t;
+
+//速度规划的理论值结构体
+typedef struct
+{
+	float dist;
+	float speed;
+	float pos;
+}expData_t;
+
+
+/* Exported functions ------------------------------------------------------- */
+
+/*
+============================================================
+                       电机配置
+============================================================
+*/
+
+//计算各电机加速度
+motorAcc_t CalcMotorAcc(float carAcc,float angle);
+
+//配置电机加速度
+void SetMotorAcc(motorAcc_t motorAcc);
+
+//在三个轮子上输出电机速度
+void ThreeWheelVelControl(wheelSpeed_t speed);
+
+/*
+============================================================
+         车速（mm/s）与电机转速（脉冲/s）的转换             
+============================================================
+*/
+
+//脉冲速度转化为标准单位速度
+float Pulse2Vel(float pulse);
+
+//标准单位速度转化为脉冲速度
+float Vel2Pulse(float vel);
+
+/*
+============================================================
+                      过程量控制与调节            
+============================================================
+*/
+
+//轨迹理论值计算函数
+void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
+
+//速度调节函数
+void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX);
+
+/*
+============================================================
+                      机器人运动部分            
+============================================================
+*/
+
+//电机制动抱死
+void LockWheel(void);
+
+//x方向定速移动函数
+void MoveX(float velX);
+
+//运动函数
+void MoveTo(float targetPos, float velX, float accX);
+
+float GetPosX(void);
+float GetAngle(void);
+
 #endif
 

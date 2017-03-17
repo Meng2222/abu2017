@@ -772,7 +772,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 		}
 		
 		//这里检查传送带的速度，暂时没有加
-		
+		OSTimeDly(75);
 		
 		//运行到这里，表示都满足指标，跳出循环
 		break;
@@ -826,7 +826,7 @@ status_t ROBOT_RightGunCheckAim(void)
 		}
 		
 		//这里检查传送带的速度，暂时没有加
-		
+		OSTimeDly(75);
 		
 		//运行到这里，表示都满足指标，跳出循环
 		break;
@@ -962,7 +962,7 @@ status_t ROBOT_LeftGunHome(void)
 	PosCrl(LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 	PosCrl(LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 	
-	OSTimeDly(200);
+	OSTimeDly(300);
 	
 	return GUN_NO_ERROR;
 }
@@ -978,7 +978,7 @@ status_t ROBOT_RightGunHome(void)
 	PosCrl(LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
 	PosCrl(LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 	PosCrl(LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
-	OSTimeDly(200);
+	OSTimeDly(300);
 	
 	return GUN_NO_ERROR;
 }

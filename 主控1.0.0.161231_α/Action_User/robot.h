@@ -32,6 +32,9 @@
 #define GUN_START_SHOOT 1
 #define GUN_STOP_SHOOT 0
 
+#define GUN_START_AIM			1
+#define GUN_STOP_AIM			0
+
 //左枪支架roll轴CAN ID
 #define LEFT_GUN_ROLL_ID 7
 //左枪支架pitch轴CAN ID
@@ -223,6 +226,9 @@ typedef struct
 	
 	//射击命令：1射击，0不射击
 	unsigned char shoot;
+	
+	//瞄准命令：1瞄准，0不瞄准
+	unsigned char aim;
 	//如果上面char个数不是4的倍数，需要使用dummy对齐，dummy没有任何含义
 	//unsigned char dummy[2];
 	
@@ -258,6 +264,8 @@ typedef struct
 	int stage;
 	//机器人状态，是否正常：低压、过流、过温、
 	int status;
+	
+	
 }robot_t;
 
 /*
@@ -463,6 +471,16 @@ float UpperGunPitchInverseTransform(int32_t position);
 float UpperGunLeftSpeedInverseTransform(int32_t speed);
 
 //temrary
+typedef struct
+{
+	float yawAng;
+	float pitchAng;
+	float rollAng;
+	float vel1;
+	float vel2;
+	int gunNum;
+}shootCtr_t;
+
 void ShootCtr(shootCtr_t *shootPara);
 
 #endif

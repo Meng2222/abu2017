@@ -39,18 +39,42 @@ void UpperGunShootTask(void);
 void sendDebugInfo(void)
 {
 #define POS_X_OFFSET 50
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
+	
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
 
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
 
-	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
-	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
-	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);
 
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);
+	
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.leftMotorVelocityError);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.forwardMotorVelocityError);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.backwardMotorVelocityError);
+
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.leftDriverUnitMode);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.forwardDriverUnitMode);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.backwardDriverUnitMode);
+	
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
+	
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
+	
 	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
 
@@ -134,6 +158,8 @@ void ConfigTask(void)
 	USART3_Init(115200);    //摄像头
 	USART6_Init(115200);	//定位系统
 	CameraInit();
+
+
 	TIM_Delayms(TIM5, 10000);
 
 
@@ -149,24 +175,19 @@ void ConfigTask(void)
 
 
 	ROBOT_Init();
+	
 
-//	ROBOT_Init();
-
-//	atk_8266_init();
-
-//	ClampClose();
-//	LeftBack();
-//	RightBack();
-//	ClampReset();
-
+	ClampClose();
+	LeftBack();
+	RightBack();
+	ClampReset();
 
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-	OSTaskSuspend(Walk_TASK_PRIO);
 
-//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
 	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
@@ -175,12 +196,924 @@ void ConfigTask(void)
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
+
+
+
+
+//坐标修正量及修正标志位
+float amendX = 0.0f;
+uint8_t amendXFlag = 0;
+//走行移动计时标志位
+uint8_t moveTimFlag = 0;
+//状态变量
+typedef enum
+{
+	getReady,
+	goToLoadingArea,
+	stopRobot,
+	load,
+	goToLaunchingArea,
+	launch
+}Status_t;
+
+Status_t status = getReady;
+#define NUM 854
+float sspeed[NUM]
+={
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -2.00f,
+ -2.00f,
+ -2.00f,
+ -2.00f,
+ -3.00f,
+ -3.00f,
+ -3.00f,
+ -3.00f,
+ -4.00f,
+ -4.00f,
+ -4.00f,
+ -4.00f,
+ -4.00f,
+ -5.00f,
+ -5.00f,
+ -5.00f,
+ -5.00f,
+ -6.00f,
+ -6.00f,
+ -6.00f,
+ -6.00f,
+ -6.00f,
+ -7.00f,
+ -7.00f,
+ -7.00f,
+ -7.00f,
+ -8.00f,
+ -8.00f,
+ -8.00f,
+ -8.00f,
+ -8.00f,
+ -9.00f,
+ -9.00f,
+ -9.00f,
+ -9.00f,
+-10.00f,
+-10.00f,
+-10.00f,
+-10.00f,
+-11.00f,
+-11.00f,
+-11.00f,
+-11.00f,
+-11.00f,
+-12.00f,
+-12.00f,
+-12.00f,
+-12.00f,
+-13.00f,
+-13.00f,
+-13.00f,
+-13.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-17.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-16.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-15.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-14.00f,
+-13.00f,
+-13.00f,
+-13.00f,
+-12.00f,
+-12.00f,
+-12.00f,
+-12.00f,
+-11.00f,
+-11.00f,
+-10.00f,
+-10.00f,
+-10.00f,
+ -9.00f,
+ -9.00f,
+ -9.00f,
+ -8.00f,
+ -8.00f,
+ -8.00f,
+ -7.00f,
+ -7.00f,
+ -6.00f,
+ -6.00f,
+ -6.00f,
+ -5.00f,
+ -5.00f,
+ -4.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+ -1.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+  0.00f,
+
+};
 void WalkTask(void)
 {
+		//上弹计时变量
+	static uint16_t timeCounter = 0;
+	static uint16_t timeCounterL = 0;
+	static uint16_t timeCounterR = 0;
+	//上弹标志位
+	static uint16_t flagL = 1;
+	static uint16_t flagR = 0;
+	//射计时变量
+	static int shootCounterL = 0 , shootCounterU = 0 ;
+	int shootNum = 0;
+	int shootTimeGap = 0;
+	int speedi = 0;
+	static int testTimer = 0;
+
 	CPU_INT08U  os_err;
 	os_err = os_err;
 
     OSSemSet(PeriodSem, 0, &os_err);
+//	while(1)
+//	{
+//		OSSemPend(PeriodSem, 0, &os_err);
+//		ReadActualVel(MOVEBASE_BROADCAST_ID);
+//		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
+//		ReadVelocityError(MOVEBASE_BROADCAST_ID);
+//		ReadCommandVelocity(MOVEBASE_BROADCAST_ID);
+//		ReadJoggingVelocity(MOVEBASE_BROADCAST_ID);
+//		ReadUnitMode(MOVEBASE_BROADCAST_ID);
+//		ReadReferenceMode(MOVEBASE_BROADCAST_ID);
+//		sendDebugInfo();
+//		if(speedi<=853)VelCrl(1,Vel2Pulse(sspeed[speedi]*100.0f));
+//		if(speedi>853)
+//		{
+//			VelCrl(1 ,0);
+//		}
+//		speedi++;
+//	}
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
@@ -189,8 +1122,98 @@ void WalkTask(void)
 
 		ReadActualVel(MOVEBASE_BROADCAST_ID);
 		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
-		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
+//		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
+//		ReadCurrentLimitFlag(MOVEBASE_BROADCAST_ID);
+		ReadVelocityError(MOVEBASE_BROADCAST_ID);
+		ReadCommandVelocity(MOVEBASE_BROADCAST_ID);
+		ReadJoggingVelocity(MOVEBASE_BROADCAST_ID);
+		
 		sendDebugInfo();
+		switch (status)
+		{
+			//准备阶段
+			case getReady:				
+				if(PHOTOSENSORUPGUN)
+				{
+					ClampOpen();
+					status ++;
+				}
+				break;
+			//从出发区走向装载区
+			case goToLoadingArea:
+
+			    MoveTo(-12776.96f, -1500.0f, 2000.0f);
+				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFT)
+				{
+					if (amendXFlag == 0)
+					{
+						amendX = -12776.96f - GetPosX();
+						amendXFlag = 1;
+					}
+					moveTimFlag = 0;
+					BEEP_ON;
+					status++;					
+				}
+
+				break;
+			
+			//停车
+			case stopRobot:
+				MoveX(-ENDSPEED);
+				if (GetPosX() <= -13026.96f)
+				{
+					BEEP_OFF;
+					status++;
+				}
+//				if(PHOTOSENSORUPGUN)
+//				{
+//					status +=2;
+//				}				
+				break;
+				
+			//装载飞盘
+			case load:
+				LockWheel();
+				ClampClose();
+				timeCounter++;	
+//				if(PHOTOSENSORUPGUN)
+//				{
+//					status++;
+//				}
+			    if (timeCounter >= 100)
+				{
+					ClampRotate();
+					timeCounter = 0;
+					OSTimeDly(100);
+					ClampReset();
+					if (KEYSWITCH)
+					{
+						status++;
+					}
+				}
+				break;
+			
+            //从装载区走向发射区				
+			case goToLaunchingArea:
+                MoveTo(-6459.14f, 1500.0f, 1200.0f);
+			    if (GetPosX() >= -6459.14f)
+				{
+					LockWheel();
+					moveTimFlag = 0;
+					status++;
+				}
+				break;
+			
+			//发射飞盘
+			case launch:
+				LockWheel();
+				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+				OSTaskSuspend(OS_PRIO_SELF);
+				break;
+			
+			default:
+				break;		
+		}
 
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 	}
@@ -202,7 +1225,7 @@ void LeftGunShootTask(void)
 	os_err = os_err;
 
     //OSSemSet(PeriodSem, 0, &os_err);
-	gRobot.leftGun.mode = GUN_MANUAL_MODE;
+	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -248,8 +1271,7 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
-					//自动射击已完成，而且没有收到命令
-					//fix me 此处应该释放CPU， 给优先级低的任务
+					OSTaskSuspend(OS_PRIO_SELF);
 				}
 			}
 			else
@@ -283,30 +1305,28 @@ void LeftGunShootTask(void)
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_MANUAL_MODE)
 		{
-			//子弹上膛
-			if(gRobot.leftGun.shoot == GUN_START_SHOOT)
+			if(gRobot.leftGun.aim == GUN_START_AIM)
 			{
-				ROBOT_LeftGunReload();
 				//检查并更新子弹状态，训练时需要记录
 				ROBOT_GunCheckBulletState(LEFT_GUN);
-
 				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
-				//此函数内无延迟,更新shoot状态
+				gRobot.leftGun.aim = GUN_STOP_AIM;
+			}
+			else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
+			{
 				ROBOT_LeftGunShoot();
-				//此函数有延迟
-				ROBOT_LeftGunHome();
-
+				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+				ROBOT_LeftGunReload();
 			}
 			else
 			{
-					//fix me 此处应该释放CPU， 给优先级低的任务
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else
@@ -369,8 +1389,7 @@ void RightGunShootTask(void)
 				}
 				else
 				{
-					//自动射击已完成，而且没有收到命令
-					//fix me 此处应该释放CPU， 给优先级低的任务
+					OSTaskSuspend(OS_PRIO_SELF);
 				}
 			}
 			else
@@ -405,30 +1424,28 @@ void RightGunShootTask(void)
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_MANUAL_MODE)
 		{
-			//子弹上膛
-			if(gRobot.rightGun.shoot == GUN_START_SHOOT)
+			if(gRobot.rightGun.aim == GUN_START_AIM)
 			{
-				ROBOT_RightGunReload();
 				//检查并更新子弹状态，训练时需要记录
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
-
 				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				//此函数内无延迟,更新shoot状态
+				gRobot.rightGun.aim = GUN_STOP_AIM;
+			}
+			else if(gRobot.rightGun.shoot==GUN_START_SHOOT)
+			{
 				ROBOT_RightGunShoot();
-				//此函数有延迟
-				ROBOT_RightGunHome();
-
+				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
+				ROBOT_RightGunReload();
 			}
 			else
 			{
-				//fix me 此处应该释放CPU 给优先级低的任务
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else
@@ -451,7 +1468,7 @@ void UpperGunShootTask(void)
 	{
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
-		gRobot.upperGun.mode = GUN_AUTO_MODE;
+		gRobot.upperGun.mode = GUN_MANUAL_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
@@ -492,32 +1509,34 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
-				//fix me 不开枪时不经过任务调度会卡在此处，优先级落后的任务无法运行
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_MANUAL_MODE)
 		{
-			//子弹上膛
-			if(gRobot.upperGun.shoot == GUN_START_SHOOT)
+			if(gRobot.upperGun.aim == GUN_START_AIM)
 			{
+				//检查并更新子弹状态，训练时需要记录
+				ROBOT_GunCheckBulletState(UPPER_GUN);
+				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_UpperGunAim();
-//				ROBOT_LeftGunCheckAim();
-				OSTimeDly(100);
-				//此函数内无延迟,更新shoot状态
+				ROBOT_UpperGunCheckAim();
+				gRobot.upperGun.aim = GUN_STOP_AIM;
+			}
+			else if(gRobot.upperGun.shoot==GUN_START_SHOOT)
+			{
 				ROBOT_UpperGunShoot();
-				//此函数有延迟
-//				ROBOT_GunHome(LEFT_GUN);
 
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 			}
 			else
 			{
-				//fix me 不开枪时不经过任务调度会卡在此处，优先级落后的任务无法运行
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else
@@ -527,4 +1546,3 @@ void UpperGunShootTask(void)
 		}
 	}
 }
-
