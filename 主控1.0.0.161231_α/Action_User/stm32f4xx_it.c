@@ -215,6 +215,17 @@ void CAN1_RX0_IRQHandler(void)
 	OSIntExit();
 }
 
+
+void CAN1_TX_IRQHandler(void)
+{
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
+	CAN1_TxMsgSendQueueHead();
+	OSIntExit();
+}
+
 /*************定时器2******start************/
 //每1ms调用一次
 

@@ -2,10 +2,26 @@
 #include "can.h"
 
  /**************初始化驱动器********************/
-void elmo_Init()
+void elmo_Init(void)
 {
 	uint32_t data[1][2]={0x00000001,00000000};
-	CAN_TxMsg(CAN1,0x000,(uint8_t*)&data[0],8);
+	CanTxMsg TxMessage;
+	TxMessage.StdId=0x300 ;					 // standard identifier=0
+	TxMessage.ExtId=0x300 ;					 // extended identifier=StdId
+	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
+	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
+	TxMessage.DLC=8;
+					 
+ 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
+	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
+	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
+	TxMessage.Data[3] = (*(unsigned long*)&data[0][0]>>24)&0xff;
+	TxMessage.Data[4] =  *(unsigned long*)&data[0][1]&0xff;
+	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
+	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
+	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
+		
+	OSCANSendCmd(CAN1, &TxMessage);
 }
 
 /****************使能电机***************************/

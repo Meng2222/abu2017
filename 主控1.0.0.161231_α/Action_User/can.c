@@ -21,6 +21,7 @@
 #include "ucos_ii.h"
 #include "cpu.h"
 #include "timer.h"
+#include "gpio.h"
 
 extern OS_EVENT *CANSendMutex;
 
@@ -248,7 +249,7 @@ void CAN_Config(CAN_TypeDef* CANx,
     }
 	
     default: break;
-  } 
+  }
   /* Enable GPIOx, clock */  
 	switch((uint32_t)GPIOx)
 	{
@@ -389,11 +390,48 @@ void CAN_Config(CAN_TypeDef* CANx,
 
 	/* Enable FIFO 0 message pending Interrupt */
 
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-	CAN_ITConfig(CANx, CAN_IT_FMP0, ENABLE);
+
+  switch((uint32_t)CANx)
+  {
+	//CANs on APB1
+    case CAN1_BASE: 
+    {
+		NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
+		CAN_ITConfig(CANx, CAN_IT_FMP0, ENABLE);
+		
+		NVIC_InitStructure.NVIC_IRQChannel = CAN1_TX_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x04;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
+		CAN_ITConfig(CANx, CAN_IT_TME, ENABLE);
+		
+		break;
+    }
+	case CAN2_BASE: 
+    {
+		NVIC_InitStructure.NVIC_IRQChannel = CAN2_RX0_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
+		CAN_ITConfig(CANx, CAN_IT_FMP0, ENABLE);
+		
+		NVIC_InitStructure.NVIC_IRQChannel = CAN2_TX_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x04;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
+		CAN_ITConfig(CANx, CAN_IT_TME, ENABLE);
+		break;
+    }
+	
+    default: break;
+  }
 		
 }	
 
@@ -500,5 +538,282 @@ int OSCANSendCmd(CAN_TypeDef* CANx, CanTxMsg* TxMessage)
 }
 
 
+
+
+
+#define CAN_QUEUE_CAPACITY		6
+
+typedef int8_t CanTxQueueStatus_t;
+
+#define CAN_QUEUE_EMPTY			0  //must be 0 因为初始化为0
+#define CAN_QUEUE_NORMAL		1
+#define CAN_QUEUE_OVERFLOW		2
+#define CAN_QUEUE_UNDERFLOW		-2
+
+typedef struct
+{
+	int8_t front;
+	int8_t rear;
+	int8_t qsize;
+	CanTxQueueStatus_t status;
+	CanTxMsg element[CAN_QUEUE_CAPACITY];
+	
+}CanTxMsgQueue_t;
+
+static CanTxMsgQueue_t can1TxMsgQueue = {0}, can2TxMsgQueue = {0};
+
+static void CanErrorBeepWarning(void)
+{
+	for(;;)
+	{
+		BEEP_ON;
+		delay_ms(1500);
+		BEEP_OFF;
+		delay_ms(1000);
+	}
+}
+
+
+/**
+  * @brief  Check if the CAN transmit queue is empty or underflow or normal
+  * @param  None
+  * @retval CAN_QUEUE_OVERFLOW if overflow happen
+  *         CAN_QUEUE_UNDERFLOW if underflow happen
+  *         CAN_QUEUE_NORMAL   if qsize is smaller than CAN queue capacity
+  */
+static CanTxQueueStatus_t Can1TxMsgQueueCheckStatus(void)
+{
+	if(can1TxMsgQueue.qsize < 0 )
+	{
+		can1TxMsgQueue.status = CAN_QUEUE_UNDERFLOW;
+	}
+	else if(can1TxMsgQueue.qsize == 0 )
+	{
+		can1TxMsgQueue.status = CAN_QUEUE_EMPTY;
+	}
+	else if(can1TxMsgQueue.qsize >= CAN_QUEUE_CAPACITY)
+	{
+		can1TxMsgQueue.status = CAN_QUEUE_OVERFLOW;
+	}
+	else
+	{
+		can1TxMsgQueue.status = CAN_QUEUE_NORMAL;
+	}
+	return can1TxMsgQueue.status;
+}
+
+
+/**
+  * @brief  CAN transmit messege Enqueue 
+  * @param  txMsg: pointer to a structure which contains CAN Id, CAN DLC and CAN data.
+  * @retval CAN_QUEUE_OVERFLOW   if overflow happen
+  *         CAN_QUEUE_UNDERFLOW  if underflow happen
+  *         CAN_QUEUE_NORMAL     if qsize is smaller than CAN queue capacity
+  */
+static int8_t CanTxMsgEnqueue(CanTxMsg* txMsg)
+{
+	if(can1TxMsgQueue.qsize < CAN_QUEUE_CAPACITY)
+	{
+		can1TxMsgQueue.qsize++;
+		can1TxMsgQueue.rear = (can1TxMsgQueue.rear + 1) % CAN_QUEUE_CAPACITY;
+		can1TxMsgQueue.element[can1TxMsgQueue.rear] = *txMsg;
+	}
+	else{
+		CanErrorBeepWarning();
+	}
+	return can1TxMsgQueue.status;
+}
+
+
+
+/**
+  * @brief  CAN transmit messege Dequeue 
+  * @param  Mone
+  * @retval a structure which contains CAN Id, CAN DLC and CAN data.
+  */
+static CanTxMsg CANTxMsgDequeue(void)
+{
+	CanTxMsg TxMsg;
+	if(can1TxMsgQueue.qsize > 0)
+	{
+		TxMsg = can1TxMsgQueue.element[can1TxMsgQueue.front];
+		can1TxMsgQueue.qsize--;
+		can1TxMsgQueue.front = (can1TxMsgQueue.front + 1)%CAN_QUEUE_CAPACITY;
+	}
+	else{
+		CanErrorBeepWarning();
+	}
+	
+	return TxMsg;
+}
+
+/**
+  * @brief  CAN transmit messege queue read front element
+  *        此函数读取处于发送队列头处的元素 
+  * @note   内部含有对于队列是否为空的判断
+  * @param  Mone
+  * @retval pointer to a structure which contains CAN Id, CAN DLC and CAN data.
+  */
+static CanTxMsg* CanTxMsgReadHeadData(void)
+{
+	if(can1TxMsgQueue.qsize > 0)	
+	{
+		return &can1TxMsgQueue.element[can1TxMsgQueue.front];
+	}
+	else
+	{
+//		return ;//fix me
+	}
+}
+
+
+/**
+  * @brief  CAN transmit messege queue pop head
+  * @param  Mone
+  * @retval a structure which contains CAN Id, CAN DLC and CAN data.
+  */
+static void CAN1TxMsgQueuePopHead(void)
+{
+	can1TxMsgQueue.qsize--;
+	can1TxMsgQueue.front = (can1TxMsgQueue.front + 1) % CAN_QUEUE_CAPACITY;
+}
+
+/**
+  * @brief  使用CAN1发送数据，执行此函数后首先检查现在的发送队列状态
+  *        如果为空，则发送当前消息
+  *        如果不为空，则把当前消息放在队尾，并且尝试发送队头的消息，
+  *        发送当前消息时：
+  *           如果成功放入邮箱，则返回The number of the mailbox 
+  *           that is used for transmission
+  *           如果没有空邮箱，则把当前消息放入队尾（假设队伍未满）
+  *           且返回CAN_TxStatus_NoMailBox
+  *        发送队头的消息时：
+  *           如果成功放入邮箱，则把队头从队列中去除，并且返回The number
+  *           of the mailbox that is used for transmission
+  *           如果没有空邮箱， 则队头消息仍保持在队头，不去除，并且返回
+  *           CAN_TxStatus_NoMailBox
+  * @param  pointer to a structure which contains CAN Id, CAN DLC and CAN data.
+  * @retval The number of the mailbox that is used for transmission or
+  *         CAN_TxStatus_NoMailBox if there is no empty mailbox.
+  */
+uint8_t CAN1TxMsgQueueRQ(CanTxMsg* TxMessage)
+{
+	uint8_t mailBox = INVALID_CANSEND_MAILBOX;
+	uint8_t  CAN1QueueStatus = Can1TxMsgQueueCheckStatus();
+	switch(CAN1QueueStatus)
+	{
+		case CAN_QUEUE_EMPTY:
+			//发送CAN消息
+			mailBox = CAN_Transmit(CAN1, TxMessage);
+			switch(mailBox)
+			{
+				case 0:
+					break;
+				case 1:
+					break;
+				case 2:
+					break;
+				case CAN_TxStatus_NoMailBox:
+					if(Can1TxMsgQueueCheckStatus() != CAN_QUEUE_OVERFLOW)
+						CanTxMsgEnqueue(TxMessage);
+					
+					break;
+				default:
+					break;
+			}
+			break;
+		case CAN_QUEUE_NORMAL:
+			CanTxMsgEnqueue(TxMessage);
+			TxMessage = &can1TxMsgQueue.element[can1TxMsgQueue.front];
+			//发送CAN消息
+			mailBox = CAN_Transmit(CAN1, TxMessage);
+			switch(mailBox)
+			{
+				case 0:
+					CAN1TxMsgQueuePopHead();
+					break;
+				case 1:
+					CAN1TxMsgQueuePopHead();
+					break;
+				case 2:
+					CAN1TxMsgQueuePopHead();
+					break;
+				case CAN_TxStatus_NoMailBox:
+
+					break;
+				default:
+					break;
+			}
+			break;
+			
+		default :
+			CanErrorBeepWarning();
+		break;
+	}
+
+	return mailBox;
+}
+
+
+/**
+  * @brief  执行此函数后首先检查现在的发送队列状态
+  *        如果为空，则退出返回 INVALID_CANSEND_MAILBOX
+  *        如果不为空，则尝试发送队头的消息，
+  *        发送队头的消息时：
+  *           如果成功放入邮箱，则把队头从队列中去除，并且返回The number
+  *           of the mailbox that is used for transmission
+  *           如果没有空邮箱， 则队头消息仍保持在队头，不去除，并且返回
+  *           CAN_TxStatus_NoMailBox
+  * @param  None
+  * @retval The number of the mailbox that is used for transmission or
+  *         CAN_TxStatus_NoMailBox if there is no empty mailbox.
+  */
+uint8_t CAN1_TxMsgSendQueueHead(void)
+{
+	int8_t mailBox = INVALID_CANSEND_MAILBOX;
+	
+	if(can1TxMsgQueue.qsize > 0)
+	{
+		//发送CAN消息
+		mailBox = CAN_Transmit(CAN1, &can1TxMsgQueue.element[can1TxMsgQueue.front]);
+		switch(mailBox)
+		{
+			case 0:
+			case 1:
+			case 2:
+				CAN1TxMsgQueuePopHead();
+				break;
+			case CAN_TxStatus_NoMailBox:
+				break;
+			default:
+				break;
+		}
+	}
+	return mailBox;
+}
+
+//uint8_t CAN2_TxMsgSendQueueHead(void)
+//{
+//	uint8_t mailBox;
+//	
+//	if(CAN2_TxMsgQueue.qsize > 0)
+//	{
+//		//发送CAN消息
+//		mailBox = CAN_Transmit(CAN2, &CAN2_TxMsgQueue.element[CAN2_TxMsgQueue.front]);
+//		switch(mailBox)
+//		{
+//			case 0:
+//			case 1:
+//			case 2:
+//				CAN2_TxMsgQueuePopHead();
+//				break;
+//			case CAN_TxStatus_NoMailBox:
+//				break;
+//			default:
+//				break;
+//		}
+//	}
+//	return mailBox;
+//}
 
 
