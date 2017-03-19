@@ -30,7 +30,7 @@ static void LeftGunInit(void)
 	gRobot.leftGun.maxPoseLimit.speed2=200.0f;
 
 	
-	gRobot.leftGun.minPoseLimit.pitch = 15.0f;
+	gRobot.leftGun.minPoseLimit.pitch = 7.0f;
 	gRobot.leftGun.minPoseLimit.yaw = -50.0f;
 	gRobot.leftGun.minPoseLimit.roll = 0.0f;
 	gRobot.leftGun.minPoseLimit.speed1=0.0f;
@@ -93,7 +93,7 @@ static void RightGunInit(void)
 	gRobot.rightGun.maxPoseLimit.speed1=200.0f;
 	gRobot.rightGun.maxPoseLimit.speed2=200.0f;
 	
-	gRobot.rightGun.minPoseLimit.pitch = 15.0f;
+	gRobot.rightGun.minPoseLimit.pitch = 7.0f;
 	gRobot.rightGun.minPoseLimit.yaw = -50.0f;
 	gRobot.rightGun.minPoseLimit.roll = 0.0f;
 	gRobot.rightGun.minPoseLimit.speed1=0.0f;
@@ -234,7 +234,7 @@ int32_t LeftGunPitchTransform(float pitch)
 {
 	if(pitch > gRobot.leftGun.maxPoseLimit.pitch) pitch = gRobot.leftGun.maxPoseLimit.pitch;	
 	if(pitch < gRobot.leftGun.minPoseLimit.pitch) pitch = gRobot.leftGun.minPoseLimit.pitch;
-	return (int32_t)((pitch - 15.0f) * 141.0844f);
+	return (int32_t)((pitch - 7.0f) * 141.0844f);
 }
 
 /*
@@ -246,7 +246,7 @@ int32_t LeftGunPitchTransform(float pitch)
 */
 float LeftGunPitchInverseTransform(int32_t position)
 {
-	return (float)position / 141.0844f + 15.0f;
+	return (float)position / 141.0844f + 7.0f;
 }
 
 /*
@@ -370,7 +370,7 @@ int32_t RightGunPitchTransform(float pitch)
 	//fix me ,tansform may be different from LeftGun 
 	if(pitch > gRobot.rightGun.maxPoseLimit.pitch) pitch = gRobot.rightGun.maxPoseLimit.pitch;	
 	if(pitch < gRobot.rightGun.minPoseLimit.pitch) pitch = gRobot.rightGun.minPoseLimit.pitch;
-	return (int32_t)((pitch - 15.0f) * 141.0844f);	
+	return (int32_t)((pitch - 7.0f) * 141.0844f);	
 }
 
 /*
@@ -383,7 +383,7 @@ int32_t RightGunPitchTransform(float pitch)
 float RightGunPitchInverseTransform(int32_t position)
 {
 	//fix me ,tansform may be different from LeftGun 
-	return (float)position/141.0844f+15.0f;
+	return (float)position/141.0844f + 7.0f;
 }
 
 /*

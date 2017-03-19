@@ -11,17 +11,17 @@ void elmo_Init()
 /****************使能电机***************************/
 void elmo_Enable(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x00004F4D,0x00000001,      //MO  1
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
+
  	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -30,27 +30,27 @@ void elmo_Enable(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
-}	
+}
 /**************失能电机***************************/
 void elmo_Disable(uint8_t ElmoNum)
 {
-	uint8_t i=0; 
-	uint32_t data[1][2]={    				 
+	uint8_t i=0;
+	uint32_t data[1][2]={
 						0x00004F4D,0x00000000,      //MO  0
 					 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
+
 	for(i=0;i<1;i++)
-	{	   
+	{
 
 		TxMessage.Data[0] = *(unsigned long*)&data[i][0]&0xff;
 		TxMessage.Data[1] = (*(unsigned long*)&data[i][0]>>8)&0xff;
@@ -60,17 +60,17 @@ void elmo_Disable(uint8_t ElmoNum)
 		TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-		mbox= CAN_Transmit(CAN1, &TxMessage);         	
+		mbox= CAN_Transmit(CAN1, &TxMessage);
 		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
-	}	
+	}
 
-}	
+}
 /***************速度环配置*************************/
 void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 {
-	 uint8_t i=0; 
-	 int32_t data[7][2]={    				 
-							0x00004D55,0x00000002,    //UM  2	
+	 uint8_t i=0;
+	 int32_t data[7][2]={
+							0x00004D55,0x00000002,    //UM  2
 							0x00004653,0x00000000,		//SF  0
 							0x00004F4D,0x00000001,    //MO  1
 							0x00004341,0x00000000,		//AC  3000000
@@ -78,9 +78,9 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 							0x00024856,0x00000000,		//VH[2]  15,000,000
 							0x00024C56,0x00000000,		//VL[2]  -15,000,000
 						 };
-	 
 
-	uint8_t mbox;	 
+
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300+ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300+ElmoNum;					 // extended identifier=StdId
@@ -90,11 +90,11 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 	data[3][1]= acc;
 	data[4][1]= dec;
 	data[5][1]=	 15000000;
-	data[6][1]=	 -15000000;	
+	data[6][1]=	 -15000000;
 
 	for(i=0;i<7;i++)
-	{	    
- 	
+	{
+
 			TxMessage.Data[0] = *(unsigned long*)&data[i][0]&0xff;
 			TxMessage.Data[1] = (*(unsigned long*)&data[i][0]>>8)&0xff;
 			TxMessage.Data[2] = (*(unsigned long*)&data[i][0]>>16)&0xff;
@@ -103,8 +103,8 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 			TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 			TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 			TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-				
-			mbox= CAN_Transmit(CAN1, &TxMessage);         	
+
+			mbox= CAN_Transmit(CAN1, &TxMessage);
 			while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 	}
 }
@@ -112,22 +112,22 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 /************速度控制***************/
 void VelCrl(uint8_t ElmoNum,int vel)
 {
-	 uint8_t i=0; 
-	 uint32_t data[2][2]={    				 
+	 uint8_t i=0;
+	 uint32_t data[2][2]={
 
 							0x0000564A,0x00000000,		//JV  10000
-							0x40004742,0x00000000,    //BG 
+							0x40004742,0x00000000,    //BG
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300+ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300+ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-	data[0][1]= vel;							 
+	data[0][1]= vel;
 	for(i=0;i<2;i++)
-	{	    
+	{
 		TxMessage.Data[0] = *(unsigned long*)&data[i][0]&0xff;
 		TxMessage.Data[1] = (*(unsigned long*)&data[i][0]>>8)&0xff;
 		TxMessage.Data[2] = (*(unsigned long*)&data[i][0]>>16)&0xff;
@@ -136,8 +136,8 @@ void VelCrl(uint8_t ElmoNum,int vel)
 		TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-			
-		mbox= CAN_Transmit(CAN1, &TxMessage);        	
+
+		mbox= CAN_Transmit(CAN1, &TxMessage);
 		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 	}
 }
@@ -145,35 +145,35 @@ void VelCrl(uint8_t ElmoNum,int vel)
 /***************位置环配置*************************/
 void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 {
-	uint8_t i=0; 
-	int32_t data[16][2]={  								 
+	uint8_t i=0;
+	int32_t data[16][2]={
 							0x00004D55,0x00000005,    //UM  5
 							0x00004653,0x00000000,		//SF  0
 							0x00014D58,0x00000000,    //XM[1]   -5x10
-							0x00024D58,0x00000000,    //XM[2]   5x10		
+							0x00024D58,0x00000000,    //XM[2]   5x10
 							0x00004F4D,0x00000001,    //MO  1
 							0x00004341,0x00000000,		//AC
 							0x00004341,0x00000000,		//AC
-							0x00004341,0x00000000,		//AC		
+							0x00004341,0x00000000,		//AC
 							0x00004344,0x00000000,		//DC
-							0x00004344,0x00000000,		//DC 
-							0x00004344,0x00000000,		//DC 		
+							0x00004344,0x00000000,		//DC
+							0x00004344,0x00000000,		//DC
 							0x00005053,0x00000000,		//SP
 							0x00005053,0x00000000,		//SP
-							0x00005053,0x00000000,		//SP		
+							0x00005053,0x00000000,		//SP
 							0x00034856,0x00000000,		//VH[3]  999,999,990
-							0x00034C56,0x00000000,		//VL[3]  -99,999,990		
-							
+							0x00034C56,0x00000000,		//VL[3]  -99,999,990
+
 						 };
 
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300+ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300+ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-		
+
 	data[5][1]= acc;
 	data[6][1]= acc;
 	data[7][1]= acc;
@@ -182,13 +182,13 @@ void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 	data[10][1]= dec;
 	data[11][1]= vel;
 	data[12][1]= vel;
-	data[13][1]= vel;						 
+	data[13][1]= vel;
 	data[14][1]= 999999990;
 	data[15][1]= -999999990;
 	data[2][1]= -999999990;
-	data[3][1]= 999999990;							 			 						 
+	data[3][1]= 999999990;
 	for(i=0;i<16;i++)
-	{	    
+	{
 		TxMessage.Data[0] = *(unsigned long*)&data[i][0]&0xff;
 		TxMessage.Data[1] = (*(unsigned long*)&data[i][0]>>8)&0xff;
 		TxMessage.Data[2] = (*(unsigned long*)&data[i][0]>>16)&0xff;
@@ -197,8 +197,8 @@ void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 		TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-			
-		mbox= CAN_Transmit(CAN1, &TxMessage);        	
+
+		mbox= CAN_Transmit(CAN1, &TxMessage);
 		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 	}
 }
@@ -208,13 +208,13 @@ void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 /*******************0代表绝对模式****************************/
 void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 {
-	uint8_t i=0; 
-	uint32_t data[2][2]={  								 
-							0x00000000,0x00000000,      //PA  10000	
-							0x40004742,0x00000000,      //BG 
+	uint8_t i=0;
+	uint32_t data[2][2]={
+							0x00000000,0x00000000,      //PA  10000
+							0x40004742,0x00000000,      //BG
 						 };
 
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300+ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300+ElmoNum;					 // extended identifier=StdId
@@ -227,11 +227,11 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		data[0][0]= 0x00004150;  //绝对
 	}else{
 		data[0][0]= 0x00005250;   //相对
-	}						
-					 
-	data[0][1]= pos;			 						 
+	}
+
+	data[0][1]= pos;
 	for(i=0;i<2;i++)
-	{	    
+	{
 		TxMessage.Data[0] = *(unsigned long*)&data[i][0]&0xff;
 		TxMessage.Data[1] = (*(unsigned long*)&data[i][0]>>8)&0xff;
 		TxMessage.Data[2] = (*(unsigned long*)&data[i][0]>>16)&0xff;
@@ -240,8 +240,8 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-			
-		mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+		mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//等待238us
 	}
 
@@ -249,17 +249,17 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 /* 读取电机电压 */
 void ReadActualVoltage(uint8_t ElmoNum)
  {
-	 uint32_t data[1][2]={    				 
-							0x40005155,0x00000000,      //UQ  
+	 uint32_t data[1][2]={
+							0x40005155,0x00000000,      //UQ
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					     
+
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -268,25 +268,25 @@ void ReadActualVoltage(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
  }
 
 /* 读取电机电流 */
 void ReadActualCurrent(uint8_t ElmoNum)
  {
-	 uint32_t data[1][2]={    				 
-							0x40005149,0x00000000,      //IQ  
+	 uint32_t data[1][2]={
+							0x40005149,0x00000000,      //IQ
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
+
    	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -295,25 +295,25 @@ void ReadActualCurrent(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
  }
- 
+
 /* 读取电机位置 */
 void ReadActualPos(uint8_t ElmoNum)
  {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40005850,0x00000000,      //PX
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
+
    	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -322,25 +322,25 @@ void ReadActualPos(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
  }
 
 /* 读取电机速度 */
 void ReadActualVel(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40005856,0x00000000,      //VX
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
+
    	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -349,24 +349,24 @@ void ReadActualVel(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 }
 
 void ReadActualTemperature(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40014954,0x00000000,      //TI[1]
 						 };
-	uint8_t mbox;	 
+	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
+
    	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -375,25 +375,25 @@ void ReadActualTemperature(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
 }
 void ReadCurrentLimitFlag(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x4000434C,0x00000000,      //LC
 						 };
-  uint8_t mbox;	 
+  uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
-    
-	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+
+
+	    //msg[4].data=*(unsigned long long*)&data[i];
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -402,26 +402,26 @@ void ReadCurrentLimitFlag(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
 void ReadVelocityError(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40004556,0x00000000,      //LC
 						 };
-  uint8_t mbox;	 
+  uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
-    
-	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+
+
+	    //msg[4].data=*(unsigned long long*)&data[i];
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -430,26 +430,26 @@ void ReadVelocityError(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
-}	
+}
 
 void ReadCommandVelocity(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40025644,0x00000000,      //DV[2]
 						 };
-  uint8_t mbox;	 
+  uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
-    
-	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+
+
+	    //msg[4].data=*(unsigned long long*)&data[i];
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -458,26 +458,26 @@ void ReadCommandVelocity(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
 void ReadJoggingVelocity(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x4000564A,0x00000000,      //JV
 						 };
-  uint8_t mbox;	 
+  uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
-    
-	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+
+
+	    //msg[4].data=*(unsigned long long*)&data[i];
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -486,26 +486,26 @@ void ReadJoggingVelocity(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
-}	
-		
+}
+
 void ReadUnitMode(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40004D55,0x00000000,      //UM
 						 };
-  uint8_t mbox;	 
+  uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
-    
-	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+
+
+	    //msg[4].data=*(unsigned long long*)&data[i];
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -514,26 +514,26 @@ void ReadUnitMode(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
 void ReadReferenceMode(uint8_t ElmoNum)
 {
-	 uint32_t data[1][2]={    				 
+	 uint32_t data[1][2]={
 							0x40004D52,0x00000000,      //RM
 						 };
-  uint8_t mbox;	 
+  uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId=0x300 + ElmoNum;					 // standard identifier=0
 	TxMessage.ExtId=0x300 + ElmoNum;					 // extended identifier=StdId
 	TxMessage.IDE=CAN_Id_Standard ;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data  ;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					 
-    
-	    //msg[4].data=*(unsigned long long*)&data[i];	  	
+
+
+	    //msg[4].data=*(unsigned long long*)&data[i];
 	TxMessage.Data[0] = *(unsigned long*)&data[0][0]&0xff;
 	TxMessage.Data[1] = (*(unsigned long*)&data[0][0]>>8)&0xff;
 	TxMessage.Data[2] = (*(unsigned long*)&data[0][0]>>16)&0xff;
@@ -542,8 +542,8 @@ void ReadReferenceMode(uint8_t ElmoNum)
 	TxMessage.Data[5] = (*(unsigned long*)&data[0][1]>>8)&0xff;
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us	
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
@@ -557,12 +557,12 @@ void ReadReferenceMode(uint8_t ElmoNum)
 void velCrl(uint8_t DriverNum,int velData)
 {
 	CanTxMsg TxMessage;
-	uint8_t mbox;	 
+	uint8_t mbox;
 	union Vel
 	{
 		uint8_t Data8[4];
 		int32_t Data32;
-	}vel; 
+	}vel;
 
 	vel.Data32 = velData;
 	TxMessage.StdId= 0x300+DriverNum;					 // standard identifier=0
@@ -570,13 +570,13 @@ void velCrl(uint8_t DriverNum,int velData)
 	TxMessage.IDE=CAN_Id_Standard;			 // type of identifier for the message is Standard
 	TxMessage.RTR=CAN_RTR_Data;			 // the type of frame for the message that will be transmitted
 	TxMessage.DLC=8;
-					   
+
 	TxMessage.Data[0] = vel.Data8[0];
 	TxMessage.Data[1] = vel.Data8[1];
 	TxMessage.Data[2] = vel.Data8[2];
 	TxMessage.Data[3] = vel.Data8[3];
-		
-	mbox= CAN_Transmit(CAN1, &TxMessage);        
+
+	mbox= CAN_Transmit(CAN1, &TxMessage);
 	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
-}	
+}
 

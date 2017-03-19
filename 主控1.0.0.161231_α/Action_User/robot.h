@@ -83,7 +83,7 @@
 #define MAX_BULLET_NUMBER_RIGHT 20
 #define MAX_BULLET_NUMBER_UPPER 10
 //枪最大自动发射子弹发数
-#define MAX_AUTO_BULLET_NUMBER 10
+#define MAX_AUTO_BULLET_NUMBER 12
 
 //瞄准未完成
 #define GUN_AIM_IN_PROCESS 1
