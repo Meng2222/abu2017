@@ -119,12 +119,6 @@ typedef struct
 	int backwardWheelDriverFlag;
 }driverCurrentLimitFlag_t;
 
-typedef struct
-{
-	int leftMotorVelocityError;
-	int forwardMotorVelocityError;
-	int backwardMotorVelocityError;
-}driverVelocityError_t;
 
 typedef struct
 {
@@ -140,19 +134,6 @@ typedef struct
 	int backwardDriverJoggingVelocity;
 }driverJoggingVelocity_t;
 
-typedef struct
-{
-	int leftDriverUnitMode;
-	int forwardDriverUnitMode;
-	int backwardDriverUnitMode;
-}driverUnitMode_t;
-
-typedef struct
-{
-	int leftDriverReferenceMode;
-	int forwardDriverReferenceMode;
-	int backwardDriverReferenceMode;
-}driverReferenceMode_t;
 
 typedef struct
 {
@@ -177,16 +158,12 @@ typedef struct
 	
 	driverCurrentLimitFlag_t driverCurrentLimitFlag;
 	
-	driverVelocityError_t driverVelocityError;
-	
 	driverCommandVelocity_t driverCommandVelocity;
 	
 	driverJoggingVelocity_t driverJoggingVelocity;
-	
-	driverUnitMode_t driverUnitMode;
-	
-	driverReferenceMode_t driverReferenceMode;
 
+	//机器人目标停止位置，范围1、2、3，对应靠近发射区，中点和靠近出发区点
+	unsigned char targetPoint;
 	//机器人目标角度，逆时针为正，范围【-180，180】，单位度
 	float targetAngle;
 	//机器人实际角度，逆时针为正，范围【-180，180】，单位度

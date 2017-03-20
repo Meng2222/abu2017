@@ -12,6 +12,8 @@
 #define GUN_NUMBER 3
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
+
+#define SHOOT_METHOD_NUMBER		2
 //防守台分区数
 #define ZONE_NUMBER 4
 
@@ -64,7 +66,8 @@
 //上面枪左侧传送带轴CAN ID
 #define UPPER_GUN_LEFT_ID 9
 
-
+//上弹成功
+#define GUN_RELOAD_OK 1
 //射击完成
 #define GUN_NO_ERROR 0
 //枪膛卡弹
@@ -90,41 +93,6 @@
 //瞄准完成
 #define GUN_AIM_DONE 2
 
-//子弹最大特征数
-#define CHAMPER_BULLET_MAX_FEATURE_STATE 10
-
-//枪膛无子弹
-#define CHAMPER_BULLET_EMPTY_STATE 0xff
-
-//枪膛有子弹，特征0，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE0_STATE 0
-
-//枪膛有子弹，特征1，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE1_STATE 1
-
-//枪膛有子弹，特征2，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE2_STATE 2
-
-//枪膛有子弹，特征3，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE3_STATE 3
-
-//枪膛有子弹，特征4，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE4_STATE 4
-
-//枪膛有子弹，特征5，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE5_STATE 5
-
-//枪膛有子弹，特征6，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE6_STATE 6
-
-//枪膛有子弹，特征7，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE7_STATE 7
-
-//枪膛有子弹，特征8，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE8_STATE 8
-
-//枪膛有子弹，特征9，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE9_STATE 9
 
 //机器人已上电
 #define ROBOT_STAGE_POWER_ON 0
@@ -160,17 +128,22 @@
 #define PLANT6 5
 #define PLANT7 6
 
-#define INVALID_ZONE_NUMBER 4
-#define ZONE1 0
-#define ZONE2 1
-#define ZONE3 2
-#define ZONE4 3
+
+#define SHOOT_METHOD1  0
+#define SHOOT_METHOD2  1
+
+
+#define INVALID_ZONE_NUMBER 4u
+#define ZONE1 0u
+#define ZONE2 1u
+#define ZONE3 2u
+#define ZONE4 3u
 
 
 //枪自动射击时，目标柱子顺序
 typedef struct
 {
-	unsigned char cmd[MAX_AUTO_BULLET_NUMBER];
+	unsigned char cmd[MAX_AUTO_BULLET_NUMBER][SHOOT_METHOD_NUMBER];
 }shoot_command_t;
 
 /**************************************************************************************
@@ -215,11 +188,11 @@ typedef struct
 	//枪的模式：0自动，1手动
 	unsigned char mode;
 	
+	//射击参数模式：1 打球 2 打盘 3 扔
+	unsigned char shootParaMode;
+	
 	//弹夹内子弹数，因为最多23发，所以用8位
 	unsigned char bulletNumber;
-	
-	//枪膛子弹状态，根据不同状态决定开枪方式
-	unsigned char champerBulletState;
 	
 	//枪膛是否卡弹:1卡弹，0正常
 	unsigned char champerErrerState;

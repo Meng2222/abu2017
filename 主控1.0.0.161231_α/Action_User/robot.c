@@ -4,6 +4,7 @@
 #include "gasvalvecontrol.h"
 #include "timer.h"
 #include "ucos_ii.h"
+#include "gpio.h"
 
 robot_t gRobot = {0};
 
@@ -42,8 +43,6 @@ static void LeftGunInit(void)
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//子弹数
 	gRobot.leftGun.bulletNumber = MAX_BULLET_NUMBER_LEFT;
-	//枪膛子弹状态，无子弹
-	gRobot.leftGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
 	gRobot.leftGun.champerErrerState = 0;
 	//枪停止射击
@@ -105,8 +104,6 @@ static void RightGunInit(void)
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//最大子弹数
 	gRobot.rightGun.bulletNumber = MAX_BULLET_NUMBER_RIGHT;
-	//枪膛子弹状态，无子弹
-	gRobot.rightGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
 	gRobot.rightGun.champerErrerState = 0;
 	//枪停止射击
@@ -165,8 +162,6 @@ static void UpperGunInit(void)
 	gRobot.upperGun.mode = GUN_MANUAL_MODE;
 	//最大子弹数
 	gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER;
-	//枪膛子弹状态，无子弹
-	gRobot.upperGun.champerBulletState = CHAMPER_BULLET_EMPTY_STATE;
 	//fix me
 	gRobot.upperGun.champerErrerState = 0;
 	//枪停止射击
@@ -632,6 +627,59 @@ status_t ROBOT_RightGunReload(void)
 	RightBack();
 	return GUN_NO_ERROR;
 }
+/**
+*名称：ROBOT_LeftGunCheckReload
+*功能：检查左枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_LeftGunCheckReload(void)
+{
+	int timeOut = 3;
+	while(timeOut--)
+	{
+		if(PHOTOSENSORLEFTGUN)
+		{
+			gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
+			return GUN_NO_ERROR;
+		}
+		else
+		{
+			ROBOT_LeftGunHome();
+		}
+		
+	}
+	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
+	return GUN_RELOAD_ERROR;
+}
+
+/**
+*名称：ROBOT_LeftGunCheckReload
+*功能：检查右枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_RightGunCheckReload(void)
+{
+	int timeOut = 3;
+	while(timeOut--)
+	{
+		if(PHOTOSENSORRIGHTGUN)
+		{
+			gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
+			return GUN_NO_ERROR;
+		}
+		else
+		{
+			ROBOT_LeftGunHome();
+		}
+		
+	}
+	gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
+	return GUN_RELOAD_ERROR;
+}
 
 /*
 *名称：ROBOT_GunCheckBulletState
@@ -643,21 +691,21 @@ status_t ROBOT_RightGunReload(void)
 */
 status_t ROBOT_GunCheckBulletState(unsigned char gun)
 {
-	switch(gun)
-	{
-		case LEFT_GUN:
-			//fix me, should be replaced by senser results
-			gRobot.leftGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
-			break;
-		case RIGHT_GUN:
-			gRobot.rightGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
-			break;
-		case UPPER_GUN:
-			gRobot.upperGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
-			break;
-		default:
-			break;
-	}
+//	switch(gun)
+//	{
+//		case LEFT_GUN:
+//			//fix me, should be replaced by senser results
+//			gRobot.leftGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
+//			break;
+//		case RIGHT_GUN:
+//			gRobot.rightGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
+//			break;
+//		case UPPER_GUN:
+//			gRobot.upperGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
+//			break;
+//		default:
+//			break;
+//	}
 	return GUN_NO_ERROR;
 }
 
@@ -674,7 +722,6 @@ status_t ROBOT_LeftGunAim(void)
 {
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-	if(gRobot.leftGun.champerBulletState == CHAMPER_BULLET_EMPTY_STATE) return GUN_NO_BULLET_ERROR;
 
 	PosCrl(LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gRobot.leftGun.targetPose.yaw));
 	PosCrl(LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.targetPose.pitch));			
@@ -686,19 +733,18 @@ status_t ROBOT_LeftGunAim(void)
 	return GUN_NO_ERROR;
 }
 /**
-*名称： ROBOT_RightGunAim
-*功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令
-*	上面的枪目前机械上没有roll，没有右侧传送带speed2
-*	故 ROBOT_LeftGunAim 和 ROBOT_LeftGunAim 各发送5条CAN命令
-*	ROBOT_UpperGunAim仅发送3条CAN命令
-*参数： None
-* @retval status:GUN_NO_ERROR
-*/
+  *名称： ROBOT_RightGunAim
+  *功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令
+  *	上面的枪目前机械上没有roll，没有右侧传送带speed2
+  *	故 ROBOT_LeftGunAim 和 ROBOT_LeftGunAim 各发送5条CAN命令
+  *	ROBOT_UpperGunAim仅发送3条CAN命令
+  *参数： None
+  * @retval status:GUN_NO_ERROR
+  */
 status_t ROBOT_RightGunAim(void)
 {
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-			if(gRobot.rightGun.champerBulletState == CHAMPER_BULLET_EMPTY_STATE) return GUN_NO_BULLET_ERROR;
 			PosCrl(RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.targetPose.yaw));
 			PosCrl(RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.targetPose.pitch));			
 			PosCrl(RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.targetPose.roll));	
@@ -721,7 +767,6 @@ status_t ROBOT_UpperGunAim(void)
 {
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 	gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
-	if(gRobot.upperGun.champerBulletState == CHAMPER_BULLET_EMPTY_STATE) return GUN_NO_BULLET_ERROR;
 	PosCrl(UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(gRobot.upperGun.targetPose.yaw));
 	PosCrl(UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gRobot.upperGun.targetPose.pitch));			
 

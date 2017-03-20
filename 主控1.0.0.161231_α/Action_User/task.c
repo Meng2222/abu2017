@@ -157,7 +157,6 @@ void ConfigTask(void)
 	UART5_Init(115200);		//调试用wifi
 	USART3_Init(115200);    //摄像头
 	USART6_Init(115200);	//定位系统
-	CameraInit();
 
 
 	TIM_Delayms(TIM5, 10000);
@@ -215,6 +214,8 @@ typedef enum
 	beginToGo1,
 	goToHalfLaunchingArea,
 	beginToGo2,
+	goTo3QuarterArea,
+	beginToGo3,
 	goToLaunchingArea,
 	launch
 }Status_t;
@@ -251,9 +252,9 @@ void WalkTask(void)
 		
 		ReadActualVel(MOVEBASE_BROADCAST_ID);
 		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
-		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
-		ReadCurrentLimitFlag(MOVEBASE_BROADCAST_ID);
-		ReadVelocityError(MOVEBASE_BROADCAST_ID);
+//		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
+//		ReadCurrentLimitFlag(MOVEBASE_BROADCAST_ID);
+//		ReadVelocityError(MOVEBASE_BROADCAST_ID);
 		ReadCommandVelocity(MOVEBASE_BROADCAST_ID);
 		ReadJoggingVelocity(MOVEBASE_BROADCAST_ID);
 		
@@ -293,11 +294,7 @@ void WalkTask(void)
 				{
 					BEEP_OFF;
 					status++;
-				}
-//				if(PHOTOSENSORUPGUN)
-//				{
-//					status +=2;
-//				}				
+				}				
 				break;
 				
 			//装载飞盘
@@ -305,10 +302,6 @@ void WalkTask(void)
 				LockWheel();
 				ClampClose();
 				timeCounter++;	
-//				if(PHOTOSENSORUPGUN)
-//				{
-//					status++;
-//				}
 			    if (timeCounter >= 100)
 				{
 					ClampRotate();
@@ -317,7 +310,7 @@ void WalkTask(void)
 					ClampReset();
 					if (KEYSWITCH)
 					{
-						status++;
+						status = beginToGo2;
 					}
 				}
 				break;
@@ -344,16 +337,33 @@ void WalkTask(void)
 				break;
 			
 			case beginToGo2:
-//				if (PHOTOSENSORUPGUN)
-//				{
-//					status++;
-//				}
+				if (PHOTOSENSORUPGUN)
+				{
+					status++;
+				}
 				break;
-				
+			case goTo3QuarterArea:
+				MoveTo(-2925.14f, 1500.0f, 1200.0f);
+			    if (GetPosX() >= -2925.14f)
+				{
+					LockWheel();
+					moveTimFlag = 0;
+					status++;
+					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+					OSTaskSuspend(OS_PRIO_SELF);
+				}
+				break;
+			
+			case beginToGo3:
+				if (PHOTOSENSORUPGUN)
+				{
+					status++;
+				}
+				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
                 MoveTo(-6459.14f, 1500.0f, 1200.0f);
-			    if (GetPosX() >= -6459.14f)
+			    if (GetPosX() <= -6459.14f)
 				{
 					LockWheel();
 					moveTimFlag = 0;
@@ -364,7 +374,9 @@ void WalkTask(void)
 			//发射飞盘
 			case launch:
 				LockWheel();
+				CameraInit();
 //				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
 			
@@ -407,8 +419,9 @@ void LeftGunShootTask(void)
 
 					//fix me,此处应该检查着陆台编号是否合法
 					int landId =  gRobot.leftGun.targetPlant;
+					uint8_t shootMethod = gRobot.leftGun.shootParaMode;
 					//获取目标位姿
-					gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
+					gun_pose_t pose = gLeftGunPosDatabase[shootMethod][landId];
 
 					//更新枪目标位姿
 					gRobot.leftGun.targetPose.pitch =	pose.pitch;
@@ -428,8 +441,6 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
-					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-					OSTaskResume(Walk_TASK_PRIO);
 					OSTaskSuspend(OS_PRIO_SELF);
 				}
 			}
@@ -441,9 +452,10 @@ void LeftGunShootTask(void)
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(LEFT_GUN);
 
-				int landId =  gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes];
+				int landId =  gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes][0];
+				unsigned char shootMethod = gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes][1];
 				//获取目标位姿
-				gun_pose_t pose = gLeftGunPosDatabase[gRobot.leftGun.champerBulletState][landId];
+				gun_pose_t pose = gLeftGunPosDatabase[shootMethod][landId];
 				//更新枪目标位姿
 				gRobot.leftGun.targetPose.pitch = pose.pitch;
 				gRobot.leftGun.targetPose.roll = pose.roll;
@@ -456,6 +468,16 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunShoot();
+				if(gRobot.leftGun.shootTimes==2)
+				{
+					OSTaskResume(Walk_TASK_PRIO);
+					OSTaskSuspend(OS_PRIO_SELF);
+				}
+				if(gRobot.leftGun.shootTimes==4)
+				{
+					OSTaskResume(Walk_TASK_PRIO);
+					OSTaskSuspend(OS_PRIO_SELF);
+				}
 				//此函数有延迟
 //				ROBOT_LeftGunHome();
 			}
@@ -528,8 +550,10 @@ void RightGunShootTask(void)
 
 					//fix me,此处应该检查着陆台编号是否合法
 					int landId =  gRobot.rightGun.targetPlant;
+					unsigned char shootMethod = gRobot.rightGun.shootParaMode;
+
 					//获取目标位姿
-					gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
+					gun_pose_t pose = gRightGunPosDatabase[shootMethod][landId];
 					//更新枪目标位姿
 					gRobot.rightGun.targetPose.pitch = pose.pitch;
 					gRobot.rightGun.targetPose.roll = pose.roll;
@@ -560,9 +584,10 @@ void RightGunShootTask(void)
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
 
-				int landId =  gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes];
+				int landId =  gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes][0];
+				uint8_t shootMethod = gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes][1];
 				//获取目标位姿
-				gun_pose_t pose = gRightGunPosDatabase[gRobot.rightGun.champerBulletState][landId];
+				gun_pose_t pose = gRightGunPosDatabase[shootMethod][landId];
 				//更新枪目标位姿
 				gRobot.rightGun.targetPose.pitch = pose.pitch;
 				gRobot.rightGun.targetPose.roll = pose.roll;
@@ -646,7 +671,7 @@ void UpperGunShootTask(void)
 				else                                       continue;
 
 				//获取目标位姿
-				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.champerBulletState][zoneId];
+				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.shootParaMode][zoneId];
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 
 				//更新枪目标位姿

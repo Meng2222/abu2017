@@ -148,21 +148,6 @@ void CAN1_RX0_IRQHandler(void)
 				gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag = (msg.data32[1]);
 			}
 		}
-		if(msg.data32[0] == 0x00004556)
-		{
-			if(canNodeId == LEFT_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverVelocityError.leftMotorVelocityError= Pulse2Vel(msg.data32[1])/100.0f;
-			}
-			if(canNodeId == FORWARD_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverVelocityError.forwardMotorVelocityError = Pulse2Vel(msg.data32[1])/100.0f;
-			}
-			if(canNodeId == BACKWARD_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverVelocityError.backwardMotorVelocityError = Pulse2Vel(msg.data32[1])/100.0f;
-			}
-		}
 		if(msg.data32[0] == 0x00025644)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
@@ -193,36 +178,7 @@ void CAN1_RX0_IRQHandler(void)
 				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
 			}
 		}
-		if(msg.data32[0] == 0x00004D55)
-		{
-			if(canNodeId == LEFT_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverUnitMode.leftDriverUnitMode = (msg.data32[1]);
-			}
-			if(canNodeId == FORWARD_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverUnitMode.forwardDriverUnitMode = (msg.data32[1]);
-			}
-			if(canNodeId == BACKWARD_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverUnitMode.backwardDriverUnitMode = (msg.data32[1]);
-			}
-		}
-		if(msg.data32[0] == 0x00004D52)
-		{
-			if(canNodeId == LEFT_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverReferenceMode.leftDriverReferenceMode= (msg.data32[1]);
-			}
-			if(canNodeId == FORWARD_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverReferenceMode.forwardDriverReferenceMode = (msg.data32[1]);
-			}
-			if(canNodeId == BACKWARD_WHEEL_ID) 
-			{
-				gRobot.moveBase.driverReferenceMode.backwardDriverReferenceMode = (msg.data32[1]);
-			}
-		}
+
 	}
 	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
@@ -478,6 +434,16 @@ void UART4_IRQHandler(void)
 				break;
 			case 5:
 				id2 = ch;				//左   打球0 打盘3 扔6  右 打球1 打盘4 扔7  上 打球2 打盘5 扔8
+				//判断目标停车点位置
+				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
+				{
+					gRobot.moveBase.targetPoint = id2 / 80 + 1;
+					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+					OSTaskResume(Walk_TASK_PRIO);
+				}
+				id2 = id2 % 80;				
 				status++;
 			break;
 			case 6:
@@ -510,7 +476,6 @@ void UART4_IRQHandler(void)
 							gRobot.rightGun.targetPlant = id/5;
  							break;
 							case 2:
-
  							break;
 							default:
 								id2 = 0xff;
@@ -525,12 +490,15 @@ void UART4_IRQHandler(void)
 						{	
 							case 0:
 							gRobot.leftGun.targetPose.pitch = targetAngle;
+							gRobot.leftGun.shootParaMode = id2 / 3;
 							break;
 							case 1:
 							gRobot.rightGun.targetPose.pitch = targetAngle;
+							gRobot.rightGun.shootParaMode = id2 / 3;
 							break;
  							case 2:
 							gRobot.upperGun.targetPose.pitch = targetAngle;
+							gRobot.rightGun.shootParaMode = id2 / 3;
 							break;
 							default:
 								id2=0xff;
@@ -635,6 +603,13 @@ void UART4_IRQHandler(void)
 						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 						break;
+					case 4:
+						//手自动切换
+						gRobot.leftGun.mode = GUN_MANUAL_MODE;
+						gRobot.rightGun.mode = GUN_MANUAL_MODE;
+						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+					break;
 				}
 				status=0;
 			break;
