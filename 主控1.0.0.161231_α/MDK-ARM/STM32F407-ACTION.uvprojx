@@ -449,6 +449,11 @@
               <FileType>1</FileType>
               <FilePath>..\Action_User\database.c</FilePath>
             </File>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Action_User\flash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

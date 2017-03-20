@@ -12,8 +12,10 @@
 #define GUN_NUMBER 3
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
-
+//参数种类，打球，落盘
 #define SHOOT_METHOD_NUMBER		2
+//发射位置个数
+#define SHOOT_POINT_NUMBER 3
 //防守台分区数
 #define ZONE_NUMBER 4
 
@@ -119,6 +121,7 @@
 #define ROBOT_STATUS_UNDER_VOLTAGE 0x04
 #define ROBOT_STATUS_GAS_LOW  0x08
 
+//着陆台编号
 #define INVALID_PLANT_NUMBER 7
 #define PLANT1 0
 #define PLANT2 1
@@ -128,10 +131,14 @@
 #define PLANT6 5
 #define PLANT7 6
 
-
+//发射参数模式，对应打球和落盘
 #define SHOOT_METHOD1  0
 #define SHOOT_METHOD2  1
 
+//发射点位置
+#define SHOOT_POINT1 0
+#define SHOOT_POINT2 1
+#define SHOOT_POINT3 2
 
 #define INVALID_ZONE_NUMBER 4u
 #define ZONE1 0u
@@ -139,11 +146,12 @@
 #define ZONE3 2u
 #define ZONE4 3u
 
-
 //枪自动射击时，目标柱子顺序
 typedef struct
 {
-	unsigned char cmd[MAX_AUTO_BULLET_NUMBER][SHOOT_METHOD_NUMBER];
+	uint8_t shootPoint;
+	uint8_t plantNum;
+	uint8_t shootMethod;
 }shoot_command_t;
 
 /**************************************************************************************
@@ -208,7 +216,7 @@ typedef struct
 	//gunPosDatabase指向枪的姿态数据库，数据库存储在database.c中，初始化时需要指定
 	gun_pose_t **gunPoseDatabase;
 	//命令集
-	shoot_command_t *shootCommand;
+	shoot_command_t **shootCommand;
 	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
 	//防守台分区，用于上枪打盘
