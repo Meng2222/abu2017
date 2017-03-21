@@ -23,7 +23,7 @@
 /* Private  typedef -----------------------------------------------------------*/
 /* Private  define ------------------------------------------------------------*/
 #define FLASH_USER_ADDRESS 0x08040000   //FLASH起始地址
-
+//#define WRITE_DATABASE_IN_FLASH_AT_BEGINNING 1
 //fix me 以下两个宏定义只是为了测试
 //#define TempTable_max	200
 //#define TempTable_min	100
@@ -116,29 +116,27 @@ void FlashWriteFloatArr(float *data, uint32_t len)
  * @param  len:  浮点数数据量，单位：4byte
  * @retval None
  */
-void FlashWriteGunPosData(float *data1,	uint32_t len1,
-		float *data2, uint32_t len2,
-		float *data3, uint32_t len3)
+void FlashWriteGunPosData(void)
 {
 	uint32_t count;
 	FLASH_Unlock();
 	FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR | FLASH_FLAG_PGSERR);
 	FLASH_EraseSector(FLASH_Sector_6, VoltageRange_3);
 	FLASH_WaitForLastOperation();
-	for(count = 0; count < len1; count++)
+	for(count = 0; count < LEFTGUNPOSDATABASE_FLOAT_NUM; count++)
 	{
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count, *(uint16_t *)(data1 + count));
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2, *((uint16_t *)(data1 + count) + 1));
+		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count, 		*(uint16_t *)((float *)gLeftGunPosDatabase + count));
+		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2,	*((uint16_t *)((float *)gLeftGunPosDatabase + count) + 1));
 	}
-	for(; count < len2; count++)
+	for(; count < RIGHTGUNPOSDATABASE_FLOAT_NUM; count++)
 	{
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count, *(uint16_t *)(data2 + count));
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2, *((uint16_t *)(data2 + count) + 1));
+		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count,		*(uint16_t *)((float *)gRightGunPosDatabase + count));
+		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2,	*((uint16_t *)((float *)gRightGunPosDatabase + count) + 1));
 	}
-	for(; count < len3; count++)
+	for(; count < RIGHTGUNPOSDATABASE_FLOAT_NUM; count++)
 	{
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count, *(uint16_t *)(data3 + count));
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2, *((uint16_t *)(data3 + count) + 1));
+		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count,		*(uint16_t *)((float *)gUpperGunPosDatabase + count));
+		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2,	*((uint16_t *)((float *)gUpperGunPosDatabase + count) + 1));
 	}
 	FLASH_Lock();
 }
@@ -215,14 +213,20 @@ void Flash_ReadFloat(float *data, uint32_t len)
 
 /**
  * @brief  初始化FLASH
- *
+ * @note   如果定义了WRITE_DATABASE_IN_FLASH_AT_BEGINNING
+ *				则写入数据，FLASH中存储的原有数据全部将被擦除,并且被database.c中的数据代替
+ *			如果没有定义WRITE_DATABASE_IN_FLASH_AT_BEGINNING，
+ *				则database.c中的数据将无效，三个数组中的数据将会被FLASH中以前记录下来的数据代替
  * @param  None
  * @retval None
  */
 void Flash_Init(void)
 {
+#ifdef WRITE_DATABASE_IN_FLASH_AT_BEGINNING
+	FlashWriteGunPosData();
+#endif
 	/* 读取FLASH中保存的数据，并将其存到RAM里 */
-	Flash_ReadFloat((float *)gTestGunPosDatabase, LEFTGUNPOSDATABASE_FLOAT_NUM);
+	Flash_ReadFloat((float *)gLeftGunPosDatabase, LEFTGUNPOSDATABASE_FLOAT_NUM);
 	Flash_ReadFloat((float *)gRightGunPosDatabase, RIGHTGUNPOSDATABASE_FLOAT_NUM);
 	Flash_ReadFloat((float *)gUpperGunPosDatabase, UPPERGUNPOSDATABASE_FLOAT_NUM);
 

@@ -173,6 +173,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+          <Name>恞?</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>ARMRTXEVENTFLAGS</Key>
           <Name>-L70 -Z18 -C0 -M0 -T1</Name>
         </SetRegEntry>
@@ -206,34 +211,34 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>225</LineNumber>
+          <LineNumber>166</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134240768</Address>
+          <Address>134221020</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\Action\abu2017\涓绘帶1.0.0.161231_伪\Action_User\flash.c</Filename>
+          <Filename>D:\Action\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/flash.c\225</Expression>
+          <Expression>\\STM32F407_ACTION\../Action_User/task.c\166</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>226</LineNumber>
+          <LineNumber>164</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134240776</Address>
+          <Address>134221008</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\Action\abu2017\涓绘帶1.0.0.161231_伪\Action_User\flash.c</Filename>
+          <Filename>D:\Action\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/flash.c\226</Expression>
+          <Expression>\\STM32F407_ACTION\../Action_User/task.c\164</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -296,6 +301,21 @@
           <count>11</count>
           <WinNumber>1</WinNumber>
           <ItemText>gTestGunPosDatabase</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gLeftGunPosDatabase[3]</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gRightGunPosDatabase[3]</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gUpperGunPosDatabase[2]</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
