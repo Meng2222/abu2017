@@ -50,7 +50,7 @@ static void LeftGunInit(void)
 	//左枪姿态数据库
 	gRobot.leftGun.gunPoseDatabase = (gun_pose_t **)gLeftGunPosDatabase;
 	//左枪自动发射命令集合，里面为投射柱子的顺序
-	gRobot.leftGun.shootCommand = (shoot_command_t *)&gLeftGunShootCmds;
+	gRobot.leftGun.shootCommand = (shoot_command_t **)gLeftGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
 	//目标打盘区设置为无效区
@@ -111,7 +111,7 @@ static void RightGunInit(void)
 	//右枪姿态数据库
 	gRobot.rightGun.gunPoseDatabase = (gun_pose_t **)gRightGunPosDatabase;
 	//右枪自动发射命令集合，里面为投射柱子的顺序
-	gRobot.rightGun.shootCommand = (shoot_command_t *)&gRightGunShootCmds;
+	gRobot.rightGun.shootCommand = (shoot_command_t **)&gRightGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
 	//目标打盘区设置为无效区
@@ -169,7 +169,7 @@ static void UpperGunInit(void)
 	//上枪姿态数据库
 	gRobot.upperGun.gunPoseDatabase = (gun_pose_t **)gUpperGunPosDatabase;
 	//上面枪自动发射命令集合，里面为投射柱子的顺序
-	gRobot.upperGun.shootCommand = (shoot_command_t *)&gUpperGunShootCmds;
+//	gRobot.upperGun.shootCommand = (shoot_command_t *)&gUpperGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.upperGun.targetPlant = INVALID_PLANT_NUMBER;
 	//目标打盘区设置为无效区

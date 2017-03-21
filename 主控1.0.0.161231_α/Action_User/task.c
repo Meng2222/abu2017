@@ -15,6 +15,7 @@
 #include "movebase.h"
 #include "database.h"
 #include "wifi.h"
+#include "flash.h"
 
 /*
 ===============================================================
@@ -174,7 +175,8 @@ void ConfigTask(void)
 
 
 	ROBOT_Init();
-	
+
+
 
 	ClampClose();
 	LeftBack();
@@ -418,10 +420,11 @@ void LeftGunShootTask(void)
 					ROBOT_GunCheckBulletState(LEFT_GUN);
 
 					//fix me,此处应该检查着陆台编号是否合法
-					int landId =  gRobot.leftGun.targetPlant;
-					uint8_t shootMethod = gRobot.leftGun.shootParaMode;
+					uint8_t shootPoint = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootPoint;
+					uint8_t landId =  gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->plantNum;
+					uint8_t shootMethod = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootMethod;
 					//获取目标位姿
-					gun_pose_t pose = gLeftGunPosDatabase[shootMethod][landId];
+					gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 
 					//更新枪目标位姿
 					gRobot.leftGun.targetPose.pitch =	pose.pitch;
@@ -451,11 +454,11 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(LEFT_GUN);
-
-				int landId =  gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes][0];
-				unsigned char shootMethod = gRobot.leftGun.shootCommand->cmd[gRobot.leftGun.shootTimes][1];
+				uint8_t shootPoint = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootPoint;
+				uint8_t landId =  gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->plantNum;
+				uint8_t shootMethod = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootMethod;
 				//获取目标位姿
-				gun_pose_t pose = gLeftGunPosDatabase[shootMethod][landId];
+				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
 				gRobot.leftGun.targetPose.pitch = pose.pitch;
 				gRobot.leftGun.targetPose.roll = pose.roll;
@@ -549,11 +552,11 @@ void RightGunShootTask(void)
 					ROBOT_GunCheckBulletState(RIGHT_GUN);
 
 					//fix me,此处应该检查着陆台编号是否合法
-					int landId =  gRobot.rightGun.targetPlant;
-					unsigned char shootMethod = gRobot.rightGun.shootParaMode;
-
+					uint8_t shootPoint = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootPoint;
+					uint8_t landId = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->plantNum;
+					uint8_t shootMethod = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootMethod;
 					//获取目标位姿
-					gun_pose_t pose = gRightGunPosDatabase[shootMethod][landId];
+					gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 					//更新枪目标位姿
 					gRobot.rightGun.targetPose.pitch = pose.pitch;
 					gRobot.rightGun.targetPose.roll = pose.roll;
@@ -583,11 +586,12 @@ void RightGunShootTask(void)
 				ROBOT_RightGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
-
-				int landId =  gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes][0];
-				uint8_t shootMethod = gRobot.rightGun.shootCommand->cmd[gRobot.rightGun.shootTimes][1];
+//				shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes];
+				uint8_t shootPoint = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootPoint;
+				uint8_t landId = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->plantNum;
+				uint8_t shootMethod = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootMethod;
 				//获取目标位姿
-				gun_pose_t pose = gRightGunPosDatabase[shootMethod][landId];
+				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
 				gRobot.rightGun.targetPose.pitch = pose.pitch;
 				gRobot.rightGun.targetPose.roll = pose.roll;
