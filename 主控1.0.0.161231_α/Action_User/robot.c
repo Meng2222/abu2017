@@ -50,7 +50,7 @@ static void LeftGunInit(void)
 	//左枪姿态数据库
 	gRobot.leftGun.gunPoseDatabase = (gun_pose_t **)gLeftGunPosDatabase;
 	//左枪自动发射命令集合，里面为投射柱子的顺序
-	gRobot.leftGun.shootCommand = (shoot_command_t **)gLeftGunShootCmds;
+	gRobot.leftGun.shootCommand = (shoot_command_t *)gLeftGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
 	//目标打盘区设置为无效区
@@ -111,7 +111,7 @@ static void RightGunInit(void)
 	//右枪姿态数据库
 	gRobot.rightGun.gunPoseDatabase = (gun_pose_t **)gRightGunPosDatabase;
 	//右枪自动发射命令集合，里面为投射柱子的顺序
-	gRobot.rightGun.shootCommand = (shoot_command_t **)&gRightGunShootCmds;
+	gRobot.rightGun.shootCommand = (shoot_command_t *)gRightGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
 	//目标打盘区设置为无效区
@@ -639,7 +639,7 @@ status_t ROBOT_LeftGunCheckReload(void)
 	int timeOut = 3;
 	while(timeOut--)
 	{
-		if(PHOTOSENSORLEFTGUN)
+		if(!PHOTOSENSORLEFTGUN)
 		{
 			gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 			return GUN_NO_ERROR;
@@ -787,7 +787,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，1秒
-	int timeout = 100;
+	int timeout = 20;
 
 	while(timeout--)
 	{
@@ -902,7 +902,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		if (lastTargetZone != gRobot.upperGun.targetZone)
 		{
 			gRobot.upperGun.shoot = GUN_STOP_SHOOT;
-			break;
+			return GUN_NO_READY_ERROR;
 		}
 		
 		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
@@ -930,6 +930,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		gRobot.upperGun.shoot = GUN_START_SHOOT;
 		break;
 	}
+	gRobot.upperGun.shoot = GUN_START_SHOOT;
 	if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 	{
 		gRobot.upperGun.ready = GUN_AIM_DONE;

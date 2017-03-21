@@ -430,11 +430,6 @@
               <FilePath>..\Action_User\gasvalvecontrol.c</FilePath>
             </File>
             <File>
-              <FileName>wifi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\wifi.c</FilePath>
-            </File>
-            <File>
               <FileName>movebase.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Action_User\movebase.c</FilePath>

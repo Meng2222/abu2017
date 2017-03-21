@@ -728,14 +728,25 @@ void USART3_IRQHandler(void)
 {	 
 #define HEADER1 0x80
 #define HEADER2 0x80
+
+#define POS_HEADER1 0x88	
+#define POS_HEADER2 0x88		
 	
 #define HEADER_STATE1 0
 #define HEADER_STATE2 1
 #define DATA_STATE 2
+#define HEADER_STATE3 3
+#define POS_DATA_STATE1  4
+#define POS_DATA_STATE2 5
 
 	static uint8_t data = 0;
  	static int state = 0;
-
+	static union
+    {
+		uint8_t data[2];
+		uint16_t ActPos;
+    }posInfo;
+	
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -753,6 +764,10 @@ void USART3_IRQHandler(void)
 				{
 					state++;
 				}
+				else if(data == POS_HEADER1)
+				{
+					state += 3;
+				}
 				break;
 			case HEADER_STATE2:
 				if(data == HEADER2)
@@ -768,8 +783,27 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				receive_data=data;
 				gRobot.upperGun.targetZone = data;
+				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				state = 0;
 				break;
+			case HEADER_STATE3:
+				if(data == POS_HEADER2)
+				{
+					state++;
+				}
+			break;
+				//到场地中央后初始化摄像头，返回位置信息16位 0-512
+			case POS_DATA_STATE1:
+				//低8位
+				posInfo.data[0] = data;
+				state ++;
+			break;
+			case POS_DATA_STATE2:
+				//高8位
+				posInfo.data[1] = data;
+				gRobot.moveBase.relativePos = posInfo.ActPos;
+				state = 0;
+			break;
 			default:
 				break;
 		}	

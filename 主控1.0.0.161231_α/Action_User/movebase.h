@@ -46,7 +46,7 @@
 #define MAXSPEED 4000.0f
 
 //运动完成时停车速度    单位:mm/s
-#define ENDSPEED 200.0f
+#define ENDSPEED 500.0f
 
 
 
@@ -176,6 +176,8 @@ typedef struct
 	float targetYPos;
 	//机器人Y方向实际位置，出发前进右侧方向位Y正方向，单位毫米
 	float actualYPos;
+	//摄像头返回相对场地中央位置，靠近出发区为0 范围【0，512】，场地正中间为256，单位毫米
+	unsigned short relativePos;
 }movebase_t;
 /* Exported functions ------------------------------------------------------- */
 

@@ -188,9 +188,9 @@ void ConfigTask(void)
 	BEEP_OFF;
 
 
-//	OSTaskSuspend(Walk_TASK_PRIO);
+	OSTaskSuspend(Walk_TASK_PRIO);
 
-	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
@@ -226,21 +226,7 @@ Status_t status = getReady;
 
 void WalkTask(void)
 {
-	
-	//上弹计时变量
 	static uint16_t timeCounter = 0;
-	static uint16_t timeCounterL = 0;
-	static uint16_t timeCounterR = 0;
-	//上弹标志位
-	static uint16_t flagL = 1;
-	static uint16_t flagR = 0;
-	//射计时变量
-	static int shootCounterL = 0 , shootCounterU = 0 ;
-	int shootNum = 0;
-	int shootTimeGap = 0;
-	int speedi = 0;
-	static int testTimer = 0;
-
 	CPU_INT08U  os_err;
 	os_err = os_err;
 
@@ -341,7 +327,8 @@ void WalkTask(void)
 			case beginToGo2:
 				if (PHOTOSENSORUPGUN)
 				{
-					status++;
+//					status++;
+					status = goToLaunchingArea;
 				}
 				break;
 			case goTo3QuarterArea:
@@ -368,6 +355,7 @@ void WalkTask(void)
 			    if (GetPosX() <= -6459.14f)
 				{
 					LockWheel();
+					
 					moveTimFlag = 0;
 					status++;
 				}
@@ -377,8 +365,8 @@ void WalkTask(void)
 			case launch:
 				LockWheel();
 				CameraInit();
-//				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+//				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
 			
@@ -408,7 +396,7 @@ void LeftGunShootTask(void)
 			//一旦收到发射命令，则停止自动模式
 			if(gRobot.leftGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
-			if(stopAutoFlag || gRobot.leftGun.shootTimes >= MAX_AUTO_BULLET_NUMBER)
+			if(stopAutoFlag || gRobot.leftGun.shootTimes >= LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER + LEFT_GUN_POINT3_AUTO_BULLET_NUMBER)
 			{
 				//自动射击已完成
 				if(gRobot.leftGun.shoot == GUN_START_SHOOT)
@@ -420,9 +408,10 @@ void LeftGunShootTask(void)
 					ROBOT_GunCheckBulletState(LEFT_GUN);
 
 					//fix me,此处应该检查着陆台编号是否合法
-					uint8_t shootPoint = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootPoint;
-					uint8_t landId =  gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->plantNum;
-					uint8_t shootMethod = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootMethod;
+					shoot_command_t shootCommand = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes];
+					uint8_t shootPoint = shootCommand.shootPoint;
+					uint8_t landId = shootCommand.plantNum;
+					uint8_t shootMethod = shootCommand.shootMethod;
 					//获取目标位姿
 					gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 
@@ -452,11 +441,12 @@ void LeftGunShootTask(void)
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 				//子弹上膛,第一次上膛默认位置OK
 				ROBOT_LeftGunReload();
+				ROBOT_LeftGunCheckReload();
 				//检查并更新子弹状态
-				ROBOT_GunCheckBulletState(LEFT_GUN);
-				uint8_t shootPoint = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootPoint;
-				uint8_t landId =  gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->plantNum;
-				uint8_t shootMethod = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes]->shootMethod;
+				shoot_command_t shootCommand = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes];
+				uint8_t shootPoint = shootCommand.shootPoint;
+				uint8_t landId = shootCommand.plantNum;
+				uint8_t shootMethod = shootCommand.shootMethod;
 				//获取目标位姿
 				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
@@ -471,18 +461,17 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunShoot();
-				if(gRobot.leftGun.shootTimes==2)
+				if(gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER)
 				{
 					OSTaskResume(Walk_TASK_PRIO);
 					OSTaskSuspend(OS_PRIO_SELF);
 				}
-				if(gRobot.leftGun.shootTimes==4)
+				if(gRobot.leftGun.shootTimes >= LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT3_AUTO_BULLET_NUMBER)
 				{
-					OSTaskResume(Walk_TASK_PRIO);
-					OSTaskSuspend(OS_PRIO_SELF);
+					gRobot.leftGun.mode = GUN_MANUAL_MODE;
+//					OSTaskResume(Walk_TASK_PRIO);
+//					OSTaskSuspend(OS_PRIO_SELF);
 				}
-				//此函数有延迟
-//				ROBOT_LeftGunHome();
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -491,8 +480,6 @@ void LeftGunShootTask(void)
 		{
 			if(gRobot.leftGun.aim == GUN_START_AIM)
 			{
-				//检查并更新子弹状态，训练时需要记录
-				ROBOT_GunCheckBulletState(LEFT_GUN);
 				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
@@ -552,9 +539,10 @@ void RightGunShootTask(void)
 					ROBOT_GunCheckBulletState(RIGHT_GUN);
 
 					//fix me,此处应该检查着陆台编号是否合法
-					uint8_t shootPoint = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootPoint;
-					uint8_t landId = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->plantNum;
-					uint8_t shootMethod = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootMethod;
+					shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes];
+					uint8_t shootPoint = shootCommand.shootPoint;
+					uint8_t landId = shootCommand.plantNum;
+					uint8_t shootMethod = shootCommand.shootMethod;
 					//获取目标位姿
 					gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 					//更新枪目标位姿
@@ -586,10 +574,10 @@ void RightGunShootTask(void)
 				ROBOT_RightGunReload();
 				//检查并更新子弹状态
 				ROBOT_GunCheckBulletState(RIGHT_GUN);
-//				shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes];
-				uint8_t shootPoint = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootPoint;
-				uint8_t landId = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->plantNum;
-				uint8_t shootMethod = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes]->shootMethod;
+				shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes];
+				uint8_t shootPoint = shootCommand.shootPoint;
+				uint8_t landId = shootCommand.plantNum;
+				uint8_t shootMethod = shootCommand.shootMethod;
 				//获取目标位姿
 				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
@@ -652,7 +640,7 @@ void UpperGunShootTask(void)
 	os_err = os_err;
 
 	//fix me, if camera send data, this flag = 1
-	uint8_t upperGunShootFlag = 1;
+	uint8_t upperGunShootFlag = 0;
 	while(1)
 	{
 		//检查手动or自动
@@ -693,6 +681,7 @@ void UpperGunShootTask(void)
 					ROBOT_UpperGunShoot();
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
+					upperGunShootFlag = 0;
 					OSTimeDly(50);
 				}
 			}

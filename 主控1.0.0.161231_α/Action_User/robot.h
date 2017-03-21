@@ -90,6 +90,20 @@
 //枪最大自动发射子弹发数
 #define MAX_AUTO_BULLET_NUMBER 12
 
+//左枪1点（靠近装载区）自动发射子弹数目
+#define LEFT_GUN_POINT1_AUTO_BULLET_NUMBER  8
+//左枪2点（靠近出发区）自动发射子弹数目
+#define LEFT_GUN_POINT2_AUTO_BULLET_NUMBER  0
+//左枪3点（中点）自动发射子弹数目
+#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  18
+//右枪1点（靠近装载区）自动发射子弹数目
+#define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4
+//右枪2点（靠近装载区）自动发射子弹数目
+#define RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER  4
+//右枪3点（中点）自动发射子弹数目
+#define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  4
+
+
 //瞄准未完成
 #define GUN_AIM_IN_PROCESS 1
 //瞄准完成
@@ -216,7 +230,7 @@ typedef struct
 	//gunPosDatabase指向枪的姿态数据库，数据库存储在database.c中，初始化时需要指定
 	gun_pose_t **gunPoseDatabase;
 	//命令集
-	shoot_command_t **shootCommand;
+	shoot_command_t *shootCommand;
 	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
 	//防守台分区，用于上枪打盘
@@ -313,6 +327,24 @@ status_t ROBOT_LeftGunReload(void);
 *注意：上面的枪不需要上子弹
 */
 status_t ROBOT_RightGunReload(void);
+
+/**
+*名称：ROBOT_LeftGunCheckReload
+*功能：检查左枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_LeftGunCheckReload(void);
+
+/**
+*名称：ROBOT_LeftGunCheckReload
+*功能：检查右枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_RightGunCheckReload(void);
 /*
 *名称：ROBOT_GunReload
 *功能：根据枪膛传感器，检测子弹状态，决定后面开枪的具体参数
