@@ -24,9 +24,7 @@
 /* Private  define ------------------------------------------------------------*/
 #define FLASH_USER_ADDRESS 0x08040000   //FLASH起始地址 STM32F407VET6第6扇区的起始地址
 //#define WRITE_DATABASE_IN_FLASH_AT_BEGINNING 1
-//fix me 以下两个宏定义只是为了测试
-//#define TempTable_max	200
-//#define TempTable_min	100
+
 /* Private  macro -------------------------------------------------------------*/
 /* Private  variables ---------------------------------------------------------*/
 //static uint8_t  flashdata[160*(TempTable_max-TempTable_min)];  //从flash中取出的数据
