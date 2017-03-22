@@ -261,6 +261,212 @@ void CAN1_RX0_IRQHandler(void)
 	OSIntExit();
 }
 
+/**
+  * @brief  CAN2 receive FIFO0 interrupt request handler
+  * @note   
+  * @param  None
+  * @retval None
+  */
+void CAN2_RX0_IRQHandler(void)
+{
+	OS_CPU_SR  cpu_sr;
+	uint8_t buffer[8];
+	uint32_t StdId=0;
+	uint8_t canNodeId = 0;
+	int32_t i = 0;
+
+	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
+	CAN_RxMsg(CAN2, &StdId, buffer, 8);
+	canNodeId = StdId - SDO_RESPONSE_COB_ID_BASE;
+	
+	if(canNodeId==LEFT_WHEEL_ID || canNodeId==FORWARD_WHEEL_ID || canNodeId==BACKWARD_WHEEL_ID)     //get speed value
+	{
+		//fix me, if length not 8
+		for(i = 0; i < 8; i++)
+			msg.data8[i] = buffer[i];
+
+		if(msg.data32[0] == 0x00005856)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				//下面代码除以100为了将m/s转换为0.1m/s，fix me
+				gRobot.moveBase.actualSpeed.leftWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.actualSpeed.forwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.actualSpeed.backwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+			}
+		}
+		
+		if(msg.data32[0] == 0x80005149)
+		{
+			//msg.dataf[1]是单位为安培的浮点数
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.acturalCurrent.leftWheelCurrent = (msg.dataf[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.acturalCurrent.forwardWheelCurrent = (msg.dataf[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.acturalCurrent.backwardWheelCurrent = (msg.dataf[1]);
+			}
+		}
+		if(msg.data32[0] == 0x00014954)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考almo手册
+				gRobot.moveBase.driverTemperature.leftWheelDriverTemperature = (msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature = (msg.data32[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature = (msg.data32[1]);
+			}
+
+		}
+		if(msg.data32[0] == 0x0000434C)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag = (msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag = (msg.data32[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag = (msg.data32[1]);
+			}
+		}
+		if(msg.data32[0] == 0x00025644)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+		}
+		if(msg.data32[0] == 0x0000564A)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+		}
+
+	}
+	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
+	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
+		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
+		canNodeId == RIGHT_GUN_ROLL_ID || canNodeId == RIGHT_GUN_YAW_ID || canNodeId == RIGHT_GUN_LEFT_ID|| \
+		canNodeId ==RIGHT_GUN_RIGHT_ID)
+	{
+		for(i = 0; i < 8; i++)
+		{
+			msg.data8[i] = buffer[i];
+		}
+
+		if(msg.data32[0] == 0x40005856)
+		{
+			if(canNodeId == LEFT_GUN_LEFT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed1 = LeftGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == LEFT_GUN_RIGHT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_LEFT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed1 = RightGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_RIGHT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed2 = RightGunRightSpeedInverseTransform(msg.data32[1]);
+			}		
+		}
+		if(msg.data32[0] == 0x00005850)
+		{
+			if(canNodeId == LEFT_GUN_PITCH_ID) 
+			{
+				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == LEFT_GUN_ROLL_ID) 
+			{
+				gRobot.leftGun.actualPose.roll = LeftGunRollInverseTransform(msg.data32[1]);    //横滚
+			}
+			if(canNodeId == LEFT_GUN_YAW_ID) 
+			{
+				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+			if(canNodeId == RIGHT_GUN_PITCH_ID) 
+			{
+				gRobot.rightGun.actualPose.pitch = RightGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == RIGHT_GUN_ROLL_ID) 
+			{
+				gRobot.rightGun.actualPose.roll = RightGunRollInverseTransform(msg.data32[1]);    //横滚
+			}
+			if(canNodeId == RIGHT_GUN_YAW_ID) 
+			{
+				gRobot.rightGun.actualPose.yaw = RightGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+			if(canNodeId == UPPER_GUN_PITCH_ID) 
+			{
+				gRobot.upperGun.actualPose.pitch = UpperGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == UPPER_GUN_YAW_ID) 
+			{
+				gRobot.upperGun.actualPose.yaw = UpperGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+		}
+	}
+	
+	CAN_ClearFlag(CAN2, CAN_FLAG_EWG);
+	CAN_ClearFlag(CAN2, CAN_FLAG_EPV);
+	CAN_ClearFlag(CAN2, CAN_FLAG_BOF);
+	CAN_ClearFlag(CAN2, CAN_FLAG_LEC);
+	
+	CAN_ClearFlag(CAN2, CAN_FLAG_FMP0);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FF0);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FOV0);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FMP1);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FF1);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FOV1);
+	OSIntExit();
+}
+
+
 /*************定时器2******start************/
 //每1ms调用一次
 

@@ -238,13 +238,13 @@ void WalkTask(void)
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
 
 		
-		ReadActualVel(MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
-//		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
-//		ReadCurrentLimitFlag(MOVEBASE_BROADCAST_ID);
-//		ReadVelocityError(MOVEBASE_BROADCAST_ID);
-		ReadCommandVelocity(MOVEBASE_BROADCAST_ID);
-		ReadJoggingVelocity(MOVEBASE_BROADCAST_ID);
+		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
 		
 		sendDebugInfo();
 		switch (status)

@@ -16,6 +16,7 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "movebase2.h"
+#include "database.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -30,12 +31,34 @@
 
 /* Private define ------------------------------------------------------------*/
 
-/** @defgroup 
+/** @defgroup Record_Walk_Track
   * @brief 
   * @{
   */
 
+/**
+  * @brief  
+  * @note 
+  * @param  
+  *     @arg 
+  * @param 
+  * @retval 
+  */
+void RecordWalkingTrack(void)
+{
+	static uint16_t pointCnt = 0;
+	extern robot_t gRobot;
+	if(pointCnt < WALKTRACKDATABASE_POINT_CAPACITY)
+	{
+		if(gRobot.moveBase.actualXPos - gWalkTrackDatabase[pointCnt].x)
+		{
+			gWalkTrackDatabase[pointCnt].x = gRobot.moveBase.actualXPos;
+			gWalkTrackDatabase[pointCnt].y = gRobot.moveBase.actualYPos;
+			gWalkTrackDatabase[pointCnt].angle = gRobot.moveBase.actualAngle;
+		}
+	}
 
+}
 
 
 /**

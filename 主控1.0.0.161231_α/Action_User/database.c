@@ -359,7 +359,7 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER+RIGHT_GUN
   * @{
   */
 
-posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_NUMBER]={0};
+posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY]={0};
 
 /**
   * @}

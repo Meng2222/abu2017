@@ -76,14 +76,14 @@ void MOVEBASE_Init(void)
 {
 	
     //电机初始化及使能
-	elmo_Init();
+	elmo_Init(CAN2);
 	
 //	elmo_Enable(1);
 //	elmo_Enable(2);
 //	elmo_Enable(3);
-	Vel_cfg(1, 100000, 100000);
-	Vel_cfg(2, 100000, 100000);
-	Vel_cfg(3, 100000, 100000);
+	Vel_cfg(CAN2, 1, 100000, 100000);
+	Vel_cfg(CAN2, 2, 100000, 100000);
+	Vel_cfg(CAN2, 3, 100000, 100000);
 
 	return;
 }
@@ -137,9 +137,9 @@ motorAcc_t CalcMotorAcc(float carAcc, float angle)
   */
 void SetMotorAcc(motorAcc_t motorAcc)
 {
-	Vel_cfg(1,motorAcc.wheel1,motorAcc.wheel1);
-    Vel_cfg(2,motorAcc.wheel2,motorAcc.wheel2);
-	Vel_cfg(3,motorAcc.wheel3,motorAcc.wheel3);
+	Vel_cfg(CAN2, 1,motorAcc.wheel1,motorAcc.wheel1);
+    Vel_cfg(CAN2, 2,motorAcc.wheel2,motorAcc.wheel2);
+	Vel_cfg(CAN2, 3,motorAcc.wheel3,motorAcc.wheel3);
 }
 
 /**
@@ -156,9 +156,9 @@ void ThreeWheelVelControl(wheelSpeed_t speed)
 	gRobot.moveBase.targetSpeed.backwardWheelSpeed = Pulse2Vel(-speed.backwardWheelSpeed)/100.0f;
 	gRobot.moveBase.targetSpeed.forwardWheelSpeed = Pulse2Vel(-speed.forwardWheelSpeed)/100.0f;
 	
-	VelCrl(1, -speed.backwardWheelSpeed);
-	VelCrl(2, -speed.forwardWheelSpeed);
-	VelCrl(3, -speed.leftWheelSpeed);
+	VelCrl(CAN2, 1, -speed.backwardWheelSpeed);
+	VelCrl(CAN2, 2, -speed.forwardWheelSpeed);
+	VelCrl(CAN2, 3, -speed.leftWheelSpeed);
 }
 
 
@@ -393,9 +393,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
   */
 void LockWheel(void)
 {
-	VelCrl(1, 0);
-	VelCrl(2, 0);
-	VelCrl(3, 0);
+	VelCrl(CAN2, 1, 0);
+	VelCrl(CAN2, 2, 0);
+	VelCrl(CAN2, 3, 0);
 }
 
 //x方向定速移动

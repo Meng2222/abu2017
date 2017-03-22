@@ -27,13 +27,6 @@
 
 /* Private  macro -------------------------------------------------------------*/
 /* Private  variables ---------------------------------------------------------*/
-//static uint8_t  flashdata[160*(TempTable_max-TempTable_min)];  //从flash中取出的数据
-static float	*Result;
-static uint32_t *countnum;
-static uint8_t  flag=0;
-
-
-//static gun_pose_t gGunPosDatabaseFromFlash[GUN_NUMBER][CHAMPER_BULLET_MAX_FEATURE_STATE][SHOOT_METHOD_NUMBER][LAND_NUMBER] = {0};
 /* Extern   variables ---------------------------------------------------------*/
 /* Extern   function prototypes -----------------------------------------------*/
 /* Private  function prototypes -----------------------------------------------*/

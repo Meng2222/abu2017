@@ -55,7 +55,7 @@
   * @{
   */
 
-#define WALKTRACKDATABASE_POINT_NUMBER     500
+#define WALKTRACKDATABASE_POINT_CAPACITY     500
 
 
 /**
@@ -102,7 +102,7 @@ extern shoot_command_t gRightGunShootCmds[RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER+RI
   * @{
   */
 
-extern posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_NUMBER];
+extern posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY];
 
 /**
   * @}

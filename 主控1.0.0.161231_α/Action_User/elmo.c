@@ -2,14 +2,14 @@
 #include "can.h"
 
  /**************初始化驱动器********************/
-void elmo_Init()
+void elmo_Init(CAN_TypeDef* CANx)
 {
 	uint32_t data[1][2]={0x00000001,00000000};
-	CAN_TxMsg(CAN1,0x000,(uint8_t*)&data[0],8);
+	CAN_TxMsg(CANx,0x000,(uint8_t*)&data[0],8);
 }
 
 /****************使能电机***************************/
-void elmo_Enable(uint8_t ElmoNum)
+void elmo_Enable(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x00004F4D,0x00000001,      //MO  1
@@ -31,11 +31,11 @@ void elmo_Enable(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 }
 /**************失能电机***************************/
-void elmo_Disable(uint8_t ElmoNum)
+void elmo_Disable(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	uint8_t i=0;
 	uint32_t data[1][2]={
@@ -60,13 +60,13 @@ void elmo_Disable(uint8_t ElmoNum)
 		TxMessage.Data[5] = (*(unsigned long*)&data[i][1]>>8)&0xff;
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
-		mbox= CAN_Transmit(CAN1, &TxMessage);
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+		mbox= CAN_Transmit(CANx, &TxMessage);
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 	}
 
 }
 /***************速度环配置*************************/
-void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
+void Vel_cfg(CAN_TypeDef* CANx, uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 {
 	 uint8_t i=0;
 	 int32_t data[7][2]={
@@ -104,13 +104,13 @@ void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 			TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 			TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
-			mbox= CAN_Transmit(CAN1, &TxMessage);
-			while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+			mbox= CAN_Transmit(CANx, &TxMessage);
+			while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 	}
 }
 
 /************速度控制***************/
-void VelCrl(uint8_t ElmoNum,int vel)
+void VelCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,int vel)
 {
 	 uint8_t i=0;
 	 uint32_t data[2][2]={
@@ -137,13 +137,13 @@ void VelCrl(uint8_t ElmoNum,int vel)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
-		mbox= CAN_Transmit(CAN1, &TxMessage);
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+		mbox= CAN_Transmit(CANx, &TxMessage);
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 	}
 }
 
 /***************位置环配置*************************/
-void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
+void Pos_cfg(CAN_TypeDef* CANx, uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 {
 	uint8_t i=0;
 	int32_t data[16][2]={
@@ -198,15 +198,15 @@ void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
-		mbox= CAN_Transmit(CAN1, &TxMessage);
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+		mbox= CAN_Transmit(CANx, &TxMessage);
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 	}
 }
 
 /*****************位置控制*********************/
 /*******************1代表相对模式****************************/
 /*******************0代表绝对模式****************************/
-void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
+void PosCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,uint8_t rel_abs,int pos)
 {
 	uint8_t i=0;
 	uint32_t data[2][2]={
@@ -241,13 +241,13 @@ void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
-		mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-		while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//等待238us
+		mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//等待238us
 	}
 
 }
 /* 读取电机电压 */
-void ReadActualVoltage(uint8_t ElmoNum)
+void ReadActualVoltage(CAN_TypeDef* CANx, uint8_t ElmoNum)
  {
 	 uint32_t data[1][2]={
 							0x40005155,0x00000000,      //UQ
@@ -269,12 +269,12 @@ void ReadActualVoltage(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
  }
 
 /* 读取电机电流 */
-void ReadActualCurrent(uint8_t ElmoNum)
+void ReadActualCurrent(CAN_TypeDef* CANx, uint8_t ElmoNum)
  {
 	 uint32_t data[1][2]={
 							0x40005149,0x00000000,      //IQ
@@ -296,12 +296,12 @@ void ReadActualCurrent(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
  }
 
 /* 读取电机位置 */
-void ReadActualPos(uint8_t ElmoNum)
+void ReadActualPos(CAN_TypeDef* CANx, uint8_t ElmoNum)
  {
 	 uint32_t data[1][2]={
 							0x40005850,0x00000000,      //PX
@@ -323,12 +323,12 @@ void ReadActualPos(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
  }
 
 /* 读取电机速度 */
-void ReadActualVel(uint8_t ElmoNum)
+void ReadActualVel(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x40005856,0x00000000,      //VX
@@ -350,11 +350,11 @@ void ReadActualVel(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 }
 
-void ReadActualTemperature(uint8_t ElmoNum)
+void ReadActualTemperature(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x40014954,0x00000000,      //TI[1]
@@ -376,10 +376,10 @@ void ReadActualTemperature(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 }
-void ReadCurrentLimitFlag(uint8_t ElmoNum)
+void ReadCurrentLimitFlag(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x4000434C,0x00000000,      //LC
@@ -403,11 +403,11 @@ void ReadCurrentLimitFlag(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
-void ReadVelocityError(uint8_t ElmoNum)
+void ReadVelocityError(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x40004556,0x00000000,      //LC
@@ -431,11 +431,11 @@ void ReadVelocityError(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
-void ReadCommandVelocity(uint8_t ElmoNum)
+void ReadCommandVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x40025644,0x00000000,      //DV[2]
@@ -459,11 +459,11 @@ void ReadCommandVelocity(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
-void ReadJoggingVelocity(uint8_t ElmoNum)
+void ReadJoggingVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x4000564A,0x00000000,      //JV
@@ -487,11 +487,11 @@ void ReadJoggingVelocity(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
-void ReadUnitMode(uint8_t ElmoNum)
+void ReadUnitMode(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x40004D55,0x00000000,      //UM
@@ -515,11 +515,11 @@ void ReadUnitMode(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
-void ReadReferenceMode(uint8_t ElmoNum)
+void ReadReferenceMode(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
 	 uint32_t data[1][2]={
 							0x40004D52,0x00000000,      //RM
@@ -543,8 +543,8 @@ void ReadReferenceMode(uint8_t ElmoNum)
 	TxMessage.Data[6] = (*(unsigned long*)&data[0][1]>>16)&0xff;
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
 }
 
 /**
@@ -554,7 +554,7 @@ void ReadReferenceMode(uint8_t ElmoNum)
   * @retval None
   * @author Tmax Sco
 **/
-void velCrl(uint8_t DriverNum,int velData)
+void velCrl(CAN_TypeDef* CANx, uint8_t DriverNum,int velData)
 {
 	CanTxMsg TxMessage;
 	uint8_t mbox;
@@ -576,7 +576,7 @@ void velCrl(uint8_t DriverNum,int velData)
 	TxMessage.Data[2] = vel.Data8[2];
 	TxMessage.Data[3] = vel.Data8[3];
 
-	mbox= CAN_Transmit(CAN1, &TxMessage);
-	while((CAN_TransmitStatus(CAN1, mbox)!= CAN_TxStatus_Ok));
+	mbox= CAN_Transmit(CANx, &TxMessage);
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
 }
 

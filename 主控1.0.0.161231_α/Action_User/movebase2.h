@@ -16,7 +16,7 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MOVEBASE2_H
-#define __MOBEBASE2_H
+#define __MOVEBASE2_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -62,7 +62,7 @@
 }
 #endif
 
-#endif /* ___H */
+#endif /* __MOVEBASE2_H */
 
 
 
