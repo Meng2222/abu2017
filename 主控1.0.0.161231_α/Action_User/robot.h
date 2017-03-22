@@ -95,7 +95,7 @@
 //左枪2点（靠近出发区）自动发射子弹数目
 #define LEFT_GUN_POINT2_AUTO_BULLET_NUMBER  0
 //左枪3点（中点）自动发射子弹数目
-#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  18
+#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  24//18
 //右枪1点（靠近装载区）自动发射子弹数目
 #define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4
 //右枪2点（靠近装载区）自动发射子弹数目
@@ -308,6 +308,14 @@ status_t ROBOT_GunLoad(void);
 *注意：上面的枪不需要
 */
 status_t ROBOT_GunOpenSafety(void);
+/*
+*名称：ROBOT_CheckGunOpenSafety
+*功能：检查拉开枪保险
+*参数：
+*status:GUN_NO_ERROR，GUN_OPEN_SAFETY_ERROR
+*注意：上面的枪不需要
+*/
+status_t ROBOT_CheckGunOpenSafety(void);
 
 /**
 *名称：ROBOT_LeftGunReload

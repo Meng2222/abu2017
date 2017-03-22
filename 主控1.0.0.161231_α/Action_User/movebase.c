@@ -81,9 +81,9 @@ void MOVEBASE_Init(void)
 //	elmo_Enable(1);
 //	elmo_Enable(2);
 //	elmo_Enable(3);
-	Vel_cfg(1, 100000, 100000);
-	Vel_cfg(2, 100000, 100000);
-	Vel_cfg(3, 100000, 100000);
+	Vel_cfg(1, 3000000, 3000000);
+	Vel_cfg(2, 3000000, 3000000);
+	Vel_cfg(3, 3000000, 3000000);
 
 	return;
 }
@@ -305,7 +305,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	velY = fabs(0.30f * velX) /*+ 100.0f*/;
+	velY = fabs(0.10f * velX) /*+ 100.0f*/;
 	if(velY <= 50)
 	{
 		velY = 50;

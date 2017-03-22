@@ -548,18 +548,18 @@ void UART4_IRQHandler(void)
 							case 0:
 								gRobot.leftGun.targetPose.speed2 = data.data32;
 								gRobot.leftGun.aim = GUN_START_AIM;
-								OSTaskSuspend(Walk_TASK_PRIO);
+//								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 1:
 								gRobot.rightGun.targetPose.speed2 = data.data32;
 								gRobot.rightGun.aim = GUN_START_AIM;
-								OSTaskSuspend(Walk_TASK_PRIO);
+//								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);							
 							break;
 							case 2:
 								gRobot.upperGun.aim = GUN_START_AIM;
-								OSTaskSuspend(Walk_TASK_PRIO);
+//								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 							break;
 							default:
@@ -588,19 +588,19 @@ void UART4_IRQHandler(void)
 					case 1:
 						//通知左枪开枪任务执行开枪动作
 						gRobot.leftGun.shoot = GUN_START_SHOOT;
-						OSTaskSuspend(Walk_TASK_PRIO);
+//						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);						
 						break;
 					case 2:
 						//通知右枪开枪任务执行开枪动作
 						gRobot.rightGun.shoot = GUN_START_SHOOT;
-						OSTaskSuspend(Walk_TASK_PRIO);
+//						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 						break;
 					case 3:
 						//通知上面枪开枪任务执行开枪动作
 						gRobot.upperGun.shoot = GUN_START_SHOOT;
-						OSTaskSuspend(Walk_TASK_PRIO);
+//						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 						break;
 					case 4:

@@ -23,6 +23,7 @@
 ===============================================================
 */
 OS_EVENT *PeriodSem;
+OS_EVENT *OpenSaftySem;
 //定义机器人全局变量
 extern robot_t gRobot;
 
@@ -68,13 +69,13 @@ void sendDebugInfo(void)
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.forwardDriverUnitMode);
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.backwardDriverUnitMode);
 //	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
 //	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
 	
 	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
@@ -110,6 +111,7 @@ void App_Task()
 
 	/*创建信号量*/
     PeriodSem				=	OSSemCreate(0);
+	OpenSaftySem            =   OSSemCreate(0);
 
     /*创建任务*/
 	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*初始化任务*/
@@ -188,9 +190,9 @@ void ConfigTask(void)
 	BEEP_OFF;
 
 
-	OSTaskSuspend(Walk_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
-//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
@@ -238,8 +240,8 @@ void WalkTask(void)
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
 
 		
-		ReadActualVel(MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
+//		ReadActualVel(MOVEBASE_BROADCAST_ID);
+//		ReadActualCurrent(MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(MOVEBASE_BROADCAST_ID);
 //		ReadCurrentLimitFlag(MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(MOVEBASE_BROADCAST_ID);
@@ -296,9 +298,9 @@ void WalkTask(void)
 					timeCounter = 0;
 					OSTimeDly(100);
 					ClampReset();
-					if (KEYSWITCH)
+					if(KEYSWITCH)
 					{
-						status = beginToGo2;
+						status ++;
 					}
 				}
 				break;
@@ -316,9 +318,11 @@ void WalkTask(void)
 			    if (GetPosX() >= -9459.14f)
 				{
 					LockWheel();
+					LockWheel();
+					LockWheel();
+					LockWheel();
 					moveTimFlag = 0;
-					status++;
-					
+					status++;					
 					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 					OSTaskSuspend(OS_PRIO_SELF);
 				}
@@ -327,8 +331,9 @@ void WalkTask(void)
 			case beginToGo2:
 				if (PHOTOSENSORUPGUN)
 				{
+					OSSemSet(PeriodSem, 0, &os_err);
 //					status++;
-					status = goToLaunchingArea;
+					status+=3;
 				}
 				break;
 			case goTo3QuarterArea:
@@ -352,10 +357,12 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
                 MoveTo(-6459.14f, 1500.0f, 1200.0f);
-			    if (GetPosX() <= -6459.14f)
+			    if (GetPosX() >= -6459.14f)
 				{
 					LockWheel();
-					
+					LockWheel();
+					LockWheel();
+					LockWheel();
 					moveTimFlag = 0;
 					status++;
 				}
@@ -497,7 +504,7 @@ void LeftGunShootTask(void)
 			}
 			else
 			{
-				OSTaskResume(Walk_TASK_PRIO);
+//				OSTaskResume(Walk_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
