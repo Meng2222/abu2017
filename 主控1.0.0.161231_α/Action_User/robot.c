@@ -7,7 +7,7 @@
 #include "gpio.h"
 
 robot_t gRobot = {0};
-
+extern OS_EVENT *OpenSaftySem;
 /*
 ============================================================
 						  枪初始化 
@@ -597,6 +597,22 @@ status_t ROBOT_GunOpenSafety(void)
 	return GUN_NO_ERROR;
 }
 
+/*
+*名称：ROBOT_CheckGunOpenSafety
+*功能：检查拉开枪保险
+*参数：
+*status:GUN_NO_ERROR，GUN_OPEN_SAFETY_ERROR
+*注意：上面的枪不需要
+*/
+status_t ROBOT_CheckGunOpenSafety(void)
+{
+	if(KEYSWITCH)
+	{
+		OSSemPost(OpenSaftySem);
+	}
+	return GUN_NO_ERROR;
+}
+
 /**
 *名称：ROBOT_LeftGunReload
 *功能：左枪上弹，每次射击前需要上弹一次
@@ -610,6 +626,7 @@ status_t ROBOT_LeftGunReload(void)
 	LeftPush();
 	OSTimeDly(100);
 	LeftBack();
+	OSTimeDly(50);
 	return GUN_NO_ERROR;
 }
 /**
@@ -648,7 +665,6 @@ status_t ROBOT_LeftGunCheckReload(void)
 		{
 			ROBOT_LeftGunHome();
 		}
-		
 	}
 	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	return GUN_RELOAD_ERROR;
@@ -787,7 +803,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，1秒
-	int timeout = 20;
+	int timeout = 40;
 
 	while(timeout--)
 	{
@@ -1008,7 +1024,7 @@ status_t ROBOT_LeftGunHome(void)
 	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 	
-	OSTimeDly(300);
+	OSTimeDly(200);
 	
 	return GUN_NO_ERROR;
 }

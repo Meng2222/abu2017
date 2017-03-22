@@ -33,9 +33,9 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 	{
 		//第一类参数，对应打球参数
 		{//1#着陆台
-		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
+		 {-11.0f, 11.0f, 18.6f, 93.0f, 12.0f},
 		 //2#着陆台
-		 {4.0f, 17.5f, 26.4f, 93.0f, 20.0f},
+		 {4.5f, 16.0f, 24.4f, 99.0f, 15.0f},
 		 //3#着陆台
 		 {-14.0f, 25.0f, 21.1f, 92.0f, 12.0f},
 		 //4#着陆台
@@ -49,9 +49,9 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 
 		//第二类参数，对应落盘参数
 		{//1#着陆台
-		 {-20.5f, 27.0f, 26.6f, 89.0f, 10.0f},
+		 {-13.0f, 25.0f, 22.1f, 90.0f, 12.0f},
 		 //2#着陆台
-		 {1.5f, 29.2f, 23.4f, 94.0f, 18.0f},
+		 {2.5f, 30.2f, 23.4f, 99.0f, 15.0f},
 		 //3#着陆台
 		 {-14.0f, 25.0f, 21.1f, 92.0f, 12.0f},
 		 //4#着陆台
@@ -113,27 +113,29 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //5#着陆台
 		 {31.1f,11.0f, 20.4f,114.0f,5.0f},
 		 //6#着陆台
-		 {-9.8f,14.9f, 22.3f,122.0f,13.0f},
+		// {-9.8f,14.9f, 22.3f,122.0f,13.0f},
+		  {-9.3f,14.4f, 21.8f,127.0f,13.0f},
 		 //7#着陆台
-		 {0.0f,40.0f, 20.4f,56.0f,12.0f}},
+		 {0.0f,27.4f, 20.4f,77.0f,12.0f}},
 	
 
 		//第二类参数，对应落盘参数
 		{//1#着陆台
-		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
+		// {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
+		  {-38.9f, 20.5f, 19.6f, 101.0f, 19.0f},
 		 //2#着陆台
 		 {5.0f, 15.5f, 26.4f, 93.0f, 20.0f},
 		 //3#着陆台
 		 {-8.0f, 32.0f, 19.8f, 104.0f, 12.0f},
 		 //4#着陆台
-		 {19.7f, 26.2f, 19.6f, 95.0f,23.0f},
+		 {16.7f, 26.2f, 21.1f, 98.0f,16.0f},
 		 //5#着陆台
-		 {30.2f,24.0f, 20.4f,110.0f,10.0f},
+		 {30.7f,23.0f, 20.9f,109.0f,10.0f},
 		 //6#着陆台
-		 {-12.4f,24.4f, 25.7f,116.0f,19.0f},
+		 //{-12.4f,24.4f, 25.7f,116.0f,19.0f},
+		 {-9.8f,24.9f,19.3f,135.0f,13.0f},
 		 //7#着陆台
-		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-
+		 {0.0f,40.0f, 20.4f,56.0f,12.0f}}
 	}
 };
 
@@ -303,12 +305,23 @@ shoot_command_t gLeftGunShootCmds[LEFT_GUN_POINT1_AUTO_BULLET_NUMBER+LEFT_GUN_PO
 	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1},
 	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD2},
 	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD2},
+	
+	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD2},
+
+	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1},
+	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD2},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1},	
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2},
+	//****************************************
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2},
-	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1},
-	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1}
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2},
+	//****************************************
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2}
+
 
 
 };
