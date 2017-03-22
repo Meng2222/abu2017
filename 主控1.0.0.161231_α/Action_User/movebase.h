@@ -135,6 +135,19 @@ typedef struct
 }driverJoggingVelocity_t;
 
 
+/** 
+  * @brief  位姿结构体 此结构体暂时只在databse中使用，但是建议在robot_t中替换对应部分
+  */
+
+typedef struct
+{
+    float x;
+    float y;
+    float angle;
+    
+}posture_t;
+
+
 typedef struct
 {
 	//机器人走行轮子目标线速度，范围【-30，30】，单位0.1m/s

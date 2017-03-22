@@ -1,4 +1,29 @@
+/**
+  ******************************************************************************
+  * @file	 database.c
+  * @author  ACTION_2017
+  * @version V0.0.0.170321_alpha
+  * @date	 2017/03/21
+  * @brief   This file contains all data for shoot and move
+  *
+  ******************************************************************************
+  * @attention
+  *
+  *
+  ******************************************************************************
+  */
+
+/* Includes ------------------------------------------------------------------*/
+
 #include "database.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+
+/** @defgroup Gun_Shoot_Position_Database
+  * @brief
+  * @{
+  */
 
 //左侧枪姿态数据库
 //{yaw, pitch, row, speed1, speed2}
@@ -21,7 +46,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
-	
+
 		//第二类参数，对应落盘参数
 		{//1#着陆台
 		 {-20.5f, 27.0f, 26.6f, 89.0f, 10.0f},
@@ -37,7 +62,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-	
+
 	},
 	//第二个发射位置，对应靠近出发区位置
 	{
@@ -56,7 +81,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
-	
+
 		//第二类参数，对应落盘参数
 		{//1#着陆台
 		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
@@ -72,7 +97,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-	
+
 	},
 	//第三个发射位置，对应场地中点
 	{
@@ -92,6 +117,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //7#着陆台
 		 {0.0f,40.0f, 20.4f,56.0f,12.0f}},
 	
+
 		//第二类参数，对应落盘参数
 		{//1#着陆台
 		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
@@ -107,7 +133,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 {-12.4f,24.4f, 25.7f,116.0f,19.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-	
+
 	}
 };
 
@@ -131,7 +157,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
-	
+
 		//第二类参数，对应落盘参数
 		{//1#着陆台
 		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
@@ -147,7 +173,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-	
+
 	},
 	//第二个发射位置，对应靠近出发区位置
 	{
@@ -166,7 +192,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
-	
+
 		//第二类参数，对应落盘参数
 		{//1#着陆台
 		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
@@ -182,7 +208,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-	
+
 	},
 	//第三个发射位置，对应场地中点
 	{
@@ -201,7 +227,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
-	
+
 		//第二类参数，对应落盘参数
 		{//1#着陆台
 		 {-12.5f, 11.0f, 18.6f, 98.0f, 12.0f},
@@ -217,7 +243,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}}
-	
+
 	}
 };
 
@@ -231,15 +257,27 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
 	{3.9f, -0.9f, 0.0f, 116.0f, 0.0f}
 	},
 
-	
+
 	//第2种子弹状态，对应的7个着陆台的枪的姿态
 	{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f},
 	{5.0f, 6.0f, 7.0f, 8.0f, 9.0f},
 	{0.1f, 0.2f, 0.3f, 0.4f, 0.5f},
 	{0.6f, 0.7f, 0.8f, 0.9f, 1.0f}}
-	
+
 
 };
+
+
+/**
+  * @}
+  */
+
+
+/** @defgroup Gun_Shoot_Command
+  * @brief
+  * @{
+  */
+
 
 //左枪射击柱子的顺序
 shoot_command_t gLeftGunShootCmds[LEFT_GUN_POINT1_AUTO_BULLET_NUMBER+LEFT_GUN_POINT2_AUTO_BULLET_NUMBER+LEFT_GUN_POINT3_AUTO_BULLET_NUMBER] = \
@@ -310,4 +348,29 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER+RIGHT_GUN
 //		{PLANT3,	SHOOT_METHOD1}
 //	}
 //};
+
+/**
+  * @}
+  */
+
+
+/** @defgroup Walk_Track_Database
+  * @brief    此结构体数组的大小为 WALKTRACKDATABASE_POINT_NUMBER * 3 * 4 Byte
+  * @{
+  */
+
+posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_NUMBER]={0};
+
+/**
+  * @}
+  */
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
+
+
+
+/************************ (C) COPYRIGHT NEU_ACTION_2017 *****END OF FILE****/
 

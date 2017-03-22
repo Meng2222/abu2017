@@ -52,6 +52,15 @@ void	 SetFlashUpdateFlag(uint8_t val);
 
 
 void FlashWriteFloatArr(float *data, uint32_t len);
+
+
+/**
+  * @brief  向FLASH中写入3个枪的位置数据
+  * @note   此函数将会使用大概一秒钟的时间使用时最好慎重考虑
+  * @param  None
+  * @retval None
+  */
+void FlashWriteGunPosData(void);
 /**
  * @brief  初始化FLASH
  * @note   如果定义了WRITE_DATABASE_IN_FLASH_AT_BEGINNING
