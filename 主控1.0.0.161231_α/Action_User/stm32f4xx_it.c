@@ -697,15 +697,15 @@ void UART4_IRQHandler(void)
 						{	
 							case 0:
 							gRobot.leftGun.targetPose.pitch = targetAngle;
-							gRobot.leftGun.shootParaMode = id2 / 3;
+							gRobot.leftGun.shootParaMode = id2 / 6;
 							break;
 							case 1:
 							gRobot.rightGun.targetPose.pitch = targetAngle;
-							gRobot.rightGun.shootParaMode = id2 / 3;
+							gRobot.rightGun.shootParaMode = id2 / 6;
 							break;
  							case 2:
 							gRobot.upperGun.targetPose.pitch = targetAngle;
-							gRobot.rightGun.shootParaMode = id2 / 3;
+							gRobot.rightGun.shootParaMode = id2 / 3 - 1;
 							break;
 							default:
 								id2=0xff;

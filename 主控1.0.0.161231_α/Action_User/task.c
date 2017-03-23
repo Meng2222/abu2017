@@ -476,7 +476,7 @@ void LeftGunShootTask(void)
 					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
 					ROBOT_LeftGunReload();
 				}
-//				ROBOT_LeftGunCheckReload();
+				ROBOT_LeftGunCheckReload();
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunCheckShootPoint();			
