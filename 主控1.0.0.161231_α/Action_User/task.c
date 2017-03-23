@@ -23,7 +23,8 @@
 ===============================================================
 */
 OS_EVENT *PeriodSem;
-OS_EVENT *OpenSaftySem;
+OS_EVENT *OpenSaftyMail;
+OS_EVENT *ShootPointMail;
 //定义机器人全局变量
 extern robot_t gRobot;
 
@@ -111,8 +112,10 @@ void App_Task()
 
 	/*创建信号量*/
     PeriodSem				=	OSSemCreate(0);
-	OpenSaftySem            =   OSSemCreate(0);
-
+	//创建邮箱
+	OpenSaftyMail            =   OSMboxCreate((void *)0);
+	ShootPointMail           =   OSMboxCreate((void *)0);
+	
     /*创建任务*/
 	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*初始化任务*/
 	                      	(void          * ) 0,
@@ -154,20 +157,21 @@ void ConfigTask(void)
 	//定时器初始化
 	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	TIM_Delayms(TIM5, 1500);
-
+	
+	KeyInit();
+	PhotoelectricityInit();
+	BeepInit();
+	
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
 	UART5_Init(115200);		//调试用wifi
 	USART3_Init(115200);    //摄像头
 	USART6_Init(115200);	//定位系统
-
-
+	Flash_Init();
 	TIM_Delayms(TIM5, 10000);
 
 
-	KeyInit();
-	PhotoelectricityInit();
-	BeepInit();
+
 
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
@@ -178,8 +182,8 @@ void ConfigTask(void)
 
 	ROBOT_Init();
 
-
-
+	
+	
 	ClampClose();
 	LeftBack();
 	RightBack();
@@ -192,9 +196,9 @@ void ConfigTask(void)
 
 //	OSTaskSuspend(Walk_TASK_PRIO);
 
-	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -231,14 +235,17 @@ void WalkTask(void)
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
 	os_err = os_err;
-
+	int *shootPointMsg = (int *)MOVEBASE_POS_READY;
     OSSemSet(PeriodSem, 0, &os_err);
 
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
-
+		if(status >= load)
+		{
+			ROBOT_CheckGunOpenSafety();
+		}
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
@@ -256,6 +263,7 @@ void WalkTask(void)
 				if(PHOTOSENSORUPGUN)
 				{
 					ClampOpen();
+					ROBOT_LeftGunAim();
 					status ++;
 				}
 				break;
@@ -296,12 +304,9 @@ void WalkTask(void)
 				{
 					ClampRotate();
 					timeCounter = 0;
-					OSTimeDly(100);
+					OSTimeDly(50);
 					ClampReset();
-					if(KEYSWITCH)
-					{
-						status ++;
-					}
+					status ++;
 				}
 				break;
 			
@@ -318,12 +323,10 @@ void WalkTask(void)
 			    if (GetPosX() >= -9459.14f)
 				{
 					LockWheel();
-					LockWheel();
-					LockWheel();
-					LockWheel();
 					moveTimFlag = 0;
 					status++;					
-					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+//					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+					OSMboxPostOpt(ShootPointMail , shootPointMsg , OS_POST_OPT_BROADCAST);
 					OSTaskSuspend(OS_PRIO_SELF);
 				}
 				break;
@@ -343,7 +346,7 @@ void WalkTask(void)
 					LockWheel();
 					moveTimFlag = 0;
 					status++;
-					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+//					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 					OSTaskSuspend(OS_PRIO_SELF);
 				}
 				break;
@@ -360,10 +363,8 @@ void WalkTask(void)
 			    if (GetPosX() >= -6459.14f)
 				{
 					LockWheel();
-					LockWheel();
-					LockWheel();
-					LockWheel();
 					moveTimFlag = 0;
+					OSMboxPostOpt(ShootPointMail , shootPointMsg , OS_POST_OPT_BROADCAST);
 					status++;
 				}
 				break;
@@ -372,7 +373,7 @@ void WalkTask(void)
 			case launch:
 				LockWheel();
 				CameraInit();
-				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+//				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 //				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
@@ -390,7 +391,7 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 
-    //OSSemSet(PeriodSem, 0, &os_err);
+    OSMboxPend(OpenSaftyMail, 0, &os_err);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -445,10 +446,7 @@ void LeftGunShootTask(void)
 			}
 			else
 			{
-				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
-				//子弹上膛,第一次上膛默认位置OK
-				ROBOT_LeftGunReload();
-				ROBOT_LeftGunCheckReload();
+				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改	
 				//检查并更新子弹状态
 				shoot_command_t shootCommand = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes];
 				uint8_t shootPoint = shootCommand.shootPoint;
@@ -463,15 +461,31 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.speed1 = pose.speed1;
 				gRobot.leftGun.targetPose.speed2 = pose.speed2;
 
+				USART_SendData(UART5,shootMethod);
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//子弹上膛,第一次上膛默认位置OK
+				if(landId != PLANT7)
+				{
+					ROBOT_LeftGunAim();
+					ROBOT_LeftGunReload();
+				}
+				else
+				{
+					ROBOT_LeftGunAim();
+					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+					ROBOT_LeftGunReload();
+				}
+//				ROBOT_LeftGunCheckReload();
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
+				ROBOT_LeftGunCheckShootPoint();			
 				ROBOT_LeftGunShoot();
 				if(gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER)
 				{
+//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
 					OSTaskResume(Walk_TASK_PRIO);
-					OSTaskSuspend(OS_PRIO_SELF);
+//					OSTaskSuspend(OS_PRIO_SELF);
 				}
 				if(gRobot.leftGun.shootTimes >= LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT3_AUTO_BULLET_NUMBER)
 				{
@@ -491,6 +505,8 @@ void LeftGunShootTask(void)
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_LeftGunAim();
+				UpdateLeftGunPosDatabaseManulMode();
+				FlashWriteGunPosData();
 				ROBOT_LeftGunCheckAim();
 				gRobot.leftGun.aim = GUN_STOP_AIM;
 			}

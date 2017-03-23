@@ -109,6 +109,13 @@ extern posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY];
   */
 
 /* Exported functions --------------------------------------------------------*/
+/**
+  * @brief  Update LeftGunPosDatabase in Manual Mode
+  * @note   this function will update the 
+  * @param  None
+  * @retval None
+  */
+void UpdateLeftGunPosDatabaseManulMode(void);
 
 
 

@@ -30,6 +30,11 @@
 //上面枪组ID号
 #define UPPER_GUN_GROUP_ID		103
 
+//机器人拉保险完成
+#define GUN_OPENSAFTY_READY     1
+//底盘已经到达发射点位
+#define MOVEBASE_POS_READY      1
+
 #define GUN_AUTO_MODE			0
 #define GUN_MANUAL_MODE			1
 
@@ -375,6 +380,17 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun);
 status_t ROBOT_LeftGunAim(void);
 status_t ROBOT_RightGunAim(void);
 status_t ROBOT_UpperGunAim(void);
+
+/*
+*名称：ROBOT_LeftGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_LeftGunCheckShootPoint(void);
+
 /*
 *名称：ROBOT_LeftGunCheckAim
 *功能：检查瞄准是否已完成

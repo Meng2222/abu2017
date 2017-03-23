@@ -1,7 +1,8 @@
 #include  "can.h"
 #include "gasvalvecontrol.h"
 #include "gpio.h"
-
+#include "robot.h"
+extern robot_t gRobot;
 /**
 * @brief  气阀控制
 * @param  boardNum：气阀板号
@@ -56,7 +57,7 @@ void ClampReset(void)
 //左上弹
 void LeftPush(void)
 {
-	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 1);//左推	
+		GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 1);//左推
 }
 //左上弹复位
 void LeftBack(void)

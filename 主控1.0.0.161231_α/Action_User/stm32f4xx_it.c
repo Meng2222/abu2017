@@ -644,10 +644,11 @@ void UART4_IRQHandler(void)
 				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
 				{
 					gRobot.moveBase.targetPoint = id2 / 80 + 1;
-					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+//					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 					OSTaskResume(Walk_TASK_PRIO);
+					status = 0;
 				}
 				id2 = id2 % 80;				
 				status++;

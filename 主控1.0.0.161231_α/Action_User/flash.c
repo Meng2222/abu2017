@@ -14,6 +14,7 @@
  ******************************************************************************
  */
 /* Includes -------------------------------------------------------------------*/
+#include "gpio.h"
 #include "flash.h"
 #include "stm32f4xx_flash.h"
 #include "string.h"
@@ -95,8 +96,7 @@ void FlashWriteFloatArr(float *data, uint32_t len)
 	FLASH_WaitForLastOperation();
 	for(count = 0; count < len; count++)
 	{
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count, *(uint16_t *)(data + count));
-		FLASH_ProgramHalfWord(FLASH_USER_ADDRESS + 4 * count + 2, *((uint16_t *)(data + count) + 1));
+		FLASH_ProgramWord(FLASH_USER_ADDRESS + 4 * count, *(uint32_t *)(data) + count);
 	}
 	FLASH_Lock();
 }
@@ -163,7 +163,7 @@ void Flash_ReadFloat(float *data, uint32_t len)
 {
 	uint32_t i;
 	for(i = 0; i < len; i++)
-		*(data+i)= *((float *)(FLASH_USER_ADDRESS + 4*i));
+		*(data+i)= *((float *)(FLASH_USER_ADDRESS) + i);
 }
 
 
@@ -180,7 +180,10 @@ void Flash_ReadFloat(float *data, uint32_t len)
 void Flash_Init(void)
 {
 #ifdef WRITE_DATABASE_IN_FLASH_AT_BEGINNING
+	BEEP_ON;
 	FlashWriteGunPosData();
+	BEEP_OFF;
+
 #endif
 	/* 读取FLASH中保存的数据，并将其存到RAM里 */
 	Flash_ReadFloat((float *)gLeftGunPosDatabase, LEFTGUNPOSDATABASE_FLOAT_NUM);

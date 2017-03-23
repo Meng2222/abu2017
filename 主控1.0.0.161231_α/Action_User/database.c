@@ -49,7 +49,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 
 		//第二类参数，对应落盘参数
 		{//1#着陆台
-		 {-13.0f, 25.0f, 22.1f, 90.0f, 12.0f},
+		 {-18.0f, 27.5f, 23.6f, 92.0f, 7.0f},
 		 //2#着陆台
 		 {2.5f, 30.2f, 23.4f, 99.0f, 15.0f},
 		 //3#着陆台
@@ -107,16 +107,16 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //2#着陆台
 		 {5.0f, 15.5f, 26.4f, 93.0f, 20.0f},
 		 //3#着陆台
-		 {-4.5f, 25.3f, 16.9f, 107.0f, 8.0f},
+		 {-4.0f, 24.8f, 16.9f, 109.0f, 8.0f},
 		 //4#着陆台
 		 {16.2f, 17.0f, 18.5f, 111.0f,4.0f},
 		 //5#着陆台
 		 {31.1f,11.0f, 20.4f,114.0f,5.0f},
 		 //6#着陆台
 		// {-9.8f,14.9f, 22.3f,122.0f,13.0f},
-		  {-9.3f,14.4f, 21.8f,127.0f,13.0f},
+		  {-7.3f,13.9f, 21.8f,128.0f,13.0f},
 		 //7#着陆台
-		 {0.0f,27.4f, 20.4f,77.0f,12.0f}},
+		 {0.0f,26.4f, 20.4f,77.0f,12.0f}},
 	
 
 		//第二类参数，对应落盘参数
@@ -128,14 +128,14 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //3#着陆台
 		 {-8.0f, 32.0f, 19.8f, 104.0f, 12.0f},
 		 //4#着陆台
-		 {16.7f, 26.2f, 21.1f, 98.0f,16.0f},
+		 {15.7f, 26.7f, 23.1f, 98.0f,16.0f},
 		 //5#着陆台
-		 {30.7f,23.0f, 20.9f,109.0f,10.0f},
+		 {29.2f,22.5f, 23.4f,108.0f,9.0f},
 		 //6#着陆台
 		 //{-12.4f,24.4f, 25.7f,116.0f,19.0f},
-		 {-9.8f,24.9f,19.3f,135.0f,13.0f},
+		 {-7.3f,24.9f,19.3f,141.0f,13.0f},
 		 //7#着陆台
-		 {0.0f,40.0f, 20.4f,56.0f,12.0f}}
+		 {0.0f,40.0f, 20.4f,54.0f,12.0f}}
 	}
 };
 
@@ -226,7 +226,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 //5#着陆台
 		 {45.8f,32.5f, 40.6f,81.0f,24.0f},
 		 //6#着陆台
-		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
+		 {0.5f,27.9f, 3.7f,96.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
 
@@ -383,7 +383,41 @@ posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY]={0};
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+extern robot_t gRobot;
 
-
+/**
+  * @brief  Update LeftGunPosDatabase in Manual Mode
+  * @note   this function will update the 
+  * @param  None
+  * @retval None
+  */
+void UpdateLeftGunPosDatabaseManulMode(void)
+{
+	if(gRobot.moveBase.targetPoint == 2)
+	{
+		gLeftGunPosDatabase[0][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].yaw = gRobot.leftGun.targetPose.yaw;
+		gLeftGunPosDatabase[0][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].pitch = gRobot.leftGun.targetPose.pitch;
+		gLeftGunPosDatabase[0][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].roll = gRobot.leftGun.targetPose.roll;
+		gLeftGunPosDatabase[0][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed1 = gRobot.leftGun.targetPose.speed1;
+		gLeftGunPosDatabase[0][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed2 = gRobot.leftGun.targetPose.speed2;
+	
+	}
+	else if(gRobot.moveBase.targetPoint == 3)
+	{
+		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].yaw = gRobot.leftGun.targetPose.yaw;
+		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].pitch = gRobot.leftGun.targetPose.pitch;
+		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].roll = gRobot.leftGun.targetPose.roll;
+		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed1 = gRobot.leftGun.targetPose.speed1;
+		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed2 = gRobot.leftGun.targetPose.speed2;
+	}
+	else if(gRobot.moveBase.targetPoint == 1)
+	{
+		gLeftGunPosDatabase[1][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].yaw = gRobot.leftGun.targetPose.yaw;
+		gLeftGunPosDatabase[1][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].pitch = gRobot.leftGun.targetPose.pitch;
+		gLeftGunPosDatabase[1][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].roll = gRobot.leftGun.targetPose.roll;
+		gLeftGunPosDatabase[1][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed1 = gRobot.leftGun.targetPose.speed1;
+		gLeftGunPosDatabase[1][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed2 = gRobot.leftGun.targetPose.speed2;
+	}
+}
 /************************ (C) COPYRIGHT NEU_ACTION_2017 *****END OF FILE****/
 

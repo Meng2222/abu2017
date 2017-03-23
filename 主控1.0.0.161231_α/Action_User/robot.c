@@ -5,9 +5,10 @@
 #include "timer.h"
 #include "ucos_ii.h"
 #include "gpio.h"
-
+#include "cpu.h"
 robot_t gRobot = {0};
-extern OS_EVENT *OpenSaftySem;
+extern OS_EVENT *OpenSaftyMail;
+extern OS_EVENT *ShootPointMail;
 /*
 ============================================================
 						  枪初始化 
@@ -20,20 +21,23 @@ static void LeftGunInit(void)
 	gRobot.leftGun.actualPose.yaw = 0.0f;
 	gRobot.leftGun.actualPose.roll = 0.0f;
 
-	gRobot.leftGun.targetPose.pitch = 0.0f;
-	gRobot.leftGun.targetPose.yaw = 0.0f;
-	gRobot.leftGun.targetPose.roll = 0.0f;
+//	gRobot.leftGun.targetPose.pitch = 0.0f;
+//	gRobot.leftGun.targetPose.yaw = 0.0f;
+//	gRobot.leftGun.targetPose.roll = 0.0f;
+	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[SHOOT_POINT1][PLANT1][SHOOT_METHOD1].pitch;
+	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[SHOOT_POINT1][PLANT1][SHOOT_METHOD1].yaw;
+	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[SHOOT_POINT1][PLANT1][SHOOT_METHOD1].roll;
 	
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.leftGun.maxPoseLimit.yaw = 50.0f;
-	gRobot.leftGun.maxPoseLimit.roll = 45.0f;
+	gRobot.leftGun.maxPoseLimit.roll = 34.68f;
 	gRobot.leftGun.maxPoseLimit.speed1=200.0f;
 	gRobot.leftGun.maxPoseLimit.speed2=200.0f;
 
 	
 	gRobot.leftGun.minPoseLimit.pitch = 7.0f;
 	gRobot.leftGun.minPoseLimit.yaw = -50.0f;
-	gRobot.leftGun.minPoseLimit.roll = 0.0f;
+	gRobot.leftGun.minPoseLimit.roll = -34.68f;
 	gRobot.leftGun.minPoseLimit.speed1=0.0f;
 	gRobot.leftGun.minPoseLimit.speed2=0.0f;	
 	
@@ -255,7 +259,7 @@ int32_t LeftGunRollTransform(float roll)
 {
 	if(roll > gRobot.leftGun.maxPoseLimit.roll) roll = gRobot.leftGun.maxPoseLimit.roll;	
 	if(roll < gRobot.leftGun.minPoseLimit.roll) roll = gRobot.leftGun.minPoseLimit.roll;
-	return (int32_t)(roll * 141.0844f);
+	return (int32_t)((roll - 34.68f) * 141.0844f);
 }
 
 /*
@@ -267,7 +271,7 @@ int32_t LeftGunRollTransform(float roll)
 */
 float LeftGunRollInverseTransform(int32_t position)
 {
-	return (float)position/141.0844f;
+	return (float)position/141.0844f + 34.68f;
 }
 
 /*
@@ -558,7 +562,7 @@ status_t ROBOT_Init(void)
 	gRobot.stage = ROBOT_STAGE_POWER_ON;
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
-	
+	gRobot.moveBase.targetPoint = 2;
 	LeftGunInit();
 	RightGunInit();
 	UpperGunInit();
@@ -606,9 +610,10 @@ status_t ROBOT_GunOpenSafety(void)
 */
 status_t ROBOT_CheckGunOpenSafety(void)
 {
+	int *msg = (int *)GUN_OPENSAFTY_READY;
 	if(KEYSWITCH)
 	{
-		OSSemPost(OpenSaftySem);
+		OSMboxPostOpt(OpenSaftyMail , msg , OS_POST_OPT_BROADCAST);
 	}
 	return GUN_NO_ERROR;
 }
@@ -623,8 +628,13 @@ status_t ROBOT_CheckGunOpenSafety(void)
 */
 status_t ROBOT_LeftGunReload(void)
 {
+	uint8_t pushTimes = 8;
 	LeftPush();
 	OSTimeDly(100);
+//	LeftBack();
+//	OSTimeDly(5);
+//	LeftPush();
+//	OSTimeDly(5);
 	LeftBack();
 	OSTimeDly(50);
 	return GUN_NO_ERROR;
@@ -664,7 +674,9 @@ status_t ROBOT_LeftGunCheckReload(void)
 		else
 		{
 			ROBOT_LeftGunHome();
+			continue;
 		}
+		break; 
 	}
 	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	return GUN_RELOAD_ERROR;
@@ -954,6 +966,25 @@ status_t ROBOT_UpperGunCheckAim(void)
 	return GUN_NO_ERROR;
 }
 
+/*
+*名称：ROBOT_LeftGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_LeftGunCheckShootPoint(void)
+{
+	CPU_INT08U  os_err;
+	if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
+		gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
+	{
+		OSMboxPend(ShootPointMail,0,&os_err);
+		return MOVEBASE_POS_READY;
+	}
+}
+
 /**
 *名称：ROBOT_LeftGunShoot
 *功能：左枪开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
@@ -1024,7 +1055,7 @@ status_t ROBOT_LeftGunHome(void)
 	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 	
-	OSTimeDly(200);
+	OSTimeDly(150);
 	
 	return GUN_NO_ERROR;
 }
