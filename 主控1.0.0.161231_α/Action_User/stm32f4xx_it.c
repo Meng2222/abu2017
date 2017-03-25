@@ -280,6 +280,19 @@ void CAN2_RX0_IRQHandler(void)
 	OS_EXIT_CRITICAL();
 	CAN_RxMsg(CAN2, &StdId, buffer, 8);
 	canNodeId = StdId - SDO_RESPONSE_COB_ID_BASE;
+	//读取电机表面温度，一个uint8_t数
+	if(canNodeId == LEFT_WHEEL_TEMPERATURE_ID)
+	{		
+		gRobot.moveBase.motorTemperature.leftWheelMotorTemperature = buffer[0];
+	}
+	if(canNodeId == FORWARD_WHEEL_TEMPERATURE_ID)
+	{		
+		gRobot.moveBase.motorTemperature.forwardWheelMotorTemperature = buffer[0];
+	}	
+	if(canNodeId == BACKWARD_WHEEL_TEMPERATURE_ID)
+	{		
+		gRobot.moveBase.motorTemperature.backwardWheelMotorTemperature = buffer[0];
+	}	
 	
 	if(canNodeId==LEFT_WHEEL_ID || canNodeId==FORWARD_WHEEL_ID || canNodeId==BACKWARD_WHEEL_ID)     //get speed value
 	{
@@ -647,7 +660,7 @@ void UART4_IRQHandler(void)
 //					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 //					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-					OSTaskResume(Walk_TASK_PRIO);
+//					OSTaskResume(Walk_TASK_PRIO);
 					status = 0;
 				}
 				id2 = id2 % 80;				
@@ -817,6 +830,9 @@ void UART4_IRQHandler(void)
 						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 					break;
+					case 5:
+						//下一步
+						break;
 				}
 				status=0;
 			break;

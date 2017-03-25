@@ -20,6 +20,12 @@
 #define MOVEBASE_BROADCAST_ID 0
 
 
+#define LEFT_WHEEL_TEMPERATURE_ID   52
+#define FORWARD_WHEEL_TEMPERATURE_ID   53
+#define BACKWARD_WHEEL_TEMPERATURE_ID   51
+
+
+
 /*
 ============================================================
                 三全向轮底盘相关参数宏定义           
@@ -175,8 +181,10 @@ typedef struct
 	
 	driverJoggingVelocity_t driverJoggingVelocity;
 
-	//机器人目标停止位置，范围1、2、3，对应靠近发射区，中点和靠近出发区点
+	//机器人目标停止位置，范围1、2、3，对应中点，靠近发射区，靠近出发区点
 	unsigned char targetPoint;
+	//机器人实际停止位置，范围1、2、3，对应靠近发射区，靠近出发区点，中点
+	unsigned char actualStopPoint;
 	//机器人目标角度，逆时针为正，范围【-180，180】，单位度
 	float targetAngle;
 	//机器人实际角度，逆时针为正，范围【-180，180】，单位度

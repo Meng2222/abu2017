@@ -100,7 +100,7 @@
 //左枪2点（靠近出发区）自动发射子弹数目
 #define LEFT_GUN_POINT2_AUTO_BULLET_NUMBER  0
 //左枪3点（中点）自动发射子弹数目
-#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  24//18
+#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  20//18
 //右枪1点（靠近装载区）自动发射子弹数目
 #define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4
 //右枪2点（靠近装载区）自动发射子弹数目
@@ -140,6 +140,8 @@
 #define ROBOT_STATUS_UNDER_VOLTAGE 0x04
 #define ROBOT_STATUS_GAS_LOW  0x08
 
+//自动模式下总步数
+#define AUTO_SHOOT_STEP_NUMBER 14
 //着陆台编号
 #define INVALID_PLANT_NUMBER 7
 #define PLANT1 0
@@ -165,13 +167,41 @@
 #define ZONE3 2u
 #define ZONE4 3u
 
-//枪自动射击时，目标柱子顺序
+//枪自动射击时命令结构体
 typedef struct
 {
 	uint8_t shootPoint;
 	uint8_t plantNum;
 	uint8_t shootMethod;
+//	uint8_t stepTargetShootTime;
 }shoot_command_t;
+
+
+typedef struct
+{
+	unsigned char method1ShootTimes;
+	unsigned char method2ShootTimes;
+}plant_shoot_time_t;
+
+typedef struct
+{
+	plant_shoot_time_t plant1ShootTimes;
+	plant_shoot_time_t plant2ShootTimes;
+	plant_shoot_time_t plant3ShootTimes;
+	plant_shoot_time_t plant4ShootTimes;
+	plant_shoot_time_t plant5ShootTimes;
+	plant_shoot_time_t plant6ShootTimes;
+	plant_shoot_time_t plant7ShootTimes;
+	
+}point_shoot_time_t;
+
+typedef struct
+{
+	point_shoot_time_t point1ShootTimes;
+	point_shoot_time_t point2ShootTimes;
+	point_shoot_time_t point3ShootTimes;
+//	unsigned char sumShootTimes = 
+}shoot_time_t;
 
 /**************************************************************************************
  类型定义
@@ -242,6 +272,8 @@ typedef struct
 	int targetZone;
 	//射击次数
 	int shootTimes;
+	//射击步数，对于步的定义暂时为在一个位置打一个柱子的一种参数
+	unsigned char shootStep;
 	
 }gun_t;
 

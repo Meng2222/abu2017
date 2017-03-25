@@ -628,9 +628,22 @@ status_t ROBOT_CheckGunOpenSafety(void)
 */
 status_t ROBOT_LeftGunReload(void)
 {
-	uint8_t pushTimes = 8;
-	LeftPush();
-	OSTimeDly(100);
+	uint8_t pushTimes = 10;
+//	if(gRobot.leftGun.shootTimes < 4)
+//	{
+//		while(pushTimes--)
+//		{
+//			LeftPush();
+//			OSTimeDly(6);
+//			LeftBack();
+//			OSTimeDly(2);
+//		}
+//	}
+//	else
+//	{
+		LeftPush();
+		OSTimeDly(80);
+//	}
 //	LeftBack();
 //	OSTimeDly(5);
 //	LeftPush();
@@ -994,7 +1007,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 status_t ROBOT_LeftGunShoot(void)
 {
 	LeftShoot();	
-	OSTimeDly(100);
+	OSTimeDly(50);
 	LeftShootReset();	
 	gRobot.leftGun.shootTimes++;
 	//fix me, 应该检查子弹是否用完

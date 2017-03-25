@@ -23,6 +23,7 @@
 ===============================================================
 */
 OS_EVENT *PeriodSem;
+//邮箱定义
 OS_EVENT *OpenSaftyMail;
 OS_EVENT *ShootPointMail;
 //定义机器人全局变量
@@ -397,6 +398,7 @@ void LeftGunShootTask(void)
 	int stopAutoFlag = 0;
 	while(1)
 	{
+		USART_SendData(UART5,'r');
 		//检查手动or自动
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
@@ -461,10 +463,10 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.speed1 = pose.speed1;
 				gRobot.leftGun.targetPose.speed2 = pose.speed2;
 
-				USART_SendData(UART5,shootMethod);
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				//子弹上膛,第一次上膛默认位置OK
+				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
 				if(landId != PLANT7)
 				{
 					ROBOT_LeftGunAim();
