@@ -188,7 +188,7 @@ void Flash_Init(void)
 	/* 读取FLASH中保存的数据，并将其存到RAM里 */
 	Flash_ReadFloat((float *)gLeftGunPosDatabase, LEFTGUNPOSDATABASE_FLOAT_NUM);
 	Flash_ReadFloat((float *)gRightGunPosDatabase, RIGHTGUNPOSDATABASE_FLOAT_NUM);
-//	Flash_ReadFloat((float *)gUpperGunPosDatabase, UPPERGUNPOSDATABASE_FLOAT_NUM);
+	Flash_ReadFloat((float *)gUpperGunPosDatabase, UPPERGUNPOSDATABASE_FLOAT_NUM);
 
 	/* 保护Flash数据 */
 	Flash_Encryp();

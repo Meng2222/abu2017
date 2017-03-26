@@ -180,7 +180,7 @@ void CAN1_RX0_IRQHandler(void)
 		}
 
 	}
-	//枪上传送带速度
+		//枪上传送带速度
 	if(canNodeId == LEFT_GUN_LEFT_ID ||canNodeId == LEFT_GUN_RIGHT_ID || \
 		canNodeId == RIGHT_GUN_LEFT_ID ||canNodeId == RIGHT_GUN_RIGHT_ID  || \
 		canNodeId == UPPER_GUN_LEFT_ID)
@@ -213,6 +213,7 @@ void CAN1_RX0_IRQHandler(void)
 			}
 		}
 	}
+
 	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
 		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
@@ -865,7 +866,8 @@ void UART4_IRQHandler(void)
 					break;
 					case 5:
 						//下一步
-						break;
+						gRobot.leftGun.nextStep = 1;
+					break;
 				}
 				status=0;
 			break;
@@ -986,7 +988,9 @@ void USART3_IRQHandler(void)
 #define HEADER2 0x80
 
 #define POS_HEADER1 0x88	
-#define POS_HEADER2 0x88		
+#define POS_HEADER2 0x88	
+
+#define READY_HEADER 0x8A
 	
 #define HEADER_STATE1 0
 #define HEADER_STATE2 1
@@ -1024,11 +1028,24 @@ void USART3_IRQHandler(void)
 				{
 					state += 3;
 				}
+				else if(data == READY_HEADER)
+				{
+					state ++;
+				}
+				else
+				{
+					state = 0;
+				}
 				break;
 			case HEADER_STATE2:
 				if(data == HEADER2)
 				{
 					state++;
+				}
+				else if(data == READY_HEADER)
+				{
+					//fix me 摄像头已经初始化完毕，还没有加蜂鸣器提醒
+					state = 0;
 				}
 				else
 				{						

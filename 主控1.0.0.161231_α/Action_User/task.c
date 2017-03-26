@@ -43,84 +43,52 @@ void UpperGunShootTask(void);
 void sendDebugInfo(void)
 {
 #define POS_X_OFFSET 50
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
-//	
-////	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
-////	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
-////	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
-
-////	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
-////	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
-////	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
-
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);
-
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);
-//	
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.leftMotorVelocityError);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.forwardMotorVelocityError);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.backwardMotorVelocityError);
-
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.leftDriverUnitMode);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.forwardDriverUnitMode);
-////	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.backwardDriverUnitMode);
-////	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
-//	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
-//	
-//	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
-
-//	//X位移分米部分范围是【-140，10】，单位分米
-//	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
-//	//X位移厘米部分范围是【-100，100】，单位厘米
-//	USART_SendData(UART5, (uint8_t)((((int)gRobot.moveBase.actualXPos))%100/10));
-
-//	//根据场地约束，范围设计为【-130，130】，单位cm
-//	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualYPos/10.0f));
-
-//	//连续发送4个-100作为结束标识符
-//	USART_SendData(UART5, (uint8_t)-100);
-//	USART_SendData(UART5, (uint8_t)-100);
-//	USART_SendData(UART5, (uint8_t)-100);
-//	USART_SendData(UART5, (uint8_t)-100);
-	float angle = gRobot.moveBase.actualAngle;
-	float posX = gRobot.moveBase.actualXPos;
-	float posY = gRobot.moveBase.actualYPos;
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
 	
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
+
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
+
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);
+
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);
+	
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.leftMotorVelocityError);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.forwardMotorVelocityError);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.backwardMotorVelocityError);
+
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.leftDriverUnitMode);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.forwardDriverUnitMode);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.backwardDriverUnitMode);
+//	
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
+	
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
+	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
 	
 	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
-	USART_SendData(UART5, (int8_t)angle);
-	USART_SendData(UART5, (int)(angle*100)%100);
-	
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
 
-	
-	USART_SendData(UART5, (int8_t)(posX / 1000.0f));
 	//X位移分米部分范围是【-140，10】，单位分米
-	if(posX < 0.0f)
-		posX = -posX;
-	USART_SendData(UART5, (uint8_t)((int)(posX/10.0f)%100));
+	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
 	//X位移厘米部分范围是【-100，100】，单位厘米
-	USART_SendData(UART5, (uint8_t)((int)posX%10));
-	USART_SendData(UART5, (uint8_t)((int)(posX*100)%100));
-	
+	USART_SendData(UART5, (uint8_t)((((int)gRobot.moveBase.actualXPos))%100/10));
+
 	//根据场地约束，范围设计为【-130，130】，单位cm
-	USART_SendData(UART5, (int8_t)(posY/10.0f));
-	if(posY < 0.0f)
-		posY = -posY;
-	USART_SendData(UART5, (uint8_t)((int)(posY)%10u));
-	USART_SendData(UART5, (uint8_t)((int)(posY*100.0f)%100));
+	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualYPos/10.0f));
 
 	//连续发送4个-100作为结束标识符
 	USART_SendData(UART5, (uint8_t)-100);
@@ -132,17 +100,14 @@ void sendDebugInfo(void)
 
 void CameraInit(void)
 {
-
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'r');
 }
-
 void SendStop2Camera(void)
 {
 	USART_SendData(USART3, 'c');
 }
-
 void App_Task()
 {
 	CPU_INT08U  os_err;
@@ -218,14 +183,14 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 50);
 
 
-//	ROBOT_Init();
+	ROBOT_Init();
 
-//	
-//	
-//	ClampClose();
-//	LeftBack();
-//	RightBack();
-//	ClampReset();
+	
+	
+	ClampClose();
+	LeftBack();
+	RightBack();
+	ClampReset();
 
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
@@ -234,9 +199,9 @@ void ConfigTask(void)
 
 //	OSTaskSuspend(Walk_TASK_PRIO);
 
-	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -284,25 +249,26 @@ void WalkTask(void)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
-//		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-////		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-////		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-////		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-////		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+
 		
 		sendDebugInfo();
 		switch (status)
 		{
 			//准备阶段
 			case getReady:				
-//				if(PHOTOSENSORUPGUN)
-//				{
-//					ClampOpen();
-//					ROBOT_LeftGunAim();
-//					status ++;
-//				}
+				if(PHOTOSENSORUPGUN)
+				{
+					ClampOpen();
+					ROBOT_LeftGunAim();
+					status ++;
+				}
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
@@ -360,7 +326,6 @@ void WalkTask(void)
 			    if (GetPosX() >= -9459.14f)
 				{
 					LockWheel();
-					MoveY(100.0f);
 					moveTimFlag = 0;
 					status++;					
 //					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
@@ -410,7 +375,6 @@ void WalkTask(void)
 			//发射飞盘
 			case launch:
 				LockWheel();
-				MoveY(100.0f);
 				CameraInit();
 				SendStop2Camera();
 //				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
@@ -487,11 +451,12 @@ void LeftGunShootTask(void)
 			else
 			{
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改	
-				//检查并更新子弹状态
-				shoot_command_t shootCommand = gRobot.leftGun.shootCommand[gRobot.leftGun.shootTimes];
+				//获取发射命令
+				shoot_command_t shootCommand = gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep];
 				uint8_t shootPoint = shootCommand.shootPoint;
 				uint8_t landId = shootCommand.plantNum;
 				uint8_t shootMethod = shootCommand.shootMethod;
+				gRobot.leftGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 				//获取目标位姿
 				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
@@ -516,22 +481,33 @@ void LeftGunShootTask(void)
 					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
 					ROBOT_LeftGunReload();
 				}
+				//检查上弹是否到位
 				ROBOT_LeftGunCheckReload();
+				//上弹到位后再次瞄准，并检查枪是否到位
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
-				ROBOT_LeftGunCheckShootPoint();			
+				//检查是否进入下一步
+				ROBOT_LeftGunCheckStep();
+				//检查是否到达发射点
+				ROBOT_LeftGunCheckShootPoint();	
+				//发射飞盘
 				ROBOT_LeftGunShoot();
+//				USART_SendData(UART5,(uint8_t)gRobot.leftGun.shootTimes);
+//				USART_SendData(UART5,(uint8_t)gRobot.leftGun.shootStep);
+//				USART_SendData(UART5, (uint8_t)-100);
+//				USART_SendData(UART5, (uint8_t)-100);
+//				USART_SendData(UART5, (uint8_t)-100);
+//				USART_SendData(UART5, (uint8_t)-100);
+				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
 				if(gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER)
 				{
 //					gRobot.leftGun.mode = GUN_MANUAL_MODE;
 					OSTaskResume(Walk_TASK_PRIO);
-//					OSTaskSuspend(OS_PRIO_SELF);
 				}
+				//自动射击结束后进入纯手动模式
 				if(gRobot.leftGun.shootTimes >= LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT3_AUTO_BULLET_NUMBER)
 				{
 					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-//					OSTaskResume(Walk_TASK_PRIO);
-//					OSTaskSuspend(OS_PRIO_SELF);
 				}
 			}
 		}
@@ -545,6 +521,7 @@ void LeftGunShootTask(void)
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_LeftGunAim();
+				//更新数据库中参数并写入FLASH
 				UpdateLeftGunPosDatabaseManulMode();
 				FlashWriteGunPosData();
 				ROBOT_LeftGunCheckAim();
@@ -708,7 +685,7 @@ void UpperGunShootTask(void)
 	{
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
-		gRobot.upperGun.mode = GUN_AUTO_MODE;
+		gRobot.upperGun.mode = GUN_MANUAL_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
@@ -745,7 +722,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(30);
+					OSTimeDly(50);
 				}
 			}
 			else

@@ -120,6 +120,11 @@
 //瞄准完成
 #define GUN_AIM_DONE 2
 
+//进入下一步
+#define GUN_NEXT_STEP  1
+//不进入下一步
+#define GUN_PRESENT_STEP 0
+
 
 //机器人已上电
 #define ROBOT_STAGE_POWER_ON 0
@@ -148,6 +153,7 @@
 
 //自动模式下总步数
 #define AUTO_SHOOT_STEP_NUMBER 14
+
 //着陆台编号
 #define INVALID_PLANT_NUMBER 7
 #define PLANT1 0
@@ -179,35 +185,8 @@ typedef struct
 	uint8_t shootPoint;
 	uint8_t plantNum;
 	uint8_t shootMethod;
-//	uint8_t stepTargetShootTime;
+	uint8_t stepTargetShootTime;
 }shoot_command_t;
-
-
-typedef struct
-{
-	unsigned char method1ShootTimes;
-	unsigned char method2ShootTimes;
-}plant_shoot_time_t;
-
-typedef struct
-{
-	plant_shoot_time_t plant1ShootTimes;
-	plant_shoot_time_t plant2ShootTimes;
-	plant_shoot_time_t plant3ShootTimes;
-	plant_shoot_time_t plant4ShootTimes;
-	plant_shoot_time_t plant5ShootTimes;
-	plant_shoot_time_t plant6ShootTimes;
-	plant_shoot_time_t plant7ShootTimes;
-	
-}point_shoot_time_t;
-
-typedef struct
-{
-	point_shoot_time_t point1ShootTimes;
-	point_shoot_time_t point2ShootTimes;
-	point_shoot_time_t point3ShootTimes;
-//	unsigned char sumShootTimes = 
-}shoot_time_t;
 
 /**************************************************************************************
  类型定义
@@ -280,6 +259,14 @@ typedef struct
 	int shootTimes;
 	//射击步数，对于步的定义暂时为在一个位置打一个柱子的一种参数
 	unsigned char shootStep;
+	//下一步标志位,用于接收平板指令   置1为下一步
+	unsigned char nextStep;
+	//下一步标志位，用于GunTask
+	unsigned char stepState;
+	//射击过程中每一步命令发射次数
+	unsigned char targetStepShootTimes;
+	//射击过程中每一步实际发射次数
+	unsigned char actualStepShootTimes;
 	
 }gun_t;
 
@@ -506,6 +493,20 @@ status_t ROBOT_RightGunHome(void);
 */
 status_t ROBOT_GunCheckMode(unsigned char gun);
 
+/*
+*名称：ROBOT_LeftGunCheckStep
+*功能：检查左枪步数
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunCheckStep(void);
+/*
+*名称：ROBOT_LeftGunCountStepTime
+*功能：检查并更新左枪每步发射次数
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunCountStepTime(void);
 /*
 ============================================================
                    枪参数变换与逆变换            

@@ -629,28 +629,31 @@ status_t ROBOT_CheckGunOpenSafety(void)
 status_t ROBOT_LeftGunReload(void)
 {
 	uint8_t pushTimes = 10;
-//	if(gRobot.leftGun.shootTimes < 4)
-//	{
-//		while(pushTimes--)
-//		{
-//			LeftPush();
-//			OSTimeDly(6);
-//			LeftBack();
-//			OSTimeDly(2);
-//		}
-//	}
-//	else
-//	{
-		LeftPush();
-		OSTimeDly(80);
-//	}
-//	LeftBack();
-//	OSTimeDly(5);
-//	LeftPush();
-//	OSTimeDly(5);
-	LeftBack();
-	OSTimeDly(50);
-	return GUN_NO_ERROR;
+	if(gRobot.leftGun.stepState != GUN_NEXT_STEP)
+	{
+	//	if(gRobot.leftGun.shootTimes < 4)
+	//	{
+	//		while(pushTimes--)
+	//		{
+	//			LeftPush();
+	//			OSTimeDly(6);
+	//			LeftBack();
+	//			OSTimeDly(2);
+	//		}
+	//	}
+	//	else
+	//	{
+			LeftPush();
+			OSTimeDly(80);
+	//	}
+	//	LeftBack();
+	//	OSTimeDly(5);
+	//	LeftPush();
+	//	OSTimeDly(5);
+		LeftBack();
+		OSTimeDly(50);
+		return GUN_NO_ERROR;
+	}
 }
 /**
 *名称：ROBOT_RightGunReload
@@ -1009,13 +1012,17 @@ status_t ROBOT_UpperGunCheckAim(void)
 */
 status_t ROBOT_LeftGunShoot(void)
 {
-	LeftShoot();	
-	OSTimeDly(50);
-	LeftShootReset();	
-	gRobot.leftGun.shootTimes++;
-	//fix me, 应该检查子弹是否用完
-	gRobot.leftGun.bulletNumber--;
-	return GUN_NO_ERROR;
+	if(gRobot.leftGun.ready == GUN_AIM_DONE && gRobot.leftGun.stepState == GUN_PRESENT_STEP)
+	{
+		LeftShoot();	
+		OSTimeDly(50);
+		LeftShootReset();
+		gRobot.leftGun.shootTimes++;
+		ROBOT_LeftGunCountStepTime();		
+		//fix me, 应该检查子弹是否用完
+		gRobot.leftGun.bulletNumber--;
+		return GUN_NO_ERROR;
+	}
 }
 
 /**
@@ -1117,4 +1124,43 @@ status_t ROBOT_GunCheckMode(unsigned char gun)
 	}
 	return -1;
 }
+/*
+*名称：ROBOT_LeftGunCheckStep
+*功能：检查左枪步数
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunCheckStep(void)
+{
+	if(gRobot.leftGun.nextStep == 1)
+	{
+		gRobot.leftGun.shootStep++;
+		gRobot.leftGun.shootTimes += (gRobot.leftGun.targetStepShootTimes - gRobot.leftGun.actualStepShootTimes);
+		gRobot.leftGun.actualStepShootTimes = 0; 
+		gRobot.leftGun.nextStep = 0;
+		gRobot.leftGun.stepState = GUN_NEXT_STEP;
+	}
+	else
+	{
+		gRobot.leftGun.stepState = GUN_PRESENT_STEP;
+	}
+}
 
+/*
+*名称：ROBOT_LeftGunCountStepTime
+*功能：检查并更新左枪每步发射次数
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunCountStepTime(void)
+{
+	if(gRobot.leftGun.actualStepShootTimes < gRobot.leftGun.targetStepShootTimes)
+	{
+		gRobot.leftGun.actualStepShootTimes++;
+	}
+	if(gRobot.leftGun.actualStepShootTimes == gRobot.leftGun.targetStepShootTimes)
+	{
+		gRobot.leftGun.shootStep++;
+		gRobot.leftGun.actualStepShootTimes = 0;
+	}
+}

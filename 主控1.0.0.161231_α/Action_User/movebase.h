@@ -349,8 +349,6 @@ void LockWheel(void);
 
 //x方向定速移动函数
 void MoveX(float velX);
-void MoveY(float velY);
-
 
 //运动函数
 void MoveTo(float targetPos, float velX, float accX);

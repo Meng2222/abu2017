@@ -431,17 +431,6 @@ void MoveX(float velX)
 	ThreeWheelVelControl(speedOut);
 }
 
-void MoveY(float velY)
-{
-	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
-
-	speedOut.backwardWheelSpeed = Vel2Pulse( - velY * 0.8660254f/*cos30*/);
-	speedOut.forwardWheelSpeed = Vel2Pulse(0);
-	speedOut.leftWheelSpeed = Vel2Pulse(velY * 0.8660254f/*cos30*/);
-	
-	ThreeWheelVelControl(speedOut);
-}
-
 /**
   * @brief  匀加减速运动控制函数
   * @param  targetPos:目标位置 mm
