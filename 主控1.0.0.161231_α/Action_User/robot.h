@@ -12,6 +12,10 @@
 #define GUN_NUMBER 3
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
+//参数种类，打球，落盘
+#define SHOOT_METHOD_NUMBER		2
+//发射位置个数
+#define SHOOT_POINT_NUMBER 3
 //防守台分区数
 #define ZONE_NUMBER 4
 
@@ -25,6 +29,17 @@
 #define RIGHT_GUN_GROUP_ID		102
 //上面枪组ID号
 #define UPPER_GUN_GROUP_ID		103
+//左枪速度组ID
+#define LEFT_GUN_VEL_GROUP_ID   104
+//右枪速度组ID
+#define RIGHT_GUN_VEL_GROUP_ID  105
+//上枪速度组ID
+#define UPPER_GUN_VEL_GROUP_ID  106
+
+//机器人拉保险完成
+#define GUN_OPENSAFTY_READY     1
+//底盘已经到达发射点位
+#define MOVEBASE_POS_READY      1
 
 #define GUN_AUTO_MODE			0
 #define GUN_MANUAL_MODE			1
@@ -32,8 +47,8 @@
 #define GUN_START_SHOOT 1
 #define GUN_STOP_SHOOT 0
 
-#define GUN_START_AIM 1
-#define GUN_STOP_AIM 0
+#define GUN_START_AIM			1
+#define GUN_STOP_AIM			0
 
 //左枪支架roll轴CAN ID
 #define LEFT_GUN_ROLL_ID 7
@@ -64,7 +79,8 @@
 //上面枪左侧传送带轴CAN ID
 #define UPPER_GUN_LEFT_ID 9
 
-
+//上弹成功
+#define GUN_RELOAD_OK 1
 //射击完成
 #define GUN_NO_ERROR 0
 //枪膛卡弹
@@ -83,48 +99,27 @@
 #define MAX_BULLET_NUMBER_RIGHT 20
 #define MAX_BULLET_NUMBER_UPPER 10
 //枪最大自动发射子弹发数
-#define MAX_AUTO_BULLET_NUMBER 10
+#define MAX_AUTO_BULLET_NUMBER 12
+
+//左枪1点（靠近装载区）自动发射子弹数目
+#define LEFT_GUN_POINT1_AUTO_BULLET_NUMBER  8
+//左枪2点（靠近出发区）自动发射子弹数目
+#define LEFT_GUN_POINT2_AUTO_BULLET_NUMBER  0
+//左枪3点（中点）自动发射子弹数目
+#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  20//18
+//右枪1点（靠近装载区）自动发射子弹数目
+#define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4
+//右枪2点（靠近装载区）自动发射子弹数目
+#define RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER  4
+//右枪3点（中点）自动发射子弹数目
+#define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  4
+
 
 //瞄准未完成
 #define GUN_AIM_IN_PROCESS 1
 //瞄准完成
 #define GUN_AIM_DONE 2
 
-//子弹最大特征数
-#define CHAMPER_BULLET_MAX_FEATURE_STATE 10
-
-//枪膛无子弹
-#define CHAMPER_BULLET_EMPTY_STATE 0xff
-
-//枪膛有子弹，特征0，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE0_STATE 0
-
-//枪膛有子弹，特征1，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE1_STATE 1
-
-//枪膛有子弹，特征2，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE2_STATE 2
-
-//枪膛有子弹，特征3，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE3_STATE 3
-
-//枪膛有子弹，特征4，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE4_STATE 4
-
-//枪膛有子弹，特征5，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE5_STATE 5
-
-//枪膛有子弹，特征6，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE6_STATE 6
-
-//枪膛有子弹，特征7，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE7_STATE 7
-
-//枪膛有子弹，特征8，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE8_STATE 8
-
-//枪膛有子弹，特征9，这里要详细描述，根据不同的状态会调节枪的姿态
-#define CHAMPER_BULLET_FEATURE9_STATE 9
 
 //机器人已上电
 #define ROBOT_STAGE_POWER_ON 0
@@ -151,6 +146,9 @@
 #define ROBOT_STATUS_UNDER_VOLTAGE 0x04
 #define ROBOT_STATUS_GAS_LOW  0x08
 
+//自动模式下总步数
+#define AUTO_SHOOT_STEP_NUMBER 14
+//着陆台编号
 #define INVALID_PLANT_NUMBER 7
 #define PLANT1 0
 #define PLANT2 1
@@ -160,18 +158,56 @@
 #define PLANT6 5
 #define PLANT7 6
 
-#define INVALID_ZONE_NUMBER 4
-#define ZONE1 0
-#define ZONE2 1
-#define ZONE3 2
-#define ZONE4 3
+//发射参数模式，对应打球和落盘
+#define SHOOT_METHOD1  0
+#define SHOOT_METHOD2  1
 
+//发射点位置
+#define SHOOT_POINT1 0
+#define SHOOT_POINT2 1
+#define SHOOT_POINT3 2
 
-//枪自动射击时，目标柱子顺序
+#define INVALID_ZONE_NUMBER 4u
+#define ZONE1 0u
+#define ZONE2 1u
+#define ZONE3 2u
+#define ZONE4 3u
+
+//枪自动射击时命令结构体
 typedef struct
 {
-	unsigned char cmd[MAX_AUTO_BULLET_NUMBER];
+	uint8_t shootPoint;
+	uint8_t plantNum;
+	uint8_t shootMethod;
+//	uint8_t stepTargetShootTime;
 }shoot_command_t;
+
+
+typedef struct
+{
+	unsigned char method1ShootTimes;
+	unsigned char method2ShootTimes;
+}plant_shoot_time_t;
+
+typedef struct
+{
+	plant_shoot_time_t plant1ShootTimes;
+	plant_shoot_time_t plant2ShootTimes;
+	plant_shoot_time_t plant3ShootTimes;
+	plant_shoot_time_t plant4ShootTimes;
+	plant_shoot_time_t plant5ShootTimes;
+	plant_shoot_time_t plant6ShootTimes;
+	plant_shoot_time_t plant7ShootTimes;
+	
+}point_shoot_time_t;
+
+typedef struct
+{
+	point_shoot_time_t point1ShootTimes;
+	point_shoot_time_t point2ShootTimes;
+	point_shoot_time_t point3ShootTimes;
+//	unsigned char sumShootTimes = 
+}shoot_time_t;
 
 /**************************************************************************************
  类型定义
@@ -215,11 +251,11 @@ typedef struct
 	//枪的模式：0自动，1手动
 	unsigned char mode;
 	
+	//射击参数模式：1 打球 2 打盘 3 扔
+	unsigned char shootParaMode;
+	
 	//弹夹内子弹数，因为最多23发，所以用8位
 	unsigned char bulletNumber;
-	
-	//枪膛子弹状态，根据不同状态决定开枪方式
-	unsigned char champerBulletState;
 	
 	//枪膛是否卡弹:1卡弹，0正常
 	unsigned char champerErrerState;
@@ -229,7 +265,6 @@ typedef struct
 	
 	//瞄准命令：1瞄准，0不瞄准
 	unsigned char aim;
-	
 	//如果上面char个数不是4的倍数，需要使用dummy对齐，dummy没有任何含义
 	//unsigned char dummy[2];
 	
@@ -243,6 +278,8 @@ typedef struct
 	int targetZone;
 	//射击次数
 	int shootTimes;
+	//射击步数，对于步的定义暂时为在一个位置打一个柱子的一种参数
+	unsigned char shootStep;
 	
 }gun_t;
 
@@ -265,6 +302,8 @@ typedef struct
 	int stage;
 	//机器人状态，是否正常：低压、过流、过温、
 	int status;
+	
+	
 }robot_t;
 
 /*
@@ -312,6 +351,14 @@ status_t ROBOT_GunLoad(void);
 *注意：上面的枪不需要
 */
 status_t ROBOT_GunOpenSafety(void);
+/*
+*名称：ROBOT_CheckGunOpenSafety
+*功能：检查拉开枪保险
+*参数：
+*status:GUN_NO_ERROR，GUN_OPEN_SAFETY_ERROR
+*注意：上面的枪不需要
+*/
+status_t ROBOT_CheckGunOpenSafety(void);
 
 /**
 *名称：ROBOT_LeftGunReload
@@ -331,6 +378,24 @@ status_t ROBOT_LeftGunReload(void);
 *注意：上面的枪不需要上子弹
 */
 status_t ROBOT_RightGunReload(void);
+
+/**
+*名称：ROBOT_LeftGunCheckReload
+*功能：检查左枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_LeftGunCheckReload(void);
+
+/**
+*名称：ROBOT_LeftGunCheckReload
+*功能：检查右枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*注意：上面的枪不需要上子弹
+*/
+status_t ROBOT_RightGunCheckReload(void);
 /*
 *名称：ROBOT_GunReload
 *功能：根据枪膛传感器，检测子弹状态，决定后面开枪的具体参数
@@ -353,6 +418,17 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun);
 status_t ROBOT_LeftGunAim(void);
 status_t ROBOT_RightGunAim(void);
 status_t ROBOT_UpperGunAim(void);
+
+/*
+*名称：ROBOT_LeftGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_LeftGunCheckShootPoint(void);
+
 /*
 *名称：ROBOT_LeftGunCheckAim
 *功能：检查瞄准是否已完成
@@ -470,6 +546,16 @@ float UpperGunPitchInverseTransform(int32_t position);
 float UpperGunLeftSpeedInverseTransform(int32_t speed);
 
 //temrary
+typedef struct
+{
+	float yawAng;
+	float pitchAng;
+	float rollAng;
+	float vel1;
+	float vel2;
+	int gunNum;
+}shootCtr_t;
+
 void ShootCtr(shootCtr_t *shootPara);
 
 #endif

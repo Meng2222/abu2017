@@ -12,22 +12,29 @@ union can_message
 	float dataf;
 };
 
-void elmo_Init(void);
-void elmo_Enable(uint8_t ElmoNum);
-void elmo_Disable(uint8_t ElmoNum);
+void elmo_Init(CAN_TypeDef* CANx);
+void elmo_Enable(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void elmo_Disable(CAN_TypeDef* CANx, uint8_t ElmoNum);
 
-void Vel_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec) ;
-void Pos_cfg(uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel) ;
-void VelCrl(uint8_t ElmoNum,int vel);
-void PosCrl(uint8_t ElmoNum,uint8_t rel_abs,int pos);
+void Vel_cfg(CAN_TypeDef* CANx, uint8_t ElmoNum,uint32_t acc,uint32_t dec) ;
+void Pos_cfg(CAN_TypeDef* CANx, uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32_t vel) ;
+void VelCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,int vel);
+void PosCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,uint8_t rel_abs,int pos);
 
-void ReadActualPos(uint8_t ElmoNum);
-void ReadActualVoltage(uint8_t ElmoNum);
-void ReadActualCurrent(uint8_t ElmoNum);
-void ReadActualVel(uint8_t ElmoNum);
-void ReadActualTemperature(uint8_t ElmoNum);
+void ReadActualPos(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadActualVoltage(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadActualCurrent(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadActualVel(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadActualTemperature(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadCurrentLimitFlag(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadVelocityError(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadCommandVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadJoggingVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadUnitMode(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadReferenceMode(CAN_TypeDef* CANx, uint8_t ElmoNum);
 
-void velCrl(uint8_t DriverNum,int vel);
+
+void velCrl(CAN_TypeDef* CANx, uint8_t DriverNum,int vel);
 
 #endif 
 

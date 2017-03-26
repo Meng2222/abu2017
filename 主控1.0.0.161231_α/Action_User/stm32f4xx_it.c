@@ -31,6 +31,7 @@
 #include "stm32f4xx_it.h"
 #include "stm32f4xx.h"
 #include  <ucos_ii.h>
+#include "app_cfg.h"
 /******************************************************************************/
 /*            Cortex-M4 Processor Exceptions Handlers                         */
 /******************************************************************************/
@@ -48,7 +49,6 @@
 #include "gasvalvecontrol.h"
 #include "movebase.h"
 #include "robot.h"
-#include "app_cfg.h"
 
 //用来处理CAN接收数据
 union MSG
@@ -133,6 +133,85 @@ void CAN1_RX0_IRQHandler(void)
 			}
 
 		}
+		if(msg.data32[0] == 0x0000434C)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag = (msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag = (msg.data32[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag = (msg.data32[1]);
+			}
+		}
+		if(msg.data32[0] == 0x00025644)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+		}
+		if(msg.data32[0] == 0x0000564A)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+		}
+
+	}
+	//枪上传送带速度
+	if(canNodeId == LEFT_GUN_LEFT_ID ||canNodeId == LEFT_GUN_RIGHT_ID || \
+		canNodeId == RIGHT_GUN_LEFT_ID ||canNodeId == RIGHT_GUN_RIGHT_ID  || \
+		canNodeId == UPPER_GUN_LEFT_ID)
+	{
+		for(i = 0; i < 8; i++)
+		{
+			msg.data8[i] = buffer[i];
+		}
+		if(msg.data32[0] == 0x00005856)
+		{
+			if(canNodeId == LEFT_GUN_LEFT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed1 = LeftGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == LEFT_GUN_RIGHT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_LEFT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed1 = RightGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_RIGHT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed2 = RightGunRightSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == UPPER_GUN_LEFT_ID) 
+			{
+				gRobot.upperGun.actualPose.speed1 = UpperGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+		}
 	}
 	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
@@ -215,22 +294,231 @@ void CAN1_RX0_IRQHandler(void)
 	OSIntExit();
 }
 
-
-void CAN1_TX_IRQHandler(void)
+/**
+  * @brief  CAN2 receive FIFO0 interrupt request handler
+  * @note   
+  * @param  None
+  * @retval None
+  */
+void CAN2_RX0_IRQHandler(void)
 {
 	OS_CPU_SR  cpu_sr;
+	uint8_t buffer[8];
+	uint32_t StdId=0;
+	uint8_t canNodeId = 0;
+	int32_t i = 0;
+
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	CAN1_TxMsgSendQueueHead();
+	CAN_RxMsg(CAN2, &StdId, buffer, 8);
+	canNodeId = StdId - SDO_RESPONSE_COB_ID_BASE;
+	//读取电机表面温度，一个uint8_t数
+	if(canNodeId == LEFT_WHEEL_TEMPERATURE_ID)
+	{		
+		gRobot.moveBase.motorTemperature.leftWheelMotorTemperature = buffer[0];
+	}
+	if(canNodeId == FORWARD_WHEEL_TEMPERATURE_ID)
+	{		
+		gRobot.moveBase.motorTemperature.forwardWheelMotorTemperature = buffer[0];
+	}	
+	if(canNodeId == BACKWARD_WHEEL_TEMPERATURE_ID)
+	{		
+		gRobot.moveBase.motorTemperature.backwardWheelMotorTemperature = buffer[0];
+	}	
+	
+	if(canNodeId==LEFT_WHEEL_ID || canNodeId==FORWARD_WHEEL_ID || canNodeId==BACKWARD_WHEEL_ID)     //get speed value
+	{
+		//fix me, if length not 8
+		for(i = 0; i < 8; i++)
+			msg.data8[i] = buffer[i];
+
+		if(msg.data32[0] == 0x00005856)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				//下面代码除以100为了将m/s转换为0.1m/s，fix me
+				gRobot.moveBase.actualSpeed.leftWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.actualSpeed.forwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.actualSpeed.backwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+			}
+		}
+		
+		if(msg.data32[0] == 0x80005149)
+		{
+			//msg.dataf[1]是单位为安培的浮点数
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.acturalCurrent.leftWheelCurrent = (msg.dataf[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.acturalCurrent.forwardWheelCurrent = (msg.dataf[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.acturalCurrent.backwardWheelCurrent = (msg.dataf[1]);
+			}
+		}
+		if(msg.data32[0] == 0x00014954)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考almo手册
+				gRobot.moveBase.driverTemperature.leftWheelDriverTemperature = (msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature = (msg.data32[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature = (msg.data32[1]);
+			}
+
+		}
+		if(msg.data32[0] == 0x0000434C)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag = (msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag = (msg.data32[1]);
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag = (msg.data32[1]);
+			}
+		}
+		if(msg.data32[0] == 0x00025644)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+		}
+		if(msg.data32[0] == 0x0000564A)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+			}
+		}
+
+	}
+	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
+	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
+		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
+		canNodeId == RIGHT_GUN_ROLL_ID || canNodeId == RIGHT_GUN_YAW_ID || canNodeId == RIGHT_GUN_LEFT_ID|| \
+		canNodeId ==RIGHT_GUN_RIGHT_ID)
+	{
+		for(i = 0; i < 8; i++)
+		{
+			msg.data8[i] = buffer[i];
+		}
+
+		if(msg.data32[0] == 0x40005856)
+		{
+			if(canNodeId == LEFT_GUN_LEFT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed1 = LeftGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == LEFT_GUN_RIGHT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_LEFT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed1 = RightGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_RIGHT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed2 = RightGunRightSpeedInverseTransform(msg.data32[1]);
+			}		
+		}
+		if(msg.data32[0] == 0x00005850)
+		{
+			if(canNodeId == LEFT_GUN_PITCH_ID) 
+			{
+				gRobot.leftGun.actualPose.pitch = LeftGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == LEFT_GUN_ROLL_ID) 
+			{
+				gRobot.leftGun.actualPose.roll = LeftGunRollInverseTransform(msg.data32[1]);    //横滚
+			}
+			if(canNodeId == LEFT_GUN_YAW_ID) 
+			{
+				gRobot.leftGun.actualPose.yaw = LeftGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+			if(canNodeId == RIGHT_GUN_PITCH_ID) 
+			{
+				gRobot.rightGun.actualPose.pitch = RightGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == RIGHT_GUN_ROLL_ID) 
+			{
+				gRobot.rightGun.actualPose.roll = RightGunRollInverseTransform(msg.data32[1]);    //横滚
+			}
+			if(canNodeId == RIGHT_GUN_YAW_ID) 
+			{
+				gRobot.rightGun.actualPose.yaw = RightGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+			if(canNodeId == UPPER_GUN_PITCH_ID) 
+			{
+				gRobot.upperGun.actualPose.pitch = UpperGunPitchInverseTransform(msg.data32[1]);    //俯仰
+			}
+			if(canNodeId == UPPER_GUN_YAW_ID) 
+			{
+				gRobot.upperGun.actualPose.yaw = UpperGunYawInverseTransform(msg.data32[1]);    //航向
+			}
+		}
+	}
+	
+	CAN_ClearFlag(CAN2, CAN_FLAG_EWG);
+	CAN_ClearFlag(CAN2, CAN_FLAG_EPV);
+	CAN_ClearFlag(CAN2, CAN_FLAG_BOF);
+	CAN_ClearFlag(CAN2, CAN_FLAG_LEC);
+	
+	CAN_ClearFlag(CAN2, CAN_FLAG_FMP0);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FF0);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FOV0);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FMP1);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FF1);
+	CAN_ClearFlag(CAN2, CAN_FLAG_FOV1);
 	OSIntExit();
 }
+
 
 /*************定时器2******start************/
 //每1ms调用一次
 
 extern  OS_EVENT 		*PeriodSem;
-
+extern float moveTimer;
+extern uint8_t moveTimFlag;
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
@@ -252,6 +540,13 @@ void TIM2_IRQHandler(void)
 			OSSemPost(PeriodSem);
 			periodCounter = PERIOD_COUNTER;
 		}
+		if(moveTimFlag==1)
+		{
+			moveTimer+=0.001f;
+		}
+		
+		
+		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 	OSIntExit();
@@ -391,6 +686,17 @@ void UART4_IRQHandler(void)
 				break;
 			case 5:
 				id2 = ch;				//左   打球0 打盘3 扔6  右 打球1 打盘4 扔7  上 打球2 打盘5 扔8
+				//判断目标停车点位置
+				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
+				{
+					gRobot.moveBase.targetPoint = id2 / 80 + 1;
+//					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+//					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//					OSTaskResume(Walk_TASK_PRIO);
+					status = 0;
+				}
+				id2 = id2 % 80;				
 				status++;
 			break;
 			case 6:
@@ -423,7 +729,6 @@ void UART4_IRQHandler(void)
 							gRobot.rightGun.targetPlant = id/5;
  							break;
 							case 2:
-
  							break;
 							default:
 								id2 = 0xff;
@@ -438,12 +743,15 @@ void UART4_IRQHandler(void)
 						{	
 							case 0:
 							gRobot.leftGun.targetPose.pitch = targetAngle;
+							gRobot.leftGun.shootParaMode = id2 / 6;
 							break;
 							case 1:
 							gRobot.rightGun.targetPose.pitch = targetAngle;
+							gRobot.rightGun.shootParaMode = id2 / 6;
 							break;
  							case 2:
 							gRobot.upperGun.targetPose.pitch = targetAngle;
+							gRobot.rightGun.shootParaMode = id2 / 3 - 1;
 							break;
 							default:
 								id2=0xff;
@@ -493,15 +801,18 @@ void UART4_IRQHandler(void)
 							case 0:
 								gRobot.leftGun.targetPose.speed2 = data.data32;
 								gRobot.leftGun.aim = GUN_START_AIM;
+//								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 1:
 								gRobot.rightGun.targetPose.speed2 = data.data32;
 								gRobot.rightGun.aim = GUN_START_AIM;
+//								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);							
 							break;
 							case 2:
 								gRobot.upperGun.aim = GUN_START_AIM;
+//								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 							break;
 							default:
@@ -530,17 +841,30 @@ void UART4_IRQHandler(void)
 					case 1:
 						//通知左枪开枪任务执行开枪动作
 						gRobot.leftGun.shoot = GUN_START_SHOOT;
+//						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);						
 						break;
 					case 2:
 						//通知右枪开枪任务执行开枪动作
 						gRobot.rightGun.shoot = GUN_START_SHOOT;
+//						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 						break;
 					case 3:
 						//通知上面枪开枪任务执行开枪动作
 						gRobot.upperGun.shoot = GUN_START_SHOOT;
+//						OSTaskSuspend(Walk_TASK_PRIO);
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						break;
+					case 4:
+						//手自动切换
+						gRobot.leftGun.mode = GUN_MANUAL_MODE;
+						gRobot.rightGun.mode = GUN_MANUAL_MODE;
+						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+					break;
+					case 5:
+						//下一步
 						break;
 				}
 				status=0;
@@ -660,14 +984,25 @@ void USART3_IRQHandler(void)
 {	 
 #define HEADER1 0x80
 #define HEADER2 0x80
+
+#define POS_HEADER1 0x88	
+#define POS_HEADER2 0x88		
 	
 #define HEADER_STATE1 0
 #define HEADER_STATE2 1
 #define DATA_STATE 2
+#define HEADER_STATE3 3
+#define POS_DATA_STATE1  4
+#define POS_DATA_STATE2 5
 
 	static uint8_t data = 0;
  	static int state = 0;
-
+	static union
+    {
+		uint8_t data[2];
+		uint16_t ActPos;
+    }posInfo;
+	
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -685,6 +1020,10 @@ void USART3_IRQHandler(void)
 				{
 					state++;
 				}
+				else if(data == POS_HEADER1)
+				{
+					state += 3;
+				}
 				break;
 			case HEADER_STATE2:
 				if(data == HEADER2)
@@ -700,8 +1039,27 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				receive_data=data;
 				gRobot.upperGun.targetZone = data;
+				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				state = 0;
 				break;
+			case HEADER_STATE3:
+				if(data == POS_HEADER2)
+				{
+					state++;
+				}
+			break;
+				//到场地中央后初始化摄像头，返回位置信息16位 0-512
+			case POS_DATA_STATE1:
+				//低8位
+				posInfo.data[0] = data;
+				state ++;
+			break;
+			case POS_DATA_STATE2:
+				//高8位
+				posInfo.data[1] = data;
+				gRobot.moveBase.relativePos = posInfo.ActPos;
+				state = 0;
+			break;
 			default:
 				break;
 		}	
