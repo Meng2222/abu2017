@@ -832,11 +832,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 
 	while(timeout--)
 	{
-		//fix me,发送5组命令需要200us*5，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
-		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
 		ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
-		ReadActualVel(CAN1, LEFT_GUN_LEFT_ID);
-		ReadActualVel(CAN1, LEFT_GUN_RIGHT_ID);
+		ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
 		OSTimeDly(5);
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 2.0f || \
@@ -856,10 +853,16 @@ status_t ROBOT_LeftGunCheckAim(void)
 		{
 			continue;
 		}
-		
-		//这里检查传送带的速度，暂时没有加
-		OSTimeDly(75);
-		
+		if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f || \
+			gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
+		{
+			continue;
+		}
+		if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f || \
+			gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
+		{
+			continue;
+		}		
 		//运行到这里，表示都满足指标，跳出循环
 		break;
 	}

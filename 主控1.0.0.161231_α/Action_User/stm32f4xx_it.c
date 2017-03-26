@@ -180,6 +180,39 @@ void CAN1_RX0_IRQHandler(void)
 		}
 
 	}
+	//枪上传送带速度
+	if(canNodeId == LEFT_GUN_LEFT_ID ||canNodeId == LEFT_GUN_RIGHT_ID || \
+		canNodeId == RIGHT_GUN_LEFT_ID ||canNodeId == RIGHT_GUN_RIGHT_ID  || \
+		canNodeId == UPPER_GUN_LEFT_ID)
+	{
+		for(i = 0; i < 8; i++)
+		{
+			msg.data8[i] = buffer[i];
+		}
+		if(msg.data32[0] == 0x00005856)
+		{
+			if(canNodeId == LEFT_GUN_LEFT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed1 = LeftGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == LEFT_GUN_RIGHT_ID) 
+			{
+				gRobot.leftGun.actualPose.speed2 = LeftGunRightSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_LEFT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed1 = RightGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == RIGHT_GUN_RIGHT_ID) 
+			{
+				gRobot.rightGun.actualPose.speed2 = RightGunRightSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == UPPER_GUN_LEFT_ID) 
+			{
+				gRobot.upperGun.actualPose.speed1 = UpperGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+		}
+	}
 	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
 		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \

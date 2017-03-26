@@ -74,7 +74,7 @@ void sendDebugInfo(void)
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
-//	
+	
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
@@ -95,6 +95,38 @@ void sendDebugInfo(void)
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
+//	float angle = gRobot.moveBase.actualAngle;
+//	float posX = gRobot.moveBase.actualXPos;
+//	float posY = gRobot.moveBase.actualYPos;
+//	
+//	
+//	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
+//	USART_SendData(UART5, (int8_t)angle);
+//	USART_SendData(UART5, (int)(angle*100)%100);
+//	
+
+//	
+//	USART_SendData(UART5, (int8_t)(posX / 1000.0f));
+//	//X位移分米部分范围是【-140，10】，单位分米
+//	if(posX < 0.0f)
+//		posX = -posX;
+//	USART_SendData(UART5, (uint8_t)((int)(posX/10.0f)%100));
+//	//X位移厘米部分范围是【-100，100】，单位厘米
+//	USART_SendData(UART5, (uint8_t)((int)posX%10));
+//	USART_SendData(UART5, (uint8_t)((int)(posX*100)%100));
+//	
+//	//根据场地约束，范围设计为【-130，130】，单位cm
+//	USART_SendData(UART5, (int8_t)(posY/10.0f));
+//	if(posY < 0.0f)
+//		posY = -posY;
+//	USART_SendData(UART5, (uint8_t)((int)(posY)%10u));
+//	USART_SendData(UART5, (uint8_t)((int)(posY*100.0f)%100));
+
+//	//连续发送4个-100作为结束标识符
+//	USART_SendData(UART5, (uint8_t)-100);
+//	USART_SendData(UART5, (uint8_t)-100);
+//	USART_SendData(UART5, (uint8_t)-100);
+//	USART_SendData(UART5, (uint8_t)-100);
 }
 
 
@@ -104,6 +136,11 @@ void CameraInit(void)
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'r');
+}
+
+void SendStop2Camera(void)
+{
+	USART_SendData(USART3, 'c');
 }
 
 void App_Task()
@@ -248,13 +285,12 @@ void WalkTask(void)
 			ROBOT_CheckGunOpenSafety();
 		}
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-
 		
 		sendDebugInfo();
 		switch (status)
@@ -324,6 +360,7 @@ void WalkTask(void)
 			    if (GetPosX() >= -9459.14f)
 				{
 					LockWheel();
+					MoveY(100.0f);
 					moveTimFlag = 0;
 					status++;					
 //					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
@@ -373,7 +410,9 @@ void WalkTask(void)
 			//发射飞盘
 			case launch:
 				LockWheel();
+				MoveY(100.0f);
 				CameraInit();
+				SendStop2Camera();
 //				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 //				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
@@ -398,7 +437,6 @@ void LeftGunShootTask(void)
 	int stopAutoFlag = 0;
 	while(1)
 	{
-		USART_SendData(UART5,'r');
 		//检查手动or自动
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
@@ -670,7 +708,7 @@ void UpperGunShootTask(void)
 	{
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
-		gRobot.upperGun.mode = GUN_MANUAL_MODE;
+		gRobot.upperGun.mode = GUN_AUTO_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
@@ -707,7 +745,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(50);
+					OSTimeDly(30);
 				}
 			}
 			else

@@ -29,6 +29,12 @@
 #define RIGHT_GUN_GROUP_ID		102
 //上面枪组ID号
 #define UPPER_GUN_GROUP_ID		103
+//左枪速度组ID
+#define LEFT_GUN_VEL_GROUP_ID   104
+//右枪速度组ID
+#define RIGHT_GUN_VEL_GROUP_ID  105
+//上枪速度组ID
+#define UPPER_GUN_VEL_GROUP_ID  106
 
 //机器人拉保险完成
 #define GUN_OPENSAFTY_READY     1
