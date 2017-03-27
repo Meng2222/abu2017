@@ -282,7 +282,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
 
 
 //左枪射击柱子的顺序
-shoot_command_t gLeftGunShootCmds[AUTO_SHOOT_STEP_NUMBER] = \
+shoot_command_t gLeftGunShootCmds[LEFT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 {
 
 	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD1 , 2},
@@ -302,21 +302,23 @@ shoot_command_t gLeftGunShootCmds[AUTO_SHOOT_STEP_NUMBER] = \
 };
 
 //右枪射击柱子的顺序
-shoot_command_t gRightGunShootCmds[RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER+RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER+RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER] = \
+shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 {
 
-	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD1},
-	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD1},
-	{SHOOT_POINT1, PLANT3,	SHOOT_METHOD1},
-	{SHOOT_POINT1, PLANT4,	SHOOT_METHOD1},
-	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1},
-	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1},
-	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1},
-	{SHOOT_POINT3, PLANT1,	SHOOT_METHOD1},
-	{SHOOT_POINT2, PLANT2,	SHOOT_METHOD1},
-	{SHOOT_POINT2, PLANT3,	SHOOT_METHOD1},
-	{SHOOT_POINT2, PLANT2,	SHOOT_METHOD1},
-	{SHOOT_POINT2, PLANT3,	SHOOT_METHOD1}
+	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD2 , 2},
+	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD2 , 2},
+	{SHOOT_POINT3, PLANT3,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT3,	SHOOT_METHOD2 , 2},
+	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD1 , 2},	
+	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD2 , 2},
+	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1 , 2},	
+	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD2 , 2},
+	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1 , 1},
+	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD2 , 1},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3}
 
 };
 
@@ -392,6 +394,41 @@ void UpdateLeftGunPosDatabaseManulMode(void)
 		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].roll = gRobot.leftGun.targetPose.roll;
 		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed1 = gRobot.leftGun.targetPose.speed1;
 		gLeftGunPosDatabase[2][gRobot.leftGun.shootParaMode][gRobot.leftGun.targetPlant].speed2 = gRobot.leftGun.targetPose.speed2;
+	}
+}
+
+/**
+  * @brief  Update RightGunPosDatabase in Manual Mode
+  * @note   this function will update the 
+  * @param  None
+  * @retval None
+  */
+void UpdateRightGunPosDatabaseManulMode(void)
+{
+	if(gRobot.moveBase.targetPoint == 2)
+	{
+		gRightGunPosDatabase[0][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].yaw = gRobot.rightGun.targetPose.yaw;
+		gRightGunPosDatabase[0][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].pitch = gRobot.rightGun.targetPose.pitch;
+		gRightGunPosDatabase[0][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].roll = gRobot.rightGun.targetPose.roll;
+		gRightGunPosDatabase[0][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].speed1 = gRobot.rightGun.targetPose.speed1;
+		gRightGunPosDatabase[0][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].speed2 = gRobot.rightGun.targetPose.speed2;
+	
+	}
+	else if(gRobot.moveBase.targetPoint == 3)
+	{
+		gRightGunPosDatabase[1][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].yaw = gRobot.rightGun.targetPose.yaw;
+		gRightGunPosDatabase[1][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].pitch = gRobot.rightGun.targetPose.pitch;
+		gRightGunPosDatabase[1][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].roll = gRobot.rightGun.targetPose.roll;
+		gRightGunPosDatabase[1][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].speed1 = gRobot.rightGun.targetPose.speed1;
+		gRightGunPosDatabase[1][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].speed2 = gRobot.rightGun.targetPose.speed2;
+	}
+	else if(gRobot.moveBase.targetPoint == 1)
+	{
+		gRightGunPosDatabase[2][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].yaw = gRobot.rightGun.targetPose.yaw;
+		gRightGunPosDatabase[2][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].pitch = gRobot.rightGun.targetPose.pitch;
+		gRightGunPosDatabase[2][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].roll = gRobot.rightGun.targetPose.roll;
+		gRightGunPosDatabase[2][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].speed1 = gRobot.rightGun.targetPose.speed1;
+		gRightGunPosDatabase[2][gRobot.rightGun.shootParaMode][gRobot.rightGun.targetPlant].speed2 = gRobot.rightGun.targetPose.speed2;
 	}
 }
 /************************ (C) COPYRIGHT NEU_ACTION_2017 *****END OF FILE****/

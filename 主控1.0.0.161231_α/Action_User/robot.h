@@ -62,15 +62,15 @@
 #define LEFT_GUN_RIGHT_ID 5
 
 //右枪支架roll轴CAN ID
-#define RIGHT_GUN_ROLL_ID 7
+#define RIGHT_GUN_ROLL_ID 12
 //右枪支架pitch轴CAN ID
-#define RIGHT_GUN_PITCH_ID 6
+#define RIGHT_GUN_PITCH_ID 13
 //右枪支架yaw轴CAN ID
-#define RIGHT_GUN_YAW_ID 8
+#define RIGHT_GUN_YAW_ID 14
 //右枪左侧传送带轴CAN ID
-#define RIGHT_GUN_LEFT_ID 4
+#define RIGHT_GUN_LEFT_ID 15
 //右枪右侧传送带轴CAN ID
-#define RIGHT_GUN_RIGHT_ID 5
+#define RIGHT_GUN_RIGHT_ID 16
 
 //上面枪支架pitch轴CAN ID
 #define UPPER_GUN_PITCH_ID 11
@@ -108,11 +108,11 @@
 //左枪3点（中点）自动发射子弹数目
 #define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  20//18
 //右枪1点（靠近装载区）自动发射子弹数目
-#define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4
+#define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  8
 //右枪2点（靠近装载区）自动发射子弹数目
-#define RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER  4
+#define RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER  0
 //右枪3点（中点）自动发射子弹数目
-#define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  4
+#define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  20
 
 
 //瞄准未完成
@@ -152,7 +152,9 @@
 #define ROBOT_STATUS_GAS_LOW  0x08
 
 //自动模式下总步数
-#define AUTO_SHOOT_STEP_NUMBER 14
+#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 14
+#define RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER 14
+
 
 //着陆台编号
 #define INVALID_PLANT_NUMBER 7
@@ -165,18 +167,27 @@
 #define PLANT7 6
 
 //发射参数模式，对应打球和落盘
+//打球模式
 #define SHOOT_METHOD1  0
+//落盘模式
 #define SHOOT_METHOD2  1
 
 //发射点位置
+//靠近装载区发射点
 #define SHOOT_POINT1 0
+//靠近出发区发射点
 #define SHOOT_POINT2 1
+//场地中央发射点
 #define SHOOT_POINT3 2
 
 #define INVALID_ZONE_NUMBER 4u
+//7#着陆台左侧区域
 #define ZONE1 0u
+//7#着陆台中后区域
 #define ZONE2 1u
+//7#着陆台中前区域
 #define ZONE3 2u
+//7#着陆台右侧区域
 #define ZONE4 3u
 
 //枪自动射击时命令结构体
@@ -417,6 +428,17 @@ status_t ROBOT_UpperGunAim(void);
  status_t ROBOT_LeftGunCheckShootPoint(void);
 
 /*
+*名称：ROBOT_RightGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+status_t ROBOT_RightGunCheckShootPoint(void);
+
+
+/*
 *名称：ROBOT_LeftGunCheckAim
 *功能：检查瞄准是否已完成
 *参数：
@@ -507,6 +529,21 @@ status_t ROBOT_LeftGunCheckStep(void);
 *status:
 */
 status_t ROBOT_LeftGunCountStepTime(void);
+
+/*
+*名称：ROBOT_RightGunCheckStep
+*功能：检查右枪步数
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunCheckStep(void);
+/*
+*名称：ROBOT_RightGunCountStepTime
+*功能：检查并更新右枪每步发射次数
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunCountStepTime(void);
 /*
 ============================================================
                    枪参数变换与逆变换            

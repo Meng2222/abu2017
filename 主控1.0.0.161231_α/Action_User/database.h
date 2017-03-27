@@ -86,8 +86,8 @@ extern gun_pose_t gUpperGunPosDatabase[SHOOT_METHOD_NUMBER][ZONE_NUMBER];
   * @{
   */
 
-extern shoot_command_t gLeftGunShootCmds[AUTO_SHOOT_STEP_NUMBER];
-extern shoot_command_t gRightGunShootCmds[RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER+RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER+RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER];
+extern shoot_command_t gLeftGunShootCmds[LEFT_GUN_AUTO_SHOOT_STEP_NUMBER];
+extern shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER];
 
 
 //extern shoot_command_t gUpperGunShootCmds;
@@ -117,7 +117,13 @@ extern posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY];
   */
 void UpdateLeftGunPosDatabaseManulMode(void);
 
-
+/**
+  * @brief  Update RightGunPosDatabase in Manual Mode
+  * @note   this function will update the 
+  * @param  None
+  * @retval None
+  */
+void UpdateRightGunPosDatabaseManulMode(void);
 
 #ifdef __cplusplus
 }

@@ -554,7 +554,7 @@ void RightGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	//OSSemSet(PeriodSem, 0, &os_err);
+    OSMboxPend(OpenSaftyMail, 0, &os_err);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -567,7 +567,7 @@ void RightGunShootTask(void)
 			//一旦收到发射命令，则停止自动模式
 			if(gRobot.rightGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
-			if(stopAutoFlag || gRobot.rightGun.shootTimes >= MAX_AUTO_BULLET_NUMBER)
+			if(stopAutoFlag || gRobot.rightGun.shootTimes >= RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
 			{
 				//自动射击已完成
 				if(gRobot.rightGun.shoot == GUN_START_SHOOT)
@@ -585,21 +585,21 @@ void RightGunShootTask(void)
 					uint8_t shootMethod = shootCommand.shootMethod;
 					//获取目标位姿
 					gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
+
 					//更新枪目标位姿
-					gRobot.rightGun.targetPose.pitch = pose.pitch;
-					gRobot.rightGun.targetPose.roll = pose.roll;
-					gRobot.rightGun.targetPose.yaw = pose.yaw;
-					gRobot.rightGun.targetPose.speed1 = pose.speed1;
-					gRobot.rightGun.targetPose.speed2 = pose.speed2;
+					gRobot.rightGun.targetPose.pitch =	pose.pitch;
+					gRobot.rightGun.targetPose.roll =	pose.roll;
+					gRobot.rightGun.targetPose.yaw =	pose.yaw;
+					gRobot.rightGun.targetPose.speed1 =	pose.speed1;
+					gRobot.rightGun.targetPose.speed2 =	pose.speed2;
 
 					//瞄准，此函数最好瞄准完成后再返回
 					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 					ROBOT_RightGunAim();
 					ROBOT_RightGunCheckAim();
-					//
 					ROBOT_RightGunShoot();
 					//此函数有延迟
-					ROBOT_RightGunHome();
+//					ROBOT_RightGunHome();
 					gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				}
 				else
@@ -609,15 +609,13 @@ void RightGunShootTask(void)
 			}
 			else
 			{
-				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
-				//子弹上膛,第一次上膛默认位置OK
-				ROBOT_RightGunReload();
-				//检查并更新子弹状态
-				ROBOT_GunCheckBulletState(RIGHT_GUN);
-				shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootTimes];
+				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改	
+				//获取发射命令
+				shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep];
 				uint8_t shootPoint = shootCommand.shootPoint;
 				uint8_t landId = shootCommand.plantNum;
 				uint8_t shootMethod = shootCommand.shootMethod;
+				gRobot.rightGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 				//获取目标位姿
 				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
@@ -629,12 +627,41 @@ void RightGunShootTask(void)
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				//子弹上膛,第一次上膛默认位置OK
+				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
+				if(landId != PLANT7)
+				{
+					ROBOT_RightGunAim();
+					ROBOT_RightGunReload();
+				}
+				else
+				{
+					ROBOT_RightGunAim();
+					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+					ROBOT_RightGunReload();
+				}
+				//检查上弹是否到位
+				ROBOT_RightGunCheckReload();
+				//上弹到位后再次瞄准，并检查枪是否到位
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				//
+				//检查是否进入下一步
+				ROBOT_RightGunCheckStep();
+				//检查是否到达发射点
+				ROBOT_RightGunCheckShootPoint();	
+				//发射飞盘
 				ROBOT_RightGunShoot();
-				//此函数有延迟
-				ROBOT_RightGunHome();
+				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
+				if(gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER)
+				{
+//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
+					OSTaskResume(Walk_TASK_PRIO);
+				}
+				//自动射击结束后进入纯手动模式
+				if(gRobot.rightGun.shootTimes >= RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
+				{
+					gRobot.rightGun.mode = GUN_MANUAL_MODE;
+				}
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -643,12 +670,13 @@ void RightGunShootTask(void)
 		{
 			if(gRobot.rightGun.aim == GUN_START_AIM)
 			{
-				//检查并更新子弹状态，训练时需要记录
-				ROBOT_GunCheckBulletState(RIGHT_GUN);
 				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_RightGunAim();
+				//更新数据库中参数并写入FLASH
+				UpdateRightGunPosDatabaseManulMode();
+				FlashWriteGunPosData();
 				ROBOT_RightGunCheckAim();
 				gRobot.rightGun.aim = GUN_STOP_AIM;
 			}
@@ -662,6 +690,7 @@ void RightGunShootTask(void)
 			}
 			else
 			{
+//				OSTaskResume(Walk_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}

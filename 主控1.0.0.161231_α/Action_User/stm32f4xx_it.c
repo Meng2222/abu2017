@@ -744,6 +744,7 @@ void UART4_IRQHandler(void)
 						{	
 							case 0:
 							gRobot.leftGun.targetPose.pitch = targetAngle;
+							//射击参数模式，左右枪没有打盘
 							gRobot.leftGun.shootParaMode = id2 / 6;
 							break;
 							case 1:
@@ -752,6 +753,7 @@ void UART4_IRQHandler(void)
 							break;
  							case 2:
 							gRobot.upperGun.targetPose.pitch = targetAngle;
+							//射击参数模式，上枪只有打盘
 							gRobot.rightGun.shootParaMode = id2 / 3 - 1;
 							break;
 							default:

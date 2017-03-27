@@ -19,7 +19,7 @@
 #define BACKWARD_WHEEL_ID 1
 #define MOVEBASE_BROADCAST_ID 0
 
-
+//热电偶返回电机温度ID
 #define LEFT_WHEEL_TEMPERATURE_ID   52
 #define FORWARD_WHEEL_TEMPERATURE_ID   53
 #define BACKWARD_WHEEL_TEMPERATURE_ID   51
@@ -117,7 +117,7 @@ typedef struct
 	float backwardWheelDriverTemperature;
 }driverTemperature_t;
 
-
+//驱动器电流限制标志位，0为限制到PL ， 1为限制到CL[1]
 typedef struct
 {
 	int leftWheelDriverFlag;
@@ -125,14 +125,14 @@ typedef struct
 	int backwardWheelDriverFlag;
 }driverCurrentLimitFlag_t;
 
-
+//驱动器输出速度命令
 typedef struct
 {
 	int leftDriverCommandVelocity;
 	int forwardDriverCommandVelocity;
 	int backwardDriverCommandVelocity;
 }driverCommandVelocity_t;
-
+//驱动器收到速度命令
 typedef struct
 {
 	int leftDriverJoggingVelocity;
@@ -174,11 +174,11 @@ typedef struct
 	motorTemperature_t motorTemperature;
 	//驱动器温度，目前只写了走行的3个驱动器温度，fix me
 	driverTemperature_t driverTemperature;
-	
+	//驱动器电流限制标志
 	driverCurrentLimitFlag_t driverCurrentLimitFlag;
-	
+	//驱动器输出速度命令
 	driverCommandVelocity_t driverCommandVelocity;
-	
+	//驱动器接收的速度命令
 	driverJoggingVelocity_t driverJoggingVelocity;
 
 	//机器人目标停止位置，范围1、2、3，对应中点，靠近发射区，靠近出发区点

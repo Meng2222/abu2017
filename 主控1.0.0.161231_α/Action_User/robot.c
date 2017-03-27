@@ -665,10 +665,14 @@ status_t ROBOT_LeftGunReload(void)
 */
 status_t ROBOT_RightGunReload(void)
 {
-	RightPush();
-	OSTimeDly(100);
-	RightBack();
-	return GUN_NO_ERROR;
+	if(gRobot.rightGun.stepState != GUN_NEXT_STEP)
+	{
+		RightPush();
+		OSTimeDly(80);
+		RightBack();
+		OSTimeDly(50);
+		return GUN_NO_ERROR;
+	}
 }
 /**
 *名称：ROBOT_LeftGunCheckReload
@@ -717,7 +721,7 @@ status_t ROBOT_RightGunCheckReload(void)
 		}
 		else
 		{
-			ROBOT_LeftGunHome();
+			ROBOT_RightGunHome();
 		}
 		
 	}
@@ -885,22 +889,18 @@ status_t ROBOT_LeftGunCheckAim(void)
 status_t ROBOT_RightGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，1秒
-	int timeout = 100;
+	int timeout = 40;
 
 	while(timeout--)
 	{
 		//fix me,发送3组命令需要200us*3，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
 		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
-//		ReadActualPos(RIGHT_GUN_GROUP_ID);		
-//		ReadActualVel(RIGHT_GUN_LEFT_ID);
-//		ReadActualVel(RIGHT_GUN_RIGHT_ID);
-		ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
-		ReadActualVel(CAN1, LEFT_GUN_LEFT_ID);
-		ReadActualVel(CAN1, LEFT_GUN_RIGHT_ID);
+		ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+		ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
 		OSTimeDly(5);
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
-			gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
+		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 2.0f || \
+			gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 2.0f)
 		{
 			continue;
 		}
@@ -917,9 +917,16 @@ status_t ROBOT_RightGunCheckAim(void)
 			continue;
 		}
 		
-		//这里检查传送带的速度，暂时没有加
-		OSTimeDly(75);
-		
+		if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
+			gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
+		{
+			continue;
+		}
+		if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
+			gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
+		{
+			continue;
+		}	
 		//运行到这里，表示都满足指标，跳出循环
 		break;
 	}
@@ -1004,6 +1011,25 @@ status_t ROBOT_UpperGunCheckAim(void)
 	}
 }
 
+/*
+*名称：ROBOT_RightGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_RightGunCheckShootPoint(void)
+{
+	CPU_INT08U  os_err;
+	if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
+		gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
+	{
+		OSMboxPend(ShootPointMail,0,&os_err);
+		return MOVEBASE_POS_READY;
+	}
+}
+
 /**
 *名称：ROBOT_LeftGunShoot
 *功能：左枪开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪
@@ -1033,12 +1059,13 @@ status_t ROBOT_LeftGunShoot(void)
 */
 status_t ROBOT_RightGunShoot(void)
 {
-	if(gRobot.rightGun.ready == GUN_AIM_DONE)
+	if(gRobot.rightGun.ready == GUN_AIM_DONE && gRobot.rightGun.stepState == GUN_PRESENT_STEP)
 	{
 		RightShoot();	
 		OSTimeDly(100);
 		RightShootReset();	
 		gRobot.rightGun.shootTimes++;
+		ROBOT_RightGunCountStepTime();		
 		//fix me, 应该检查子弹是否用完
 		gRobot.rightGun.bulletNumber--;
 	}
@@ -1083,18 +1110,18 @@ status_t ROBOT_LeftGunHome(void)
 	return GUN_NO_ERROR;
 }
 /**
-*@name ROBOT_LeftGunHome
-*功能：左枪归位，开枪后为了更好的上膛需要归位
+*@name ROBOT_RightGunHome
+*功能：右枪归位，开枪后为了更好的上膛需要归位
 *@param None
 *@retval status:GUN_NO_ERROR
 *@note fix me, 此处发出命令后等待两秒以确保其能够归位，应加位置检测
 */
 status_t ROBOT_RightGunHome(void)
 {
-	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
-	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
-	OSTimeDly(300);
+	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
+	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
+	OSTimeDly(150);
 	
 	return GUN_NO_ERROR;
 }
@@ -1162,5 +1189,46 @@ status_t ROBOT_LeftGunCountStepTime(void)
 	{
 		gRobot.leftGun.shootStep++;
 		gRobot.leftGun.actualStepShootTimes = 0;
+	}
+}
+
+/*
+*名称：ROBOT_RightGunCheckStep
+*功能：检查右枪步数
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunCheckStep(void)
+{
+	if(gRobot.rightGun.nextStep == 1)
+	{
+		gRobot.rightGun.shootStep++;
+		gRobot.rightGun.shootTimes += (gRobot.rightGun.targetStepShootTimes - gRobot.rightGun.actualStepShootTimes);
+		gRobot.rightGun.actualStepShootTimes = 0; 
+		gRobot.rightGun.nextStep = 0;
+		gRobot.rightGun.stepState = GUN_NEXT_STEP;
+	}
+	else
+	{
+		gRobot.rightGun.stepState = GUN_PRESENT_STEP;
+	}
+}
+
+/*
+*名称：ROBOT_RightGunCountStepTime
+*功能：检查并更新右枪每步发射次数
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunCountStepTime(void)
+{
+	if(gRobot.rightGun.actualStepShootTimes < gRobot.rightGun.targetStepShootTimes)
+	{
+		gRobot.rightGun.actualStepShootTimes++;
+	}
+	if(gRobot.rightGun.actualStepShootTimes == gRobot.rightGun.targetStepShootTimes)
+	{
+		gRobot.rightGun.shootStep++;
+		gRobot.rightGun.actualStepShootTimes = 0;
 	}
 }
