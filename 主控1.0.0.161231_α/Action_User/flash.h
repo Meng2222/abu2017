@@ -43,7 +43,7 @@ void Flash_Read(uint8_t *data,uint32_t len);
  * @param  None
  * @retval None
  */
-void Flash_Init(void);
+void FlashInit(void);
 uint8_t  *GetFlashArr(void);
 float	*GetResultArr(void);
 uint32_t *GetCountArr(void);
