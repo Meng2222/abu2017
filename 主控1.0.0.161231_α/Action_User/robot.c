@@ -7,8 +7,8 @@
 #include "gpio.h"
 #include "cpu.h"
 robot_t gRobot = {0};
-extern OS_EVENT *OpenSaftyMail;
-extern OS_EVENT *ShootPointMail;
+extern OS_EVENT *OpenSaftyMbox;
+extern OS_EVENT *ShootPointMbox;
 /*
 ============================================================
 						  枪初始化 
@@ -613,7 +613,7 @@ status_t ROBOT_CheckGunOpenSafety(void)
 	int *msg = (int *)GUN_OPENSAFTY_READY;
 	if(KEYSWITCH)
 	{
-		OSMboxPostOpt(OpenSaftyMail , msg , OS_POST_OPT_BROADCAST);
+		OSMboxPostOpt(OpenSaftyMbox , msg , OS_POST_OPT_BROADCAST);
 	}
 	return GUN_NO_ERROR;
 }
@@ -1006,7 +1006,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
 		gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
 	{
-		OSMboxPend(ShootPointMail,0,&os_err);
+		OSMboxPend(ShootPointMbox,0,&os_err);
 		return MOVEBASE_POS_READY;
 	}
 }
@@ -1025,7 +1025,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
 		gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
 	{
-		OSMboxPend(ShootPointMail,0,&os_err);
+		OSMboxPend(ShootPointMbox,0,&os_err);
 		return MOVEBASE_POS_READY;
 	}
 }
