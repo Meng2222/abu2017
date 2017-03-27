@@ -14,7 +14,6 @@
 #include "gasvalvecontrol.h"
 #include "movebase.h"
 #include "database.h"
-#include "wifi.h"
 #include "flash.h"
 
 /*
