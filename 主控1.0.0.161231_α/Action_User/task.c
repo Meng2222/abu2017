@@ -170,7 +170,7 @@ void ConfigTask(void)
 	UART5_Init(115200);		//调试用wifi
 	USART3_Init(115200);    //摄像头
 	USART6_Init(115200);	//定位系统
-	Flash_Init();
+	FlashInit();
 	TIM_Delayms(TIM5, 10000);
 
 
