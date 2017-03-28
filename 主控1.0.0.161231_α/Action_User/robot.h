@@ -62,15 +62,15 @@
 #define LEFT_GUN_RIGHT_ID 5
 
 //右枪支架roll轴CAN ID
-#define RIGHT_GUN_ROLL_ID 12
+#define RIGHT_GUN_ROLL_ID 15
 //右枪支架pitch轴CAN ID
-#define RIGHT_GUN_PITCH_ID 13
+#define RIGHT_GUN_PITCH_ID 14
 //右枪支架yaw轴CAN ID
-#define RIGHT_GUN_YAW_ID 14
+#define RIGHT_GUN_YAW_ID 16
 //右枪左侧传送带轴CAN ID
-#define RIGHT_GUN_LEFT_ID 15
+#define RIGHT_GUN_LEFT_ID 12
 //右枪右侧传送带轴CAN ID
-#define RIGHT_GUN_RIGHT_ID 16
+#define RIGHT_GUN_RIGHT_ID 13
 
 //上面枪支架pitch轴CAN ID
 #define UPPER_GUN_PITCH_ID 11

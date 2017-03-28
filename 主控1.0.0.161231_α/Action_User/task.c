@@ -27,6 +27,7 @@ OS_EVENT *OpenSaftyMbox;
 OS_EVENT *ShootPointMbox;
 OS_EVENT *LeftGunNextPointMbox;
 OS_EVENT *RightGunNextPointMbox;
+
 //定义机器人全局变量
 extern robot_t gRobot;
 
@@ -199,11 +200,11 @@ void ConfigTask(void)
 	BEEP_OFF;
 
 
-//	OSTaskSuspend(Walk_TASK_PRIO);
+	OSTaskSuspend(Walk_TASK_PRIO);
 
-//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -560,8 +561,8 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int *RightGunNextPoint = (int *)1;
-    OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	gRobot.rightGun.mode = GUN_AUTO_MODE;
+//   OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	gRobot.rightGun.mode = GUN_MANUAL_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -697,7 +698,6 @@ void RightGunShootTask(void)
 			}
 			else
 			{
-//				OSTaskResume(Walk_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
