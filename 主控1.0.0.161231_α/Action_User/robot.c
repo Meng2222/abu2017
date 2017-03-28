@@ -98,7 +98,7 @@ static void RightGunInit(void)
 	
 	gRobot.rightGun.minPoseLimit.pitch = 7.0f;
 	gRobot.rightGun.minPoseLimit.yaw = -50.0f;
-	gRobot.rightGun.minPoseLimit.roll = -34.68f;
+	gRobot.rightGun.minPoseLimit.roll = -45.0f;
 	gRobot.rightGun.minPoseLimit.speed1=0.0f;
 	gRobot.rightGun.minPoseLimit.speed2=0.0f;
 	
