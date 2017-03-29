@@ -8,7 +8,9 @@
 #include "cpu.h"
 robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
-extern OS_EVENT *ShootPointMbox;
+extern OS_EVENT *LeftGunShootPointMbox;
+extern OS_EVENT *RightGunShootPointMbox;
+
 /*
 ============================================================
 						  枪初始化 
@@ -1006,7 +1008,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
 		gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
 	{
-		OSMboxPend(ShootPointMbox,0,&os_err);
+		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 		return MOVEBASE_POS_READY;
 	}
 }
@@ -1025,7 +1027,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
 		gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
 	{
-		OSMboxPend(ShootPointMbox,0,&os_err);
+		OSMboxPend(RightGunShootPointMbox,0,&os_err);
 		return MOVEBASE_POS_READY;
 	}
 }

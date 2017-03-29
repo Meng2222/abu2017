@@ -147,11 +147,11 @@ void FlashInit(void)
 	/* 读取FLASH中保存的数据，并将其存到RAM里 */
 	Flash_ReadFloat((float *)gLeftGunPosDatabase, FLASH_SECTOR_6_BLOCK_BASE_ADDRESS, LEFTGUNPOSDATABASE_FLOAT_NUM);
 	Flash_ReadFloat((float *)gRightGunPosDatabase, \
-						FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * LEFTGUNPOSDATABASE_FLOAT_NUM, \
-						RIGHTGUNPOSDATABASE_FLOAT_NUM);
-	Flash_ReadFloat((float *)gUpperGunPosDatabase,\
-						FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * (LEFTGUNPOSDATABASE_FLOAT_NUM + RIGHTGUNPOSDATABASE_FLOAT_NUM), \
-						UPPERGUNPOSDATABASE_FLOAT_NUM);
+					FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * LEFTGUNPOSDATABASE_FLOAT_NUM, \
+					RIGHTGUNPOSDATABASE_FLOAT_NUM);
+//	Flash_ReadFloat((float *)gUpperGunPosDatabase,\
+//					FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * (LEFTGUNPOSDATABASE_FLOAT_NUM + RIGHTGUNPOSDATABASE_FLOAT_NUM), \
+//					UPPERGUNPOSDATABASE_FLOAT_NUM);
 
 	/* 保护Flash数据 */
 	Flash_Encryp();
@@ -225,13 +225,13 @@ void FlashWriteGunPosData(void)
 	{
 		FLASH_ProgramWord(FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * count, *(uint32_t *)((float *)gLeftGunPosDatabase + count));
 	}
-	for(; count < RIGHTGUNPOSDATABASE_FLOAT_NUM; count++)
+	for(count = 0; count < RIGHTGUNPOSDATABASE_FLOAT_NUM; count++)
 	{
-		FLASH_ProgramHalfWord(FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * count, *(uint32_t *)((float *)gRightGunPosDatabase + count));
+		FLASH_ProgramWord(FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * (LEFTGUNPOSDATABASE_FLOAT_NUM + count), *(uint32_t *)((float *)gRightGunPosDatabase + count));
 	}
-	for(; count < RIGHTGUNPOSDATABASE_FLOAT_NUM; count++)
+	for(count = 0; count < UPPERGUNPOSDATABASE_FLOAT_NUM; count++)
 	{
-		FLASH_ProgramHalfWord(FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * count, *(uint32_t *)((float *)gUpperGunPosDatabase + count));
+		FLASH_ProgramWord(FLASH_SECTOR_6_BLOCK_BASE_ADDRESS + 4 * ( LEFTGUNPOSDATABASE_FLOAT_NUM + RIGHTGUNPOSDATABASE_FLOAT_NUM + count), *(uint32_t *)((float *)gUpperGunPosDatabase + count));
 	}
 	FLASH_Lock();
 }

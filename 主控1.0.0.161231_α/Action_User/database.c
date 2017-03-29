@@ -368,7 +368,7 @@ extern robot_t gRobot;
   * @param  None
   * @retval None
   */
-void UpdateLeftGunPosDatabaseManulMode(void)
+void UpdateLeftGunPosDatabaseManualMode(void)
 {
 	if(gRobot.moveBase.targetPoint == 2)
 	{
@@ -403,7 +403,7 @@ void UpdateLeftGunPosDatabaseManulMode(void)
   * @param  None
   * @retval None
   */
-void UpdateRightGunPosDatabaseManulMode(void)
+void UpdateRightGunPosDatabaseManualMode(void)
 {
 	if(gRobot.moveBase.targetPoint == 2)
 	{

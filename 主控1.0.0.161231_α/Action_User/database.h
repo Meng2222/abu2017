@@ -115,7 +115,7 @@ extern posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY];
   * @param  None
   * @retval None
   */
-void UpdateLeftGunPosDatabaseManulMode(void);
+void UpdateLeftGunPosDatabaseManualMode(void);
 
 /**
   * @brief  Update RightGunPosDatabase in Manual Mode
@@ -123,7 +123,7 @@ void UpdateLeftGunPosDatabaseManulMode(void);
   * @param  None
   * @retval None
   */
-void UpdateRightGunPosDatabaseManulMode(void);
+void UpdateRightGunPosDatabaseManualMode(void);
 
 #ifdef __cplusplus
 }
