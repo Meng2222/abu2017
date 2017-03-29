@@ -92,13 +92,13 @@ static void RightGunInit(void)
 	//fix me, current no data 
 	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
-	gRobot.rightGun.maxPoseLimit.roll = 34.68f;
+	gRobot.rightGun.maxPoseLimit.roll = 46.54f;
 	gRobot.rightGun.maxPoseLimit.speed1=200.0f;
 	gRobot.rightGun.maxPoseLimit.speed2=200.0f;
 	
 	gRobot.rightGun.minPoseLimit.pitch = 7.0f;
 	gRobot.rightGun.minPoseLimit.yaw = -50.0f;
-	gRobot.rightGun.minPoseLimit.roll = -45.0f;
+	gRobot.rightGun.minPoseLimit.roll = -43.46f;
 	gRobot.rightGun.minPoseLimit.speed1=0.0f;
 	gRobot.rightGun.minPoseLimit.speed2=0.0f;
 	
@@ -341,7 +341,7 @@ int32_t RightGunYawTransform(float yaw)
 	//fix me ,tansform may be different from LeftGun 
 	if(yaw > gRobot.rightGun.maxPoseLimit.yaw) yaw = gRobot.rightGun.maxPoseLimit.yaw;	
 	if(yaw < gRobot.rightGun.minPoseLimit.yaw) yaw = gRobot.rightGun.minPoseLimit.yaw;
-	return -(int32_t)((50.0f + yaw) * 102.4f);
+	return (int32_t)((yaw - 50.0f) * 102.4f);
 }
 
 /*
@@ -354,7 +354,7 @@ int32_t RightGunYawTransform(float yaw)
 float RightGunYawInverseTransform(int32_t position)
 {
 	//fix me ,tansform may be different from LeftGun 
-	return (float)(-position) / 102.4f - 50.0f;
+	return (float)(position) / 102.4f + 50.0f;
 }
 
 /*
@@ -397,7 +397,7 @@ int32_t RightGunRollTransform(float roll)
 	//fix me ,tansform may be different from LeftGun 
 	if(roll > gRobot.rightGun.maxPoseLimit.roll) roll = gRobot.rightGun.maxPoseLimit.roll;	
 	if(roll < gRobot.rightGun.minPoseLimit.roll) roll = gRobot.rightGun.minPoseLimit.roll;
-	return (int32_t)((roll + 45.0f) * 141.0844f);
+	return -(int32_t)((roll - 46.54f) * 141.0844f);
 }
 
 /*
@@ -410,7 +410,7 @@ int32_t RightGunRollTransform(float roll)
 float RightGunRollInverseTransform(int32_t position)
 {
 	//fix me ,tansform may be different from LeftGun 
-	return (float)position/141.0844f - 45.0f;
+	return (float)(-position)/141.0844f + 46.54f;
 }
 
 /*
@@ -714,7 +714,7 @@ status_t ROBOT_RightGunCheckReload(void)
 	int timeOut = 3;
 	while(timeOut--)
 	{
-		if(PHOTOSENSORRIGHTGUN)
+		if(!PHOTOSENSORRIGHTGUN)
 		{
 			gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
 			return GUN_NO_ERROR;
@@ -793,12 +793,12 @@ status_t ROBOT_RightGunAim(void)
 {
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-			PosCrl(CAN2, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.targetPose.yaw));
-			PosCrl(CAN2, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.targetPose.pitch));			
-			PosCrl(CAN2, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.targetPose.roll));	
+			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.targetPose.yaw));
+			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.targetPose.pitch));			
+			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.targetPose.roll));	
 
-			VelCrl(CAN2, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRobot.rightGun.targetPose.speed1));
-			VelCrl(CAN2, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRobot.rightGun.targetPose.speed2));
+			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRobot.rightGun.targetPose.speed1));
+			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRobot.rightGun.targetPose.speed2));
 
 	return GUN_NO_ERROR;
 }
@@ -895,8 +895,8 @@ status_t ROBOT_RightGunCheckAim(void)
 	{
 		//fix me,发送3组命令需要200us*3，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
 		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
-		ReadActualPos(CAN2,RIGHT_GUN_GROUP_ID);		
-		ReadActualVel(CAN2,RIGHT_GUN_VEL_GROUP_ID);
+		ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+		ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
 		OSTimeDly(5);
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 2.0f || \

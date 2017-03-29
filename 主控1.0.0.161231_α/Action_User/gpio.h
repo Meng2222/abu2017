@@ -9,7 +9,7 @@
 #define PHOTOSENSORRIGHT 		(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_8))
 #define PHOTOSENSORUPGUN 		(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6))
 #define PHOTOSENSORLEFTGUN 		(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_12))
-#define PHOTOSENSORRIGHTGUN 	(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_12))
+#define PHOTOSENSORRIGHTGUN 	(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_8))
 #define BEEP_ON          		 GPIO_SetBits(GPIOE, GPIO_Pin_7)
 #define BEEP_OFF         		 GPIO_ResetBits(GPIOE, GPIO_Pin_7)
  

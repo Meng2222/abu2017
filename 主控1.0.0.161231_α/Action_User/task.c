@@ -200,9 +200,9 @@ void ConfigTask(void)
 	BEEP_OFF;
 
 
-	OSTaskSuspend(Walk_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
-	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 
@@ -319,7 +319,8 @@ void WalkTask(void)
 			case beginToGo1:
 				if (PHOTOSENSORUPGUN)
 				{
-					status++;
+//					status++;
+					status+=5;
 				}
 				break;
 				
@@ -401,7 +402,7 @@ void LeftGunShootTask(void)
 	os_err = os_err;
 	static int *LeftGunNextPoint = (int *)1;
     OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	gRobot.leftGun.mode = GUN_AUTO_MODE;
+	gRobot.leftGun.mode = GUN_MANUAL_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -507,7 +508,7 @@ void LeftGunShootTask(void)
 				if(gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER)
 				{
 //					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-//					OSTaskResume(Walk_TASK_PRIO);
+					OSTaskResume(Walk_TASK_PRIO);
 					OSMboxPostOpt(LeftGunNextPointMbox , LeftGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
@@ -561,7 +562,7 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int *RightGunNextPoint = (int *)1;
-//   OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.rightGun.mode = GUN_MANUAL_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
