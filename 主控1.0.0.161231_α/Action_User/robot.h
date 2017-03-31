@@ -102,17 +102,17 @@
 #define MAX_AUTO_BULLET_NUMBER 12
 
 //左枪1点（靠近装载区）自动发射子弹数目
-#define LEFT_GUN_POINT1_AUTO_BULLET_NUMBER  8
+#define LEFT_GUN_POINT1_AUTO_BULLET_NUMBER  4
 //左枪2点（靠近出发区）自动发射子弹数目
 #define LEFT_GUN_POINT2_AUTO_BULLET_NUMBER  0
 //左枪3点（中点）自动发射子弹数目
-#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  20//18
+#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  11//18
 //右枪1点（靠近装载区）自动发射子弹数目
-#define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  8
+#define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4//8
 //右枪2点（靠近装载区）自动发射子弹数目
 #define RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER  0
 //右枪3点（中点）自动发射子弹数目
-#define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  20
+#define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  11
 
 
 //瞄准未完成
@@ -152,8 +152,8 @@
 #define ROBOT_STATUS_GAS_LOW  0x08
 
 //自动模式下总步数
-#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 14
-#define RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER 14
+#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 8
+#define RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER 7//14
 
 
 //着陆台编号
@@ -180,7 +180,7 @@
 //场地中央发射点
 #define SHOOT_POINT3 2
 
-#define INVALID_ZONE_NUMBER 4u
+#define INVALID_ZONE_NUMBER 0u
 //7#着陆台左侧区域
 #define ZONE1 0u
 //7#着陆台中后区域

@@ -218,7 +218,7 @@ void CAN1_RX0_IRQHandler(void)
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
 		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
 		canNodeId == RIGHT_GUN_ROLL_ID || canNodeId == RIGHT_GUN_YAW_ID || canNodeId == RIGHT_GUN_LEFT_ID|| \
-		canNodeId ==RIGHT_GUN_RIGHT_ID)
+		canNodeId ==RIGHT_GUN_RIGHT_ID || canNodeId == UPPER_GUN_PITCH_ID || canNodeId == UPPER_GUN_YAW_ID)
 	{
 		for(i = 0; i < 8; i++)
 		{
@@ -436,7 +436,7 @@ void CAN2_RX0_IRQHandler(void)
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
 		canNodeId == LEFT_GUN_LEFT_ID || canNodeId == LEFT_GUN_RIGHT_ID||canNodeId == RIGHT_GUN_PITCH_ID|| \
 		canNodeId == RIGHT_GUN_ROLL_ID || canNodeId == RIGHT_GUN_YAW_ID || canNodeId == RIGHT_GUN_LEFT_ID|| \
-		canNodeId ==RIGHT_GUN_RIGHT_ID)
+		canNodeId ==RIGHT_GUN_RIGHT_ID || canNodeId == UPPER_GUN_PITCH_ID || canNodeId == UPPER_GUN_YAW_ID)
 	{
 		for(i = 0; i < 8; i++)
 		{
