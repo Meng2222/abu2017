@@ -267,6 +267,87 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	}
 	
 }
+void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
+{
+	float targetDist = 0.0f;
+	float distAcc = 0.0f, timeAcc = 0.0f;
+	float distConst = 0.0f, timeConst = 0.0f;
+	float distDec = 0.0f, timeDec = 0.0f;
+	
+	//计算理论距离和理论速度的绝对值
+	targetDist = fabs(targetPos - startPos);
+	timeAcc = fabs(velX) / accX;
+	distAcc = 0.5f * accX * pow(timeAcc, 2);
+	/*梯形速度规划部分*/
+	if (2.0f * distAcc < targetDist)
+	{
+		timeDec = timeAcc;
+		distDec = distAcc;
+		distConst = targetDist - distAcc - distDec;
+		timeConst = distConst / fabs(velX);
+		
+		if (moveTimer <= timeAcc)    /*加速段*/
+		{
+			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
+			pExpData->speed = accX * (moveTimer + 0.01f);
+		}
+		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))    /*匀速段*/
+		{
+			pExpData->dist = targetDist - distAcc - fabs(velX) * (moveTimer - timeAcc);
+			pExpData->speed = fabs(velX);
+		}
+		else if (moveTimer > (timeAcc + timeConst) && 
+			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
+		{
+			pExpData->dist = 0.5f * accX * (pow(timeAcc * 2.0f + timeConst - moveTimer, 2));
+			pExpData->speed = accX * (2.0f * timeAcc + timeConst - moveTimer - 0.01f);
+		}
+		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
+		{
+			pExpData->dist = 0;
+			pExpData->speed = 0;
+		}
+	}
+	
+	/*三角形速度规划部分*/
+	else if (2.0f * distAcc >= targetDist)
+	{
+		timeAcc = sqrt((targetDist + pow(ENDSPEED, 2) / (2 * accX)) / accX);
+		distAcc = 0.5f * accX * pow(timeAcc, 2);
+		distDec = targetDist - distAcc;
+		timeDec = timeAcc - ENDSPEED / accX;
+		
+		if (moveTimer <= timeAcc)    /*加速段*/
+		{
+			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
+			pExpData->speed = accX * (moveTimer + 0.01f);
+		}
+		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
+		{
+			pExpData->dist = 0.5f * accX * pow(2.0f * timeAcc - moveTimer, 2)
+			                             - pow(timeAcc - timeDec, 2);
+			pExpData->speed = accX * (2.0f * timeAcc - moveTimer - 0.01f);
+		}
+		else if (moveTimer > (timeAcc + timeDec))    /*低速匀速准备停车*/
+		{
+			pExpData->dist = ENDSPEED * ((timeAcc + timeDec) - moveTimer);
+			pExpData->speed = ENDSPEED;
+		}
+	}
+	
+	
+	//计算理论位置并修正理论速度的符号
+	if(velX < 0.0f)
+	{
+		pExpData->pos = startPos - targetDist + pExpData->dist;
+		pExpData->speed = -pExpData->speed;
+	}
+	else 
+	{
+		pExpData->pos = startPos + targetDist - pExpData->dist;
+	}
+	
+}
 
 
 /**
@@ -476,5 +557,55 @@ void MoveTo(float targetPos, float velX, float accX)
 
 	
 	//速度给出至各轮
+	ThreeWheelVelControl(speedOut);
+}
+
+void MoveToCenter(float targetPos, float velX, float accX)
+{
+	//速度控制需要的过程变量
+	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
+	static float startPos = 0.0f;
+	expData_t expData = {0.0f, 0.0f, 0.0f};
+	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
+	
+	//新运动过程初始化
+	if(formerTargetPos != targetPos)
+	{	
+		formerTargetPos = targetPos;
+		
+		startPos = GetPosX();
+		if (velX >= 0)
+		{
+			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
+		}
+		else
+		{
+			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
+		}
+		moveTimer = 0.0f;
+		moveTimFlag = 1;
+	}
+
+	//轨迹计算
+	CalcPathToCenter(&expData, velX, startPos, targetPos, accX);
+
+	//速度调节部分
+	SpeedAmend(&speedOut, &expData, velX);
+	
+
+	
+	//速度给出至各轮
+	ThreeWheelVelControl(speedOut);
+}
+
+
+void MoveY(float velY)
+{
+	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
+
+	speedOut.backwardWheelSpeed = Vel2Pulse( - velY * 0.8660254f/*cos30*/);
+	speedOut.forwardWheelSpeed = Vel2Pulse(0);
+	speedOut.leftWheelSpeed = Vel2Pulse(velY * 0.8660254f/*cos30*/);
+	
 	ThreeWheelVelControl(speedOut);
 }

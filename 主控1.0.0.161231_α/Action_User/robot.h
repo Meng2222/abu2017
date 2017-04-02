@@ -106,7 +106,7 @@
 //左枪2点（靠近出发区）自动发射子弹数目
 #define LEFT_GUN_POINT2_AUTO_BULLET_NUMBER  0
 //左枪3点（中点）自动发射子弹数目
-#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  11//18
+#define LEFT_GUN_POINT3_AUTO_BULLET_NUMBER  10//18
 //右枪1点（靠近装载区）自动发射子弹数目
 #define RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER  4//8
 //右枪2点（靠近装载区）自动发射子弹数目
@@ -152,7 +152,7 @@
 #define ROBOT_STATUS_GAS_LOW  0x08
 
 //自动模式下总步数
-#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 8
+#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 7
 #define RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER 7//14
 
 
@@ -281,6 +281,19 @@ typedef struct
 	
 }gun_t;
 
+//着陆台状态
+typedef struct
+{
+	//是否有球
+	unsigned char ball;
+	//是否已经落上盘
+	unsigned char plate;
+}plant_t;
+//着陆台类型
+typedef struct
+{
+	int size;
+}land_t;
 
 //机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
 typedef struct 
@@ -300,17 +313,11 @@ typedef struct
 	int stage;
 	//机器人状态，是否正常：低压、过流、过温、
 	int status;
-	
+	//着陆台状态
+	plant_t plantState[7];
 	
 }robot_t;
 
-/*
-* 着陆台类型
-*/
-typedef struct
-{
-	int size;
-}land_t;
 /*
 * 场地信息，尺寸，包含着陆台
 */
@@ -523,14 +530,6 @@ status_t ROBOT_GunCheckMode(unsigned char gun);
 */
 status_t ROBOT_LeftGunCheckStep(void);
 /*
-*名称：ROBOT_LeftGunCountStepTime
-*功能：检查并更新左枪每步发射次数
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunCountStepTime(void);
-
-/*
 *名称：ROBOT_RightGunCheckStep
 *功能：检查右枪步数
 *参数：
@@ -538,12 +537,35 @@ status_t ROBOT_LeftGunCountStepTime(void);
 */
 status_t ROBOT_RightGunCheckStep(void);
 /*
-*名称：ROBOT_RightGunCountStepTime
-*功能：检查并更新右枪每步发射次数
+*名称：ROBOT_LeftGunCheckPlantState
+*功能：左枪检查各个柱子状态并更新指令
 *参数：
 *status:
 */
-status_t ROBOT_RightGunCountStepTime(void);
+status_t ROBOT_LeftGunCheckPlantState(void);
+
+/*
+*名称：ROBOT_RightGunCheckPlantState
+*功能：左枪检查各个柱子状态并更新指令
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunCheckPlantState(void);
+/*
+*名称：ROBOT_LeftGunReloadAim
+*功能：左枪检查各个柱子状态并更新指令
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunReloadAim(void);
+/*
+*名称：ROBOT_RightGunReloadAim
+*功能：左枪检查各个柱子状态并更新指令
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunReloadAim(void);
+
 /*
 ============================================================
                    枪参数变换与逆变换            

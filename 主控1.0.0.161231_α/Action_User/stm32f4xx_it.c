@@ -672,6 +672,10 @@ void UART4_IRQHandler(void)
 					status++;                  //ACPC + [id1] + [id2] + data[4]
 				else if (ch == 'C')
 					status += 10;              //ACCT + [id]
+				else if(ch == 'S')
+				{
+					status +=12;
+				}
 				else
 					status = 0;
 				break;
@@ -861,10 +865,11 @@ void UART4_IRQHandler(void)
 						break;
 					case 4:
 						//手自动切换
-						gRobot.leftGun.mode = GUN_MANUAL_MODE;
-						gRobot.rightGun.mode = GUN_MANUAL_MODE;
-						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+						gRobot.rightGun.nextStep = 1;
+//						gRobot.leftGun.mode = GUN_MANUAL_MODE;
+//						gRobot.rightGun.mode = GUN_MANUAL_MODE;
+//						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+//						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 					break;
 					case 5:
 						//下一步
@@ -873,6 +878,36 @@ void UART4_IRQHandler(void)
 				}
 				status=0;
 			break;
+			case 14:
+				if(ch == 'T')
+				{
+					status ++;
+				}
+				else
+				{
+					status = 0;
+				}
+				break;
+			case 15:
+				gRobot.plantState[PLANT1].ball = (ch&0x01)==0x01;
+				gRobot.plantState[PLANT2].ball = (ch&0x02)==0x02;
+				gRobot.plantState[PLANT3].ball = (ch&0x04)==0x04;
+				gRobot.plantState[PLANT4].ball = (ch&0x08)==0x08;
+				gRobot.plantState[PLANT5].ball = (ch&0x10)==0x10;
+				gRobot.plantState[PLANT6].ball = (ch&0x20)==0x20;
+				gRobot.plantState[PLANT7].ball = (ch&0x40)==0x40;
+				status++;
+				break;
+			case 16:
+				gRobot.plantState[PLANT1].plate = (ch&0x01)==0x01;
+				gRobot.plantState[PLANT2].plate = (ch&0x02)==0x02;
+				gRobot.plantState[PLANT3].plate = (ch&0x04)==0x04;
+				gRobot.plantState[PLANT4].plate = (ch&0x08)==0x08;
+				gRobot.plantState[PLANT5].plate = (ch&0x10)==0x10;
+				gRobot.plantState[PLANT6].plate = (ch&0x20)==0x20;
+				gRobot.plantState[PLANT7].plate = (ch&0x40)==0x40;
+				status = 0;
+				break;
 			default:
 				status = 0;
 				id = 0xff;

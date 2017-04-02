@@ -109,6 +109,12 @@ void LeftGunSendDebugInfo(void)
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed2);
 	
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.roll);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed1);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed2);
+	
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -125,6 +131,12 @@ void RightGunSendDebugInfo(void)
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed2);
 	
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.roll);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed1);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed2);
+	
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -134,10 +146,16 @@ void UpperGunSendDebugInfo(void)
 {
 	USART_SendData(UART5,3);
 	
+	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetZone);
+		
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.pitch);
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.speed1);
 	
+	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.speed1);
+
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -148,7 +166,7 @@ void CameraInit(void)
 {
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
-	USART_SendData(USART3, 'r');
+	USART_SendData(USART3, 'b');
 }
 void SendStop2Camera(void)
 {
@@ -204,7 +222,13 @@ void ConfigTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-
+	
+	
+	//************************
+	USART3_Init(115200);    //摄像头
+	CameraInit();
+	//***********************
+	
 	//定时器初始化
 	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	TIM_Delayms(TIM5, 1500);
@@ -216,7 +240,10 @@ void ConfigTask(void)
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
 	UART5_Init(115200);		//调试用wifi
-	USART3_Init(115200);    //摄像头
+	
+	//******************
+//	USART3_Init(115200);    //摄像头
+	//*******************
 	USART6_Init(115200);	//定位系统
 	FlashInit();
 	TIM_Delayms(TIM5, 10000);
@@ -236,8 +263,8 @@ void ConfigTask(void)
 	
 	
 	ClampClose();
-	LeftBack();
-	RightBack();
+	LeftPush();
+	RightPush();
 	ClampReset();
 
 	BEEP_ON;
@@ -292,7 +319,7 @@ void WalkTask(void)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
-		if(status >= load)
+		if(status >= 3)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
@@ -365,16 +392,30 @@ void WalkTask(void)
 				if (PHOTOSENSORUPGUN)
 				{
 					status++;
+
 //					status+=5;
 				}
 				break;
 				
 			//四分之三位置停车
 			case goToHalfLaunchingArea:
-				MoveTo(-9559.14f, 2000.0f, 2000.0f);
-			    if (GetPosX() >= -9559.14f)
+			{
+				int backCnt = 0u;
+				if(backCnt < 50u){
+					backCnt ++;
+				}
+				else if(backCnt == 50u)
+				{
+					LeftBack();
+					RightBack();
+				}
+
+
+				MoveToCenter(-9459.14f, 2000.0f, 2000.0f);
+			    if (GetPosX() >= -9459.14f)
 				{
 					LockWheel();
+					MoveY(50.0f);
 					moveTimFlag = 0;
 					status++;					
 //					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
@@ -383,7 +424,7 @@ void WalkTask(void)
 //					OSTaskSuspend(OS_PRIO_SELF);
 				}
 				break;
-			
+			}
 			case beginToGo2:
 				if (PHOTOSENSORUPGUN)
 				{
@@ -414,8 +455,8 @@ void WalkTask(void)
 				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveTo(-6549.14f, 2000.0f, 2000.0f);
-			    if (GetPosX() >= -6549.14f)
+                MoveToCenter(-6459.14f, 2000.0f, 2000.0f);
+			    if (GetPosX() >= -6459.14f)
 				{
 					LockWheel();
 					moveTimFlag = 0;
@@ -428,7 +469,8 @@ void WalkTask(void)
 			//发射飞盘
 			case launch:
 				LockWheel();
-				CameraInit();
+//				CameraInit();
+				MoveY(50.0f);
 				SendStop2Camera();
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
 //				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
@@ -519,21 +561,28 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.speed1 = pose.speed1;
 				gRobot.leftGun.targetPose.speed2 = pose.speed2;
 
-				LeftGunSendDebugInfo();
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				//子弹上膛,第一次上膛默认位置OK
 				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
-				if(landId != PLANT7)
+				if(landId != PLANT7 && landId != PLANT3)
 				{
 					ROBOT_LeftGunAim();
 					ROBOT_LeftGunReload();
 				}
-				else
+				else if(landId == PLANT7)
 				{
 					ROBOT_LeftGunAim();
 					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+					OSTimeDly(10);
 					ROBOT_LeftGunReload();
+				}
+				else if(landId == PLANT3)
+				{
+					ROBOT_LeftGunAim();
+					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(26.0f));
+					OSTimeDly(10);
+					ROBOT_LeftGunReload();				
 				}
 				//检查上弹是否到位
 				ROBOT_LeftGunCheckReload();
@@ -549,8 +598,7 @@ void LeftGunShootTask(void)
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
 				if(gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER)
 				{
-//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-//					OSTaskResume(Walk_TASK_PRIO);
+					OSTimeDly(50);
 					OSMboxPostOpt(LeftGunNextPointMbox , &LeftGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
@@ -586,7 +634,6 @@ void LeftGunShootTask(void)
 			}
 			else
 			{
-//				OSTaskResume(Walk_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
@@ -595,6 +642,7 @@ void LeftGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
+		LeftGunSendDebugInfo();
 	}
 }
 
@@ -670,20 +718,28 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPose.speed1 = pose.speed1;
 				gRobot.rightGun.targetPose.speed2 = pose.speed2;
 
-				RightGunSendDebugInfo();
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				//子弹上膛,第一次上膛默认位置OK
+
 				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
-				if(landId != PLANT7)
+				if(landId != PLANT7 && landId != PLANT5)
 				{
 					ROBOT_RightGunAim();
 					ROBOT_RightGunReload();
 				}
-				else
+				else if(landId == PLANT7)
 				{
 					ROBOT_RightGunAim();
 					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
+					OSTimeDly(10);
+					ROBOT_RightGunReload();
+				}
+				else if(landId == PLANT5)
+				{
+					ROBOT_RightGunAim();
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(-10.0f));
+					OSTimeDly(10);
 					ROBOT_RightGunReload();
 				}
 				//检查上弹是否到位
@@ -699,9 +755,8 @@ void RightGunShootTask(void)
 				ROBOT_RightGunShoot();
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
 				if(gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER)
-				{
-//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-//					OSTaskResume(Walk_TASK_PRIO);
+				{					
+					OSTimeDly(50);
 					OSMboxPostOpt(RightGunNextPointMbox , &RightGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
@@ -745,6 +800,7 @@ void RightGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
+		RightGunSendDebugInfo();
 	}
 
 }
@@ -786,7 +842,6 @@ void UpperGunShootTask(void)
 				gRobot.upperGun.targetPose.yaw = pose.yaw;
 				gRobot.upperGun.targetPose.speed1 = pose.speed1;
 
-				UpperGunSendDebugInfo();
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				ROBOT_UpperGunAim();
@@ -800,6 +855,11 @@ void UpperGunShootTask(void)
 					upperGunShootFlag = 0;
 					OSTimeDly(50);
 				}
+				if(gRobot.upperGun.targetZone == 0)
+				{
+					upperGunShootFlag = 0;
+				}
+				UpperGunSendDebugInfo();
 			}
 			else
 			{

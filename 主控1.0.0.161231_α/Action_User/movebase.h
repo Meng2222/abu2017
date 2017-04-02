@@ -352,6 +352,9 @@ void MoveX(float velX);
 
 //运动函数
 void MoveTo(float targetPos, float velX, float accX);
+void MoveY(float velY);
+void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
+void MoveToCenter(float targetPos, float velX, float accX);
 
 float GetPosX(void);
 float GetAngle(void);
