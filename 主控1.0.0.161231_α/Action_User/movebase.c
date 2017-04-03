@@ -559,7 +559,6 @@ void MoveTo(float targetPos, float velX, float accX)
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
 }
-
 void MoveToCenter(float targetPos, float velX, float accX)
 {
 	//速度控制需要的过程变量
@@ -597,7 +596,6 @@ void MoveToCenter(float targetPos, float velX, float accX)
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
 }
-
 
 void MoveY(float velY)
 {

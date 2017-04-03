@@ -281,9 +281,6 @@ void ConfigTask(void)
 }
 
 
-
-
-
 //坐标修正量及修正标志位
 float amendX = 0.0f;
 uint8_t amendXFlag = 0;
@@ -314,7 +311,6 @@ void WalkTask(void)
 	os_err = os_err;
 	int shootPointMsg = MOVEBASE_POS_READY;
     OSSemSet(PeriodSem, 0, &os_err);
-
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
@@ -409,8 +405,6 @@ void WalkTask(void)
 					LeftBack();
 					RightBack();
 				}
-
-
 				MoveToCenter(-9459.14f, 2000.0f, 2000.0f);
 			    if (GetPosX() >= -9459.14f)
 				{
@@ -418,10 +412,8 @@ void WalkTask(void)
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status++;					
-//					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-//					OSTaskSuspend(OS_PRIO_SELF);
 				}
 				break;
 			}
@@ -504,7 +496,7 @@ void LeftGunShootTask(void)
 			//一旦收到发射命令，则停止自动模式
 			if(gRobot.leftGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
-			if(stopAutoFlag || gRobot.leftGun.shootTimes >= LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER + LEFT_GUN_POINT3_AUTO_BULLET_NUMBER)
+			if(stopAutoFlag || gRobot.leftGun.shootTimes >=   ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
 			{
 				//自动射击已完成
 				if(gRobot.leftGun.shoot == GUN_START_SHOOT)
@@ -547,6 +539,7 @@ void LeftGunShootTask(void)
 			{
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改	
 				//获取发射命令
+				ROBOT_LeftGunCheckPlantState();
 				shoot_command_t shootCommand = gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep];
 				uint8_t shootPoint = shootCommand.shootPoint;
 				uint8_t landId = shootCommand.plantNum;
@@ -565,44 +558,61 @@ void LeftGunShootTask(void)
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				//子弹上膛,第一次上膛默认位置OK
 				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
-				if(landId != PLANT7 && landId != PLANT3)
+				if(gRobot.leftGun.targetStepShootTimes > \
+					gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
 				{
+					if(landId != PLANT7 && landId != PLANT3)
+					{
+						ROBOT_LeftGunAim();
+						ROBOT_LeftGunReload();
+					}
+					else if(landId == PLANT7)
+					{
+						ROBOT_LeftGunAim();
+						PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+						OSTimeDly(10);
+						ROBOT_LeftGunReload();
+					}
+					else if(landId == PLANT3)
+					{
+						ROBOT_LeftGunAim();
+						PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(26.0f));
+						OSTimeDly(10);
+						ROBOT_LeftGunReload();				
+					}
+					//检查上弹是否到位
+					ROBOT_LeftGunCheckReload();
+					//上弹到位后再次瞄准，并检查枪是否到位
 					ROBOT_LeftGunAim();
-					ROBOT_LeftGunReload();
+					ROBOT_LeftGunCheckPlantState();
+					if(gRobot.leftGun.targetStepShootTimes > \
+						gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
+					{
+						ROBOT_LeftGunCheckAim();
+						//检查是否进入下一步
+						ROBOT_LeftGunCheckStep();
+						//检查是否到达发射点
+						ROBOT_LeftGunCheckShootPoint();	
+						//发射飞盘
+						ROBOT_LeftGunShoot();
+					}
+					else
+					{
+						gRobot.leftGun.shootStep++;
+						gRobot.leftGun.stepState = GUN_NEXT_STEP;
+					}
 				}
-				else if(landId == PLANT7)
+				else 
 				{
-					ROBOT_LeftGunAim();
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
-					OSTimeDly(10);
-					ROBOT_LeftGunReload();
+					gRobot.leftGun.shootStep++;
 				}
-				else if(landId == PLANT3)
-				{
-					ROBOT_LeftGunAim();
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(26.0f));
-					OSTimeDly(10);
-					ROBOT_LeftGunReload();				
-				}
-				//检查上弹是否到位
-				ROBOT_LeftGunCheckReload();
-				//上弹到位后再次瞄准，并检查枪是否到位
-				ROBOT_LeftGunAim();
-				ROBOT_LeftGunCheckAim();
-				//检查是否进入下一步
-				ROBOT_LeftGunCheckStep();
-				//检查是否到达发射点
-				ROBOT_LeftGunCheckShootPoint();	
-				//发射飞盘
-				ROBOT_LeftGunShoot();
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
-				if(gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER)
+				if(gRobot.leftGun.shootTimes == ROBOT_LeftGunPoint1ShootTimes())
 				{
-					OSTimeDly(50);
 					OSMboxPostOpt(LeftGunNextPointMbox , &LeftGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
-				if(gRobot.leftGun.shootTimes >= LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT3_AUTO_BULLET_NUMBER)
+				if(gRobot.leftGun.shootTimes >=  ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
 				{
 					gRobot.leftGun.mode = GUN_MANUAL_MODE;
 				}
@@ -664,7 +674,7 @@ void RightGunShootTask(void)
 			//一旦收到发射命令，则停止自动模式
 			if(gRobot.rightGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
-			if(stopAutoFlag || gRobot.rightGun.shootTimes >= RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
+			if(stopAutoFlag || gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
 			{
 				//自动射击已完成
 				if(gRobot.rightGun.shoot == GUN_START_SHOOT)
@@ -704,6 +714,7 @@ void RightGunShootTask(void)
 			{
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改	
 				//获取发射命令
+				ROBOT_RightGunCheckPlantState();
 				shoot_command_t shootCommand = gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep];
 				uint8_t shootPoint = shootCommand.shootPoint;
 				uint8_t landId = shootCommand.plantNum;
@@ -723,44 +734,63 @@ void RightGunShootTask(void)
 				//子弹上膛,第一次上膛默认位置OK
 
 				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
-				if(landId != PLANT7 && landId != PLANT5)
+				if(gRobot.rightGun.targetStepShootTimes > \
+					gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
 				{
+					if(landId != PLANT7 && landId != PLANT5)
+					{
+						ROBOT_RightGunAim();
+						ROBOT_RightGunReload();
+					}
+					else if(landId == PLANT7)
+					{
+						ROBOT_RightGunAim();
+						PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
+						OSTimeDly(10);
+						ROBOT_RightGunReload();
+					}
+					else if(landId == PLANT5)
+					{
+						ROBOT_RightGunAim();
+						PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(-10.0f));
+						OSTimeDly(10);
+						ROBOT_RightGunReload();
+					}
+					//检查上弹是否到位
+					ROBOT_RightGunCheckReload();
+					//上弹到位后再次瞄准，并检查枪是否到位
 					ROBOT_RightGunAim();
-					ROBOT_RightGunReload();
+					ROBOT_RightGunCheckPlantState();
+					if(gRobot.rightGun.targetStepShootTimes > \
+						gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
+					{
+						ROBOT_RightGunCheckAim();
+						//检查是否进入下一步
+						ROBOT_RightGunCheckStep();
+						//检查是否到达发射点
+						ROBOT_RightGunCheckShootPoint();	
+						//发射飞盘
+						ROBOT_RightGunShoot();
+					}
+					else
+					{
+						gRobot.rightGun.shootStep++;
+						gRobot.rightGun.stepState = GUN_NEXT_STEP;						
+					}
 				}
-				else if(landId == PLANT7)
+				else
 				{
-					ROBOT_RightGunAim();
-					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
-					OSTimeDly(10);
-					ROBOT_RightGunReload();
+					gRobot.rightGun.shootStep++;
 				}
-				else if(landId == PLANT5)
-				{
-					ROBOT_RightGunAim();
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(-10.0f));
-					OSTimeDly(10);
-					ROBOT_RightGunReload();
-				}
-				//检查上弹是否到位
-				ROBOT_RightGunCheckReload();
-				//上弹到位后再次瞄准，并检查枪是否到位
-				ROBOT_RightGunAim();
-				ROBOT_RightGunCheckAim();
-				//检查是否进入下一步
-				ROBOT_RightGunCheckStep();
-				//检查是否到达发射点
-				ROBOT_RightGunCheckShootPoint();	
-				//发射飞盘
-				ROBOT_RightGunShoot();
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
-				if(gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER)
-				{					
-					OSTimeDly(50);
+				if(gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes())
+				{
+//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
+//					OSTaskResume(Walk_TASK_PRIO);
 					OSMboxPostOpt(RightGunNextPointMbox , &RightGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
-				if(gRobot.rightGun.shootTimes >= RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
+				if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
 				{
 					gRobot.rightGun.mode = GUN_MANUAL_MODE;
 				}

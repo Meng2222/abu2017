@@ -554,6 +554,7 @@ status_t ROBOT_Init(void)
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
 	gRobot.moveBase.targetPoint = 2;
+
 	LeftGunInit();
 	RightGunInit();
 	UpperGunInit();
@@ -1007,8 +1008,8 @@ status_t ROBOT_RightGunCheckAim(void)
 	CPU_INT08U  os_err;
 	if(gRobot.leftGun.stepState == GUN_PRESENT_STEP)
 	{
-		if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
-			gRobot.leftGun.shootTimes == LEFT_GUN_POINT1_AUTO_BULLET_NUMBER + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
+		if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() ||\
+			gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
 		{
 			OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 			OSTimeDly(50);
@@ -1030,8 +1031,8 @@ status_t ROBOT_RightGunCheckAim(void)
 	CPU_INT08U  os_err;
 	if(gRobot.rightGun.stepState == GUN_PRESENT_STEP)
 	{
-		if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER ||\
-			gRobot.rightGun.shootTimes == RIGHT_GUN_POINT1_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
+		if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes() ||\
+			gRobot.rightGun.shootTimes == ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
 		{
 			OSMboxPend(RightGunShootPointMbox,0,&os_err);
 			OSTimeDly(50);
@@ -1050,20 +1051,20 @@ status_t ROBOT_LeftGunShoot(void)
 {
 	if(gRobot.leftGun.ready == GUN_AIM_DONE && gRobot.leftGun.stepState == GUN_PRESENT_STEP)
 	{
-		if(gRobot.leftGun.actualStepShootTimes < gRobot.leftGun.targetStepShootTimes)
+		if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] < gRobot.leftGun.targetStepShootTimes)
 		{
 			LeftShoot();	
 			OSTimeDly(50);
 			LeftShootReset();
 			gRobot.leftGun.shootTimes++;
-			gRobot.leftGun.actualStepShootTimes++;			
+			gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
 			//fix me, 应该检查子弹是否用完
 			gRobot.leftGun.bulletNumber--;
 		}
-		if(gRobot.leftGun.actualStepShootTimes >= gRobot.leftGun.targetStepShootTimes)
+		if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] >= gRobot.leftGun.targetStepShootTimes)
 		{
 			gRobot.leftGun.shootStep++;
-			gRobot.leftGun.actualStepShootTimes = 0;
+//			gRobot.leftGun.actualStepShootTimes = 0;
 		}
 		return GUN_NO_ERROR;
 	}
@@ -1079,20 +1080,20 @@ status_t ROBOT_RightGunShoot(void)
 {
 	if(gRobot.rightGun.ready == GUN_AIM_DONE && gRobot.rightGun.stepState == GUN_PRESENT_STEP)
 	{
-		if(gRobot.rightGun.actualStepShootTimes < gRobot.rightGun.targetStepShootTimes)
+		if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] < gRobot.rightGun.targetStepShootTimes)
 		{
 			RightShoot();	
 			OSTimeDly(50);
 			RightShootReset();	
 			gRobot.rightGun.shootTimes++;
-			gRobot.rightGun.actualStepShootTimes++;			
+			gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
 			//fix me, 应该检查子弹是否用完
 			gRobot.rightGun.bulletNumber--;
 		}
-		if(gRobot.rightGun.actualStepShootTimes >= gRobot.rightGun.targetStepShootTimes)
+		if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] >= gRobot.rightGun.targetStepShootTimes)
 		{
 			gRobot.rightGun.shootStep++;
-			gRobot.rightGun.actualStepShootTimes = 0;
+//			gRobot.rightGun.actualStepShootTimes = 0;
 		}
 	}
 	return GUN_NO_ERROR;
@@ -1188,8 +1189,8 @@ status_t ROBOT_LeftGunCheckStep(void)
 	if(gRobot.leftGun.nextStep == 1)
 	{
 		gRobot.leftGun.shootStep++;
-		gRobot.leftGun.shootTimes += (gRobot.leftGun.targetStepShootTimes - gRobot.leftGun.actualStepShootTimes);
-		gRobot.leftGun.actualStepShootTimes = 0; 
+		gRobot.leftGun.shootTimes += (gRobot.leftGun.targetStepShootTimes - gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]);
+//		gRobot.leftGun.actualStepShootTimes = 0; 
 		gRobot.leftGun.nextStep = 0;
 		gRobot.leftGun.stepState = GUN_NEXT_STEP;
 	}
@@ -1211,8 +1212,8 @@ status_t ROBOT_RightGunCheckStep(void)
 	if(gRobot.rightGun.nextStep == 1)
 	{
 		gRobot.rightGun.shootStep++;
-		gRobot.rightGun.shootTimes += (gRobot.rightGun.targetStepShootTimes - gRobot.rightGun.actualStepShootTimes);
-		gRobot.rightGun.actualStepShootTimes = 0; 
+		gRobot.rightGun.shootTimes += (gRobot.rightGun.targetStepShootTimes - gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]);
+//		gRobot.rightGun.actualStepShootTimes = 0; 
 		gRobot.rightGun.nextStep = 0;
 		gRobot.rightGun.stepState = GUN_NEXT_STEP;
 	}
@@ -1235,7 +1236,7 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 	{
 		//着陆台上有球有盘
 		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 0)
+			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 1)
 		{
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
@@ -1243,12 +1244,12 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
 			}				
 		}
 		//着陆台上有球没盘
 		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 1)
+			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 0)
 		{
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
@@ -1261,24 +1262,24 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 		}
 		//着陆台上没球有盘
 		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 0)
-		{
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes;
-			}
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes;
-			}				
-		}
-		//着陆台上没球没盘
-		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 1&& \
 			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 1)
 		{
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
+			}
+			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
+			{
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
+			}				
+		}
+		//着陆台上没球没盘
+		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 1&& \
+			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 0)
+		{
+			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
+			{
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
@@ -1301,7 +1302,7 @@ status_t ROBOT_RightGunCheckPlantState(void)
 	{
 		//着陆台上有球有盘
 		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 0)
+			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 1)
 		{
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
@@ -1309,12 +1310,12 @@ status_t ROBOT_RightGunCheckPlantState(void)
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
 			}				
 		}
 		//着陆台上有球没盘
 		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 1)
+			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 0)
 		{
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
@@ -1327,24 +1328,24 @@ status_t ROBOT_RightGunCheckPlantState(void)
 		}
 		//着陆台上没球有盘
 		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 0)
-		{
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes;
-			}
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes;
-			}				
-		}
-		//着陆台上没球没盘
-		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 1&& \
 			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 1)
 		{
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
+			}
+			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
+			{
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
+			}				
+		}
+		//着陆台上没球没盘
+		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 1&& \
+			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 0)
+		{
+			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
+			{
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
@@ -1379,7 +1380,7 @@ unsigned char ROBOT_LeftGunPoint1ShootTimes(void)
 *参数：
 *status:
 */
-status_t ROBOT_RightGunPoint1ShootTimes(void)
+unsigned char ROBOT_RightGunPoint1ShootTimes(void)
 {
 	uint8_t i = 0;
 	uint8_t point1ShootTimes = 0;
@@ -1391,6 +1392,44 @@ status_t ROBOT_RightGunPoint1ShootTimes(void)
 		}	
 	}
 	return point1ShootTimes;
+}
+/*
+*名称：ROBOT_LeftGunPoint3ShootTimes
+*功能：计算左枪第一个发射位置的目标发射次数
+*参数：
+*status:
+*/
+unsigned char ROBOT_LeftGunPoint3ShootTimes(void)
+{
+	uint8_t i = 0;
+	uint8_t point3ShootTimes = 0;
+	for(i = 0;i < LEFT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
+	{
+		if(gRobot.leftGun.shootCommand[i].shootPoint == SHOOT_POINT3)
+		{
+			point3ShootTimes+=gRobot.leftGun.shootCommand[i].stepTargetShootTime;
+		}	
+	}
+	return point3ShootTimes;
+}
+/*
+*名称：ROBOT_RightGunPoint3ShootTimes
+*功能：计算右枪第一个发射位置的目标发射次数
+*参数：
+*status:
+*/
+unsigned char ROBOT_RightGunPoint3ShootTimes(void)
+{
+	uint8_t i = 0;
+	uint8_t point3ShootTimes = 0;
+	for(i = 0;i < RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
+	{
+		if(gRobot.rightGun.shootCommand[i].shootPoint == SHOOT_POINT3)
+		{
+			point3ShootTimes+=gRobot.rightGun.shootCommand[i].stepTargetShootTime;
+		}	
+	}
+	return point3ShootTimes;
 }
 /*
 *名称：ROBOT_LeftGunReloadAim

@@ -277,7 +277,7 @@ typedef struct
 	//射击过程中每一步命令发射次数
 	unsigned char targetStepShootTimes;
 	//射击过程中每一步实际发射次数
-	unsigned char actualStepShootTimes;
+	unsigned char actualStepShootTimes[7][2];
 	
 }gun_t;
 
@@ -565,6 +565,34 @@ status_t ROBOT_LeftGunReloadAim(void);
 *status:
 */
 status_t ROBOT_RightGunReloadAim(void);
+/*
+*名称：ROBOT_LeftGunPoint1ShootTimes
+*功能：计算左枪第一个发射位置的目标发射次数
+*参数：
+*status:
+*/
+unsigned char ROBOT_LeftGunPoint1ShootTimes(void);
+/*
+*名称：ROBOT_RightGunPoint1ShootTimes
+*功能：计算右枪第一个发射位置的目标发射次数
+*参数：
+*status:
+*/
+unsigned char ROBOT_RightGunPoint1ShootTimes(void);
+/*
+*名称：ROBOT_LeftGunPoint3ShootTimes
+*功能：计算左枪第一个发射位置的目标发射次数
+*参数：
+*status:
+*/
+unsigned char ROBOT_LeftGunPoint3ShootTimes(void);
+/*
+*名称：ROBOT_RightGunPoint3ShootTimes
+*功能：计算右枪第一个发射位置的目标发射次数
+*参数：
+*status:
+*/
+unsigned char ROBOT_RightGunPoint3ShootTimes(void);
 
 /*
 ============================================================
