@@ -1132,7 +1132,7 @@ status_t ROBOT_LeftGunHome(void)
 	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 	
-	OSTimeDly(150);
+	OSTimeDly(100);
 	
 	return GUN_NO_ERROR;
 }

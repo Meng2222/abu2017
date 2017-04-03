@@ -585,6 +585,7 @@ void LeftGunShootTask(void)
 					//上弹到位后再次瞄准，并检查枪是否到位
 					ROBOT_LeftGunAim();
 					ROBOT_LeftGunCheckPlantState();
+					gRobot.leftGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 					if(gRobot.leftGun.targetStepShootTimes > \
 						gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
 					{
@@ -609,6 +610,7 @@ void LeftGunShootTask(void)
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
 				if(gRobot.leftGun.shootTimes == ROBOT_LeftGunPoint1ShootTimes())
 				{
+					OSTimeDly(50);
 					OSMboxPostOpt(LeftGunNextPointMbox , &LeftGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
@@ -761,6 +763,7 @@ void RightGunShootTask(void)
 					//上弹到位后再次瞄准，并检查枪是否到位
 					ROBOT_RightGunAim();
 					ROBOT_RightGunCheckPlantState();
+					gRobot.rightGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 					if(gRobot.rightGun.targetStepShootTimes > \
 						gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
 					{
@@ -785,8 +788,7 @@ void RightGunShootTask(void)
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
 				if(gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes())
 				{
-//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-//					OSTaskResume(Walk_TASK_PRIO);
+					OSTimeDly(50);
 					OSMboxPostOpt(RightGunNextPointMbox , &RightGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
