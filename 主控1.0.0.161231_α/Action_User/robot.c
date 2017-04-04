@@ -74,9 +74,9 @@ static void LeftGunInit(void)
 	Vel_cfg(CAN1, LEFT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(CAN1, LEFT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 7000,7000,80000);//俯仰
-	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 7000,7000,80000);//翻滚
-	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,7000,7000,80000);//航向
+	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 10000,10000,80000);//俯仰
+	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 10000,10000,80000);//翻滚
+	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,10000,10000,80000);//航向
 	
 
 }
@@ -134,9 +134,9 @@ static void RightGunInit(void)
 	Vel_cfg(CAN1, RIGHT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(CAN1, RIGHT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 7000,7000,80000);//俯仰
-	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 7000,7000,80000);//翻滚
-	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,7000,7000,80000);//航向
+	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 10000,10000,80000);//俯仰
+	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 10000,10000,80000);//翻滚
+	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,10000,10000,80000);//航向
 }
 
 static void UpperGunInit(void)
@@ -1049,25 +1049,38 @@ status_t ROBOT_RightGunCheckAim(void)
 */
 status_t ROBOT_LeftGunShoot(void)
 {
-	if(gRobot.leftGun.ready == GUN_AIM_DONE && gRobot.leftGun.stepState == GUN_PRESENT_STEP)
+	if(gRobot.leftGun.mode == GUN_AUTO_MODE)
 	{
-		if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] < gRobot.leftGun.targetStepShootTimes)
+		if(gRobot.leftGun.ready == GUN_AIM_DONE && gRobot.leftGun.stepState == GUN_PRESENT_STEP)
 		{
-			LeftShoot();	
-			OSTimeDly(50);
-			LeftShootReset();
-			gRobot.leftGun.shootTimes++;
-			gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
-			//fix me, 应该检查子弹是否用完
-			gRobot.leftGun.bulletNumber--;
+			if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] < gRobot.leftGun.targetStepShootTimes)
+			{
+				LeftShoot();	
+				OSTimeDly(50);
+				LeftShootReset();
+				gRobot.leftGun.shootTimes++;
+				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
+				//fix me, 应该检查子弹是否用完
+				gRobot.leftGun.bulletNumber--;
+			}
+			if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] >= gRobot.leftGun.targetStepShootTimes)
+			{
+				gRobot.leftGun.shootStep++;
+	//			gRobot.leftGun.actualStepShootTimes = 0;
+			}
 		}
-		if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] >= gRobot.leftGun.targetStepShootTimes)
-		{
-			gRobot.leftGun.shootStep++;
-//			gRobot.leftGun.actualStepShootTimes = 0;
-		}
-		return GUN_NO_ERROR;
 	}
+	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
+	{
+		LeftShoot();	
+		OSTimeDly(50);
+		LeftShootReset();
+		gRobot.leftGun.shootTimes++;
+		//fix me, 应该检查子弹是否用完
+		gRobot.leftGun.bulletNumber--;
+	}
+		return GUN_NO_ERROR;
+	
 }
 
 /**
@@ -1078,23 +1091,36 @@ status_t ROBOT_LeftGunShoot(void)
 */
 status_t ROBOT_RightGunShoot(void)
 {
-	if(gRobot.rightGun.ready == GUN_AIM_DONE && gRobot.rightGun.stepState == GUN_PRESENT_STEP)
+	if(gRobot.rightGun.mode == GUN_AUTO_MODE)
 	{
-		if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] < gRobot.rightGun.targetStepShootTimes)
+		if(gRobot.rightGun.ready == GUN_AIM_DONE && gRobot.rightGun.stepState == GUN_PRESENT_STEP)
 		{
-			RightShoot();	
-			OSTimeDly(50);
-			RightShootReset();	
-			gRobot.rightGun.shootTimes++;
-			gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
-			//fix me, 应该检查子弹是否用完
-			gRobot.rightGun.bulletNumber--;
+			if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] < gRobot.rightGun.targetStepShootTimes)
+			{
+				RightShoot();	
+				OSTimeDly(50);
+				RightShootReset();	
+				gRobot.rightGun.shootTimes++;
+				gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
+				//fix me, 应该检查子弹是否用完
+				gRobot.rightGun.bulletNumber--;
+			}
+			if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] >= gRobot.rightGun.targetStepShootTimes)
+			{
+				gRobot.rightGun.shootStep++;
+	//			gRobot.rightGun.actualStepShootTimes = 0;
+			}
 		}
-		if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] >= gRobot.rightGun.targetStepShootTimes)
-		{
-			gRobot.rightGun.shootStep++;
-//			gRobot.rightGun.actualStepShootTimes = 0;
-		}
+	}
+	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
+	{
+		RightShoot();	
+		OSTimeDly(50);
+		RightShootReset();	
+		gRobot.rightGun.shootTimes++;
+		//fix me, 应该检查子弹是否用完
+		gRobot.rightGun.bulletNumber--;
+
 	}
 	return GUN_NO_ERROR;
 }

@@ -42,6 +42,8 @@ static 	void  WalkTask(void);
 static 	void  LeftGunShootTask(void);
 static 	void  RightGunShootTask(void);
 static 	void  UpperGunShootTask(void);
+static  void  DebugTask(void);
+
 
 /*
 *********************************************************************************************************
@@ -55,6 +57,7 @@ static 	void  UpperGunShootTask(void);
 #define  LEFT_GUN_SHOOT_TASK_PRIO			    	15u
 #define  RIGHT_GUN_SHOOT_TASK_PRIO					14u
 #define  UPPER_GUN_SHOOT_TASK_PRIO					13u
+#define  DEBUG_TASK_PRIO                            16u
 
 
 
@@ -71,6 +74,7 @@ static 	void  UpperGunShootTask(void);
 #define  LEFT_GUN_AUTO_SHOOT_STK_SIZE				1024u
 #define  RIGHT_GUN_SHOOT_STK_SIZE					1024u
 #define  UPPER_GUN_SHOOT_STK_SIZE					1024u
+#define  DEBUG_TASK_STK_SIZE                        1024u
 
 /*
 *********************************************************************************************************

@@ -518,14 +518,19 @@ void CAN2_RX0_IRQHandler(void)
 //每1ms调用一次
 
 extern  OS_EVENT 		*PeriodSem;
+extern  OS_EVENT 		*DebugPeriodSem;
+
 extern float moveTimer;
 extern uint8_t moveTimFlag;
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
+	#define DEBUG_PERIOD_COUNTER 50
+
 	//用来计数10次，产生10ms的定时器
 	static uint8_t periodCounter = PERIOD_COUNTER;
-	
+	static uint8_t debugPeriodCounter = DEBUG_PERIOD_COUNTER;
+
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
@@ -540,6 +545,12 @@ void TIM2_IRQHandler(void)
 		{
 			OSSemPost(PeriodSem);
 			periodCounter = PERIOD_COUNTER;
+		}
+				debugPeriodCounter--;
+		if(debugPeriodCounter == 0)
+		{
+			OSSemPost(DebugPeriodSem);
+			debugPeriodCounter = DEBUG_PERIOD_COUNTER;
 		}
 		if(moveTimFlag==1)
 		{
