@@ -566,12 +566,12 @@ void LeftGunShootTask(void)
 
 				//检查上弹是否到位
 				ROBOT_LeftGunCheckReload();
+				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				
 				LeftShoot();	
 				OSTimeDly(50);
 				LeftShootReset();
-
 				OSTimeDly(50);
 			}
 			else
