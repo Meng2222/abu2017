@@ -621,31 +621,42 @@ status_t ROBOT_CheckGunOpenSafety(void)
 status_t ROBOT_LeftGunReload(void)
 {
 	uint8_t pushTimes = 10;
-	if(gRobot.leftGun.stepState != GUN_NEXT_STEP)
+	if(gRobot.leftGun.mode == GUN_AUTO_MODE)
 	{
-	//	if(gRobot.leftGun.shootTimes < 4)
-	//	{
-	//		while(pushTimes--)
-	//		{
-	//			LeftPush();
-	//			OSTimeDly(6);
-	//			LeftBack();
-	//			OSTimeDly(2);
-	//		}
-	//	}
-	//	else
-	//	{
-			LeftPush();
-			OSTimeDly(80);
-	//	}
-	//	LeftBack();
-	//	OSTimeDly(5);
-	//	LeftPush();
-	//	OSTimeDly(5);
-		LeftBack();
-		OSTimeDly(50);
-		return GUN_NO_ERROR;
+		if(gRobot.leftGun.stepState != GUN_NEXT_STEP)
+		{
+		//	if(gRobot.leftGun.shootTimes < 4)
+		//	{
+		//		while(pushTimes--)
+		//		{
+		//			LeftPush();
+		//			OSTimeDly(6);
+		//			LeftBack();
+		//			OSTimeDly(2);
+		//		}
+		//	}
+		//	else
+		//	{
+				LeftPush();
+				OSTimeDly(80);
+		//	}
+		//	LeftBack();
+		//	OSTimeDly(5);
+		//	LeftPush();
+		//	OSTimeDly(5);
+			LeftBack();
+			OSTimeDly(50);
+		}
 	}
+	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
+	{
+		LeftPush();
+		OSTimeDly(80);
+		LeftBack();
+		OSTimeDly(50);		
+	}
+		return GUN_NO_ERROR;
+	
 }
 /**
 *名称：ROBOT_RightGunReload
@@ -657,14 +668,26 @@ status_t ROBOT_LeftGunReload(void)
 */
 status_t ROBOT_RightGunReload(void)
 {
-	if(gRobot.rightGun.stepState != GUN_NEXT_STEP)
+	
+	if(gRobot.rightGun.mode == GUN_AUTO_MODE)
+	{
+		if(gRobot.rightGun.stepState != GUN_NEXT_STEP)
+		{
+			RightPush();
+			OSTimeDly(80);
+			RightBack();
+			OSTimeDly(50);
+		}
+	}
+	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
 	{
 		RightPush();
 		OSTimeDly(80);
 		RightBack();
-		OSTimeDly(50);
-		return GUN_NO_ERROR;
+		OSTimeDly(50);		
 	}
+	return GUN_NO_ERROR;
+	
 }
 /**
 *名称：ROBOT_LeftGunCheckReload

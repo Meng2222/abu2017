@@ -52,9 +52,9 @@ void sendDebugInfo(void)
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
 	
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
 
 //	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
 //	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
@@ -280,12 +280,12 @@ void ConfigTask(void)
 	BEEP_OFF;
 
 
-	OSTaskSuspend(Walk_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(DEBUG_TASK_PRIO);
+//	OSTaskSuspend(DEBUG_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -407,7 +407,8 @@ void WalkTask(void)
 			case goToHalfLaunchingArea:
 			{
 				int backCnt = 0u;
-				if(backCnt < 50u){
+				if(backCnt < 50u)
+				{
 					backCnt ++;
 				}
 				else if(backCnt == 50u)
@@ -444,7 +445,6 @@ void WalkTask(void)
 					LockWheel();
 					moveTimFlag = 0;
 					status++;
-//					OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 					OSTaskSuspend(OS_PRIO_SELF);
 				}
 				break;
@@ -493,7 +493,7 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int LeftGunNextPoint = 1;
-//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -603,7 +603,7 @@ void LeftGunShootTask(void)
 						//检查是否进入下一步
 						ROBOT_LeftGunCheckStep();
 						//检查是否到达发射点
-//						ROBOT_LeftGunCheckShootPoint();	
+						ROBOT_LeftGunCheckShootPoint();	
 						//发射飞盘
 						ROBOT_LeftGunShoot();
 					}
@@ -618,16 +618,16 @@ void LeftGunShootTask(void)
 					gRobot.leftGun.shootStep++;
 				}
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
-//				if(gRobot.leftGun.shootTimes == ROBOT_LeftGunPoint1ShootTimes())
-//				{
-//					OSTimeDly(50);
-//					OSMboxPostOpt(LeftGunNextPointMbox , &LeftGunNextPoint , OS_POST_OPT_NONE);					
-//				}
-//				//自动射击结束后进入纯手动模式
-//				if(gRobot.leftGun.shootTimes >=  ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
-//				{
-//					gRobot.leftGun.mode = GUN_MANUAL_MODE;
-//				}
+				if(gRobot.leftGun.shootTimes == ROBOT_LeftGunPoint1ShootTimes())
+				{
+					OSTimeDly(50);
+					OSMboxPostOpt(LeftGunNextPointMbox , &LeftGunNextPoint , OS_POST_OPT_NONE);					
+				}
+				//自动射击结束后进入纯手动模式
+				if(gRobot.leftGun.shootTimes >=  ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
+				{
+					gRobot.leftGun.mode = GUN_MANUAL_MODE;
+				}
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -641,8 +641,8 @@ void LeftGunShootTask(void)
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_LeftGunAim();
 				//更新数据库中参数并写入FLASH
-//				UpdateLeftGunPosDatabaseManualMode();
-//				FlashWriteGunPosData();
+				UpdateLeftGunPosDatabaseManualMode();
+				FlashWriteGunPosData();
 				ROBOT_LeftGunCheckAim();
 				gRobot.leftGun.aim = GUN_STOP_AIM;
 			}
@@ -664,7 +664,6 @@ void LeftGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
-//		LeftGunSendDebugInfo();
 	}
 }
 
@@ -673,7 +672,7 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int RightGunNextPoint = 1;
-//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -781,7 +780,7 @@ void RightGunShootTask(void)
 						//检查是否进入下一步
 						ROBOT_RightGunCheckStep();
 						//检查是否到达发射点
-//						ROBOT_RightGunCheckShootPoint();	
+						ROBOT_RightGunCheckShootPoint();	
 						//发射飞盘
 						ROBOT_RightGunShoot();
 					}
@@ -796,16 +795,16 @@ void RightGunShootTask(void)
 					gRobot.rightGun.shootStep++;
 				}
 				//fix me ,第一个位置发射结束后要走到第二个位置，最好用函数来检查
-//				if(gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes())
-//				{
-//					OSTimeDly(50);
-//					OSMboxPostOpt(RightGunNextPointMbox , &RightGunNextPoint , OS_POST_OPT_NONE);					
-//				}
-//				//自动射击结束后进入纯手动模式
-//				if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
-//				{
-//					gRobot.rightGun.mode = GUN_MANUAL_MODE;
-//				}
+				if(gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes())
+				{
+					OSTimeDly(50);
+					OSMboxPostOpt(RightGunNextPointMbox , &RightGunNextPoint , OS_POST_OPT_NONE);					
+				}
+				//自动射击结束后进入纯手动模式
+				if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
+				{
+					gRobot.rightGun.mode = GUN_MANUAL_MODE;
+				}
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
@@ -819,8 +818,8 @@ void RightGunShootTask(void)
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_RightGunAim();
 				//更新数据库中参数并写入FLASH
-//				UpdateRightGunPosDatabaseManualMode();
-//				FlashWriteGunPosData();
+				UpdateRightGunPosDatabaseManualMode();
+				FlashWriteGunPosData();
 				ROBOT_RightGunCheckAim();
 				gRobot.rightGun.aim = GUN_STOP_AIM;
 			}
@@ -842,7 +841,6 @@ void RightGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
-//		RightGunSendDebugInfo();
 	}
 
 }
