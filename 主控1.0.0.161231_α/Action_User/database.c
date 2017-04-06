@@ -502,13 +502,13 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
   * @brief
   * @{
   */
-uint8_t LeftGunPriority[7] = {PLANT1,PLANT2,PLANT3,PLANT6,PLANT7,PLANT4,PLANT5};
+uint8_t LeftGunPriority[7] = {PLANT1,PLANT2,PLANT7,PLANT3,PLANT6,PLANT4,PLANT5};
 
 /** @defgroup LeftGunPriority
   * @brief
   * @{
   */
-uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT3,PLANT6,PLANT7,PLANT5,PLANT4};
+uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1};
 
 
 /** @defgroup Gun_Shoot_Command

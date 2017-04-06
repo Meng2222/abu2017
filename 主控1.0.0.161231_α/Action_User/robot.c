@@ -620,25 +620,26 @@ status_t ROBOT_CheckGunOpenSafety(void)
 */
 status_t ROBOT_LeftGunReload(void)
 {
-	uint8_t pushTimes = 10;
+	uint8_t pushTimes = 8;
 	if(gRobot.leftGun.mode == GUN_AUTO_MODE)
 	{
 		if(gRobot.leftGun.stepState != GUN_NEXT_STEP)
 		{
 		//	if(gRobot.leftGun.shootTimes < 4)
 		//	{
-		//		while(pushTimes--)
-		//		{
-		//			LeftPush();
-		//			OSTimeDly(6);
-		//			LeftBack();
-		//			OSTimeDly(2);
-		//		}
+			if(gRobot.leftGun.shootTimes <= ROBOT_LeftGunPoint1ShootTimes())pushTimes = 12;
+			while(pushTimes--)
+			{
+				LeftPush();
+				OSTimeDly(4);
+				LeftBack();
+				OSTimeDly(2);
+			}
 		//	}
 		//	else
 		//	{
-				LeftPush();
-				OSTimeDly(80);
+//				LeftPush();
+//				OSTimeDly(80);
 		//	}
 		//	LeftBack();
 		//	OSTimeDly(5);
@@ -668,15 +669,23 @@ status_t ROBOT_LeftGunReload(void)
 */
 status_t ROBOT_RightGunReload(void)
 {
-	
+	uint8_t pushTimes = 8;
 	if(gRobot.rightGun.mode == GUN_AUTO_MODE)
 	{
 		if(gRobot.rightGun.stepState != GUN_NEXT_STEP)
 		{
-			RightPush();
-			OSTimeDly(80);
-			RightBack();
-			OSTimeDly(50);
+			if(gRobot.rightGun.shootTimes <= ROBOT_RightGunPoint1ShootTimes())pushTimes = 12;
+			while(pushTimes--)
+			{
+				RightPush();
+				OSTimeDly(4);
+				RightBack();
+				OSTimeDly(2);
+			}
+//			RightPush();
+//			OSTimeDly(80);
+//			RightBack();
+//			OSTimeDly(50);
 		}
 	}
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)

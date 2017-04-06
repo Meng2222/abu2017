@@ -106,7 +106,8 @@ void sendDebugInfo(void)
 void LeftGunSendDebugInfo(void)
 {
 	USART_SendData(UART5,1);
-	
+	USART_SendData(UART5,	gRobot.leftGun.targetPlant);
+
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.pitch);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.roll);
@@ -128,6 +129,7 @@ void LeftGunSendDebugInfo(void)
 void RightGunSendDebugInfo(void)
 {
 	USART_SendData(UART5,2);
+	USART_SendData(UART5,	gRobot.rightGun.targetPlant);
 	
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.pitch);
@@ -287,7 +289,7 @@ void ConfigTask(void)
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-//	OSTaskSuspend(DEBUG_TASK_PRIO);
+	OSTaskSuspend(DEBUG_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -512,7 +514,7 @@ void LeftGunShootTask(void)
 			{
 				//自动调度
 
-				uint8_t shootPoint = gRobot.moveBase.targetPoint;
+				uint8_t shootPoint = SHOOT_POINT3;
 				uint8_t landId = 0;
 				uint8_t shootMethod = 0;
 				
@@ -533,7 +535,7 @@ void LeftGunShootTask(void)
 						break;
 					}
 				}
-				
+				gRobot.leftGun.targetPlant = landId;
 				//获取目标位姿
 				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 
@@ -716,39 +718,73 @@ void RightGunShootTask(void)
 
 			if(stopAutoFlag || gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
 			{
-				//自动射击已完成
-				if(gRobot.rightGun.shoot == GUN_START_SHOOT)
+		
+				uint8_t shootPoint = SHOOT_POINT3;
+				uint8_t landId = 0;
+				uint8_t shootMethod = 0;
+				
+				for(uint8_t i = 0;i < 7;i++)
 				{
-					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
+					//没球
+					if(gRobot.plantState[RightGunPriority[i]].ball == 0)
+					{
+						landId = RightGunPriority[i];
+						shootMethod = SHOOT_METHOD1;
+						break;
+					}
+					//没盘
+					if(gRobot.plantState[RightGunPriority[i]].plate == 0)
+					{
+						landId = RightGunPriority[i];
+						shootMethod = SHOOT_METHOD2;
+						break;
+					}
+				}
+				gRobot.rightGun.targetPlant = landId;
+	
+				//获取目标位姿
+				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 
-					//fix me,此处应该检查着陆台编号是否合法
-					uint8_t shootPoint = gRobot.moveBase.targetPoint;
-					uint8_t landId = gRobot.rightGun.targetPlant;
-					uint8_t shootMethod = gRobot.rightGun.shootParaMode;
-					//获取目标位姿
-					gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
+				//更新枪目标位姿
+				gRobot.rightGun.targetPose.pitch =	pose.pitch;
+				gRobot.rightGun.targetPose.roll =	pose.roll;
+				gRobot.rightGun.targetPose.yaw =	pose.yaw;
+				gRobot.rightGun.targetPose.speed1 =	pose.speed1;
+				gRobot.rightGun.targetPose.speed2 =	pose.speed2;
 
-					//更新枪目标位姿
-					gRobot.rightGun.targetPose.pitch =	pose.pitch;
-					gRobot.rightGun.targetPose.roll =	pose.roll;
-					gRobot.rightGun.targetPose.yaw =	pose.yaw;
-					gRobot.rightGun.targetPose.speed1 =	pose.speed1;
-					gRobot.rightGun.targetPose.speed2 =	pose.speed2;
-
-					//瞄准，此函数最好瞄准完成后再返回
-					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
+				if(landId != PLANT7 && landId != PLANT5)
+				{
 					ROBOT_RightGunAim();
 					ROBOT_RightGunReload();
-					ROBOT_RightGunCheckAim();
-					ROBOT_RightGunShoot();
-					//此函数有延迟
-//					ROBOT_RightGunHome();
-					gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				}
-				else
+				else if(landId == PLANT7)
 				{
-					OSTaskSuspend(OS_PRIO_SELF);
+					ROBOT_RightGunAim();
+					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
+					OSTimeDly(10);
+					ROBOT_RightGunReload();
 				}
+				else if(landId == PLANT5)
+				{
+					ROBOT_RightGunAim();
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(-10.0f));
+					OSTimeDly(10);
+					ROBOT_RightGunReload();
+				}
+				
+
+				//检查上弹是否到位
+				ROBOT_RightGunCheckReload();
+				//瞄准，此函数最好瞄准完成后再返回
+				ROBOT_RightGunAim();
+				ROBOT_RightGunReload();
+				ROBOT_RightGunCheckAim();
+				
+				RightShoot();	
+				OSTimeDly(50);
+				RightShootReset();	
+				OSTimeDly(50);
+				
 			}
 			else
 			{
@@ -830,10 +866,10 @@ void RightGunShootTask(void)
 					OSMboxPostOpt(RightGunNextPointMbox , &RightGunNextPoint , OS_POST_OPT_NONE);					
 				}
 				//自动射击结束后进入纯手动模式
-				if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
-				{
-					gRobot.rightGun.mode = GUN_MANUAL_MODE;
-				}
+//				if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
+//				{
+//					gRobot.rightGun.mode = GUN_MANUAL_MODE;
+//				}
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
