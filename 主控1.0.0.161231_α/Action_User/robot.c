@@ -719,7 +719,6 @@ status_t ROBOT_LeftGunCheckReload(void)
 			ROBOT_LeftGunHome();
 			continue;
 		}
-		break; 
 	}
 	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	return GUN_RELOAD_ERROR;
@@ -1058,6 +1057,7 @@ status_t ROBOT_RightGunCheckAim(void)
 			return MOVEBASE_POS_READY;
 		}
 	}
+	return GUN_NO_ERROR;
 }
 
 /*
@@ -1081,6 +1081,7 @@ status_t ROBOT_RightGunCheckAim(void)
 			return MOVEBASE_POS_READY;
 		}
 	}
+	return GUN_NO_ERROR;
 }
 
 /**
@@ -1267,6 +1268,7 @@ status_t ROBOT_LeftGunCheckStep(void)
 	{
 		gRobot.leftGun.stepState = GUN_PRESENT_STEP;
 	}
+	return GUN_NO_ERROR;
 }
 
 
@@ -1290,6 +1292,7 @@ status_t ROBOT_RightGunCheckStep(void)
 	{
 		gRobot.rightGun.stepState = GUN_PRESENT_STEP;
 	}
+	return GUN_NO_ERROR;
 }
 
 /*
@@ -1356,6 +1359,7 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 			}				
 		}		
 	}
+	return GUN_NO_ERROR;
 }
 
 /*
@@ -1422,7 +1426,7 @@ status_t ROBOT_RightGunCheckPlantState(void)
 			}				
 		}		
 	}
-
+	return GUN_NO_ERROR;
 }
 /*
 *名称：ROBOT_LeftGunPoint1ShootTimes
@@ -1508,7 +1512,7 @@ unsigned char ROBOT_RightGunPoint3ShootTimes(void)
 */
 status_t ROBOT_LeftGunReloadAim(void)
 {
-
+	return 0;
 }
 /*
 *名称：ROBOT_RightGunReloadAim
@@ -1518,6 +1522,6 @@ status_t ROBOT_LeftGunReloadAim(void)
 */
 status_t ROBOT_RightGunReloadAim(void)
 {
-
+	return 0;
 }
 
