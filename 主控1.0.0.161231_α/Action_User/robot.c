@@ -634,38 +634,17 @@ status_t ROBOT_CheckGunOpenSafety(void)
 status_t ROBOT_LeftGunReload(void)
 {
 	uint8_t pushTimes = 8;
-	if(gRobot.leftGun.mode == GUN_AUTO_MODE)
-	{
-		if(gRobot.leftGun.stepState != GUN_NEXT_STEP)
+	if(gRobot.leftGun)
+		while(pushTimes--)
 		{
-
-			if(gRobot.leftGun.bulletNumber > 1)
-			{
-				if(gRobot.leftGun.shootTimes <= ROBOT_LeftGunPoint1ShootTimes())pushTimes = 12;
-				while(pushTimes--)
-				{
-					LeftPush();
-					OSTimeDly(2);
-					LeftHold();
-					OSTimeDly(8);
-				}
-			}
-			else
-			{
-				LeftPush();
-				OSTimeDly(80);			
-			}
-			LeftBack();
-			OSTimeDly(50);
+			LeftPush();
+			OSTimeDly(2);
+			LeftHold();
+			OSTimeDly(8);
 		}
-	}
-	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
-	{
-		LeftPush();
-		OSTimeDly(80);
 		LeftBack();
-		OSTimeDly(50);		
-	}
+		OSTimeDly(50);
+
 	return GUN_NO_ERROR;
 }
 /**
@@ -705,8 +684,13 @@ status_t ROBOT_RightGunReload(void)
 	}
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
 	{
-		RightPush();
-		OSTimeDly(80);
+		while(pushTimes--)
+		{
+			RightPush();
+			OSTimeDly(2);
+			RightHold();
+			OSTimeDly(8);
+		}
 		RightBack();
 		OSTimeDly(50);		
 	}
@@ -1031,11 +1015,22 @@ status_t ROBOT_RightGunCheckAim(void)
 		
 		
 		//运行到这里，表示都满足指标，跳出循环
-		gRobot.upperGun.shoot = GUN_START_SHOOT;
+		if(gRobot.upperGun.mode == GUN_AUTO_MODE)
+		{
+			gRobot.upperGun.shoot = GUN_START_SHOOT;
+		}
 		break;
 	}
-	gRobot.upperGun.shoot = GUN_START_SHOOT;
-	if (gRobot.upperGun.shoot == GUN_START_SHOOT)
+	if(gRobot.upperGun.mode == GUN_AUTO_MODE)
+	{
+		gRobot.upperGun.shoot = GUN_START_SHOOT;
+	
+		if (gRobot.upperGun.shoot == GUN_START_SHOOT)
+		{
+			gRobot.upperGun.ready = GUN_AIM_DONE;
+		}
+	}
+	else if(gRobot.upperGun.mode == GUN_MANUAL_MODE)
 	{
 		gRobot.upperGun.ready = GUN_AIM_DONE;
 	}
@@ -1221,7 +1216,7 @@ status_t ROBOT_RightGunHome(void)
 	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
 	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
 	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
-	OSTimeDly(150);
+	OSTimeDly(100);
 	
 	return GUN_NO_ERROR;
 }

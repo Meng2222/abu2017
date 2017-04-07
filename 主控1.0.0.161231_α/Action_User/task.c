@@ -169,16 +169,22 @@ void UpperGunSendDebugInfo(void)
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
 }
-
+//摄像头初始化
 void CameraInit(void)
 {
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'b');
 }
+//到达场地中央后通知摄像头开始发坐标
 void SendStop2Camera(void)
 {
 	USART_SendData(USART3, 'c');
+}
+//坐标调整到位后通知摄像头开始工作
+void SendStartWork2Camera(void)
+{
+	USART_SendData(USART3, 'd');
 }
 void App_Task()
 {
@@ -287,11 +293,11 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-//	OSTaskSuspend(Walk_TASK_PRIO);
+	OSTaskSuspend(Walk_TASK_PRIO);
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(DEBUG_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
@@ -500,8 +506,8 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int LeftGunNextPoint = 1;
-	OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	gRobot.leftGun.mode = GUN_AUTO_MODE;
+//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	gRobot.leftGun.mode = GUN_MANUAL_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -696,8 +702,8 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int RightGunNextPoint = 1;
-	OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	gRobot.rightGun.mode = GUN_AUTO_MODE;
+//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	gRobot.rightGun.mode = GUN_MANUAL_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -902,7 +908,7 @@ void UpperGunShootTask(void)
 	{
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
-		gRobot.upperGun.mode = GUN_AUTO_MODE;
+		gRobot.upperGun.mode = GUN_MANUAL_MODE;
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法

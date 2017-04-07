@@ -50,6 +50,10 @@
 #define GUN_START_AIM			1
 #define GUN_STOP_AIM			0
 
+//是否已经上弹标志位
+#define GUN_ALREADY_RELOAD  1
+#define GUN_NOT_RELOAD  0
+
 //左枪支架roll轴CAN ID
 #define LEFT_GUN_ROLL_ID 7
 //左枪支架pitch轴CAN ID
@@ -268,6 +272,8 @@ typedef struct
 	int targetZone;
 	//射击次数
 	int shootTimes;
+	//标志枪中是否已经上弹
+	unsigned char reloadState;
 	//射击步数，对于步的定义暂时为在一个位置打一个柱子的一种参数
 	unsigned char shootStep;
 	//下一步标志位,用于接收平板指令   置1为下一步
