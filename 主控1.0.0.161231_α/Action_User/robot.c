@@ -634,7 +634,8 @@ status_t ROBOT_CheckGunOpenSafety(void)
 status_t ROBOT_LeftGunReload(void)
 {
 	uint8_t pushTimes = 8;
-	if(gRobot.leftGun)
+	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
+	{
 		while(pushTimes--)
 		{
 			LeftPush();
@@ -644,7 +645,8 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		LeftBack();
 		OSTimeDly(50);
-
+		gRobot.leftGun.reloadState = GUN_ALREADY_RELOAD;
+	}
 	return GUN_NO_ERROR;
 }
 /**
@@ -658,31 +660,7 @@ status_t ROBOT_LeftGunReload(void)
 status_t ROBOT_RightGunReload(void)
 {
 	uint8_t pushTimes = 8;
-	if(gRobot.rightGun.mode == GUN_AUTO_MODE)
-	{
-		if(gRobot.rightGun.stepState != GUN_NEXT_STEP)
-		{
-			if(gRobot.rightGun.bulletNumber > 1)
-			{
-				if(gRobot.rightGun.shootTimes <= ROBOT_RightGunPoint1ShootTimes())pushTimes = 12;
-				while(pushTimes--)
-				{
-					RightPush();
-					OSTimeDly(2);
-					RightHold();
-					OSTimeDly(8);
-				}
-			}
-			else
-			{
-				RightPush();
-				OSTimeDly(80);
-			}
-			RightBack();
-			OSTimeDly(50);
-		}
-	}
-	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
+	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
 		while(pushTimes--)
 		{
@@ -692,7 +670,8 @@ status_t ROBOT_RightGunReload(void)
 			OSTimeDly(8);
 		}
 		RightBack();
-		OSTimeDly(50);		
+		OSTimeDly(50);
+		gRobot.rightGun.reloadState = GUN_ALREADY_RELOAD;
 	}
 	return GUN_NO_ERROR;
 	
@@ -1096,21 +1075,13 @@ status_t ROBOT_LeftGunShoot(void)
 	{
 		if(gRobot.leftGun.ready == GUN_AIM_DONE && gRobot.leftGun.stepState == GUN_PRESENT_STEP)
 		{
-			if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] < gRobot.leftGun.targetStepShootTimes)
-			{
 				LeftShoot();	
 				OSTimeDly(50);
 				LeftShootReset();
+				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.leftGun.shootTimes++;
 				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
-				//fix me, 应该检查子弹是否用完
 				gRobot.leftGun.bulletNumber--;
-			}
-			if(gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod] >= gRobot.leftGun.targetStepShootTimes)
-			{
-				gRobot.leftGun.shootStep++;
-	//			gRobot.leftGun.actualStepShootTimes = 0;
-			}
 		}
 	}
 	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
@@ -1121,6 +1092,7 @@ status_t ROBOT_LeftGunShoot(void)
 		gRobot.leftGun.shootTimes++;
 		//fix me, 应该检查子弹是否用完
 		gRobot.leftGun.bulletNumber--;
+		gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 	}
 		return GUN_NO_ERROR;
 	
@@ -1138,28 +1110,23 @@ status_t ROBOT_RightGunShoot(void)
 	{
 		if(gRobot.rightGun.ready == GUN_AIM_DONE && gRobot.rightGun.stepState == GUN_PRESENT_STEP)
 		{
-			if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] < gRobot.rightGun.targetStepShootTimes)
-			{
+
 				RightShoot();	
 				OSTimeDly(50);
 				RightShootReset();	
+				gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.rightGun.shootTimes++;
 				gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
 				//fix me, 应该检查子弹是否用完
 				gRobot.rightGun.bulletNumber--;
-			}
-			if(gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod] >= gRobot.rightGun.targetStepShootTimes)
-			{
-				gRobot.rightGun.shootStep++;
-	//			gRobot.rightGun.actualStepShootTimes = 0;
-			}
 		}
 	}
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
 	{
 		RightShoot();	
 		OSTimeDly(50);
-		RightShootReset();	
+		RightShootReset();
+		gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 		gRobot.rightGun.shootTimes++;
 		//fix me, 应该检查子弹是否用完
 		gRobot.rightGun.bulletNumber--;
