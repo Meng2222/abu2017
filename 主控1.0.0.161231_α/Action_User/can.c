@@ -18,7 +18,8 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "String.h"
-
+#include "ucos_ii.h"
+#include "cpu.h"
 
 /**
   * @brief  Initialize the CANx as encoder
@@ -458,6 +459,29 @@ uint8_t CAN_RxMsg(CAN_TypeDef* CANx,
 }
 
 
+/**
+  * @brief  利用操作系统互斥型信号量管理CAN发送资源，CAN发送函数
+  * @param  CANx:  CANx, where x can be 1,2.
+  * @param  TxMessage:   a array you want to transmit.
+  * @retval CAN_SEND_OK(whose value is 1), if receive successful
+  * @retval CAN_SEND_ERR(which value is -1), if receive unsuccessful
+**/
+extern OS_EVENT *CANSendMutex;
+
+int OSCANSendCmd(CAN_TypeDef* CANx, CanTxMsg* TxMessage)
+{
+	CPU_INT08U os_err;
+	static uint8_t mailBox = INVALID_CANSEND_MAILBOX;
+	//等待互斥型信号量
+	OSMutexPend(CANSendMutex,0,&os_err);
+	//发送CAN消息
+	mailBox = CAN_Transmit(CANx,TxMessage);
+	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok));
+	OSMutexPost(CANSendMutex);
+	return CAN_SEND_OK;
+
+	
+}
 
 
 

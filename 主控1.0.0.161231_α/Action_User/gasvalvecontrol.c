@@ -25,8 +25,9 @@ void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 	
 	TxMessage.Data[0] = data;
 
-	mbox = CAN_Transmit(CAN2, &TxMessage);         
-	while ((CAN_TransmitStatus(CAN2, mbox) != CAN_TxStatus_Ok));
+	OSCANSendCmd(CAN2, &TxMessage);
+//	mbox = CAN_Transmit(CAN2, &TxMessage);         
+//	while ((CAN_TransmitStatus(CAN2, mbox) != CAN_TxStatus_Ok));
 }
 //夹子开
 void ClampOpen(void)

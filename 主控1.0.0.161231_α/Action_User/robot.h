@@ -245,7 +245,7 @@ typedef struct
 	unsigned char shootParaMode;
 	
 	//弹夹内子弹数，因为最多23发，所以用8位
-	unsigned char bulletNumber;
+	signed char bulletNumber;
 	
 	//枪膛是否卡弹:1卡弹，0正常
 	unsigned char champerErrerState;

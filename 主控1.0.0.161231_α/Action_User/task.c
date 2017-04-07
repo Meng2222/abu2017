@@ -23,6 +23,8 @@
 */
 OS_EVENT *PeriodSem;
 OS_EVENT *DebugPeriodSem;
+//定义互斥型信号量用于管理CAN发送资源
+OS_EVENT *CANSendMutex;
 //邮箱定义
 OS_EVENT *OpenSaftyMbox;
 OS_EVENT *LeftGunShootPointMbox;
@@ -186,6 +188,10 @@ void App_Task()
 	/*创建信号量*/
     PeriodSem				=	OSSemCreate(0);
 	DebugPeriodSem          =   OSSemCreate(0);
+	
+	//创建互斥型信号量
+	CANSendMutex            =   OSMutexCreate(9,&os_err);
+
 	//创建邮箱
 	OpenSaftyMbox            =   OSMboxCreate((void *)0);
 	LeftGunShootPointMbox    =   OSMboxCreate((void *)0);
@@ -402,7 +408,7 @@ void WalkTask(void)
 				if (PHOTOSENSORUPGUN)
 				{
 					status++;
-					OSTaskResume(DEBUG_TASK_PRIO);					
+//					OSTaskResume(DEBUG_TASK_PRIO);					
 //					status+=5;
 				}
 				break;
@@ -513,7 +519,6 @@ void LeftGunShootTask(void)
 			if(stopAutoFlag || gRobot.leftGun.shootTimes >=   ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
 			{
 				//自动调度
-
 				uint8_t shootPoint = SHOOT_POINT3;
 				uint8_t landId = 0;
 				uint8_t shootMethod = 0;
@@ -537,7 +542,24 @@ void LeftGunShootTask(void)
 				}
 				gRobot.leftGun.targetPlant = landId;
 				//获取目标位姿
-				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
+				gun_pose_t reloadPose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
+
+				//更新枪目标位姿
+				gRobot.leftGun.targetPose.pitch =	reloadPose.pitch;
+				gRobot.leftGun.targetPose.roll =	reloadPose.roll;
+				gRobot.leftGun.targetPose.yaw =		reloadPose.yaw;
+				gRobot.leftGun.targetPose.speed1 =	reloadPose.speed1;
+				gRobot.leftGun.targetPose.speed2 =	reloadPose.speed2;
+
+				ROBOT_LeftGunAim();
+				ROBOT_LeftGunCheckAim();
+				ROBOT_LeftGunReload();				
+				
+				gRobot.leftGun.stepState = GUN_PRESENT_STEP;
+				//检查上弹是否到位
+				ROBOT_LeftGunCheckReload();
+								//获取目标位姿
+				gun_pose_t pose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
 
 				//更新枪目标位姿
 				gRobot.leftGun.targetPose.pitch =	pose.pitch;
@@ -546,28 +568,6 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.speed1 =	pose.speed1;
 				gRobot.leftGun.targetPose.speed2 =	pose.speed2;
 
-				if(landId != PLANT7 && landId != PLANT3)
-				{
-					ROBOT_LeftGunAim();
-					ROBOT_LeftGunReload();
-				}
-				else if(landId == PLANT7)
-				{
-					ROBOT_LeftGunAim();
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
-					OSTimeDly(10);
-					ROBOT_LeftGunReload();
-				}
-				else if(landId == PLANT3)
-				{
-					ROBOT_LeftGunAim();
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(26.0f));
-					OSTimeDly(10);
-					ROBOT_LeftGunReload();				
-				}
-
-				//检查上弹是否到位
-				ROBOT_LeftGunCheckReload();
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				
@@ -575,6 +575,7 @@ void LeftGunShootTask(void)
 				OSTimeDly(50);
 				LeftShootReset();
 				OSTimeDly(50);
+				gRobot.leftGun.bulletNumber--;
 			}
 			else
 			{
@@ -587,43 +588,36 @@ void LeftGunShootTask(void)
 				uint8_t shootMethod = shootCommand.shootMethod;
 				gRobot.leftGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 				//获取目标位姿
-				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
+				gun_pose_t reloadPose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
-				gRobot.leftGun.targetPose.pitch = pose.pitch;
-				gRobot.leftGun.targetPose.roll = pose.roll;
-				gRobot.leftGun.targetPose.yaw = pose.yaw;
-				gRobot.leftGun.targetPose.speed1 = pose.speed1;
-				gRobot.leftGun.targetPose.speed2 = pose.speed2;
+				gRobot.leftGun.targetPose.pitch = reloadPose.pitch;
+				gRobot.leftGun.targetPose.roll = reloadPose.roll;
+				gRobot.leftGun.targetPose.yaw = reloadPose.yaw;
+				gRobot.leftGun.targetPose.speed1 = reloadPose.speed1;
+				gRobot.leftGun.targetPose.speed2 = reloadPose.speed2;
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-				//子弹上膛,第一次上膛默认位置OK
 				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
 				if(gRobot.leftGun.targetStepShootTimes > \
 					gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
 				{
-					if(landId != PLANT7 && landId != PLANT3)
-					{
-						ROBOT_LeftGunAim();
-						ROBOT_LeftGunReload();
-					}
-					else if(landId == PLANT7)
-					{
-						ROBOT_LeftGunAim();
-						PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
-						OSTimeDly(10);
-						ROBOT_LeftGunReload();
-					}
-					else if(landId == PLANT3)
-					{
-						ROBOT_LeftGunAim();
-						PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(26.0f));
-						OSTimeDly(10);
-						ROBOT_LeftGunReload();				
-					}
+
+					ROBOT_LeftGunAim();
+					ROBOT_LeftGunCheckAim();
+					ROBOT_LeftGunReload();
 					//检查上弹是否到位
 					ROBOT_LeftGunCheckReload();
 					//上弹到位后再次瞄准，并检查枪是否到位
+					//获取目标位姿
+					gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
+					//更新枪目标位姿
+					gRobot.leftGun.targetPose.pitch = pose.pitch;
+					gRobot.leftGun.targetPose.roll = pose.roll;
+					gRobot.leftGun.targetPose.yaw = pose.yaw;
+					gRobot.leftGun.targetPose.speed1 = pose.speed1;
+					gRobot.leftGun.targetPose.speed2 = pose.speed2;
+
 					ROBOT_LeftGunAim();
 					ROBOT_LeftGunCheckAim();
 					ROBOT_LeftGunCheckPlantState();
@@ -695,6 +689,7 @@ void LeftGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
+		LeftGunSendDebugInfo();
 	}
 }
 
@@ -716,9 +711,8 @@ void RightGunShootTask(void)
 			//一旦收到发射命令，则停止自动模式
 			if(gRobot.rightGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
-			if(stopAutoFlag || gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER + RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER)
+			if(stopAutoFlag || gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
 			{
-		
 				uint8_t shootPoint = SHOOT_POINT3;
 				uint8_t landId = 0;
 				uint8_t shootMethod = 0;
@@ -743,6 +737,23 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPlant = landId;
 	
 				//获取目标位姿
+				gun_pose_t reloadPose = gRightGunReloadPosDatabase[shootPoint][shootMethod][landId];
+
+				//更新枪目标位姿
+				gRobot.rightGun.targetPose.pitch =	reloadPose.pitch;
+				gRobot.rightGun.targetPose.roll =	reloadPose.roll;
+				gRobot.rightGun.targetPose.yaw =	reloadPose.yaw;
+				gRobot.rightGun.targetPose.speed1 =	reloadPose.speed1;
+				gRobot.rightGun.targetPose.speed2 =	reloadPose.speed2;
+
+				ROBOT_RightGunAim();
+				ROBOT_RightGunCheckAim();
+				ROBOT_RightGunReload();				
+
+				gRobot.rightGun.stepState =GUN_PRESENT_STEP;
+				//检查上弹是否到位
+				ROBOT_RightGunCheckReload();
+				//瞄准，此函数最好瞄准完成后再返回
 				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 
 				//更新枪目标位姿
@@ -752,38 +763,14 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPose.speed1 =	pose.speed1;
 				gRobot.rightGun.targetPose.speed2 =	pose.speed2;
 
-				if(landId != PLANT7 && landId != PLANT5)
-				{
-					ROBOT_RightGunAim();
-					ROBOT_RightGunReload();
-				}
-				else if(landId == PLANT7)
-				{
-					ROBOT_RightGunAim();
-					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
-					OSTimeDly(10);
-					ROBOT_RightGunReload();
-				}
-				else if(landId == PLANT5)
-				{
-					ROBOT_RightGunAim();
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(-10.0f));
-					OSTimeDly(10);
-					ROBOT_RightGunReload();
-				}
-				
-
-				//检查上弹是否到位
-				ROBOT_RightGunCheckReload();
-				//瞄准，此函数最好瞄准完成后再返回
 				ROBOT_RightGunAim();
-				ROBOT_RightGunReload();
 				ROBOT_RightGunCheckAim();
 				
 				RightShoot();	
 				OSTimeDly(50);
 				RightShootReset();	
 				OSTimeDly(50);
+				gRobot.rightGun.bulletNumber--;
 				
 			}
 			else
@@ -797,13 +784,13 @@ void RightGunShootTask(void)
 				uint8_t shootMethod = shootCommand.shootMethod;
 				gRobot.rightGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 				//获取目标位姿
-				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
+				gun_pose_t reloadPose = gRightGunReloadPosDatabase[shootPoint][shootMethod][landId];
 				//更新枪目标位姿
-				gRobot.rightGun.targetPose.pitch = pose.pitch;
-				gRobot.rightGun.targetPose.roll = pose.roll;
-				gRobot.rightGun.targetPose.yaw = pose.yaw;
-				gRobot.rightGun.targetPose.speed1 = pose.speed1;
-				gRobot.rightGun.targetPose.speed2 = pose.speed2;
+				gRobot.rightGun.targetPose.pitch = reloadPose.pitch;
+				gRobot.rightGun.targetPose.roll = reloadPose.roll;
+				gRobot.rightGun.targetPose.yaw = reloadPose.yaw;
+				gRobot.rightGun.targetPose.speed1 = reloadPose.speed1;
+				gRobot.rightGun.targetPose.speed2 = reloadPose.speed2;
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
@@ -813,28 +800,22 @@ void RightGunShootTask(void)
 				if(gRobot.rightGun.targetStepShootTimes > \
 					gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
 				{
-					if(landId != PLANT7 && landId != PLANT5)
-					{
-						ROBOT_RightGunAim();
-						ROBOT_RightGunReload();
-					}
-					else if(landId == PLANT7)
-					{
-						ROBOT_RightGunAim();
-						PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
-						OSTimeDly(10);
-						ROBOT_RightGunReload();
-					}
-					else if(landId == PLANT5)
-					{
-						ROBOT_RightGunAim();
-						PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(-10.0f));
-						OSTimeDly(10);
-						ROBOT_RightGunReload();
-					}
+
+					ROBOT_RightGunAim();
+					ROBOT_RightGunCheckAim();
+					ROBOT_RightGunReload();
 					//检查上弹是否到位
 					ROBOT_RightGunCheckReload();
 					//上弹到位后再次瞄准，并检查枪是否到位
+					//获取目标位姿
+					gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
+					//更新枪目标位姿
+					gRobot.rightGun.targetPose.pitch = pose.pitch;
+					gRobot.rightGun.targetPose.roll = pose.roll;
+					gRobot.rightGun.targetPose.yaw = pose.yaw;
+					gRobot.rightGun.targetPose.speed1 = pose.speed1;
+					gRobot.rightGun.targetPose.speed2 = pose.speed2;
+
 					ROBOT_RightGunAim();
 					ROBOT_RightGunCheckAim();
 					ROBOT_RightGunCheckPlantState();
@@ -906,6 +887,7 @@ void RightGunShootTask(void)
 			BEEP_ON;
 			while(1) {}
 		}
+		RightGunSendDebugInfo();
 	}
 
 }

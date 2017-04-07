@@ -173,6 +173,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+          <Name>/</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>ARMRTXEVENTFLAGS</Key>
           <Name>-L70 -Z18 -C0 -M0 -T1</Name>
         </SetRegEntry>
@@ -201,34 +206,66 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>790</LineNumber>
+          <LineNumber>583</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220720</Address>
+          <Address>134221534</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\Dreamer\Desktop\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
+          <Filename>C:\Users\Dreamer\Desktop\鑷姩璋冨害\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/task.c\790</Expression>
+          <Expression>\\STM32F407_ACTION\../Action_User/task.c\583</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>796</LineNumber>
+          <LineNumber>1094</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220744</Address>
+          <Address>134246874</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\Dreamer\Desktop\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
+          <Filename>C:\Users\Dreamer\Desktop\鑷姩璋冨害\abu2017\涓绘帶1.0.0.161231_伪\Action_User\robot.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/task.c\796</Expression>
+          <Expression>\\STM32F407_ACTION\../Action_User/robot.c\1094</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>800</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134220564</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>C:\Users\Dreamer\Desktop\鑷姩璋冨害\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32F407_ACTION\../Action_User/task.c\800</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>1136</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134247214</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>C:\Users\Dreamer\Desktop\鑷姩璋冨害\abu2017\涓绘帶1.0.0.161231_伪\Action_User\robot.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32F407_ACTION\../Action_User/robot.c\1136</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -306,6 +343,16 @@
           <count>14</count>
           <WinNumber>1</WinNumber>
           <ItemText>gRobot.rightGun.shootStep,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gRobot.rightGun.bulletNumber,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>16</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gRobot.leftGun.bulletNumber,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

@@ -26,6 +26,13 @@ static void LeftGunInit(void)
 //	gRobot.leftGun.targetPose.pitch = 0.0f;
 //	gRobot.leftGun.targetPose.yaw = 0.0f;
 //	gRobot.leftGun.targetPose.roll = 0.0f;
+	//特殊上弹角度
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT3][SHOOT_METHOD1].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT3][SHOOT_METHOD2].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD1].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD2].pitch = 20.0f;
+	
+	
 	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].pitch;
 	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].yaw;
 	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].roll;
@@ -74,9 +81,9 @@ static void LeftGunInit(void)
 	Vel_cfg(CAN1, LEFT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(CAN1, LEFT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 10000,10000,80000);//俯仰
-	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 10000,10000,80000);//翻滚
-	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,10000,10000,80000);//航向
+	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 30000,30000,80000);//俯仰
+	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 30000,30000,80000);//翻滚
+	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,30000,30000,80000);//航向
 	
 
 }
@@ -86,7 +93,13 @@ static void RightGunInit(void)
 	gRobot.rightGun.actualPose.pitch = 0.0f;
 	gRobot.rightGun.actualPose.yaw = 0.0f;
 	gRobot.rightGun.actualPose.roll = 0.0f;
+	
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT5][SHOOT_METHOD1].roll = -10.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT5][SHOOT_METHOD2].roll = -10.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD1].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD2].pitch = 20.0f;
 
+	
 	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].pitch;
 	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].yaw;
 	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].roll;
@@ -134,9 +147,9 @@ static void RightGunInit(void)
 	Vel_cfg(CAN1, RIGHT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(CAN1, RIGHT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 10000,10000,80000);//俯仰
-	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 10000,10000,80000);//翻滚
-	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,10000,10000,80000);//航向
+	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 30000,30000,80000);//俯仰
+	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 30000,30000,80000);//翻滚
+	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,30000,30000,80000);//航向
 }
 
 static void UpperGunInit(void)
@@ -625,26 +638,23 @@ status_t ROBOT_LeftGunReload(void)
 	{
 		if(gRobot.leftGun.stepState != GUN_NEXT_STEP)
 		{
-		//	if(gRobot.leftGun.shootTimes < 4)
-		//	{
-			if(gRobot.leftGun.shootTimes <= ROBOT_LeftGunPoint1ShootTimes())pushTimes = 12;
-			while(pushTimes--)
+
+			if(gRobot.leftGun.bulletNumber > 1)
+			{
+				if(gRobot.leftGun.shootTimes <= ROBOT_LeftGunPoint1ShootTimes())pushTimes = 12;
+				while(pushTimes--)
+				{
+					LeftPush();
+					OSTimeDly(4);
+					LeftBack();
+					OSTimeDly(2);
+				}
+			}
+			else
 			{
 				LeftPush();
-				OSTimeDly(4);
-				LeftBack();
-				OSTimeDly(2);
+				OSTimeDly(80);			
 			}
-		//	}
-		//	else
-		//	{
-//				LeftPush();
-//				OSTimeDly(80);
-		//	}
-		//	LeftBack();
-		//	OSTimeDly(5);
-		//	LeftPush();
-		//	OSTimeDly(5);
 			LeftBack();
 			OSTimeDly(50);
 		}
@@ -656,8 +666,7 @@ status_t ROBOT_LeftGunReload(void)
 		LeftBack();
 		OSTimeDly(50);		
 	}
-		return GUN_NO_ERROR;
-	
+	return GUN_NO_ERROR;
 }
 /**
 *名称：ROBOT_RightGunReload
@@ -674,18 +683,24 @@ status_t ROBOT_RightGunReload(void)
 	{
 		if(gRobot.rightGun.stepState != GUN_NEXT_STEP)
 		{
-			if(gRobot.rightGun.shootTimes <= ROBOT_RightGunPoint1ShootTimes())pushTimes = 12;
-			while(pushTimes--)
+			if(gRobot.rightGun.bulletNumber > 1)
+			{
+				if(gRobot.rightGun.shootTimes <= ROBOT_RightGunPoint1ShootTimes())pushTimes = 12;
+				while(pushTimes--)
+				{
+					RightPush();
+					OSTimeDly(4);
+					RightBack();
+					OSTimeDly(2);
+				}
+			}
+			else
 			{
 				RightPush();
-				OSTimeDly(4);
-				RightBack();
-				OSTimeDly(2);
+				OSTimeDly(80);
 			}
-//			RightPush();
-//			OSTimeDly(80);
-//			RightBack();
-//			OSTimeDly(50);
+			RightBack();
+			OSTimeDly(50);
 		}
 	}
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
@@ -859,7 +874,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 10;
+	uint8_t checkTimes = 5;
 	while(checkTimes--)
 	{
 		int timeout = 20;
@@ -916,7 +931,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 status_t ROBOT_RightGunCheckAim(void)
 {
 	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 10;
+	uint8_t checkTimes = 5;
 	while(checkTimes--)
 	{
 		int timeout = 20;
@@ -1247,8 +1262,9 @@ status_t ROBOT_LeftGunCheckStep(void)
 	if(gRobot.leftGun.nextStep == 1)
 	{
 		gRobot.leftGun.shootStep++;
-		gRobot.leftGun.shootTimes += (gRobot.leftGun.targetStepShootTimes - gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]);
-//		gRobot.leftGun.actualStepShootTimes = 0; 
+		gRobot.leftGun.shootTimes += (gRobot.leftGun.targetStepShootTimes - \
+										gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum]\
+																			[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]);
 		gRobot.leftGun.nextStep = 0;
 		gRobot.leftGun.stepState = GUN_NEXT_STEP;
 	}
