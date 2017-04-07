@@ -13,7 +13,7 @@ extern robot_t gRobot;
 void GasValveControl(uint8_t boardNum , uint8_t valveNum , uint8_t valveState)
 {
 	uint8_t data = 0x00;
-	uint8_t mbox;
+//	uint8_t mbox;
 	CanTxMsg TxMessage;
 	TxMessage.StdId = 0x0001 ;					 // standard identifier=1
 	TxMessage.ExtId = 0x0001 ;				 	 // extended identifier=StdId

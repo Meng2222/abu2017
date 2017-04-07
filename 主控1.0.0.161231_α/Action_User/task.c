@@ -991,7 +991,6 @@ void DebugTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	OSSemSet(DebugPeriodSem, 0, &os_err);
-	uint8_t photoSensorCounter = 0;
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
