@@ -277,8 +277,6 @@ void ConfigTask(void)
 
 
 	ROBOT_Init();
-
-	
 	
 	ClampClose();
 	LeftPush();
@@ -288,7 +286,6 @@ void ConfigTask(void)
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
-
 
 //	OSTaskSuspend(Walk_TASK_PRIO);
 
@@ -595,6 +592,7 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.yaw = reloadPose.yaw;
 				gRobot.leftGun.targetPose.speed1 = reloadPose.speed1;
 				gRobot.leftGun.targetPose.speed2 = reloadPose.speed2;
+				LeftGunSendDebugInfo();
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
@@ -791,6 +789,7 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPose.yaw = reloadPose.yaw;
 				gRobot.rightGun.targetPose.speed1 = reloadPose.speed1;
 				gRobot.rightGun.targetPose.speed2 = reloadPose.speed2;
+				RightGunSendDebugInfo();
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!

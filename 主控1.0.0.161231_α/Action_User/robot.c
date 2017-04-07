@@ -27,10 +27,10 @@ static void LeftGunInit(void)
 //	gRobot.leftGun.targetPose.yaw = 0.0f;
 //	gRobot.leftGun.targetPose.roll = 0.0f;
 	//特殊上弹角度
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT3][SHOOT_METHOD1].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT3][SHOOT_METHOD2].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD1].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD2].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	
 	
 	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].pitch;
@@ -94,10 +94,10 @@ static void RightGunInit(void)
 	gRobot.rightGun.actualPose.yaw = 0.0f;
 	gRobot.rightGun.actualPose.roll = 0.0f;
 	
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT5][SHOOT_METHOD1].roll = -10.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT5][SHOOT_METHOD2].roll = -10.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD1].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD2].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT5].roll = -10.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT5].roll = -10.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 
 	
 	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].pitch;
@@ -645,9 +645,9 @@ status_t ROBOT_LeftGunReload(void)
 				while(pushTimes--)
 				{
 					LeftPush();
-					OSTimeDly(4);
-					LeftBack();
 					OSTimeDly(2);
+					LeftHold();
+					OSTimeDly(8);
 				}
 			}
 			else
@@ -689,9 +689,9 @@ status_t ROBOT_RightGunReload(void)
 				while(pushTimes--)
 				{
 					RightPush();
-					OSTimeDly(4);
-					RightBack();
 					OSTimeDly(2);
+					RightHold();
+					OSTimeDly(8);
 				}
 			}
 			else
