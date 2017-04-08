@@ -58,8 +58,8 @@ void ClampReset(void)
 //左上弹
 void LeftPush(void)
 {
-	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 1);
 	GasValveControl(LEFT_RELOAD_RESET_BOARD_ID , LEFT_RELOAD_RESET_IO_ID , 0);		
+	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 1);
 }
 //左上弹复位
 void LeftBack(void)
@@ -76,8 +76,8 @@ void LeftHold(void)
 //右上弹
 void RightPush(void)
 {
-	GasValveControl(RIGHT_RELOAD_BOARD_ID ,RIGHT_RELOAD_IO_ID , 1);
 	GasValveControl(RIGHT_RELOAD_RESET_BOARD_ID , RIGHT_RELOAD_RESET_IO_ID , 0);		
+	GasValveControl(RIGHT_RELOAD_BOARD_ID ,RIGHT_RELOAD_IO_ID , 1);
 }
 //右上弹复位
 void RightBack(void)

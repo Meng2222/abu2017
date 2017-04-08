@@ -21,6 +21,7 @@
                         信号量定义
 ===============================================================
 */
+OS_EXT INT8U OSCPUUsage;
 OS_EVENT *PeriodSem;
 OS_EVENT *DebugPeriodSem;
 //定义互斥型信号量用于管理CAN发送资源
@@ -270,7 +271,7 @@ void ConfigTask(void)
 	//*******************
 	USART6_Init(115200);	//定位系统
 	FlashInit();
-//	TIM_Delayms(TIM5, 10000);
+	TIM_Delayms(TIM5, 10000);
 
 
 
@@ -293,12 +294,12 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-	OSTaskSuspend(Walk_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-	OSTaskSuspend(DEBUG_TASK_PRIO);
+	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(DEBUG_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
 }
@@ -343,7 +344,7 @@ void WalkTask(void)
 			ROBOT_CheckGunOpenSafety();
 		}
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
@@ -488,6 +489,7 @@ void WalkTask(void)
 				MoveY(50.0f);
 				SendStop2Camera();
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
+				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
 			
@@ -504,8 +506,8 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int LeftGunNextPoint = 1;
-//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	gRobot.leftGun.mode = GUN_MANUAL_MODE;
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -556,7 +558,6 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunReload();				
 				
-				gRobot.leftGun.stepState = GUN_PRESENT_STEP;
 				//检查上弹是否到位
 				ROBOT_LeftGunCheckReload();
 				//获取目标位姿
@@ -694,8 +695,8 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int RightGunNextPoint = 1;
-//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	gRobot.rightGun.mode = GUN_MANUAL_MODE;
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
 	while(1)
@@ -746,7 +747,6 @@ void RightGunShootTask(void)
 				ROBOT_RightGunCheckAim();
 				ROBOT_RightGunReload();				
 
-				gRobot.rightGun.stepState =GUN_PRESENT_STEP;
 				//检查上弹是否到位
 				ROBOT_RightGunCheckReload();
 				//瞄准，此函数最好瞄准完成后再返回
@@ -889,17 +889,16 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
+	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
-		gRobot.upperGun.mode = GUN_MANUAL_MODE;
-		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_AUTO_MODE)
+		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
 			if(gRobot.upperGun.targetZone & 0x0f) upperGunShootFlag = 1;
-
-			if(upperGunShootFlag == 1 /*&& gRobot.upperGun.shootTimes <= MAX_AUTO_BULLET_NUMBER*/)
+			if(upperGunShootFlag == 1)
 			{
 				int zoneId = INVALID_ZONE_NUMBER;
 				//fix me,此处应该检查着陆台编号是否合法
@@ -911,7 +910,7 @@ void UpperGunShootTask(void)
 				else                                       continue;
 
 				//获取目标位姿
-				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.shootParaMode][zoneId];
+				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][zoneId];
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 
 				//更新枪目标位姿
@@ -943,16 +942,45 @@ void UpperGunShootTask(void)
 				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
+		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
+		{
+			ROBOT_UpperGunCheckPlantState();
+			shoot_command_t shootCommand = gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep];
+			uint8_t targetPlant = shootCommand.shootPoint;
+			uint8_t shootMethod = shootCommand.plantNum;
+			uint8_t shootZone = shootCommand.shootMethod;
+			gRobot.upperGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
+			//获取目标位姿
+			gun_pose_t pose = gUpperGunPosDatabase[targetPlant][shootMethod][shootZone];
+			//更新枪目标位姿
+			gRobot.upperGun.targetPose.pitch = pose.pitch;
+			gRobot.upperGun.targetPose.yaw = pose.yaw;
+			gRobot.upperGun.targetPose.speed1 = pose.speed1;
+			
+			ROBOT_UpperGunAim();
+			ROBOT_UpperGunCheckAim();
+			ROBOT_UpperGunCheckPlantState();
+			if(gRobot.upperGun.targetStepShootTimes > \
+			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootPoint][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum])
+			{
+				ROBOT_UpperGunShoot();
+				OSTimeDly(30);
+			}
+			else
+			{
+				gRobot.upperGun.shootStep ++;
+			}
+			if(gRobot.upperGun.shootStep >= UPPER_GUN_AUTO_STEP_NUMBER)
+			{
+				gRobot.upperGun.mode = GUN_DEFEND_MODE;
+			}
+		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_MANUAL_MODE)
 		{
 			if(gRobot.upperGun.aim == GUN_START_AIM)
 			{
-				//检查并更新子弹状态，训练时需要记录
-				ROBOT_GunCheckBulletState(UPPER_GUN);
-				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
@@ -961,7 +989,6 @@ void UpperGunShootTask(void)
 			else if(gRobot.upperGun.shoot==GUN_START_SHOOT)
 			{
 				ROBOT_UpperGunShoot();
-
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 			}
@@ -985,12 +1012,17 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
-			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);		
-			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
-			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
-			LeftGunSendDebugInfo();
-			RightGunSendDebugInfo();
+			USART_SendData(UART5,OSCPUUsage);
+			USART_SendData(UART5,(uint8_t)-100);
+			USART_SendData(UART5,(uint8_t)-100);
+			USART_SendData(UART5,(uint8_t)-100);
+			USART_SendData(UART5,(uint8_t)-100);			
+//			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
+//			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);		
+//			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+//			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
+//			LeftGunSendDebugInfo();
+//			RightGunSendDebugInfo();
 	}
 
 }

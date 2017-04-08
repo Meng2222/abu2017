@@ -24,15 +24,15 @@
 #define UPPER_GUN				3
 
 //左枪组ID号
-#define LEFT_GUN_GROUP_ID		101
+#define RIGHT_GUN_GROUP_ID		101
 //右枪组ID号
-#define RIGHT_GUN_GROUP_ID		102
+#define LEFT_GUN_GROUP_ID		102
 //上面枪组ID号
 #define UPPER_GUN_GROUP_ID		103
 //左枪速度组ID
-#define LEFT_GUN_VEL_GROUP_ID   104
+#define RIGHT_GUN_VEL_GROUP_ID   104
 //右枪速度组ID
-#define RIGHT_GUN_VEL_GROUP_ID  105
+#define LEFT_GUN_VEL_GROUP_ID  105
 //上枪速度组ID
 #define UPPER_GUN_VEL_GROUP_ID  106
 
@@ -43,6 +43,9 @@
 
 #define GUN_AUTO_MODE			0
 #define GUN_MANUAL_MODE			1
+
+#define GUN_ATTACK_MODE         2
+#define GUN_DEFEND_MODE         3
 
 #define GUN_START_SHOOT 1
 #define GUN_STOP_SHOOT 0
@@ -118,7 +121,6 @@
 //右枪3点（中点）自动发射子弹数目
 #define RIGHT_GUN_POINT3_AUTO_BULLET_NUMBER  11
 
-
 //瞄准未完成
 #define GUN_AIM_IN_PROCESS 1
 //瞄准完成
@@ -156,8 +158,10 @@
 #define ROBOT_STATUS_GAS_LOW  0x08
 
 //自动模式下总步数
-#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 7
-#define RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER 7//14
+#define LEFT_GUN_AUTO_SHOOT_STEP_NUMBER 6
+#define RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER 6//14
+//上枪自动射击步数
+#define UPPER_GUN_AUTO_STEP_NUMBER 3
 
 
 //着陆台编号
@@ -543,6 +547,14 @@ status_t ROBOT_LeftGunCheckPlantState(void);
 *status:
 */
 status_t ROBOT_RightGunCheckPlantState(void);
+/*
+*名称：ROBOT_UpperGunCheckPlantState
+*功能：左枪检查各个柱子状态并更新指令
+*参数：
+*status:
+*/
+status_t ROBOT_UpperGunCheckPlantState(void);
+
 /*
 *名称：ROBOT_LeftGunReloadAim
 *功能：左枪检查各个柱子状态并更新指令

@@ -474,23 +474,128 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][L
 
 
 //上面枪姿态数据库
-gun_pose_t gUpperGunPosDatabase[SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
+gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
 {
-	//第1种子弹状态，对应的7个着陆台的枪的姿态
-	{{-3.2f, -2.4f, 0.0f, 121.0f, 0.0f},
-	{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
-	{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
-	{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
+	
+	//一号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
 	},
-
-
-	//第2种子弹状态，对应的7个着陆台的枪的姿态
-	{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f},
-	{5.0f, 6.0f, 7.0f, 8.0f, 9.0f},
-	{0.1f, 0.2f, 0.3f, 0.4f, 0.5f},
-	{0.6f, 0.7f, 0.8f, 0.9f, 1.0f}}
-
-
+	//二号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
+	},	
+	//三号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{2.2f,10.9f,0.0f,104.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第二种参数类型对应落盘
+		{
+			{11.4f,22.4f,0.0f,97.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
+	},	
+	//四号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+		},
+		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
+	},	
+	//五号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
+	},	
+	//六号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
+	},	
+	//七号柱子对应参数
+	{
+		//第一种参数类型对应打球
+		{
+			{-3.2f, -2.4f, 0.0f, 121.0f, 0.0f},
+			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
+			{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
+			{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
+		},
+		//第二种参数类型对应落盘
+		{
+			{8.1f,23.3f,0.0f,48.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		}
+	}
 };
 
 
@@ -511,6 +616,7 @@ uint8_t LeftGunPriority[7] = {PLANT1,PLANT2,PLANT7,PLANT3,PLANT6,PLANT4,PLANT5};
 uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1};
 
 
+
 /** @defgroup Gun_Shoot_Command
   * @brief
   * @{
@@ -521,18 +627,17 @@ uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1}
 shoot_command_t gLeftGunShootCmds[LEFT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 {
 
-	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD1 , 2},
-	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD2 , 2},
+	{SHOOT_POINT3, PLANT1,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT1,	SHOOT_METHOD2 , 2},
 //	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD1 , 2},
 //	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD2 , 2},
 //	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD1 , 2},	
 //	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD2 , 2},
 //	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1 , 2},	
 //	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD2 , 2},
-	{SHOOT_POINT3, PLANT3,	SHOOT_METHOD1 , 2},
-	{SHOOT_POINT3, PLANT3,	SHOOT_METHOD2 , 2},	
+	{SHOOT_POINT3, PLANT2,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT2,	SHOOT_METHOD2 , 2},	
 //	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1 , 1},
-	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD2 , 1},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3}
 };
@@ -543,8 +648,6 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 
 //	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD1 , 2},
 //	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD2 , 2},
-	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD1 , 2},
-	{SHOOT_POINT1, PLANT2,	SHOOT_METHOD2 , 2},
 	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD1 , 2},	
 	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD2 , 2},
 	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1 , 2},	
@@ -554,26 +657,18 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 //	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1 , 1},
 //	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD2 , 1},
 //	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3}
 
 };
 
 ////上面枪射击柱子的顺序
-//shoot_command_t gUpperGunShootCmds = \
-//{
-//	{
-//		{PLANT1,	SHOOT_METHOD1},
-//		{PLANT2,	SHOOT_METHOD1},
-//		{PLANT3,	SHOOT_METHOD1},
-//		{PLANT4,	SHOOT_METHOD1},
-//		{PLANT5,	SHOOT_METHOD1},
-//		{PLANT6,	SHOOT_METHOD1},
-//		{PLANT7,	SHOOT_METHOD1},
-//		{PLANT1,	SHOOT_METHOD1},
-//		{PLANT2,	SHOOT_METHOD1},
-//		{PLANT3,	SHOOT_METHOD1}
-//	}
-//};
+shoot_command_t gUpperGunShootCmds[UPPER_GUN_AUTO_STEP_NUMBER] = \
+{
+	{PLANT7,SHOOT_METHOD2,0,1},
+	{PLANT3,SHOOT_METHOD1,0,1},
+	{PLANT3,SHOOT_METHOD2,0,1}	
+};
 
 /**
   * @}
