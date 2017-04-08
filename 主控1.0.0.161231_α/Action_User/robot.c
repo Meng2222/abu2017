@@ -1153,7 +1153,7 @@ status_t ROBOT_UpperGunShoot(void)
 		OSTimeDly(50);
 		UpperShootReset();
 		gRobot.upperGun.shootTimes++;
-		gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootPoint][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum]++;			
+		gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod]++;			
 		//fix me, 应该检查子弹是否用完
 		gRobot.upperGun.bulletNumber--;
 	}
@@ -1366,57 +1366,57 @@ status_t ROBOT_UpperGunCheckPlantState(void)
 	for(i = 0;i < 3;i++)
 	{
 		//着陆台上有球有盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].ball == 0&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].plate == 1)
+		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 0&& \
+			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 1)
 		{
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD1)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
 			}
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD2)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].shootPoint][gRobot.upperGun.shootCommand[i].plantNum];
+				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
 			}				
 		}
 		//着陆台上有球没盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].ball == 0&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].plate == 0)
+		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 0&& \
+			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 0)
 		{
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD1)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
 			}
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD2)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
 			}				
 		}
 		//着陆台上没球有盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].ball == 1&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].plate == 1)
+		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 1&& \
+			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 1)
 		{
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD1)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].shootPoint][gRobot.upperGun.shootCommand[i].plantNum];
+				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
 			}
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD2)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].shootPoint][gRobot.upperGun.shootCommand[i].plantNum];
+				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
 			}				
 		}
 		//着陆台上没球没盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].ball == 1&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].shootPoint].plate == 0)
+		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 1&& \
+			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 0)
 		{
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD1)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].shootPoint][gRobot.upperGun.shootCommand[i].plantNum];
+				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
 			}
-			if(gRobot.upperGun.shootCommand[i].plantNum == SHOOT_METHOD2)
+			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
 				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
 			}				

@@ -946,9 +946,9 @@ void UpperGunShootTask(void)
 		{
 			ROBOT_UpperGunCheckPlantState();
 			shoot_command_t shootCommand = gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep];
-			uint8_t targetPlant = shootCommand.shootPoint;
-			uint8_t shootMethod = shootCommand.plantNum;
-			uint8_t shootZone = shootCommand.shootMethod;
+			uint8_t targetPlant = shootCommand.plantNum;
+			uint8_t shootMethod = shootCommand.shootMethod;
+			uint8_t shootZone = ZONE1;
 			gRobot.upperGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
 			//获取目标位姿
 			gun_pose_t pose = gUpperGunPosDatabase[targetPlant][shootMethod][shootZone];
@@ -961,7 +961,7 @@ void UpperGunShootTask(void)
 			ROBOT_UpperGunCheckAim();
 			ROBOT_UpperGunCheckPlantState();
 			if(gRobot.upperGun.targetStepShootTimes > \
-			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootPoint][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum])
+			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod])
 			{
 				ROBOT_UpperGunShoot();
 				OSTimeDly(30);
