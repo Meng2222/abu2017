@@ -270,7 +270,7 @@ void ConfigTask(void)
 	//*******************
 	USART6_Init(115200);	//定位系统
 	FlashInit();
-	TIM_Delayms(TIM5, 10000);
+//	TIM_Delayms(TIM5, 10000);
 
 
 
@@ -410,9 +410,9 @@ void WalkTask(void)
 			case beginToGo1:
 				if (PHOTOSENSORUPGUN)
 				{
-					status++;
+//					status++;
 //					OSTaskResume(DEBUG_TASK_PRIO);					
-//					status+=5;
+					status+=5;
 				}
 				break;
 				
@@ -488,8 +488,6 @@ void WalkTask(void)
 				MoveY(50.0f);
 				SendStop2Camera();
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
-//				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-//				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
 			
@@ -561,8 +559,8 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.stepState = GUN_PRESENT_STEP;
 				//检查上弹是否到位
 				ROBOT_LeftGunCheckReload();
-								//获取目标位姿
-				gun_pose_t pose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
+				//获取目标位姿
+				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
 
 				//更新枪目标位姿
 				gRobot.leftGun.targetPose.pitch =	pose.pitch;
@@ -574,11 +572,8 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				
-				LeftShoot();	
-				OSTimeDly(50);
-				LeftShootReset();
-				OSTimeDly(50);
-				gRobot.leftGun.bulletNumber--;
+				//fix me 此处应当再次检查命令
+				ROBOT_LeftGunShoot();
 			}
 			else
 			{
@@ -629,8 +624,6 @@ void LeftGunShootTask(void)
 					if(gRobot.leftGun.targetStepShootTimes > \
 						gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
 					{
-						//检查是否进入下一步
-						ROBOT_LeftGunCheckStep();
 						//检查是否到达发射点
 						ROBOT_LeftGunCheckShootPoint();	
 						//发射飞盘
@@ -639,7 +632,6 @@ void LeftGunShootTask(void)
 					else
 					{
 						gRobot.leftGun.shootStep++;
-						gRobot.leftGun.stepState = GUN_NEXT_STEP;
 					}
 				}
 				else 
@@ -769,12 +761,8 @@ void RightGunShootTask(void)
 
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				
-				RightShoot();	
-				OSTimeDly(50);
-				RightShootReset();	
-				OSTimeDly(50);
-				gRobot.rightGun.bulletNumber--;
+				//fix me 此处应该再次检查命令
+				ROBOT_RightGunShoot();
 				
 			}
 			else
@@ -828,8 +816,6 @@ void RightGunShootTask(void)
 					if(gRobot.rightGun.targetStepShootTimes > \
 						gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
 					{
-						//检查是否进入下一步
-						ROBOT_RightGunCheckStep();
 						//检查是否到达发射点
 						ROBOT_RightGunCheckShootPoint();	
 						//发射飞盘
@@ -837,8 +823,7 @@ void RightGunShootTask(void)
 					}
 					else
 					{
-						gRobot.rightGun.shootStep++;
-						gRobot.rightGun.stepState = GUN_NEXT_STEP;						
+						gRobot.rightGun.shootStep++;				
 					}
 				}
 				else

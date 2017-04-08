@@ -243,7 +243,7 @@ float LeftGunYawInverseTransform(int32_t position)
 *
 *注意：
 */
-int32_t LeftGunPitchTransform(float pitch)
+int32_t RightGunPitchTransform(float pitch)
 {
 	if(pitch > gRobot.leftGun.maxPoseLimit.pitch) pitch = gRobot.leftGun.maxPoseLimit.pitch;	
 	if(pitch < gRobot.leftGun.minPoseLimit.pitch) pitch = gRobot.leftGun.minPoseLimit.pitch;
@@ -257,7 +257,7 @@ int32_t LeftGunPitchTransform(float pitch)
 *position:轴的绝对位置pulse
 *注意：
 */
-float LeftGunPitchInverseTransform(int32_t position)
+float RightGunPitchInverseTransform(int32_t position)
 {
 	return (float)position / 141.0844f + 7.0f;
 }
@@ -269,7 +269,7 @@ float LeftGunPitchInverseTransform(int32_t position)
 *
 *注意：
 */
-int32_t LeftGunRollTransform(float roll)
+int32_t RightGunRollTransform(float roll)
 {
 	if(roll > gRobot.leftGun.maxPoseLimit.roll) roll = gRobot.leftGun.maxPoseLimit.roll;	
 	if(roll < gRobot.leftGun.minPoseLimit.roll) roll = gRobot.leftGun.minPoseLimit.roll;
@@ -283,7 +283,7 @@ int32_t LeftGunRollTransform(float roll)
 *position:轴的绝对位置pulse
 *注意：
 */
-float LeftGunRollInverseTransform(int32_t position)
+float RightGunRollInverseTransform(int32_t position)
 {
 	return (float)position/141.0844f + 46.54f;
 }
@@ -295,7 +295,7 @@ float LeftGunRollInverseTransform(int32_t position)
 *
 *注意：
 */
-int32_t LeftGunLeftSpeedTransform(float speed)
+int32_t RightGunLeftSpeedTransform(float speed)
 {
 	
 	if(speed > gRobot.leftGun.maxPoseLimit.speed1) speed = gRobot.leftGun.maxPoseLimit.speed1;	
@@ -310,7 +310,7 @@ int32_t LeftGunLeftSpeedTransform(float speed)
 *
 *注意：
 */
-float LeftGunLeftSpeedInverseTransform(int32_t speed)
+float RightGunLeftSpeedInverseTransform(int32_t speed)
 {
 	//fix me, 添加参数合法性检测
 	return -(float)speed/4096;
@@ -323,7 +323,7 @@ float LeftGunLeftSpeedInverseTransform(int32_t speed)
 *
 *注意：
 */
-int32_t LeftGunRightSpeedTransform(float speed)
+int32_t RightGunRightSpeedTransform(float speed)
 {
 	if(speed > gRobot.leftGun.maxPoseLimit.speed2) speed = gRobot.leftGun.maxPoseLimit.speed2;	
 	if(speed < gRobot.leftGun.minPoseLimit.speed2) speed = gRobot.leftGun.minPoseLimit.speed2;
@@ -337,7 +337,7 @@ int32_t LeftGunRightSpeedTransform(float speed)
 *
 *注意：
 */
-float LeftGunRightSpeedInverseTransform(int32_t speed)
+float RightGunRightSpeedInverseTransform(int32_t speed)
 {
 	//fix me, 添加参数合法性检测
 	return (float)speed/4096;
@@ -376,7 +376,7 @@ float RightGunYawInverseTransform(int32_t position)
 *
 *注意：
 */
-int32_t RightGunPitchTransform(float pitch)
+int32_t LeftGunPitchTransform(float pitch)
 {
 	if(pitch > gRobot.rightGun.maxPoseLimit.pitch) pitch = gRobot.rightGun.maxPoseLimit.pitch;	
 	if(pitch < gRobot.rightGun.minPoseLimit.pitch) pitch = gRobot.rightGun.minPoseLimit.pitch;
@@ -390,7 +390,7 @@ int32_t RightGunPitchTransform(float pitch)
 *
 *注意：
 */
-float RightGunPitchInverseTransform(int32_t position)
+float LeftGunPitchInverseTransform(int32_t position)
 {
 	return (float)(-position)/141.0844f + 7.0f;
 }
@@ -402,7 +402,7 @@ float RightGunPitchInverseTransform(int32_t position)
 *
 *注意：
 */
-int32_t RightGunRollTransform(float roll)
+int32_t LeftGunRollTransform(float roll)
 {
 	if(roll > gRobot.rightGun.maxPoseLimit.roll) roll = gRobot.rightGun.maxPoseLimit.roll;	
 	if(roll < gRobot.rightGun.minPoseLimit.roll) roll = gRobot.rightGun.minPoseLimit.roll;
@@ -416,7 +416,7 @@ int32_t RightGunRollTransform(float roll)
 *
 *注意：
 */
-float RightGunRollInverseTransform(int32_t position)
+float LeftGunRollInverseTransform(int32_t position)
 {
 	return (float)(-position)/141.0844f + 46.54f;
 }
@@ -428,7 +428,7 @@ float RightGunRollInverseTransform(int32_t position)
 *
 *注意：
 */
-int32_t RightGunLeftSpeedTransform(float speed)
+int32_t LeftGunLeftSpeedTransform(float speed)
 {
 	if(speed > gRobot.rightGun.maxPoseLimit.speed1) speed = gRobot.rightGun.maxPoseLimit.speed1;	
 	if(speed < gRobot.rightGun.minPoseLimit.speed1) speed = gRobot.rightGun.minPoseLimit.speed1;
@@ -442,7 +442,7 @@ int32_t RightGunLeftSpeedTransform(float speed)
 *
 *注意：
 */
-float RightGunLeftSpeedInverseTransform(int32_t speed)
+float LeftGunLeftSpeedInverseTransform(int32_t speed)
 {
 	return -(float)speed / 4096.0f;
 }
@@ -453,7 +453,7 @@ float RightGunLeftSpeedInverseTransform(int32_t speed)
 *
 *注意：
 */
-int32_t RightGunRightSpeedTransform(float speed)
+int32_t LeftGunRightSpeedTransform(float speed)
 {
 	if(speed > gRobot.rightGun.maxPoseLimit.speed2) speed = gRobot.rightGun.maxPoseLimit.speed2;	
 	if(speed < gRobot.rightGun.minPoseLimit.speed2) speed = gRobot.rightGun.minPoseLimit.speed2;
@@ -467,7 +467,7 @@ int32_t RightGunRightSpeedTransform(float speed)
 *
 *注意：
 */
-float RightGunRightSpeedInverseTransform(int32_t speed)
+float LeftGunRightSpeedInverseTransform(int32_t speed)
 {
 	return (float)speed / 4096.0f;
 }
@@ -1026,16 +1026,14 @@ status_t ROBOT_RightGunCheckAim(void)
  status_t ROBOT_LeftGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if(gRobot.leftGun.stepState == GUN_PRESENT_STEP)
+	if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() ||\
+		gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
 	{
-		if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() ||\
-			gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
-		{
-			OSMboxPend(LeftGunShootPointMbox,0,&os_err);
-			OSTimeDly(50);
-			return MOVEBASE_POS_READY;
-		}
+		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
+		OSTimeDly(50);
+		return MOVEBASE_POS_READY;
 	}
+
 	return GUN_NO_ERROR;
 }
 
@@ -1050,15 +1048,13 @@ status_t ROBOT_RightGunCheckAim(void)
  status_t ROBOT_RightGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if(gRobot.rightGun.stepState == GUN_PRESENT_STEP)
+
+	if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes() ||\
+		gRobot.rightGun.shootTimes == ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
 	{
-		if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes() ||\
-			gRobot.rightGun.shootTimes == ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
-		{
-			OSMboxPend(RightGunShootPointMbox,0,&os_err);
-			OSTimeDly(50);
-			return MOVEBASE_POS_READY;
-		}
+		OSMboxPend(RightGunShootPointMbox,0,&os_err);
+		OSTimeDly(50);
+		return MOVEBASE_POS_READY;
 	}
 	return GUN_NO_ERROR;
 }
@@ -1073,7 +1069,7 @@ status_t ROBOT_LeftGunShoot(void)
 {
 	if(gRobot.leftGun.mode == GUN_AUTO_MODE)
 	{
-		if(gRobot.leftGun.ready == GUN_AIM_DONE && gRobot.leftGun.stepState == GUN_PRESENT_STEP)
+		if(gRobot.leftGun.ready == GUN_AIM_DONE)
 		{
 				LeftShoot();	
 				OSTimeDly(50);
@@ -1090,7 +1086,6 @@ status_t ROBOT_LeftGunShoot(void)
 		OSTimeDly(50);
 		LeftShootReset();
 		gRobot.leftGun.shootTimes++;
-		//fix me, 应该检查子弹是否用完
 		gRobot.leftGun.bulletNumber--;
 		gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 	}
@@ -1108,7 +1103,7 @@ status_t ROBOT_RightGunShoot(void)
 {
 	if(gRobot.rightGun.mode == GUN_AUTO_MODE)
 	{
-		if(gRobot.rightGun.ready == GUN_AIM_DONE && gRobot.rightGun.stepState == GUN_PRESENT_STEP)
+		if(gRobot.rightGun.ready == GUN_AIM_DONE)
 		{
 
 				RightShoot();	
@@ -1126,11 +1121,9 @@ status_t ROBOT_RightGunShoot(void)
 		RightShoot();	
 		OSTimeDly(50);
 		RightShootReset();
-		gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 		gRobot.rightGun.shootTimes++;
-		//fix me, 应该检查子弹是否用完
 		gRobot.rightGun.bulletNumber--;
-
+		gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 	}
 	return GUN_NO_ERROR;
 }
@@ -1213,53 +1206,6 @@ status_t ROBOT_GunCheckMode(unsigned char gun)
 			break;
 	}
 	return -1;
-}
-/*
-*名称：ROBOT_LeftGunCheckStep
-*功能：检查左枪步数
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunCheckStep(void)
-{
-	if(gRobot.leftGun.nextStep == 1)
-	{
-		gRobot.leftGun.shootStep++;
-		gRobot.leftGun.shootTimes += (gRobot.leftGun.targetStepShootTimes - \
-										gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum]\
-																			[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]);
-		gRobot.leftGun.nextStep = 0;
-		gRobot.leftGun.stepState = GUN_NEXT_STEP;
-	}
-	else
-	{
-		gRobot.leftGun.stepState = GUN_PRESENT_STEP;
-	}
-	return GUN_NO_ERROR;
-}
-
-
-/*
-*名称：ROBOT_RightGunCheckStep
-*功能：检查右枪步数
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunCheckStep(void)
-{
-	if(gRobot.rightGun.nextStep == 1)
-	{
-		gRobot.rightGun.shootStep++;
-		gRobot.rightGun.shootTimes += (gRobot.rightGun.targetStepShootTimes - gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]);
-//		gRobot.rightGun.actualStepShootTimes = 0; 
-		gRobot.rightGun.nextStep = 0;
-		gRobot.rightGun.stepState = GUN_NEXT_STEP;
-	}
-	else
-	{
-		gRobot.rightGun.stepState = GUN_PRESENT_STEP;
-	}
-	return GUN_NO_ERROR;
 }
 
 /*
@@ -1471,24 +1417,5 @@ unsigned char ROBOT_RightGunPoint3ShootTimes(void)
 	}
 	return point3ShootTimes;
 }
-/*
-*名称：ROBOT_LeftGunReloadAim
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunReloadAim(void)
-{
-	return 0;
-}
-/*
-*名称：ROBOT_RightGunReloadAim
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunReloadAim(void)
-{
-	return 0;
-}
+
 

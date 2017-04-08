@@ -55,26 +55,26 @@
 #define GUN_NOT_RELOAD  0
 
 //左枪支架roll轴CAN ID
-#define LEFT_GUN_ROLL_ID 7
+#define RIGHT_GUN_ROLL_ID 7
 //左枪支架pitch轴CAN ID
-#define LEFT_GUN_PITCH_ID 6
+#define RIGHT_GUN_PITCH_ID 6
 //左枪支架yaw轴CAN ID
 #define LEFT_GUN_YAW_ID 8
 //左枪左侧传送带轴CAN ID
-#define LEFT_GUN_LEFT_ID 4
+#define RIGHT_GUN_LEFT_ID 4
 //左枪右侧传送带轴CAN ID
-#define LEFT_GUN_RIGHT_ID 5
+#define RIGHT_GUN_RIGHT_ID 5
 
 //右枪支架roll轴CAN ID
-#define RIGHT_GUN_ROLL_ID 15
+#define LEFT_GUN_ROLL_ID 15
 //右枪支架pitch轴CAN ID
-#define RIGHT_GUN_PITCH_ID 14
+#define LEFT_GUN_PITCH_ID 14
 //右枪支架yaw轴CAN ID
 #define RIGHT_GUN_YAW_ID 16
 //右枪左侧传送带轴CAN ID
-#define RIGHT_GUN_LEFT_ID 12
+#define LEFT_GUN_LEFT_ID 12
 //右枪右侧传送带轴CAN ID
-#define RIGHT_GUN_RIGHT_ID 13
+#define LEFT_GUN_RIGHT_ID 13
 
 //上面枪支架pitch轴CAN ID
 #define UPPER_GUN_PITCH_ID 11
@@ -528,20 +528,6 @@ status_t ROBOT_RightGunHome(void);
 */
 status_t ROBOT_GunCheckMode(unsigned char gun);
 
-/*
-*名称：ROBOT_LeftGunCheckStep
-*功能：检查左枪步数
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunCheckStep(void);
-/*
-*名称：ROBOT_RightGunCheckStep
-*功能：检查右枪步数
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunCheckStep(void);
 /*
 *名称：ROBOT_LeftGunCheckPlantState
 *功能：左枪检查各个柱子状态并更新指令
