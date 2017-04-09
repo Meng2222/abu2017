@@ -38,6 +38,24 @@ extern robot_t gRobot;
 extern uint8_t LeftGunPriority[7];
 extern uint8_t RightGunPriority[7];
 
+//状态变量
+typedef enum
+{
+	getReady,
+	goToLoadingArea,
+	stopRobot,
+	load,
+	beginToGo1,
+	goToHalfLaunchingArea,
+	beginToGo2,
+	goTo3QuarterArea,
+	beginToGo3,
+	goToLaunchingArea,
+	launch
+}Status_t;
+
+Status_t status = getReady;
+
 static  OS_STK  App_ConfigStk[Config_TASK_START_STK_SIZE];
 static  OS_STK  WalkTaskStk[Walk_TASK_STK_SIZE];
 static  OS_STK  LeftGunShootTaskStk[LEFT_GUN_AUTO_SHOOT_STK_SIZE];
@@ -53,6 +71,9 @@ void UpperGunShootTask(void);
 void sendDebugInfo(void)
 {
 #define POS_X_OFFSET 50
+	
+	USART_SendData(UART5,(int8_t)status);
+	
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
@@ -110,6 +131,8 @@ void LeftGunSendDebugInfo(void)
 {
 	USART_SendData(UART5,1);
 	
+	USART_SendData(UART5,gRobot.leftGun.checkTimeUsage);
+	
 	USART_SendData(UART5,	gRobot.leftGun.nextStep);
 	
 	USART_SendData(UART5,	gRobot.leftGun.targetPlant);
@@ -117,16 +140,16 @@ void LeftGunSendDebugInfo(void)
 	USART_SendData(UART5, gRobot.leftGun.shootParaMode);
 
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.yaw);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.pitch);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.roll);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed1);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed2);
-	
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.pitch);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.roll);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.roll);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed1);
+	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed2);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed2);
+	
 	
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -138,6 +161,8 @@ void RightGunSendDebugInfo(void)
 {
 	USART_SendData(UART5,2);
 	
+	USART_SendData(UART5,gRobot.rightGun.checkTimeUsage);
+	
 	USART_SendData(UART5,	gRobot.rightGun.nextStep);
 	
 	USART_SendData(UART5,	gRobot.rightGun.targetPlant);
@@ -145,16 +170,16 @@ void RightGunSendDebugInfo(void)
 	USART_SendData(UART5, gRobot.rightGun.shootParaMode);
 	
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.yaw);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.pitch);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.roll);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed1);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed2);
-	
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.pitch);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.roll);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.roll);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed1);
+	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed2);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed2);
+	
 	
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -323,23 +348,7 @@ float amendX = 0.0f;
 uint8_t amendXFlag = 0;
 //走行移动计时标志位
 uint8_t moveTimFlag = 0;
-//状态变量
-typedef enum
-{
-	getReady,
-	goToLoadingArea,
-	stopRobot,
-	load,
-	beginToGo1,
-	goToHalfLaunchingArea,
-	beginToGo2,
-	goTo3QuarterArea,
-	beginToGo3,
-	goToLaunchingArea,
-	launch
-}Status_t;
 
-Status_t status = getReady;
 
 void WalkTask(void)
 {
@@ -734,6 +743,7 @@ void LeftGunShootTask(void)
 			while(1) {}
 		}
 		LeftGunSendDebugInfo();
+		gRobot.leftGun.checkTimeUsage = 0;
 	}
 }
 
@@ -958,6 +968,7 @@ void RightGunShootTask(void)
 			while(1) {}
 		}
 		RightGunSendDebugInfo();
+		gRobot.rightGun.checkTimeUsage = 0;
 	}
 
 }
