@@ -527,7 +527,7 @@ void LeftGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	static int LeftGunNextPoint = 1;
+//	static int LeftGunNextPoint = 1;
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -751,7 +751,7 @@ void RightGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	static int RightGunNextPoint = 1;
+//	static int RightGunNextPoint = 1;
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数

@@ -876,13 +876,13 @@ status_t ROBOT_LeftGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 0.5f || \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 0.5f)
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 2.5f || \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 2.5f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 0.5f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 0.5f)
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 2.5f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 2.5f)
 			{
 				continue;
 			}	
@@ -941,13 +941,13 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 0.5f || \
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 0.5f)
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 2.5f || \
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 2.5f)
 			{
 				continue;
 			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 0.5f || \
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 0.5f)
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 2.5f || \
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 2.5f)
 			{
 				continue;
 			}	
@@ -992,8 +992,8 @@ status_t ROBOT_RightGunCheckAim(void)
 		OSTimeDly(5);
 		
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-		if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f || \
-			gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 0.5f)
+		if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.5f || \
+			gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 1.5f)
 		{
 			continue;
 		}
@@ -1003,8 +1003,8 @@ status_t ROBOT_RightGunCheckAim(void)
 		{
 			continue;
 		}
-		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.0f || \
-			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.0f)
+		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +2.5f || \
+			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -2.5f)
 		{
 			continue;
 		}
