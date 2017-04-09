@@ -280,7 +280,7 @@ void ConfigTask(void)
 //	USART3_Init(115200);    //摄像头
 	//*******************
 	USART6_Init(115200);	//定位系统
-	FlashInit();
+//	FlashInit();
 	TIM_Delayms(TIM5, 10000);
 
 
@@ -304,14 +304,14 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-//测试使用！！！！！！！！！！！！！！！！
-	MoveY(50.0f);
+////测试使用！！！！！！！！！！！！！！！！
+//	MoveY(50.0f);
 
-	OSTaskSuspend(Walk_TASK_PRIO);
+//	OSTaskSuspend(Walk_TASK_PRIO);
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 	OSTaskSuspend(DEBUG_TASK_PRIO);
 
 	OSTaskSuspend(OS_PRIO_SELF);
@@ -519,7 +519,7 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int LeftGunNextPoint = 1;
-//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -672,7 +672,7 @@ void LeftGunShootTask(void)
 						gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
 					{
 						//检查是否到达发射点
-//						ROBOT_LeftGunCheckShootPoint();	
+						ROBOT_LeftGunCheckShootPoint();	
 						//发射飞盘
 						ROBOT_LeftGunShoot();
 					}
@@ -710,8 +710,8 @@ void LeftGunShootTask(void)
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_LeftGunAim();
 				//更新数据库中参数并写入FLASH
-				UpdateLeftGunPosDatabaseManualMode();
-				FlashWriteGunPosData();
+//				UpdateLeftGunPosDatabaseManualMode();
+//				FlashWriteGunPosData();
 				ROBOT_LeftGunCheckAim();
 				gRobot.leftGun.aim = GUN_STOP_AIM;
 			}
@@ -742,7 +742,7 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	static int RightGunNextPoint = 1;
-//	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -896,7 +896,7 @@ void RightGunShootTask(void)
 						gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
 					{
 						//检查是否到达发射点
-//						ROBOT_RightGunCheckShootPoint();	
+						ROBOT_RightGunCheckShootPoint();	
 						//发射飞盘
 						ROBOT_RightGunShoot();
 					}
@@ -934,8 +934,8 @@ void RightGunShootTask(void)
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_RightGunAim();
 				//更新数据库中参数并写入FLASH
-				UpdateRightGunPosDatabaseManualMode();
-				FlashWriteGunPosData();
+//				UpdateRightGunPosDatabaseManualMode();
+//				FlashWriteGunPosData();
 				ROBOT_RightGunCheckAim();
 				gRobot.rightGun.aim = GUN_STOP_AIM;
 			}
