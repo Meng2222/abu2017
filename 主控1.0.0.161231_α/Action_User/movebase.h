@@ -49,7 +49,7 @@
 #define MAXACC 3000000.0f
 
 //机器人特殊情况制动速度   单位:mm/s
-#define MAXSPEED 4000.0f
+#define MAXSPEED 4800.0f
 
 //运动完成时停车速度    单位:mm/s
 #define ENDSPEED 500.0f

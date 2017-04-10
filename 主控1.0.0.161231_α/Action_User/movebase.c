@@ -376,7 +376,6 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
-	
 	/*特殊情况导致速度极不安全时紧急制动*/
 	if(fabs(outputSpeed) > MAXSPEED)
 	{
@@ -385,6 +384,10 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			LockWheel();
 		}
 	}
+	if((outputSpeed > 4200.0f) ||(outputSpeed < 4200.0f))
+	{
+		USART_SendData(UART5, (uint8_t)(outputSpeed/100.0f));
+	}		
 	
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
