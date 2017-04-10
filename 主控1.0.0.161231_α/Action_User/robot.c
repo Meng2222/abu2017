@@ -638,7 +638,7 @@ status_t ROBOT_LeftGunReload(void)
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
 		LeftPush();
-		OSTimeDly(70);
+		OSTimeDly(50);
 	
 //		while(pushTimes--)
 //		{
@@ -648,6 +648,7 @@ status_t ROBOT_LeftGunReload(void)
 //			OSTimeDly(8);
 //		}
 		LeftBack();
+		OSTimeDly(10);
 //		OSTimeDly(50);
 //		LeftHold();
 		gRobot.leftGun.reloadState = GUN_ALREADY_RELOAD;
@@ -669,7 +670,7 @@ status_t ROBOT_RightGunReload(void)
 	{
 		BEEP_ON;
 		RightPush();
-		OSTimeDly(70);
+		OSTimeDly(50);
 //		while(pushTimes--)
 //		{
 //			RightPush();
@@ -678,6 +679,7 @@ status_t ROBOT_RightGunReload(void)
 //			OSTimeDly(8);
 //		}
 		RightBack();
+		OSTimeDly(10);
 		BEEP_OFF;
 //		OSTimeDly(50);
 //		RightHold();
