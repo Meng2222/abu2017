@@ -634,19 +634,19 @@ status_t ROBOT_CheckGunOpenSafety(void)
 */
 status_t ROBOT_LeftGunReload(void)
 {
-//	uint8_t pushTimes = 8;
+	uint8_t pushTimes = 8;
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
-		LeftPush();
-		OSTimeDly(55);
+//		LeftPush();
+//		OSTimeDly(53);
 	
-//		while(pushTimes--)
-//		{
-//			LeftPush();
-//			OSTimeDly(2);
-//			LeftHold();
-//			OSTimeDly(8);
-//		}
+		while(pushTimes--)
+		{
+			LeftPush();
+			OSTimeDly(2);
+			LeftHold();
+			OSTimeDly(8);
+		}
 		LeftBack();
 		OSTimeDly(10);
 //		OSTimeDly(50);
@@ -668,9 +668,8 @@ status_t ROBOT_RightGunReload(void)
 //	uint8_t pushTimes = 8;
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
-		BEEP_ON;
 		RightPush();
-		OSTimeDly(55);
+		OSTimeDly(53);
 //		while(pushTimes--)
 //		{
 //			RightPush();
@@ -680,7 +679,6 @@ status_t ROBOT_RightGunReload(void)
 //		}
 		RightBack();
 		OSTimeDly(10);
-		BEEP_OFF;
 //		OSTimeDly(50);
 //		RightHold();
 		gRobot.rightGun.reloadState = GUN_ALREADY_RELOAD;
@@ -1246,7 +1244,7 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 		{
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
@@ -1259,11 +1257,11 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 		{
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
 			}				
 		}
 		//着陆台上没球有盘
@@ -1289,7 +1287,7 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
 			}				
 		}		
 	}
@@ -1313,7 +1311,7 @@ status_t ROBOT_RightGunCheckPlantState(void)
 		{
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
@@ -1326,11 +1324,11 @@ status_t ROBOT_RightGunCheckPlantState(void)
 		{
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
 			}				
 		}
 		//着陆台上没球有盘
@@ -1356,7 +1354,7 @@ status_t ROBOT_RightGunCheckPlantState(void)
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
 			}				
 		}		
 	}

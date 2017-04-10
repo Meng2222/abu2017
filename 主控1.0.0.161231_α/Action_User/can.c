@@ -20,6 +20,7 @@
 #include "String.h"
 #include "ucos_ii.h"
 #include "cpu.h"
+#include "gpio.h"
 
 /**
   * @brief  Initialize the CANx as encoder
@@ -476,7 +477,16 @@ int OSCANSendCmd(CAN_TypeDef* CANx, CanTxMsg* TxMessage)
 	OSMutexPend(CANSendMutex,0,&os_err);
 	//发送CAN消息
 	mailBox = CAN_Transmit(CANx,TxMessage);
-	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok));
+	int canSendTimes = 0;
+	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok))
+	{
+		canSendTimes++;
+		if(canSendTimes > 400)
+		{
+			BEEP_ON;
+		}
+	}
+	BEEP_OFF;
 	OSMutexPost(CANSendMutex);
 	return CAN_SEND_OK;
 
