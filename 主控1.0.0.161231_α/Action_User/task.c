@@ -306,20 +306,16 @@ void ConfigTask(void)
 	//*******************
 	USART6_Init(115200);	//定位系统
 //	FlashInit();
-	TIM_Delayms(TIM5, 10000);
-
-
-
-
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
+
+	TIM_Delayms(TIM5, 10000);
 
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
-
 	ROBOT_Init();
-	
+
 	ClampClose();
 	LeftBack();
 	RightBack();
@@ -569,6 +565,7 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.nextStep = 2;
 				gRobot.leftGun.shootParaMode = shootMethod;
 				//获取目标位姿
+
 				gun_pose_t reloadPose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
 
 				//更新枪目标位姿
@@ -579,7 +576,10 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.speed2 =	reloadPose.speed2;
 
 				ROBOT_LeftGunAim();
+				if(landId == PLANT7)
+				{
 				ROBOT_LeftGunCheckAim();
+				}
 				ROBOT_LeftGunReload();				
 				
 				//检查上弹是否到位
@@ -642,24 +642,27 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPlant = landId;
 				gRobot.leftGun.shootParaMode = shootMethod;
 				gRobot.leftGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
-				//获取目标位姿
-				gun_pose_t reloadPose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
-				//更新枪目标位姿
-				gRobot.leftGun.targetPose.pitch = reloadPose.pitch;
-				gRobot.leftGun.targetPose.roll = reloadPose.roll;
-				gRobot.leftGun.targetPose.yaw = reloadPose.yaw;
-				gRobot.leftGun.targetPose.speed1 = reloadPose.speed1;
-				gRobot.leftGun.targetPose.speed2 = reloadPose.speed2;
+
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				//7号3号柱子正常参数上弹易卡，需要单独处理 fix me
 				if(gRobot.leftGun.targetStepShootTimes > \
 					gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod])
-				{
-
-					ROBOT_LeftGunAim();
-					ROBOT_LeftGunCheckAim();
+				{	
+					//获取目标位姿
+					gun_pose_t reloadPose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
+					//更新枪目标位姿
+					gRobot.leftGun.targetPose.pitch = reloadPose.pitch;
+					gRobot.leftGun.targetPose.roll = reloadPose.roll;
+					gRobot.leftGun.targetPose.yaw = reloadPose.yaw;
+					gRobot.leftGun.targetPose.speed1 = reloadPose.speed1;
+					gRobot.leftGun.targetPose.speed2 = reloadPose.speed2;
+					ROBOT_LeftGunAim();					
+					if(landId == PLANT7)
+					{
+						ROBOT_LeftGunCheckAim();
+					}
 					ROBOT_LeftGunReload();
 					//检查上弹是否到位
 					ROBOT_LeftGunCheckReload();
@@ -727,10 +730,10 @@ void LeftGunShootTask(void)
 			else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
 			{
 				ROBOT_LeftGunShoot();
-				OSTimeDly(50);
+				ROBOT_LeftGunReload();
+//				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
-				ROBOT_LeftGunReload();
 			}
 			else
 			{
@@ -791,6 +794,7 @@ void RightGunShootTask(void)
 				gRobot.rightGun.nextStep = 2;
 				gRobot.rightGun.targetPlant = landId;
 				gRobot.rightGun.shootParaMode = shootMethod;
+
 				//获取目标位姿
 				gun_pose_t reloadPose = gRightGunReloadPosDatabase[shootPoint][shootMethod][landId];
 
@@ -802,7 +806,10 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPose.speed2 =	reloadPose.speed2;
 
 				ROBOT_RightGunAim();
-				ROBOT_RightGunCheckAim();
+				if(landId == PLANT7)
+				{
+					ROBOT_RightGunCheckAim();
+				}
 				ROBOT_RightGunReload();				
 
 				//检查上弹是否到位
@@ -865,14 +872,6 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPlant = landId;
 				gRobot.rightGun.shootParaMode = shootMethod;
 				gRobot.rightGun.targetStepShootTimes = shootCommand.stepTargetShootTime;
-				//获取目标位姿
-				gun_pose_t reloadPose = gRightGunReloadPosDatabase[shootPoint][shootMethod][landId];
-				//更新枪目标位姿
-				gRobot.rightGun.targetPose.pitch = reloadPose.pitch;
-				gRobot.rightGun.targetPose.roll = reloadPose.roll;
-				gRobot.rightGun.targetPose.yaw = reloadPose.yaw;
-				gRobot.rightGun.targetPose.speed1 = reloadPose.speed1;
-				gRobot.rightGun.targetPose.speed2 = reloadPose.speed2;
 
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
@@ -882,9 +881,19 @@ void RightGunShootTask(void)
 				if(gRobot.rightGun.targetStepShootTimes > \
 					gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod])
 				{
-
+					//获取目标位姿
+					gun_pose_t reloadPose = gRightGunReloadPosDatabase[shootPoint][shootMethod][landId];
+					//更新枪目标位姿
+					gRobot.rightGun.targetPose.pitch = reloadPose.pitch;
+					gRobot.rightGun.targetPose.roll = reloadPose.roll;
+					gRobot.rightGun.targetPose.yaw = reloadPose.yaw;
+					gRobot.rightGun.targetPose.speed1 = reloadPose.speed1;
+					gRobot.rightGun.targetPose.speed2 = reloadPose.speed2;
 					ROBOT_RightGunAim();
-					ROBOT_RightGunCheckAim();
+					if(landId == PLANT7)
+					{
+						ROBOT_RightGunCheckAim();
+					}
 					ROBOT_RightGunReload();
 					//检查上弹是否到位
 					ROBOT_RightGunCheckReload();
@@ -952,10 +961,10 @@ void RightGunShootTask(void)
 			else if(gRobot.rightGun.shoot==GUN_START_SHOOT)
 			{
 				ROBOT_RightGunShoot();
-				OSTimeDly(50);
+				ROBOT_RightGunReload();
+//				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
-				ROBOT_RightGunReload();
 			}
 			else
 			{

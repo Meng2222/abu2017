@@ -638,7 +638,7 @@ status_t ROBOT_LeftGunReload(void)
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
 		LeftPush();
-		OSTimeDly(50);
+		OSTimeDly(55);
 	
 //		while(pushTimes--)
 //		{
@@ -670,7 +670,7 @@ status_t ROBOT_RightGunReload(void)
 	{
 		BEEP_ON;
 		RightPush();
-		OSTimeDly(50);
+		OSTimeDly(55);
 //		while(pushTimes--)
 //		{
 //			RightPush();
@@ -697,19 +697,19 @@ status_t ROBOT_RightGunReload(void)
 */
 status_t ROBOT_LeftGunCheckReload(void)
 {
-	int timeOut = 3;
+	int timeOut = 20;
 	while(timeOut--)
 	{
 		if(!PHOTOSENSORLEFTGUN)
 		{
 			gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
-			return GUN_NO_ERROR;
+			break;
 		}
 		else
 		{
 			ROBOT_LeftGunHome();
-			continue;
 		}
+		OSTimeDly(5);
 	}
 	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	return GUN_RELOAD_ERROR;
@@ -724,19 +724,19 @@ status_t ROBOT_LeftGunCheckReload(void)
 */
 status_t ROBOT_RightGunCheckReload(void)
 {
-	int timeOut = 3;
+	int timeOut = 20;
 	while(timeOut--)
 	{
 		if(!PHOTOSENSORRIGHTGUN)
 		{
 			gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
-			return GUN_NO_ERROR;
+			break;
 		}
 		else
 		{
 			ROBOT_RightGunHome();
 		}
-		
+		OSTimeDly(5);
 	}
 	gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
 	return GUN_RELOAD_ERROR;
@@ -878,13 +878,13 @@ status_t ROBOT_LeftGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 2.5f || \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 2.5f)
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.5f || \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.5f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 2.5f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 2.5f)
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.5f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.5f)
 			{
 				continue;
 			}	
@@ -943,13 +943,13 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 2.5f || \
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 2.5f)
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.5f || \
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.5f)
 			{
 				continue;
 			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 2.5f || \
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 2.5f)
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.5f || \
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.5f)
 			{
 				continue;
 			}	
@@ -1093,7 +1093,7 @@ status_t ROBOT_LeftGunShoot(void)
 	{
 		if(gRobot.leftGun.ready == GUN_AIM_DONE)
 		{
-				LeftShoot();	
+				LeftShoot();
 				OSTimeDly(50);
 				LeftShootReset();
 				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
@@ -1185,8 +1185,6 @@ status_t ROBOT_LeftGunHome(void)
 	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
 	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
 	
-	OSTimeDly(80);
-	
 	return GUN_NO_ERROR;
 }
 /**
@@ -1201,7 +1199,6 @@ status_t ROBOT_RightGunHome(void)
 	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
 	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
 	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
-	OSTimeDly(80);
 	
 	return GUN_NO_ERROR;
 }
