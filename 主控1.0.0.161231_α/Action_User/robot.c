@@ -34,9 +34,9 @@ static void LeftGunInit(void)
 	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	
 	
-	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].pitch;
-	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].yaw;
-	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].plantNum][gLeftGunShootCmds[0].shootMethod].roll;
+	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
+	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
+	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].roll;
 	
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.leftGun.maxPoseLimit.yaw = 50.0f;
@@ -101,9 +101,9 @@ static void RightGunInit(void)
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 
 	
-	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].pitch;
-	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].yaw;
-	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].plantNum][gRightGunShootCmds[0].shootMethod].roll;
+	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
+	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
+	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].roll;
 	
 	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
@@ -639,13 +639,16 @@ status_t ROBOT_LeftGunReload(void)
 	{
 //		LeftPush();
 //		OSTimeDly(53);
-	
+		if(gRobot.leftGun.shootTimes == 0)
+		{
+			pushTimes = 10;
+		}
 		while(pushTimes--)
 		{
 			LeftPush();
 			OSTimeDly(2);
 			LeftHold();
-			OSTimeDly(8);
+			OSTimeDly(7);
 		}
 		LeftBack();
 		OSTimeDly(10);
@@ -669,7 +672,14 @@ status_t ROBOT_RightGunReload(void)
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
 		RightPush();
-		OSTimeDly(53);
+		if(gRobot.rightGun.shootTimes == 0)
+		{
+			OSTimeDly(70);
+		}
+		else
+		{
+			OSTimeDly(53);
+		}
 //		while(pushTimes--)
 //		{
 //			RightPush();

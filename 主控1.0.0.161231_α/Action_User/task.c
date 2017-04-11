@@ -317,14 +317,16 @@ void ConfigTask(void)
 	ROBOT_Init();
 
 	ClampClose();
-	LeftPush();
-	RightPush();
+	LeftBack();
+	RightBack();
 	ClampReset();
 
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
+	LeftHold();
+	RightHold();
 ////测试使用！！！！！！！！！！！！！！！！
 //	MoveY(50.0f);
 
@@ -505,8 +507,8 @@ void WalkTask(void)
 				LockWheel();
 //				CameraInit();
 				MoveY(50.0f);
+//				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
 				SendStop2Camera();
-				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
 				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
@@ -525,7 +527,8 @@ void LeftGunShootTask(void)
 	os_err = os_err;
 	static uint8_t LeftGunLastLandId = 0;
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	LeftBack();
+//	LeftBack();
+	OSTimeDly(100);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
@@ -549,7 +552,7 @@ void LeftGunShootTask(void)
 				for(uint8_t i = 0;i < 7;i++)
 				{
 
-					//没球
+					//有球
 					if(gRobot.plantState[LeftGunPriority[i]].ball == 0)
 					{
 						landId = LeftGunPriority[i];
@@ -769,13 +772,14 @@ void RightGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	static uint8_t RightGunLastLandId = 0;
+	uint8_t RightGunLastLandId = RightGunPriority[6];
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
-	RightBack();
+//	RightBack();
+	OSTimeDly(100);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
-	RightGunLastLandId = RightGunPriority[0];
+//	RightGunLastLandId = ;
 	while(1)
 	{
 		//检查手动or自动
@@ -883,6 +887,7 @@ void RightGunShootTask(void)
 //						}
 //					}
 //				}
+				ROBOT_RightGunCheckShootPoint();
 				ROBOT_RightGunShoot();
 				
 //			}
@@ -1139,11 +1144,19 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			USART_SendData(UART5,OSCPUUsage);
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);			
+			if(PHOTOSENSORUPGUN)
+			{
+				ClampClose();
+			}
+//			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+//			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
+//			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
+//			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);
+//			USART_SendData(UART5,OSCPUUsage);
+//			USART_SendData(UART5,(uint8_t)-100);
+//			USART_SendData(UART5,(uint8_t)-100);
+//			USART_SendData(UART5,(uint8_t)-100);
+//			USART_SendData(UART5,(uint8_t)-100);			
 //			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
 //			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);		
 //			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		

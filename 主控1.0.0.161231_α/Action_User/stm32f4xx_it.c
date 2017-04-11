@@ -525,7 +525,7 @@ extern uint8_t moveTimFlag;
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
-	#define DEBUG_PERIOD_COUNTER 20
+	#define DEBUG_PERIOD_COUNTER 10
 
 	//用来计数10次，产生10ms的定时器
 	static uint8_t periodCounter = PERIOD_COUNTER;

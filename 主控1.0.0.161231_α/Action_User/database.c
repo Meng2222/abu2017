@@ -115,7 +115,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //6#着陆台
 		 {-0.8f,13.4f, 1.8f,7.0f,133.0f},
 		 //7#着陆台
-		 {5.5f,25.4f, 7.9f,17.0f,81.0f}},
+		 {4.5f, 35.7f, 2.8f,13.0f,56.0f}},
 	
 
 		//第二类参数，对应落盘参数
@@ -225,7 +225,7 @@ gun_pose_t gLeftGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LA
 		 //6#着陆台
 		 {-0.8f,13.4f, 1.8f,7.0f,133.0f},
 		 //7#着陆台
-		 {5.5f,25.4f, 7.9f,17.0f,81.0f}},
+		 {4.5f, 35.7f, 2.8f,13.0f,56.0f}},
 	
 
 		//第二类参数，对应落盘参数
@@ -243,8 +243,7 @@ gun_pose_t gLeftGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LA
 		 //6#着陆台
 		 {-6.1f,17.4f,1.6f,19.0f,121.0f},
 		 //7#着陆台
-		 {4.5f,32.7f, 5.6f,23.0f,48.0f}}
-	}
+		 {4.5f,32.7f, 5.6f,23.0f,48.0f}}	}
 };
 
 
@@ -353,7 +352,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 //6#着陆台
 		 {8.6f,17.2f, 1.6f,117.0f,19.0f},
 		 //7#着陆台
-		 {-9.0f,34.5f, 8.4f,21.0f,47.0f}}
+		 {-9.0f,35.0f, 2.9f,12.0f,55.0f}}
 
 	}
 };
@@ -463,7 +462,7 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][L
 		 //6#着陆台
 		 {8.6f,17.2f, 1.6f,117.0f,19.0f},
 		 //7#着陆台
-		 {-9.0f,34.5f, 8.4f,21.0f,47.0f}}
+		 {-9.0f,35.0f, 2.9f,12.0f,55.0f}}
 
 	}
 };
@@ -623,7 +622,7 @@ uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1}
 shoot_command_t gLeftGunShootCmds[LEFT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 {
 
-	{SHOOT_POINT3, PLANT1,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT2,	SHOOT_METHOD1 , 2},
 	{SHOOT_POINT3, PLANT2,	SHOOT_METHOD1 , 2},	
 	{SHOOT_POINT3, PLANT1,	SHOOT_METHOD1 , 2},
 	{SHOOT_POINT3, PLANT2,	SHOOT_METHOD1 , 2},	
@@ -643,7 +642,7 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 
 //	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD1 , 2},
 //	{SHOOT_POINT1, PLANT1,	SHOOT_METHOD2 , 2},
-	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD1 , 2},	
+	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1 , 2},	
 	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1 , 2},	
 	{SHOOT_POINT3, PLANT4,	SHOOT_METHOD1 , 2},	
 	{SHOOT_POINT3, PLANT5,	SHOOT_METHOD1 , 2},		

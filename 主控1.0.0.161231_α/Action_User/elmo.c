@@ -1,5 +1,6 @@
 #include "elmo.h"
 #include "can.h"
+#include "gpio.h"
 
  /**************初始化驱动器********************/
 void elmo_Init(CAN_TypeDef* CANx)
@@ -138,7 +139,16 @@ void VelCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,int vel)
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
 		mbox= CAN_Transmit(CANx, &TxMessage);
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		int canSendTime = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			canSendTime++;
+			if(canSendTime > 500)
+			{
+				BEEP_ON;
+			}
+		}
+		BEEP_OFF;
 	}
 }
 
@@ -242,7 +252,16 @@ void PosCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
 		mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//等待238us
+		int canSendTime = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			canSendTime++;
+			if(canSendTime > 500)
+			{
+				BEEP_ON;
+			}
+		}
+		BEEP_OFF;	
 	}
 
 }
@@ -324,7 +343,16 @@ void ReadActualPos(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+	int canSendTime = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		canSendTime++;
+		if(canSendTime > 500)
+		{
+			BEEP_ON;
+		}
+	}
+	BEEP_OFF;
  }
 
 /* 读取电机速度 */
@@ -351,7 +379,16 @@ void ReadActualVel(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+	int canSendTime = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		canSendTime++;
+		if(canSendTime > 500)
+		{
+			BEEP_ON;
+		}
+	}
+	BEEP_OFF;
 }
 
 void ReadActualTemperature(CAN_TypeDef* CANx, uint8_t ElmoNum)
