@@ -780,7 +780,58 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun)
 //	}
 	return GUN_NO_ERROR;
 }
+/** @defgroup Left_Gun_Shoot_Tragedy
+  * @brief 
+  * @{
+  */
 
+/**
+  * @brief	Get left gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	
+  * @retval	
+  */
+shoot_command_t ROBOT_LeftGunGetShootCommand(void)
+{
+	static uint8_t LeftGunLastLandId = PLANT7;
+	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
+	for(uint8_t i = 0;i < 7;i++)
+	{
+		//有球
+		if(gRobot.plantState[LeftGunPriority[i]].ball == 0)
+		{
+			shootCommand.plantNum = LeftGunPriority[i];
+			shootCommand.shootMethod = SHOOT_METHOD1;
+			if(LeftGunLastLandId == LeftGunPriority[i])
+			{
+				continue;
+			}
+			break;
+		}
+		//没盘
+		if(gRobot.plantState[LeftGunPriority[i]].plate == 0)
+		{
+			shootCommand.plantNum = LeftGunPriority[i];
+			shootCommand.shootMethod = SHOOT_METHOD2;
+			if(LeftGunLastLandId == LeftGunPriority[i])
+			{
+				continue;
+			}
+			break;
+		
+		}
+	}
+	LeftGunLastLandId = shootCommand.plantNum;
+	
+	return shootCommand;
+}
+
+
+/**
+  * @}
+  */
 /**
 *名称： ROBOT_LeftGunAim
 *功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令
@@ -804,6 +855,61 @@ status_t ROBOT_LeftGunAim(void)
 
 	return GUN_NO_ERROR;
 }
+
+/** @defgroup Right_Gun_Shoot_Tragedy
+  * @brief 
+  * @{
+  */
+
+/**
+  * @brief	Get right gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	
+  * @retval	
+  */
+
+shoot_command_t ROBOT_RightGunGetShootCommand(void)
+{
+	static uint8_t RightGunLastLandId = PLANT7;
+	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
+	for(uint8_t i = 0;i < 7;i++)
+	{
+		//有球
+		if(gRobot.plantState[RightGunPriority[i]].ball == 0)
+		{
+			shootCommand.plantNum = RightGunPriority[i];
+			shootCommand.shootMethod = SHOOT_METHOD1;
+			if(RightGunLastLandId == RightGunPriority[i])
+			{
+				continue;
+			}
+			break;
+		}
+		//没盘
+		if(gRobot.plantState[RightGunPriority[i]].plate == 0)
+		{
+			shootCommand.plantNum = RightGunPriority[i];
+			shootCommand.shootMethod = SHOOT_METHOD2;
+			if(RightGunLastLandId == RightGunPriority[i])
+			{
+				continue;
+			}
+			break;
+		
+		}
+	}
+	RightGunLastLandId = shootCommand.plantNum;
+	
+	return shootCommand;
+}
+
+
+/**
+  * @}
+  */
+
 /**
   *名称： ROBOT_RightGunAim
   *功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令

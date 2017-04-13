@@ -530,14 +530,12 @@ void LeftGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	static uint8_t LeftGunLastLandId = 0;
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 //	LeftBack();
 	OSTimeDly(100);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	int stopAutoFlag = 0;
-	LeftGunLastLandId = LeftGunPriority[0];
 	while(1)
 	{
 		//检查手动or自动
@@ -550,54 +548,20 @@ void LeftGunShootTask(void)
 //			if(stopAutoFlag || gRobot.leftGun.shootTimes >=   ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
 //			{
 				//自动调度
-				uint8_t shootPoint = SHOOT_POINT3;
-				uint8_t landId = PLANT6;
-				uint8_t shootMethod = SHOOT_METHOD2;
+				shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
 				
-				for(uint8_t i = 0;i < 7;i++)
-				{
-					//有球
-					if(gRobot.plantState[LeftGunPriority[i]].ball == 0)
-					{
-						landId = LeftGunPriority[i];
-						shootMethod = SHOOT_METHOD1;
-						if(LeftGunLastLandId == LeftGunPriority[i])
-						{
-							continue;
-						}
-						break;
-					}
-					//没盘
-					if(gRobot.plantState[LeftGunPriority[i]].plate == 0)
-					{
-						landId = LeftGunPriority[i];
-						shootMethod = SHOOT_METHOD2;
-						if(LeftGunLastLandId == LeftGunPriority[i])
-						{
-							continue;
-						}
-						break;
-					
-					}
-				}
-				LeftGunLastLandId = landId;
-				
-				gRobot.leftGun.targetPlant = landId;
+				gRobot.leftGun.targetPlant = leftGunShootCommand.plantNum;
 				gRobot.leftGun.nextStep = 2;
-				gRobot.leftGun.shootParaMode = shootMethod;
-				//获取目标位姿
+				gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
+				
+				//获取并更新枪目标姿态  上弹姿态
+				gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootPoint]\
+																	[leftGunShootCommand.shootMethod]\
+																	[leftGunShootCommand.plantNum];
 
-				gun_pose_t reloadPose = gLeftGunReloadPosDatabase[shootPoint][shootMethod][landId];
-
-				//更新枪目标位姿
-				gRobot.leftGun.targetPose.pitch =	reloadPose.pitch;
-				gRobot.leftGun.targetPose.roll =	reloadPose.roll;
-				gRobot.leftGun.targetPose.yaw =		reloadPose.yaw;
-				gRobot.leftGun.targetPose.speed1 =	reloadPose.speed1;
-				gRobot.leftGun.targetPose.speed2 =	reloadPose.speed2;
 
 				ROBOT_LeftGunAim();
-				if(landId == PLANT7 || landId == PLANT3)
+				if(leftGunShootCommand.plantNum == PLANT7 || leftGunShootCommand.plantNum == PLANT3)
 				{
 					ROBOT_LeftGunCheckAim();
 				}
@@ -605,23 +569,18 @@ void LeftGunShootTask(void)
 				
 				//检查上弹是否到位
 				ROBOT_LeftGunCheckReload();
-				//获取目标位姿
-				gun_pose_t pose = gLeftGunPosDatabase[shootPoint][shootMethod][landId];
-
-				//更新枪目标位姿
-				gRobot.leftGun.targetPose.pitch =	pose.pitch;
-				gRobot.leftGun.targetPose.roll =	pose.roll;
-				gRobot.leftGun.targetPose.yaw =		pose.yaw;
-				gRobot.leftGun.targetPose.speed1 =	pose.speed1;
-				gRobot.leftGun.targetPose.speed2 =	pose.speed2;
+				//获取并更新枪目标姿态  发射姿态
+				gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
+																	[leftGunShootCommand.shootMethod]\
+																	[leftGunShootCommand.plantNum];
 
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 
 				//再次检查该柱子的状态，确定是否发射				
-				if((shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[landId].ball == 1))
+				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
 					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-				if((shootMethod == SHOOT_METHOD2)&&(gRobot.plantState[landId].plate == 1))
+				if((leftGunShootCommand.shootMethod == SHOOT_METHOD2)&&(gRobot.plantState[leftGunShootCommand.plantNum].plate == 1))
 					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 				
 //				for(uint8_t i = 0;i < 7;i++)
@@ -782,7 +741,6 @@ void RightGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-	uint8_t RightGunLastLandId = RightGunPriority[6];
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 //	RightBack();
 	OSTimeDly(100);
@@ -801,53 +759,22 @@ void RightGunShootTask(void)
 
 //			if(stopAutoFlag || gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
 //			{
-				uint8_t shootPoint = SHOOT_POINT3;
-				uint8_t landId = PLANT6;
-				uint8_t shootMethod = SHOOT_METHOD2;
-				
-				for(uint8_t i = 0;i < 7;i++)
-				{
-					//没球
-					if(gRobot.plantState[RightGunPriority[i]].ball == 0)
-					{
-						landId = RightGunPriority[i];
-						shootMethod = SHOOT_METHOD1;
-						if(RightGunLastLandId == RightGunPriority[i])
-						{
-							continue;
-						}
-						break;
-					}
-					//没盘
-					if(gRobot.plantState[RightGunPriority[i]].plate == 0)
-					{
-						landId = RightGunPriority[i];
-						shootMethod = SHOOT_METHOD2;
-						if(RightGunLastLandId == RightGunPriority[i])
-						{
-							continue;
-						}
-						break;
-					}
-				}
-				RightGunLastLandId = landId;
-				
-				gRobot.rightGun.nextStep = 2;
-				gRobot.rightGun.targetPlant = landId;
-				gRobot.rightGun.shootParaMode = shootMethod;
 
-				//获取目标位姿
-				gun_pose_t reloadPose = gRightGunReloadPosDatabase[shootPoint][shootMethod][landId];
+				shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
+				gRobot.rightGun.nextStep = 2;
+				gRobot.rightGun.targetPlant = rightGunShootCommand.plantNum;
+				gRobot.rightGun.shootParaMode = rightGunShootCommand.shootMethod;
+
+				//获取并更新枪目标姿态  上弹姿态
+				gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootPoint]\
+																	[rightGunShootCommand.shootMethod]\
+																	[rightGunShootCommand.plantNum];
 
 				//更新枪目标位姿
-				gRobot.rightGun.targetPose.pitch =	reloadPose.pitch;
-				gRobot.rightGun.targetPose.roll =	reloadPose.roll;
-				gRobot.rightGun.targetPose.yaw =	reloadPose.yaw;
-				gRobot.rightGun.targetPose.speed1 =	reloadPose.speed1;
-				gRobot.rightGun.targetPose.speed2 =	reloadPose.speed2;
+
 
 				ROBOT_RightGunAim();
-				if(landId == PLANT7 || landId == PLANT3)
+				if(rightGunShootCommand.plantNum == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 				{
 					ROBOT_RightGunCheckAim();
 				}
@@ -856,24 +783,27 @@ void RightGunShootTask(void)
 				//检查上弹是否到位
 				ROBOT_RightGunCheckReload();
 				//瞄准，此函数最好瞄准完成后再返回
-				gun_pose_t pose = gRightGunPosDatabase[shootPoint][shootMethod][landId];
 
-				//更新枪目标位姿
-				gRobot.rightGun.targetPose.pitch =	pose.pitch;
-				gRobot.rightGun.targetPose.roll =	pose.roll;
-				gRobot.rightGun.targetPose.yaw =	pose.yaw;
-				gRobot.rightGun.targetPose.speed1 =	pose.speed1;
-				gRobot.rightGun.targetPose.speed2 =	pose.speed2;
+				//获取并更新枪目标姿态  发射姿态
+				gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
+																	[rightGunShootCommand.shootMethod]\
+																	[rightGunShootCommand.plantNum];
+
 
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
 				
 				//再次检查该柱子的状态，确定是否发射
-				if((shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[landId].ball == 1))
+				if((rightGunShootCommand.shootMethod == SHOOT_METHOD1)\
+					&&(gRobot.plantState[rightGunShootCommand.plantNum].ball == 1))
+				{
 					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-				if((shootMethod == SHOOT_METHOD2)&&(gRobot.plantState[landId].plate == 1))
+				}
+				if((rightGunShootCommand.shootMethod == SHOOT_METHOD2)\
+					&&(gRobot.plantState[rightGunShootCommand.plantNum].plate == 1))
+				{
 					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-
+				}
 //				for(uint8_t i = 0;i < 7;i++)
 //				{
 //					//没球

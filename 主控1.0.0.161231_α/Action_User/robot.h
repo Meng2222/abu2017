@@ -423,6 +423,46 @@ status_t ROBOT_RightGunCheckReload(void);
 */
 status_t ROBOT_GunCheckBulletState(unsigned char gun);
 
+
+/** @defgroup Shoot Tragedy
+  * @brief 
+  * @{
+  */
+
+/**
+  * @brief	Get left gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	
+  * @retval	
+  */
+shoot_command_t ROBOT_LeftGunGetShootCommand(void);
+
+/**
+  * @}
+  */
+
+/** @defgroup Right_Gun_Shoot_Tragedy
+  * @brief 
+  * @{
+  */
+
+/**
+  * @brief	Get right gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	
+  * @retval	
+  */
+
+shoot_command_t ROBOT_RightGunGetShootCommand(void);
+
+/**
+  * @}
+  */
+
 /**
 *名称： ROBOT_LeftGunAim ROBOT_RightGunAim ROBOT_UpperGunAim
 *功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令
