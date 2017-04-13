@@ -979,7 +979,7 @@ void UpperGunShootTask(void)
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;
-				gRobot.upperGun.shootParaMode = SHOOT_METHOD1;
+				gRobot.upperGun.shootParaMode = SHOOT_METHOD3;
 				int zoneId = INVALID_ZONE_NUMBER;
 				//fix me,此处应该检查着陆台编号是否合法
 				if(gRobot.upperGun.targetZone & 0x01)      zoneId = ZONE1;

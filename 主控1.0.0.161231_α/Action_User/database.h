@@ -76,7 +76,7 @@ extern gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][
 extern gun_pose_t gLeftGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUMBER];
 extern gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUMBER];
 
-extern gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER];
+extern gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUMBER];
 
 
 /**

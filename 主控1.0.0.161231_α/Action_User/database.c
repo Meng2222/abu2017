@@ -470,7 +470,7 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][L
 
 
 //上面枪姿态数据库
-gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
+gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUMBER] = \
 {
 	
 	//一号柱子对应参数
@@ -483,6 +483,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
 		{
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -505,13 +512,20 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		}
 	},	
 	//三号柱子对应参数
 	{
 		//第一种参数类型对应打球
 		{
-			{2.2f,10.9f,0.0f,104.0f,0.0f},
+			{2.6f,9.7f,0.0f,111.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
@@ -519,6 +533,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
 		//第二种参数类型对应落盘
 		{
 			{11.4f,22.4f,0.0f,97.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
@@ -534,6 +555,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 		},
 		//第二种参数类型对应落盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
 		{
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -556,6 +584,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		}
 	},	
 	//六号柱子对应参数
@@ -573,23 +608,37 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
+		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		}
 	},	
 	//七号柱子对应参数
 	{
 		//第一种参数类型对应打球
 		{
-			{-3.2f, -2.4f, 0.0f, 121.0f, 0.0f},
+			{0.8f, 1.3f, 0.0f, 114.0f, 0.0f},
 			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
 			{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
 			{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
 		},
 		//第二种参数类型对应落盘
 		{
-			{8.1f,23.3f,0.0f,48.0f,0.0f},
+			{8.7f,23.3f,0.0f,52.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
+		},
+		//第三种参数类型对应打盘
+		{
+			{-3.2f, -2.4f, 0.0f, 121.0f, 0.0f},
+			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
+			{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
+			{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
 		}
 	}
 };
@@ -603,13 +652,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][SHOOT_METHOD_NUMBER][ZONE_NUMBER] =
   * @brief
   * @{
   */
-uint8_t LeftGunPriority[7] = {PLANT1,PLANT2,PLANT7,PLANT3,PLANT6,PLANT4,PLANT5};
+uint8_t LeftGunPriority[7] = {PLANT1,PLANT2/*,PLANT7,PLANT3*/,PLANT6/*,PLANT4,PLANT5*/};
 
 /** @defgroup LeftGunPriority
   * @brief
   * @{
   */
-uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1};
+uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
 
 
 
@@ -664,6 +713,7 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 ////上面枪射击柱子的顺序
 shoot_command_t gUpperGunShootCmds[UPPER_GUN_AUTO_STEP_NUMBER] = \
 {
+	{SHOOT_POINT3,PLANT7,SHOOT_METHOD1,1},
 	{SHOOT_POINT3,PLANT7,SHOOT_METHOD2,1},
 	{SHOOT_POINT3,PLANT3,SHOOT_METHOD1,1},
 	{SHOOT_POINT3,PLANT3,SHOOT_METHOD2,1}	

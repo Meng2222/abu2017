@@ -204,8 +204,8 @@ static void UpperGunInit(void)
 	elmo_Enable(CAN1, UPPER_GUN_PITCH_ID);
 	
 	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,300000,300000);
-	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,6000,6000,50000);//航向
-	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,6000,6000,50000);//俯仰
+	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,30000,30000,50000);//航向
+	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,30000,30000,50000);//俯仰
 }
 
 /*
@@ -790,14 +790,16 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun)
   * @note	
   * @param	
   *     @arg	
-  * @param	
+  * @param	`
   * @retval	
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
 	static uint8_t LeftGunLastLandId = PLANT7;
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
-	for(uint8_t i = 0;i < 7;i++)
+	if(gRobot.plantState[PLANT6].ball == 0)
+		shootCommand.shootMethod = SHOOT_METHOD1;
+	for(uint8_t i = 0;i < 2;i++)
 	{
 		//有球
 		if(gRobot.plantState[LeftGunPriority[i]].ball == 0)
@@ -874,7 +876,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
 	static uint8_t RightGunLastLandId = PLANT7;
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
-	for(uint8_t i = 0;i < 7;i++)
+	if(gRobot.plantState[PLANT6].ball == 0)
+		shootCommand.shootMethod = SHOOT_METHOD1;
+	
+	for(uint8_t i = 0;i < 2;i++)
 	{
 		//有球
 		if(gRobot.plantState[RightGunPriority[i]].ball == 0)
@@ -984,8 +989,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f || \
-				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
+			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.25f || \
+				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.25f)
 			{
 				continue;
 			}
@@ -1048,8 +1053,8 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f || \
-				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.25f || \
+				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.25f)
 			{
 				continue;
 			}
@@ -1122,8 +1127,8 @@ status_t ROBOT_RightGunCheckAim(void)
 		{
 			continue;
 		}
-		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +2.5f || \
-			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -2.5f)
+		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +0.5f || \
+			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -0.5f)
 		{
 			continue;
 		}
