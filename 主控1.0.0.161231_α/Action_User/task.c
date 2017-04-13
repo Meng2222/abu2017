@@ -617,6 +617,12 @@ void LeftGunShootTask(void)
 
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
+
+				//再次检查该柱子的状态，确定是否发射				
+				if((shootMethod = SHOOT_METHOD1)&&(gRobot.plantState[landId].ball == 1))
+					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
+				if((shootMethod = SHOOT_METHOD2)&&(gRobot.plantState[landId].plate == 1))
+					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 				
 //				for(uint8_t i = 0;i < 7;i++)
 //				{
@@ -861,7 +867,13 @@ void RightGunShootTask(void)
 
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				//fix me 此处应该再次检查命令
+				
+				//再次检查该柱子的状态，确定是否发射
+				if((shootMethod = SHOOT_METHOD1)&&(gRobot.plantState[landId].ball == 1))
+					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
+				if((shootMethod = SHOOT_METHOD2)&&(gRobot.plantState[landId].plate == 1))
+					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
+
 //				for(uint8_t i = 0;i < 7;i++)
 //				{
 //					//没球
