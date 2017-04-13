@@ -81,7 +81,25 @@ void CAN1_RX0_IRQHandler(void)
 		//fix me, if length not 8
 		for(i = 0; i < 8; i++)
 			msg.data8[i] = buffer[i];
+		
+		if(msg.data32[0] == 0x0000464D)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
+				//下面代码除以100为了将m/s转换为0.1m/s，fix me
+				gRobot.moveBase.motorFailure.leftMotorFailure.motorFailure =(msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.motorFailure.forwardMotorFailure.motorFailure =(msg.data32[1]);
 
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.motorFailure.backwardMotorFailure.motorFailure =(msg.data32[1]);
+			}
+		}
+		
 		if(msg.data32[0] == 0x00005856)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
@@ -296,6 +314,52 @@ void CAN1_RX0_IRQHandler(void)
 }
 
 /**
+  * @brief  CAN1 SCE interrupt  handler
+  * @note   
+  * @param  None
+  * @retval None
+  */
+void CAN1_SCE_IRQHandler(void)
+{
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
+	USART_SendData(UART5, 1);	
+	USART_SendData(UART5, CAN_GetLastErrorCode(CAN1));
+	USART_SendData(UART5, (uint8_t)-100);
+	USART_SendData(UART5, (uint8_t)-100);
+	USART_SendData(UART5, (uint8_t)-100);
+	USART_SendData(UART5, (uint8_t)-100);
+	BEEP_ON;
+	CAN_ClearFlag(CAN1, CAN_FLAG_BOF);
+	OSIntExit();
+}
+
+/**
+  * @brief  CAN2 SCE interrupt  handler
+  * @note   
+  * @param  None
+  * @retval None
+  */
+void CAN2_SCE_IRQHandler(void)
+{
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
+	USART_SendData(UART5, 2);	
+	USART_SendData(UART5, CAN_GetLastErrorCode(CAN2));
+	USART_SendData(UART5, (uint8_t)-100);
+	USART_SendData(UART5, (uint8_t)-100);
+	USART_SendData(UART5, (uint8_t)-100);
+	USART_SendData(UART5, (uint8_t)-100);
+	BEEP_ON;
+	CAN_ClearFlag(CAN2, CAN_FLAG_BOF);
+	OSIntExit();
+}
+
+/**
   * @brief  CAN2 receive FIFO0 interrupt request handler
   * @note   
   * @param  None
@@ -333,7 +397,23 @@ void CAN2_RX0_IRQHandler(void)
 		//fix me, if length not 8
 		for(i = 0; i < 8; i++)
 			msg.data8[i] = buffer[i];
+		if(msg.data32[0] == 0x0000464D)
+		{
+			if(canNodeId == LEFT_WHEEL_ID) 
+			{
 
+				gRobot.moveBase.motorFailure.leftMotorFailure.motorFailure =(msg.data32[1]);
+			}
+			if(canNodeId == FORWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.motorFailure.forwardMotorFailure.motorFailure =(msg.data32[1]);
+
+			}
+			if(canNodeId == BACKWARD_WHEEL_ID) 
+			{
+				gRobot.moveBase.motorFailure.backwardMotorFailure.motorFailure =(msg.data32[1]);
+			}
+		}
 		if(msg.data32[0] == 0x00005856)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
@@ -522,6 +602,7 @@ extern  OS_EVENT 		*DebugPeriodSem;
 
 extern float moveTimer;
 extern uint8_t moveTimFlag;
+extern uint8_t canErrCode;
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
@@ -536,9 +617,11 @@ void TIM2_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	
+
 	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
+		canErrCode = CAN1 ->ESR/*CAN_GetLastErrorCode(CAN1)*/;
+
 		//更新10ms计数器
 		periodCounter--;
 		if (periodCounter == 0)

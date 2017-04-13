@@ -32,6 +32,7 @@ void ReadCommandVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum);
 void ReadJoggingVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum);
 void ReadUnitMode(CAN_TypeDef* CANx, uint8_t ElmoNum);
 void ReadReferenceMode(CAN_TypeDef* CANx, uint8_t ElmoNum);
+void ReadMotorFailure(CAN_TypeDef* CANx, uint8_t ElmoNum);
 
 
 void velCrl(CAN_TypeDef* CANx, uint8_t DriverNum,int vel);

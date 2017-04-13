@@ -74,17 +74,22 @@ void sendDebugInfo(void)
 	
 	USART_SendData(UART5,(int8_t)status);
 	
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
 	
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
+	
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0]);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1]);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2]);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
 
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
 
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
@@ -102,10 +107,10 @@ void sendDebugInfo(void)
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.forwardDriverUnitMode);
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.backwardDriverUnitMode);
 //	
-	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
-	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
-	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
-	
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
+//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
+//	
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
 	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
@@ -276,7 +281,7 @@ void App_Task()
                         初始化任务
 ===============================================================
 */
-
+uint32_t canErrCode = 0;
 void ConfigTask(void)
 {
 	CPU_INT08U  os_err;
@@ -310,7 +315,6 @@ void ConfigTask(void)
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
 	TIM_Delayms(TIM5, 10000);
-
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
@@ -364,12 +368,13 @@ void WalkTask(void)
 			ROBOT_CheckGunOpenSafety();
 		}
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
 
 		
 		sendDebugInfo();
@@ -388,7 +393,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 
-			    MoveTo(-12776.96f, -3000.0f, 2000.0f);
+			    MoveTo(-12776.96f, -3000.0f, 1800.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -491,7 +496,7 @@ void WalkTask(void)
 				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
+                MoveToCenter(-6459.14f, 3000.0f, 1800.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					LockWheel();
@@ -551,7 +556,6 @@ void LeftGunShootTask(void)
 				
 				for(uint8_t i = 0;i < 7;i++)
 				{
-
 					//有球
 					if(gRobot.plantState[LeftGunPriority[i]].ball == 0)
 					{
@@ -593,9 +597,9 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.targetPose.speed2 =	reloadPose.speed2;
 
 				ROBOT_LeftGunAim();
-				if(landId == PLANT7)
+				if(landId == PLANT7 || landId == PLANT3)
 				{
-				ROBOT_LeftGunCheckAim();
+					ROBOT_LeftGunCheckAim();
 				}
 				ROBOT_LeftGunReload();				
 				
@@ -837,7 +841,7 @@ void RightGunShootTask(void)
 				gRobot.rightGun.targetPose.speed2 =	reloadPose.speed2;
 
 				ROBOT_RightGunAim();
-				if(landId == PLANT7)
+				if(landId == PLANT7 || landId == PLANT3)
 				{
 					ROBOT_RightGunCheckAim();
 				}
@@ -1032,6 +1036,8 @@ void UpperGunShootTask(void)
 			if(gRobot.upperGun.targetZone & 0x0f) upperGunShootFlag = 1;
 			if(upperGunShootFlag == 1)
 			{
+				gRobot.upperGun.targetPlant = PLANT7;
+				gRobot.upperGun.shootParaMode = SHOOT_METHOD1;
 				int zoneId = INVALID_ZONE_NUMBER;
 				//fix me,此处应该检查着陆台编号是否合法
 				if(gRobot.upperGun.targetZone & 0x01)      zoneId = ZONE1;
@@ -1144,14 +1150,14 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			if(PHOTOSENSORUPGUN)
-			{
-				ClampClose();
-			}
-//			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
-//			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
-//			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
-//			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);
+//			if(PHOTOSENSORUPGUN)
+//			{
+//				ClampClose();
+//			}
+			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
+			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
+			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);
 //			USART_SendData(UART5,OSCPUUsage);
 //			USART_SendData(UART5,(uint8_t)-100);
 //			USART_SendData(UART5,(uint8_t)-100);

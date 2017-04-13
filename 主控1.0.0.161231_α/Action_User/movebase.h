@@ -140,6 +140,18 @@ typedef struct
 	int backwardDriverJoggingVelocity;
 }driverJoggingVelocity_t;
 
+typedef union MotorFailure
+{
+	long int motorFailure;
+	unsigned char failureInfo[4];
+}motorFailureUnion_t;
+
+typedef struct
+{
+	motorFailureUnion_t leftMotorFailure;
+	motorFailureUnion_t forwardMotorFailure;
+	motorFailureUnion_t backwardMotorFailure;
+}motorFailure_t;
 
 /** 
   * @brief  位姿结构体 此结构体暂时只在databse中使用，但是建议在robot_t中替换对应部分
@@ -180,6 +192,8 @@ typedef struct
 	driverCommandVelocity_t driverCommandVelocity;
 	//驱动器接收的速度命令
 	driverJoggingVelocity_t driverJoggingVelocity;
+	
+	motorFailure_t motorFailure;
 
 	//机器人目标停止位置，范围1、2、3，对应中点，靠近发射区，靠近出发区点
 	unsigned char targetPoint;

@@ -97,6 +97,9 @@ static void RightGunInit(void)
 	
 //	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT5].roll = -10.0f;
 //	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT5].roll = -10.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 
@@ -886,13 +889,13 @@ status_t ROBOT_LeftGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.5f || \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.5f)
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f || \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.5f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.5f)
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
 			{
 				continue;
 			}	
@@ -1519,4 +1522,205 @@ unsigned char ROBOT_RightGunPoint3ShootTimes(void)
 	return point3ShootTimes;
 }
 
+/*
+*名称：ROBOT_LeftGunDecideCommand
+*功能：左枪决策发射命令
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunDecideCommand(void)
+{
+	uint8_t i = 0;
+	for(i = 0;i < 7;i++)
+	{
+		//没球没盘
+		if(gRobot.plantState[LeftGunPriority[i]].plate == 0 && gRobot.plantState[LeftGunPriority[i]].ball == 1)
+		{
+			if(gRobot.leftGun.targetPlant == LeftGunPriority[i])
+			{
+				continue;
+			}			
+			gRobot.leftGun.targetPlant = LeftGunPriority[i];
+			gRobot.leftGun.shootParaMode = SHOOT_METHOD2;
+			break;	
+		}
+		//有球没盘
+		if(gRobot.plantState[LeftGunPriority[i]].ball == 0 && gRobot.plantState[LeftGunPriority[i]].plate == 0)
+		{			
+			if(gRobot.leftGun.targetPlant == LeftGunPriority[i])
+			{
+				continue;
+			}
+			gRobot.leftGun.targetPlant = LeftGunPriority[i];
+			gRobot.leftGun.shootParaMode = SHOOT_METHOD1;
+			break;
+		}
+		//有球有盘
+		if(gRobot.plantState[LeftGunPriority[i]].plate == 1 && gRobot.plantState[LeftGunPriority[i]].ball == 0)
+		{
+			if(gRobot.leftGun.targetPlant == LeftGunPriority[i])
+			{
+				continue;
+			}
+			gRobot.leftGun.targetPlant = LeftGunPriority[i];
+			gRobot.leftGun.shootParaMode = SHOOT_METHOD1;
+			break;	
+		}
+	}
+	return GUN_NO_ERROR;
+}
 
+/*
+*名称：ROBOT_LeftGunDoubleCheckCommand
+*功能：左枪二次检查发射命令
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunDoubleCheckCommand(void)
+{
+	uint8_t i = 0;
+	for(i = 0;i < 7;i++)
+	{
+		//没球没盘
+		if(gRobot.plantState[LeftGunPriority[i]].plate == 0 && gRobot.plantState[LeftGunPriority[i]].ball == 1)
+		{
+			if(gRobot.leftGun.targetPlant != LeftGunPriority[i]||gRobot.leftGun.shootParaMode!=SHOOT_METHOD2)
+			{
+				gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
+				break;
+			}
+			else
+			{
+				break;
+			}
+		}
+		//有球没盘
+		if(gRobot.plantState[LeftGunPriority[i]].ball == 0 && gRobot.plantState[LeftGunPriority[i]].plate == 0)
+		{			
+			if(gRobot.leftGun.targetPlant != LeftGunPriority[i]||gRobot.leftGun.shootParaMode!=SHOOT_METHOD1)
+			{
+				gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
+				break;
+			}
+			else
+			{
+				break;
+			}
+		}
+		//有球有盘
+		if(gRobot.plantState[LeftGunPriority[i]].plate == 1 && gRobot.plantState[LeftGunPriority[i]].ball == 0)
+		{
+			if(gRobot.leftGun.targetPlant != LeftGunPriority[i]||gRobot.leftGun.shootParaMode!=SHOOT_METHOD1)
+			{
+				gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
+				break;
+			}
+			else
+			{
+				break;
+			}	
+		}
+	}
+	return GUN_NO_ERROR;
+}
+
+/*
+*名称：ROBOT_RightGunDecideCommand
+*功能：右枪决策发射命令
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunDecideCommand(void)
+{
+	uint8_t i = 0;
+	for(i = 0;i < 7;i++)
+	{
+		//没球没盘
+		if(gRobot.plantState[RightGunPriority[i]].plate == 0 && gRobot.plantState[RightGunPriority[i]].ball == 1)
+		{
+			if(gRobot.rightGun.targetPlant == RightGunPriority[i])
+			{
+				continue;
+			}			
+			gRobot.rightGun.targetPlant = RightGunPriority[i];
+			gRobot.rightGun.shootParaMode = SHOOT_METHOD2;
+			break;	
+		}
+		//有球没盘
+		if(gRobot.plantState[RightGunPriority[i]].ball == 0 && gRobot.plantState[RightGunPriority[i]].plate == 0)
+		{			
+			if(gRobot.rightGun.targetPlant == RightGunPriority[i])
+			{
+				continue;
+			}
+			gRobot.rightGun.targetPlant = RightGunPriority[i];
+			gRobot.rightGun.shootParaMode = SHOOT_METHOD1;
+			break;
+		}
+		//有球有盘
+		if(gRobot.plantState[RightGunPriority[i]].plate == 1 && gRobot.plantState[RightGunPriority[i]].ball == 0)
+		{
+			if(gRobot.rightGun.targetPlant == RightGunPriority[i])
+			{
+				continue;
+			}
+			gRobot.rightGun.targetPlant = RightGunPriority[i];
+			gRobot.rightGun.shootParaMode = SHOOT_METHOD1;
+			break;	
+		}
+	}
+	return GUN_NO_ERROR;
+}
+/*
+*名称：ROBOT_RightGunDoubleCheckCommand
+*功能：右枪二次检查发射命令
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunDoubleCheckCommand(void)
+{
+	uint8_t i = 0;
+	for(i = 0;i < 7;i++)
+	{
+		//没球没盘
+		if(gRobot.plantState[RightGunPriority[i]].plate == 0 && gRobot.plantState[RightGunPriority[i]].ball == 1)
+		{
+			if(gRobot.rightGun.targetPlant != RightGunPriority[i]||gRobot.rightGun.shootParaMode!=SHOOT_METHOD2)
+			{
+				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
+				break;
+			}
+			else
+			{
+				break;
+			}
+		}
+		//有球没盘
+		if(gRobot.plantState[RightGunPriority[i]].ball == 0 && gRobot.plantState[RightGunPriority[i]].plate == 0)
+		{			
+			if(gRobot.rightGun.targetPlant != RightGunPriority[i]||gRobot.rightGun.shootParaMode!=SHOOT_METHOD1)
+			{
+				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
+				break;
+			}
+			else
+			{
+				break;
+			}
+		}
+		//有球有盘
+		if(gRobot.plantState[RightGunPriority[i]].plate == 1 && gRobot.plantState[RightGunPriority[i]].ball == 0)
+		{
+			if(gRobot.rightGun.targetPlant != RightGunPriority[i]||gRobot.rightGun.shootParaMode!=SHOOT_METHOD1)
+			{
+				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
+				break;
+			}
+			else
+			{
+				break;
+			}	
+		}
+	}
+	return GUN_NO_ERROR;
+}

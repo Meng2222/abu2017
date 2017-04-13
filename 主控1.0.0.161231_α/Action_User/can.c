@@ -317,14 +317,14 @@ void CAN_Config(CAN_TypeDef* CANx,
 
 	/* CAN cell init */
 	CAN_InitStructure.CAN_TTCM = DISABLE;         //time triggered communication mode
-	CAN_InitStructure.CAN_ABOM = DISABLE;         //automatic bus-off management
+	CAN_InitStructure.CAN_ABOM = ENABLE;         //automatic bus-off management
 	CAN_InitStructure.CAN_AWUM = DISABLE;         //automatic wake-up mode
 	CAN_InitStructure.CAN_NART = DISABLE;         //non-automatic retransmission mode
 	CAN_InitStructure.CAN_RFLM = DISABLE;         //Receive FIFO Locked mode
 	CAN_InitStructure.CAN_TXFP = DISABLE;         //transmit FIFO priority
 	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal; //CAN operating mode
 	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;   // keep CAN_SJW == 1, never change it
-  CAN_InitStructure.CAN_BS1 = CAN_BS1_12tq; //max=16
+	CAN_InitStructure.CAN_BS1 = CAN_BS1_12tq; //max=16
 	CAN_InitStructure.CAN_BS2 = CAN_BS2_8tq; //max=8
 	/* CAN Baudrate =APB1_CLK/((CAN_SJW_tq+CAN_BS1_tq+CAN_BS2_tq)*CAN_Prescaler) */ //?
     switch(CAN_BaudRate)
@@ -392,7 +392,16 @@ void CAN_Config(CAN_TypeDef* CANx,
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	CAN_ITConfig(CANx, CAN_IT_FMP0, ENABLE);
-		
+	
+	//使能CAN总线关闭中断
+	NVIC_InitStructure.NVIC_IRQChannel = CAN1_SCE_IRQn|CAN2_SCE_IRQn;//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;//抢占优先级1
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;		//子优先级4
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
+	CAN_ITConfig(CANx, CAN_IT_BOF, ENABLE);
+
+	
 }	
 
 
@@ -477,16 +486,7 @@ int OSCANSendCmd(CAN_TypeDef* CANx, CanTxMsg* TxMessage)
 	OSMutexPend(CANSendMutex,0,&os_err);
 	//发送CAN消息
 	mailBox = CAN_Transmit(CANx,TxMessage);
-	int canSendTimes = 0;
-	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok))
-	{
-		canSendTimes++;
-		if(canSendTimes > 400)
-		{
-			BEEP_ON;
-		}
-	}
-	BEEP_OFF;
+	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok));
 	OSMutexPost(CANSendMutex);
 	return CAN_SEND_OK;
 
