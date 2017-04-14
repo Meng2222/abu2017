@@ -16,6 +16,7 @@
 #include "database.h"
 #include "flash.h"
 
+//#define NO_WALK_TASK
 /*
 ===============================================================
                         信号量定义
@@ -335,8 +336,14 @@ void ConfigTask(void)
 	RightHold();
 //////测试使用！！！！！！！！！！！！！！！！
 //	MoveY(50.0f);
-
-//	OSTaskSuspend(Walk_TASK_PRIO);
+#ifdef NO_WALK_TASK
+	while(!PHOTOSENSORUPGUN)
+	{
+		//WAIT
+	}
+	MoveY(50);
+	OSTaskSuspend(Walk_TASK_PRIO);
+#endif
 
 //	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 //	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
@@ -535,7 +542,9 @@ void LeftGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
+#ifndef NO_WALK_TASK
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+#endif
 //	LeftBack();
 	OSTimeDly(100);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
@@ -582,6 +591,9 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
 				OSTimeDly(75);
+				if(leftGunShootCommand.plantNum==PLANT6)
+					OSTimeDly(100);
+					
 				
 				//再次检查该柱子的状态，确定是否发射				
 				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -619,7 +631,9 @@ void LeftGunShootTask(void)
 //					}
 //				}
 				//fix me 此处应当再次检查命令
+#ifndef NO_WALK_TASK
 				ROBOT_LeftGunCheckShootPoint();
+#endif
 				ROBOT_LeftGunShoot();
 //			}
 //			else
@@ -753,7 +767,9 @@ void RightGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
+#ifndef NO_WALK_TASK
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
+#endif
 //	RightBack();
 	OSTimeDly(100);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
@@ -805,7 +821,10 @@ void RightGunShootTask(void)
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
 				OSTimeDly(75);
+				if(rightGunShootCommand.plantNum==PLANT6)
+					OSTimeDly(100);
 
+				
 				//再次检查该柱子的状态，确定是否发射
 				if((rightGunShootCommand.shootMethod == SHOOT_METHOD1)\
 					&&(gRobot.plantState[rightGunShootCommand.plantNum].ball == 1))
@@ -846,7 +865,9 @@ void RightGunShootTask(void)
 //						}
 //					}
 //				}
+#ifndef NO_WALK_TASK
 				ROBOT_RightGunCheckShootPoint();
+#endif
 				ROBOT_RightGunShoot();
 				
 //			}
