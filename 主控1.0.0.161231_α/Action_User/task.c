@@ -578,7 +578,8 @@ void LeftGunShootTask(void)
 
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
-
+				OSTimeDly(50);
+				
 				//再次检查该柱子的状态，确定是否发射				
 				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
 					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
@@ -794,7 +795,8 @@ void RightGunShootTask(void)
 
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				
+				OSTimeDly(50);
+
 				//再次检查该柱子的状态，确定是否发射
 				if((rightGunShootCommand.shootMethod == SHOOT_METHOD1)\
 					&&(gRobot.plantState[rightGunShootCommand.plantNum].ball == 1))
@@ -1021,6 +1023,10 @@ void UpperGunShootTask(void)
 			else
 			{
 				OSTaskSuspend(OS_PRIO_SELF);
+			}
+			if(gRobot.upperGun.shootStep < UPPER_GUN_AUTO_STEP_NUMBER)
+			{
+				gRobot.upperGun.mode = GUN_ATTACK_MODE;
 			}
 		}
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)

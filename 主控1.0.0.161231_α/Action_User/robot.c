@@ -983,8 +983,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 			USART_SendData(UART5, 0);
 			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 1.0f || \
-				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 1.0f)
+			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
+				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}
@@ -1047,8 +1047,8 @@ status_t ROBOT_RightGunCheckAim(void)
 			USART_SendData(UART5, 0);
 			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 1.0f || \
-				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 1.0f)
+			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
+				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}
@@ -1215,9 +1215,16 @@ status_t ROBOT_LeftGunShoot(void)
 	{
 		if(gRobot.leftGun.ready == GUN_AIM_DONE)
 		{
+				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
+					gRobot.rightGun.shoot == GUN_START_SHOOT)
+				{
+					OSTimeDly(150);
+				}
+				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
 				OSTimeDly(50);
 				LeftShootReset();
+				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.leftGun.shootTimes++;
 				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
@@ -1250,10 +1257,16 @@ status_t ROBOT_RightGunShoot(void)
 	{
 		if(gRobot.rightGun.ready == GUN_AIM_DONE)
 		{
-
+				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
+					gRobot.leftGun.shoot == GUN_START_SHOOT)
+				{
+					OSTimeDly(150);
+				}
+				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();	
 				OSTimeDly(50);
-				RightShootReset();	
+				RightShootReset();
+				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.rightGun.shootTimes++;
 				gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
