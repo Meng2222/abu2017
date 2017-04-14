@@ -1097,52 +1097,57 @@ status_t ROBOT_RightGunCheckAim(void)
  status_t ROBOT_UpperGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，5秒
-	int timeout = 20;
+	uint8_t checkTimes = 5;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
-	
-	while(timeout--)
+	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 2;
+	while(checkTimes--)
 	{
-		//检查防守台上盘状态的变化，如果有改变立即跳出循环重新打盘
-		//fix me 耦合太高
-		if (lastTargetZone != gRobot.upperGun.targetZone)
+		int timeout = 20;
+		while(timeout--)
 		{
-			gRobot.upperGun.shoot = GUN_STOP_SHOOT;
-			return GUN_NO_READY_ERROR;
+			//检查防守台上盘状态的变化，如果有改变立即跳出循环重新打盘
+			//fix me 耦合太高
+			if (lastTargetZone != gRobot.upperGun.targetZone)
+			{
+				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
+				return GUN_NO_READY_ERROR;
+			}
+			
+			//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
+			ReadActualPos(CAN1, UPPER_GUN_GROUP_ID);
+			ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
+			OSTimeDly(5);
+			
+			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
+			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.5f || \
+				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 1.5f)
+			{
+				continue;
+			}
+			
+			if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.5f || \
+				gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.5f)
+			{
+				continue;
+			}
+			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.0f || \
+				gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.0f)
+			{
+				continue;
+			}
+			
+			//这里检查传送带的速度，暂时没有加
+			
+			
+			//运行到这里，表示都满足指标，跳出循环
+			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
+			{
+				gRobot.upperGun.shoot = GUN_START_SHOOT;
+			}
+			break;
 		}
-		
-		//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
-		ReadActualPos(CAN1, UPPER_GUN_GROUP_ID);
-		ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
-		OSTimeDly(5);
-		
-		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-		if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.5f || \
-			gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 1.5f)
-		{
-			continue;
-		}
-		
-		if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.5f || \
-			gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.5f)
-		{
-			continue;
-		}
-		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.0f || \
-			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.0f)
-		{
-			continue;
-		}
-		
-		//这里检查传送带的速度，暂时没有加
-		
-		
-		//运行到这里，表示都满足指标，跳出循环
-		if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
-		{
-			gRobot.upperGun.shoot = GUN_START_SHOOT;
-		}
-		break;
 	}
+	
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
 		gRobot.upperGun.shoot = GUN_START_SHOOT;
@@ -1156,6 +1161,7 @@ status_t ROBOT_RightGunCheckAim(void)
 	{
 		gRobot.upperGun.ready = GUN_AIM_DONE;
 	}
+	
 	return GUN_NO_ERROR;
 }
 
@@ -1218,7 +1224,8 @@ status_t ROBOT_LeftGunShoot(void)
 				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
 					gRobot.rightGun.shoot == GUN_START_SHOOT)
 				{
-					OSTimeDly(150);
+					if(gRobot.leftGun.targetPlant == PLANT7)OSTimeDly(200);
+					else OSTimeDly(100);
 				}
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
@@ -1260,7 +1267,8 @@ status_t ROBOT_RightGunShoot(void)
 				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
 					gRobot.leftGun.shoot == GUN_START_SHOOT)
 				{
-					OSTimeDly(150);
+					if(gRobot.rightGun.targetPlant == PLANT7)OSTimeDly(200);
+					else OSTimeDly(100);
 				}
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();	

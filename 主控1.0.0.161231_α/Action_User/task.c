@@ -333,7 +333,7 @@ void ConfigTask(void)
 
 	LeftHold();
 	RightHold();
-////测试使用！！！！！！！！！！！！！！！！
+//////测试使用！！！！！！！！！！！！！！！！
 //	MoveY(50.0f);
 
 //	OSTaskSuspend(Walk_TASK_PRIO);
@@ -395,7 +395,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 
-			    MoveTo(-12776.96f, -3000.0f, 1800.0f);
+			    MoveTo(-12776.96f, -3200.0f, 2000.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -499,7 +499,7 @@ void WalkTask(void)
 				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveToCenter(-6459.14f, 3000.0f, 1800.0f);
+                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					LockWheel();
@@ -578,7 +578,7 @@ void LeftGunShootTask(void)
 
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
-				OSTimeDly(50);
+				OSTimeDly(75);
 				
 				//再次检查该柱子的状态，确定是否发射				
 				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -795,7 +795,7 @@ void RightGunShootTask(void)
 
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				OSTimeDly(50);
+				OSTimeDly(75);
 
 				//再次检查该柱子的状态，确定是否发射
 				if((rightGunShootCommand.shootMethod == SHOOT_METHOD1)\
