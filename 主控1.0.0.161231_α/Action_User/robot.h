@@ -181,7 +181,7 @@
 #define SHOOT_METHOD1  0
 //落盘模式
 #define SHOOT_METHOD2  1
-//打球模式
+//打盘模式
 #define SHOOT_METHOD3  2
 
 //发射点位置

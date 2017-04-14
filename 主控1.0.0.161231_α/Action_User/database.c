@@ -525,7 +525,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球
 		{
-			{2.6f,9.7f,0.0f,111.0f,0.0f},
+			{2.6f,9.7f,0.0f,118.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
@@ -635,10 +635,10 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第三种参数类型对应打盘
 		{
-			{-3.2f, -2.4f, 0.0f, 121.0f, 0.0f},
-			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
-			{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
-			{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
+			{-5.4f, -3.3f, 0.0f, 131.0f, 0.0f},
+			{0.4f, -2.8f, 0.0f, 131.0f, 0.0f},
+			{-1.4f, -3.6f, 0.0f, 131.0f, 0.0f},
+			{4.6f, -2.7f, 0.0f, 131.0f, 0.0f}
 		}
 	}
 };
@@ -713,10 +713,10 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 ////上面枪射击柱子的顺序
 shoot_command_t gUpperGunShootCmds[UPPER_GUN_AUTO_STEP_NUMBER] = \
 {
-	{SHOOT_POINT3,PLANT7,SHOOT_METHOD1,1},
-	{SHOOT_POINT3,PLANT7,SHOOT_METHOD2,1},
 	{SHOOT_POINT3,PLANT3,SHOOT_METHOD1,1},
-	{SHOOT_POINT3,PLANT3,SHOOT_METHOD2,1}	
+	{SHOOT_POINT3,PLANT7,SHOOT_METHOD1,1},	
+	{SHOOT_POINT3,PLANT3,SHOOT_METHOD2,1},		
+	{SHOOT_POINT3,PLANT7,SHOOT_METHOD2,1}
 };
 
 /**

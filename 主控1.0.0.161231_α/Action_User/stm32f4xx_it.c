@@ -962,6 +962,7 @@ void UART4_IRQHandler(void)
 //						gRobot.rightGun.nextStep = 1;
 						gRobot.leftGun.mode = GUN_MANUAL_MODE;
 						gRobot.rightGun.mode = GUN_MANUAL_MODE;
+						gRobot.upperGun.mode = GUN_MANUAL_MODE;
 //						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 //						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 					break;

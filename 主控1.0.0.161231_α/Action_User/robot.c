@@ -203,7 +203,7 @@ static void UpperGunInit(void)
 	elmo_Enable(CAN1, UPPER_GUN_YAW_ID);
 	elmo_Enable(CAN1, UPPER_GUN_PITCH_ID);
 	
-	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,300000,300000);
+	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,350000,350000);
 	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,30000,30000,50000);//航向
 	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,30000,30000,50000);//俯仰
 }
@@ -983,8 +983,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 			USART_SendData(UART5, 0);
 			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 1.5f || \
-				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 1.5f)
+			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 1.0f || \
+				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 1.0f)
 			{
 				continue;
 			}
@@ -1047,8 +1047,8 @@ status_t ROBOT_RightGunCheckAim(void)
 			USART_SendData(UART5, 0);
 			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 1.5f || \
-				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 1.5f)
+			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 1.0f || \
+				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 1.0f)
 			{
 				continue;
 			}
@@ -1065,13 +1065,13 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.5f || \
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.5f)
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
 			{
 				continue;
 			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.5f || \
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.5f)
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
 			{
 				continue;
 			}	
@@ -1127,8 +1127,8 @@ status_t ROBOT_RightGunCheckAim(void)
 		{
 			continue;
 		}
-		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +0.5f || \
-			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -0.5f)
+		if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.0f || \
+			gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.0f)
 		{
 			continue;
 		}
@@ -1633,205 +1633,4 @@ unsigned char ROBOT_RightGunPoint3ShootTimes(void)
 	return point3ShootTimes;
 }
 
-/*
-*名称：ROBOT_LeftGunDecideCommand
-*功能：左枪决策发射命令
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunDecideCommand(void)
-{
-	uint8_t i = 0;
-	for(i = 0;i < 7;i++)
-	{
-		//没球没盘
-		if(gRobot.plantState[LeftGunPriority[i]].plate == 0 && gRobot.plantState[LeftGunPriority[i]].ball == 1)
-		{
-			if(gRobot.leftGun.targetPlant == LeftGunPriority[i])
-			{
-				continue;
-			}			
-			gRobot.leftGun.targetPlant = LeftGunPriority[i];
-			gRobot.leftGun.shootParaMode = SHOOT_METHOD2;
-			break;	
-		}
-		//有球没盘
-		if(gRobot.plantState[LeftGunPriority[i]].ball == 0 && gRobot.plantState[LeftGunPriority[i]].plate == 0)
-		{			
-			if(gRobot.leftGun.targetPlant == LeftGunPriority[i])
-			{
-				continue;
-			}
-			gRobot.leftGun.targetPlant = LeftGunPriority[i];
-			gRobot.leftGun.shootParaMode = SHOOT_METHOD1;
-			break;
-		}
-		//有球有盘
-		if(gRobot.plantState[LeftGunPriority[i]].plate == 1 && gRobot.plantState[LeftGunPriority[i]].ball == 0)
-		{
-			if(gRobot.leftGun.targetPlant == LeftGunPriority[i])
-			{
-				continue;
-			}
-			gRobot.leftGun.targetPlant = LeftGunPriority[i];
-			gRobot.leftGun.shootParaMode = SHOOT_METHOD1;
-			break;	
-		}
-	}
-	return GUN_NO_ERROR;
-}
 
-/*
-*名称：ROBOT_LeftGunDoubleCheckCommand
-*功能：左枪二次检查发射命令
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunDoubleCheckCommand(void)
-{
-	uint8_t i = 0;
-	for(i = 0;i < 7;i++)
-	{
-		//没球没盘
-		if(gRobot.plantState[LeftGunPriority[i]].plate == 0 && gRobot.plantState[LeftGunPriority[i]].ball == 1)
-		{
-			if(gRobot.leftGun.targetPlant != LeftGunPriority[i]||gRobot.leftGun.shootParaMode!=SHOOT_METHOD2)
-			{
-				gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		//有球没盘
-		if(gRobot.plantState[LeftGunPriority[i]].ball == 0 && gRobot.plantState[LeftGunPriority[i]].plate == 0)
-		{			
-			if(gRobot.leftGun.targetPlant != LeftGunPriority[i]||gRobot.leftGun.shootParaMode!=SHOOT_METHOD1)
-			{
-				gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		//有球有盘
-		if(gRobot.plantState[LeftGunPriority[i]].plate == 1 && gRobot.plantState[LeftGunPriority[i]].ball == 0)
-		{
-			if(gRobot.leftGun.targetPlant != LeftGunPriority[i]||gRobot.leftGun.shootParaMode!=SHOOT_METHOD1)
-			{
-				gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-				break;
-			}
-			else
-			{
-				break;
-			}	
-		}
-	}
-	return GUN_NO_ERROR;
-}
-
-/*
-*名称：ROBOT_RightGunDecideCommand
-*功能：右枪决策发射命令
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunDecideCommand(void)
-{
-	uint8_t i = 0;
-	for(i = 0;i < 7;i++)
-	{
-		//没球没盘
-		if(gRobot.plantState[RightGunPriority[i]].plate == 0 && gRobot.plantState[RightGunPriority[i]].ball == 1)
-		{
-			if(gRobot.rightGun.targetPlant == RightGunPriority[i])
-			{
-				continue;
-			}			
-			gRobot.rightGun.targetPlant = RightGunPriority[i];
-			gRobot.rightGun.shootParaMode = SHOOT_METHOD2;
-			break;	
-		}
-		//有球没盘
-		if(gRobot.plantState[RightGunPriority[i]].ball == 0 && gRobot.plantState[RightGunPriority[i]].plate == 0)
-		{			
-			if(gRobot.rightGun.targetPlant == RightGunPriority[i])
-			{
-				continue;
-			}
-			gRobot.rightGun.targetPlant = RightGunPriority[i];
-			gRobot.rightGun.shootParaMode = SHOOT_METHOD1;
-			break;
-		}
-		//有球有盘
-		if(gRobot.plantState[RightGunPriority[i]].plate == 1 && gRobot.plantState[RightGunPriority[i]].ball == 0)
-		{
-			if(gRobot.rightGun.targetPlant == RightGunPriority[i])
-			{
-				continue;
-			}
-			gRobot.rightGun.targetPlant = RightGunPriority[i];
-			gRobot.rightGun.shootParaMode = SHOOT_METHOD1;
-			break;	
-		}
-	}
-	return GUN_NO_ERROR;
-}
-/*
-*名称：ROBOT_RightGunDoubleCheckCommand
-*功能：右枪二次检查发射命令
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunDoubleCheckCommand(void)
-{
-	uint8_t i = 0;
-	for(i = 0;i < 7;i++)
-	{
-		//没球没盘
-		if(gRobot.plantState[RightGunPriority[i]].plate == 0 && gRobot.plantState[RightGunPriority[i]].ball == 1)
-		{
-			if(gRobot.rightGun.targetPlant != RightGunPriority[i]||gRobot.rightGun.shootParaMode!=SHOOT_METHOD2)
-			{
-				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		//有球没盘
-		if(gRobot.plantState[RightGunPriority[i]].ball == 0 && gRobot.plantState[RightGunPriority[i]].plate == 0)
-		{			
-			if(gRobot.rightGun.targetPlant != RightGunPriority[i]||gRobot.rightGun.shootParaMode!=SHOOT_METHOD1)
-			{
-				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		//有球有盘
-		if(gRobot.plantState[RightGunPriority[i]].plate == 1 && gRobot.plantState[RightGunPriority[i]].ball == 0)
-		{
-			if(gRobot.rightGun.targetPlant != RightGunPriority[i]||gRobot.rightGun.shootParaMode!=SHOOT_METHOD1)
-			{
-				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-				break;
-			}
-			else
-			{
-				break;
-			}	
-		}
-	}
-	return GUN_NO_ERROR;
-}

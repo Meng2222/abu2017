@@ -138,18 +138,19 @@ void LeftGunSendDebugInfo(void)
 	
 	USART_SendData(UART5,gRobot.leftGun.checkTimeUsage);
 	
-	USART_SendData(UART5,	gRobot.leftGun.nextStep);
-	
 	USART_SendData(UART5,	gRobot.leftGun.targetPlant);
 	
 	USART_SendData(UART5, gRobot.leftGun.shootParaMode);
 
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)((gRobot.leftGun.actualPose.yaw-(int8_t)gRobot.leftGun.actualPose.yaw)*10));
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.pitch);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)((gRobot.leftGun.actualPose.pitch-(int8_t)gRobot.leftGun.actualPose.pitch)*10));
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.roll);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.roll);
+	USART_SendData(UART5,(int8_t)((gRobot.leftGun.actualPose.roll-(int8_t)gRobot.leftGun.actualPose.roll)*10));
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed2);
@@ -168,18 +169,19 @@ void RightGunSendDebugInfo(void)
 	
 	USART_SendData(UART5,gRobot.rightGun.checkTimeUsage);
 	
-	USART_SendData(UART5,	gRobot.rightGun.nextStep);
-	
 	USART_SendData(UART5,	gRobot.rightGun.targetPlant);
 	
 	USART_SendData(UART5, gRobot.rightGun.shootParaMode);
 	
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.yaw);
+	USART_SendData(UART5,(int8_t)((gRobot.rightGun.actualPose.yaw-(int8_t)gRobot.rightGun.actualPose.yaw)*10));
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.pitch);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.pitch);
+	USART_SendData(UART5,(int8_t)((gRobot.rightGun.actualPose.pitch-(int8_t)gRobot.rightGun.actualPose.pitch)*10));
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.roll);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.roll);
+	USART_SendData(UART5,(int8_t)((gRobot.rightGun.actualPose.roll-(int8_t)gRobot.rightGun.actualPose.roll)*10));
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed1);
 	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed2);
@@ -368,13 +370,13 @@ void WalkTask(void)
 			ROBOT_CheckGunOpenSafety();
 		}
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
 
 		
 		sendDebugInfo();
@@ -437,7 +439,8 @@ void WalkTask(void)
 				if (PHOTOSENSORUPGUN)
 				{
 //					status++;
-//					OSTaskResume(DEBUG_TASK_PRIO);					
+//					OSTaskResume(DEBUG_TASK_PRIO);
+					VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
 					status+=5;
 				}
 				break;
@@ -512,7 +515,6 @@ void WalkTask(void)
 				LockWheel();
 //				CameraInit();
 				MoveY(50.0f);
-//				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
 				SendStop2Camera();
 				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(OS_PRIO_SELF);
@@ -1001,7 +1003,6 @@ void UpperGunShootTask(void)
 				//瞄准，此函数最好瞄准完成后再返回
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				ROBOT_UpperGunAim();
-				OSTimeDly(5);
 				ROBOT_UpperGunCheckAim();
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
@@ -1009,7 +1010,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(50);
+					OSTimeDly(40);
 				}
 				if(gRobot.upperGun.targetZone == 0)
 				{
@@ -1024,6 +1025,7 @@ void UpperGunShootTask(void)
 		}
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
 		{
+			if(gRobot.upperGun.targetZone & 0x0f)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 			ROBOT_UpperGunCheckPlantState();
 			shoot_command_t shootCommand = gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep];
 			uint8_t targetPlant = shootCommand.plantNum;
@@ -1040,25 +1042,33 @@ void UpperGunShootTask(void)
 			ROBOT_UpperGunAim();
 			ROBOT_UpperGunCheckAim();
 			ROBOT_UpperGunCheckPlantState();
-			if(gRobot.upperGun.targetStepShootTimes > \
-			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod])
+			if(gRobot.upperGun.targetZone & 0x0f)
 			{
-				ROBOT_UpperGunShoot();
-				OSTimeDly(30);
+				gRobot.upperGun.mode = GUN_DEFEND_MODE;
 			}
 			else
 			{
-				gRobot.upperGun.shootStep ++;
-			}
-			if(gRobot.upperGun.shootStep >= UPPER_GUN_AUTO_STEP_NUMBER)
-			{
-				gRobot.upperGun.mode = GUN_DEFEND_MODE;
+				if(gRobot.upperGun.targetStepShootTimes > \
+				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod])
+				{
+					ROBOT_UpperGunShoot();
+					OSTimeDly(30);
+				}
+				else
+				{
+					gRobot.upperGun.shootStep ++;
+				}
+				if(gRobot.upperGun.shootStep >= UPPER_GUN_AUTO_STEP_NUMBER)
+				{
+					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+				}
 			}
 		}
 		//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_MANUAL_MODE)
 		{
+			if(gRobot.upperGun.targetZone & 0x0f)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 			if(gRobot.upperGun.aim == GUN_START_AIM)
 			{
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
