@@ -394,8 +394,8 @@ void WalkTask(void)
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
-
-			    MoveTo(-12776.96f, -3200.0f, 2000.0f);
+				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
+	/*		    MoveTo(-12776.96f, -3200.0f, 2000.0f);*/
 				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -403,11 +403,14 @@ void WalkTask(void)
 						amendX = -12776.96f - GetPosX();
 						amendXFlag = 1;
 					}
-					moveTimFlag = 0;
 					BEEP_ON;
-					status++;					
+//					status++;					
 				}
-
+				if(GetPosX()<=-13023.14f)
+				{
+					moveTimFlag = 0;
+					status = load;
+				}
 				break;
 			
 			//停车
@@ -733,6 +736,12 @@ void LeftGunShootTask(void)
 		else
 		{
 			BEEP_ON;
+			USART_SendData(UART5, 1);	
+			USART_SendData(UART5, 44);
+			USART_SendData(UART5, (uint8_t)-100);
+			USART_SendData(UART5, (uint8_t)-100);
+			USART_SendData(UART5, (uint8_t)-100);
+			USART_SendData(UART5, (uint8_t)-100);
 			while(1) {}
 		}
 		LeftGunSendDebugInfo();
@@ -956,6 +965,12 @@ void RightGunShootTask(void)
 		else
 		{
 			BEEP_ON;
+			USART_SendData(UART5, 2);	
+			USART_SendData(UART5, 44);
+			USART_SendData(UART5, (uint8_t)-100);
+			USART_SendData(UART5, (uint8_t)-100);
+			USART_SendData(UART5, (uint8_t)-100);
+			USART_SendData(UART5, (uint8_t)-100);
 			while(1) {}
 		}
 		RightGunSendDebugInfo();
