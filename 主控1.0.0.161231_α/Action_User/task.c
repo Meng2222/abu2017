@@ -549,15 +549,15 @@ void LeftGunShootTask(void)
 	OSTimeDly(100);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
-	int stopAutoFlag = 0;
+//	int stopAutoFlag = 0;
 	while(1)
 	{
-		//检查手动or自动
-		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
+		
+		//自动模式
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
 		{
 			//一旦收到发射命令，则停止自动模式
-			if(gRobot.leftGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
+//			if(gRobot.leftGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
 //			if(stopAutoFlag || gRobot.leftGun.shootTimes >=   ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
 //			{
@@ -593,43 +593,13 @@ void LeftGunShootTask(void)
 				OSTimeDly(75);
 				if(leftGunShootCommand.plantNum==PLANT6)
 					OSTimeDly(100);
-					
-				
+								
 				//再次检查该柱子的状态，确定是否发射				
 				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
 					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 				if((leftGunShootCommand.shootMethod == SHOOT_METHOD2)&&(gRobot.plantState[leftGunShootCommand.plantNum].plate == 1))
 					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 				
-//				for(uint8_t i = 0;i < 7;i++)
-//				{
-//					//没球
-//					if(gRobot.plantState[LeftGunPriority[i]].ball == 0)
-//					{
-//						if(landId != LeftGunPriority[i]||shootMethod!=SHOOT_METHOD1)
-//						{
-//							gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-//							break;
-//						}
-//						else
-//						{
-//							break;
-//						}
-//					}
-//					//没盘
-//					if(gRobot.plantState[LeftGunPriority[i]].plate == 0)
-//					{
-//						if(landId != LeftGunPriority[i]||shootMethod!=SHOOT_METHOD2)
-//						{
-//							gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-//							break;
-//						}
-//						else
-//						{
-//							break;
-//						}
-//					}
-//				}
 				//fix me 此处应当再次检查命令
 #ifndef NO_WALK_TASK
 				ROBOT_LeftGunCheckShootPoint();
@@ -774,8 +744,7 @@ void RightGunShootTask(void)
 	OSTimeDly(100);
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
-	int stopAutoFlag = 0;
-//	RightGunLastLandId = ;
+//	int stopAutoFlag = 0;
 	while(1)
 	{
 		//检查手动or自动
@@ -783,7 +752,7 @@ void RightGunShootTask(void)
 		if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_AUTO_MODE)
 		{
 			//一旦收到发射命令，则停止自动模式
-			if(gRobot.rightGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
+//			if(gRobot.rightGun.shoot == GUN_START_SHOOT) stopAutoFlag = 1;
 
 //			if(stopAutoFlag || gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
 //			{
@@ -836,35 +805,7 @@ void RightGunShootTask(void)
 				{
 					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 				}
-//				for(uint8_t i = 0;i < 7;i++)
-//				{
-//					//没球
-//					if(gRobot.plantState[RightGunPriority[i]].ball == 0)
-//					{
-//						if(landId != RightGunPriority[i]||shootMethod!=SHOOT_METHOD1)
-//						{
-//							gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-//							break;
-//						}
-//						else
-//						{
-//							break;
-//						}
-//					}
-//					//没盘
-//					if(gRobot.plantState[RightGunPriority[i]].plate == 0)
-//					{
-//						if(landId != RightGunPriority[i]||shootMethod!=SHOOT_METHOD2)
-//						{
-//							gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-//							break;
-//						}
-//						else
-//						{
-//							break;
-//						}
-//					}
-//				}
+
 #ifndef NO_WALK_TASK
 				ROBOT_RightGunCheckShootPoint();
 #endif

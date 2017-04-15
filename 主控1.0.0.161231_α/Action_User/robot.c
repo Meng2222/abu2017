@@ -845,7 +845,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 */
 status_t ROBOT_LeftGunAim(void)
 {
-	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
+	
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gRobot.leftGun.targetPose.yaw));
