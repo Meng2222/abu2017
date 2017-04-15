@@ -417,6 +417,7 @@ void WalkTask(void)
 				{
 					moveTimFlag = 0;
 					status = load;
+					BEEP_OFF;
 				}
 				break;
 			
