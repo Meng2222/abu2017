@@ -591,9 +591,9 @@ void LeftGunShootTask(void)
 
 				ROBOT_LeftGunAim();
 				ROBOT_LeftGunCheckAim();
-				OSTimeDly(75);
-				if(leftGunShootCommand.plantNum==PLANT6)
-					OSTimeDly(100);
+//				OSTimeDly(75);
+//				if(leftGunShootCommand.plantNum==PLANT6)
+//					OSTimeDly(100);
 								
 				//再次检查该柱子的状态，确定是否发射				
 				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -791,9 +791,9 @@ void RightGunShootTask(void)
 
 				ROBOT_RightGunAim();
 				ROBOT_RightGunCheckAim();
-				OSTimeDly(75);
-				if(rightGunShootCommand.plantNum==PLANT6)
-					OSTimeDly(100);
+//				OSTimeDly(75);
+//				if(rightGunShootCommand.plantNum==PLANT6)
+//					OSTimeDly(100);
 
 				
 				//再次检查该柱子的状态，确定是否发射
