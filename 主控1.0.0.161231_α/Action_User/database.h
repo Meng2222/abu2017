@@ -85,6 +85,7 @@ extern gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][Z
 
 extern uint8_t LeftGunPriority[7];
 extern uint8_t RightGunPriority[7];
+extern uint8_t UpperGunPriority[7];
 
 /** @defgroup Gun_Shoot_Command
   * @brief 

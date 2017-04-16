@@ -937,39 +937,57 @@ void UART4_IRQHandler(void)
 				break;
 			case 13:
 				id = ch;
-				switch(id)
+				if(id < 10)
 				{
-					case 1:
-						//通知左枪开枪任务执行开枪动作
-						gRobot.leftGun.shoot = GUN_START_SHOOT;
-//						OSTaskSuspend(Walk_TASK_PRIO);
-						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);						
+					switch(id)
+					{
+						case 1:
+							//通知左枪开枪任务执行开枪动作
+							gRobot.leftGun.shoot = GUN_START_SHOOT;
+	//						OSTaskSuspend(Walk_TASK_PRIO);
+							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);						
+							break;
+						case 2:
+							//通知右枪开枪任务执行开枪动作
+							gRobot.rightGun.shoot = GUN_START_SHOOT;
+	//						OSTaskSuspend(Walk_TASK_PRIO);
+							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							break;
+						case 3:
+							//通知上面枪开枪任务执行开枪动作
+							gRobot.upperGun.shoot = GUN_START_SHOOT;
+	//						OSTaskSuspend(Walk_TASK_PRIO);
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+							break;
+						case 4:
+							//手自动切换
+	//						gRobot.rightGun.nextStep = 1;
+							gRobot.leftGun.mode = GUN_MANUAL_MODE;
+							gRobot.rightGun.mode = GUN_MANUAL_MODE;
+							gRobot.upperGun.mode = GUN_MANUAL_MODE;
+	//						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+	//						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 						break;
-					case 2:
-						//通知右枪开枪任务执行开枪动作
-						gRobot.rightGun.shoot = GUN_START_SHOOT;
-//						OSTaskSuspend(Walk_TASK_PRIO);
-						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+						case 5:
+							//下一步
+							gRobot.leftGun.nextStep = 1;
 						break;
-					case 3:
-						//通知上面枪开枪任务执行开枪动作
-						gRobot.upperGun.shoot = GUN_START_SHOOT;
-//						OSTaskSuspend(Walk_TASK_PRIO);
-						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
-						break;
-					case 4:
-						//手自动切换
-//						gRobot.rightGun.nextStep = 1;
-						gRobot.leftGun.mode = GUN_MANUAL_MODE;
-						gRobot.rightGun.mode = GUN_MANUAL_MODE;
-						gRobot.upperGun.mode = GUN_MANUAL_MODE;
-//						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-//						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-					break;
-					case 5:
-						//下一步
-						gRobot.leftGun.nextStep = 1;
-					break;
+					}
+				}
+				else
+				{
+					//此部分为打完第一轮后接收补弹命令
+					switch(id/10)
+					{
+						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
+						case 1:
+							gRobot.plantState[id - 10].ball = 1;
+							break;
+						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
+						case 2:
+							gRobot.plantState[id - 20].plate = 1;							
+							break;
+					}
 				}
 				status=0;
 			break;

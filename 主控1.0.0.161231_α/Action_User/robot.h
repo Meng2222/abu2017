@@ -128,6 +128,8 @@
 //瞄准完成
 #define GUN_AIM_DONE 2
 
+#define GUN_NO_COMMAND    0
+#define GUN_HAVE_COMMAND  1
 //进入下一步
 #define GUN_NEXT_STEP  1
 //不进入下一步
@@ -295,6 +297,7 @@ typedef struct
 	//射击过程中每一步实际发射次数
 	unsigned char actualStepShootTimes[7][2];
 	
+	unsigned char commandState; 
 }gun_t;
 
 //着陆台状态
@@ -462,6 +465,9 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void);
   */
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void);
+
+
+shoot_command_t ROBOT_UpperGunGetShootCommand(void);
 
 /**
   * @}
