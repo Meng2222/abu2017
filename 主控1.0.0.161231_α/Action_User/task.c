@@ -332,8 +332,8 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 
-	LeftHold();
-	RightHold();
+//	LeftHold();
+//	RightHold();
 //////测试使用！！！！！！！！！！！！！！！！
 //	MoveY(50.0f);
 #ifdef NO_WALK_TASK
@@ -707,6 +707,7 @@ void LeftGunShootTask(void)
 			}
 			else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
 			{
+				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunShoot();
 				ROBOT_LeftGunReload();
 //				OSTimeDly(50);
@@ -914,6 +915,7 @@ void RightGunShootTask(void)
 			}
 			else if(gRobot.rightGun.shoot==GUN_START_SHOOT)
 			{
+				ROBOT_RightGunCheckAim();
 				ROBOT_RightGunShoot();
 				ROBOT_RightGunReload();
 //				OSTimeDly(50);
