@@ -1406,7 +1406,7 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
 			}				
 		}
 		//着陆台上没球有盘
@@ -1432,7 +1432,7 @@ status_t ROBOT_LeftGunCheckPlantState(void)
 			}
 			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
+				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
 			}				
 		}		
 	}
@@ -1473,7 +1473,7 @@ status_t ROBOT_RightGunCheckPlantState(void)
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
 			}				
 		}
 		//着陆台上没球有盘
@@ -1499,7 +1499,7 @@ status_t ROBOT_RightGunCheckPlantState(void)
 			}
 			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
 			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
+				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
 			}				
 		}		
 	}
