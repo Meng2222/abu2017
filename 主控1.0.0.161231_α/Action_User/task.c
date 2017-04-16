@@ -401,9 +401,10 @@ void WalkTask(void)
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
-				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
+//				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
+				MoveToCenter(-13043.14f, -3200.0f, 2000.0f);
 	/*		    MoveTo(-12776.96f, -3200.0f, 2000.0f);*/
-				if (GetPosX() <= -12650.0f && PHOTOSENSORLEFT)
+				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
 					{
@@ -413,7 +414,7 @@ void WalkTask(void)
 					BEEP_ON;
 //					status++;					
 				}
-				if(GetPosX()<=-13023.14f)
+				if(GetPosX()<=-13043.14f)
 				{
 					moveTimFlag = 0;
 					status = load;
@@ -436,12 +437,10 @@ void WalkTask(void)
 				LockWheel();
 				ClampClose();
 				timeCounter++;	
-			    if (timeCounter >= 50)
+			    if (timeCounter >= 28)
 				{
-					ClampRotate();
 					timeCounter = 0;
-					OSTimeDly(50);
-					ClampReset();
+					ClampRotate();
 					status ++;
 				}
 				break;
@@ -451,7 +450,8 @@ void WalkTask(void)
 				{
 //					status++;
 //					OSTaskResume(DEBUG_TASK_PRIO);
-					VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(121.0f));
+					ROBOT_UpperGunAim();
+					ClampReset();	
 					status+=5;
 				}
 				break;
@@ -1008,9 +1008,8 @@ void UpperGunShootTask(void)
 			{
 				if(gRobot.upperGun.targetStepShootTimes > \
 				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod])
-				{
+				{				
 					ROBOT_UpperGunShoot();
-					OSTimeDly(30);
 				}
 				else
 				{
