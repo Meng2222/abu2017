@@ -969,7 +969,7 @@ void UART4_IRQHandler(void)
 						break;
 						case 6:
 							//上枪自动模式
-							gRobot.upperGun.mode = GUN_AUTO_MODE;
+							gRobot.upperGun.mode = GUN_ATTACK_MODE;
 							break;
 						case 7:
 							//左枪手动模式
