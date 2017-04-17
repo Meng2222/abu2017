@@ -960,18 +960,29 @@ void UART4_IRQHandler(void)
 							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 							break;
 						case 4:
-							//手自动切换
-	//						gRobot.rightGun.nextStep = 1;
-							gRobot.leftGun.mode = GUN_MANUAL_MODE;
-							gRobot.rightGun.mode = GUN_MANUAL_MODE;
-							gRobot.upperGun.mode = GUN_MANUAL_MODE;
-	//						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-	//						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							//左枪自动模式
+							gRobot.leftGun.mode = GUN_AUTO_MODE;
 						break;
 						case 5:
-							//下一步
-							gRobot.leftGun.nextStep = 1;
+							//右枪自动模式
+							gRobot.rightGun.mode = GUN_AUTO_MODE;
 						break;
+						case 6:
+							//上枪自动模式
+							gRobot.upperGun.mode = GUN_AUTO_MODE;
+							break;
+						case 7:
+							//左枪手动模式
+							gRobot.leftGun.mode = GUN_MANUAL_MODE;
+							break;
+						case 8:
+							//右枪手动模式
+							gRobot.rightGun.mode = GUN_MANUAL_MODE;
+							break;
+						case 9:
+							//上枪手动模式
+							gRobot.upperGun.mode = GUN_MANUAL_MODE;
+							break;
 					}
 				}
 				else
