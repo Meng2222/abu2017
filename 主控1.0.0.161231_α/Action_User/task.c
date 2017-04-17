@@ -16,7 +16,7 @@
 #include "database.h"
 #include "flash.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 /*
 ===============================================================
                         信号量定义
