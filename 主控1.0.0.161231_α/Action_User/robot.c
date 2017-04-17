@@ -581,6 +581,11 @@ status_t ROBOT_Init(void)
 		gRobot.plantState[i].ball = 1;
 	}
     gRobot.plantState[PLANT6].ball = 0;
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.plantState[i].plate = 1;
+	}
+    gRobot.plantState[PLANT6].plate = 0;
 
 	LeftGunInit();
 	RightGunInit();
