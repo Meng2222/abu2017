@@ -1117,8 +1117,8 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f || \
-				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.25f || \
+				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.25f)
 			{
 				continue;
 			}
@@ -1129,13 +1129,13 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.5f || \
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.5f)
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
 			{
 				continue;
 			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.5f || \
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.5f)
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
 			{
 				continue;
 			}	
