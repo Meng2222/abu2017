@@ -1287,12 +1287,11 @@ status_t ROBOT_LeftGunShoot(void)
 		if(gRobot.leftGun.ready == GUN_AIM_DONE)
 		{
 
-//				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
-//					gRobot.rightGun.shoot == GUN_START_SHOOT)
-//				{
-//					if(gRobot.leftGun.targetPlant == PLANT7)OSTimeDly(100);
-//					else OSTimeDly(50);
-//				}
+				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
+					gRobot.rightGun.shoot == GUN_START_SHOOT)
+				{
+					OSTimeDly(50);
+				}
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
 				OSTimeDly(20);
@@ -1333,12 +1332,11 @@ status_t ROBOT_RightGunShoot(void)
 		if(gRobot.rightGun.ready == GUN_AIM_DONE)
 		{
 
-//				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
-//					gRobot.leftGun.shoot == GUN_START_SHOOT)
-//				{
-//					if(gRobot.rightGun.targetPlant == PLANT7)OSTimeDly(100);
-//					else OSTimeDly(10);
-//				}
+				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
+					gRobot.leftGun.shoot == GUN_START_SHOOT)
+				{
+					OSTimeDly(50);
+				}
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();	
 				OSTimeDly(20);
