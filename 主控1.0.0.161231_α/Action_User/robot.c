@@ -1203,13 +1203,6 @@ status_t ROBOT_RightGunCheckAim(void)
 			}
 			
 			//这里检查传送带的速度，暂时没有加
-			
-			
-			//运行到这里，表示都满足指标，跳出循环
-			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
-			{
-				gRobot.upperGun.shoot = GUN_START_SHOOT;
-			}
 			break;
 		}
 	}
@@ -1217,7 +1210,6 @@ status_t ROBOT_RightGunCheckAim(void)
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
 		gRobot.upperGun.shoot = GUN_START_SHOOT;
-	
 		if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 		{
 			gRobot.upperGun.ready = GUN_AIM_DONE;
@@ -1376,16 +1368,14 @@ status_t ROBOT_UpperGunShoot(void)
 {
 	if(gRobot.upperGun.ready == GUN_AIM_DONE)
 	{
-		if(gRobot.upperGun.commandState == GUN_HAVE_COMMAND)
-		{
 			UpperShoot();
+			USART_SendData(USART3,'b');
 			OSTimeDly(40);
 			UpperShootReset();
 			gRobot.upperGun.shootTimes++;
 			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod]++;			
 			//fix me, 应该检查子弹是否用完
 			gRobot.upperGun.bulletNumber--;
-		}
 	}
 	return GUN_NO_ERROR;
 }

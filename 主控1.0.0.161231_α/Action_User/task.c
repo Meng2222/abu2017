@@ -949,6 +949,7 @@ void UpperGunShootTask(void)
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
+		if(gRobot.upperGun.targetZone & 0x0f)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
@@ -1003,7 +1004,6 @@ void UpperGunShootTask(void)
 		}
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
 		{
-			if(gRobot.upperGun.targetZone & 0x0f)  gRobot.upperGun.mode = GUN_DEFEND_MODE;
 			shoot_command_t shootCommand = ROBOT_UpperGunGetShootCommand();
 			if(gRobot.upperGun.commandState == GUN_HAVE_COMMAND)
 			{
@@ -1019,8 +1019,6 @@ void UpperGunShootTask(void)
 				
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
-				ROBOT_UpperGunCheckPlantState();
-				OSTimeDly(40);
 				if(gRobot.upperGun.targetZone & 0x0f)
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
@@ -1029,6 +1027,7 @@ void UpperGunShootTask(void)
 				{
 						ROBOT_UpperGunShoot();
 				}
+				gRobot.upperGun.commandState = GUN_NO_COMMAND;
 			}
 			else
 			{
@@ -1039,7 +1038,6 @@ void UpperGunShootTask(void)
 		//调试过程中着陆台信息没有用，根据shoot标志来开枪
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_MANUAL_MODE)
 		{
-			if(gRobot.upperGun.targetZone & 0x0f)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 			if(gRobot.upperGun.aim == GUN_START_AIM)
 			{
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
