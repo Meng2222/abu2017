@@ -975,7 +975,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 	for(uint8_t i = 0;i < 3;i++)
 	{
 		//有球
-		if(gRobot.plantState[UpperGunPriority[i]].ball == 1)
+		if(gRobot.plantState[UpperGunPriority[i]].ball == 1 && UpperGunPriority[i]!=PLANT6)
 		{
 			shootCommand.plantNum = UpperGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD1;
