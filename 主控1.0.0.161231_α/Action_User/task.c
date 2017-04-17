@@ -1003,7 +1003,7 @@ void UpperGunShootTask(void)
 		}
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
 		{
-			if(gRobot.upperGun.targetZone & 0x0f)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+			if(gRobot.upperGun.targetZone & 0x0f)  gRobot.upperGun.mode = GUN_DEFEND_MODE;
 			shoot_command_t shootCommand = ROBOT_UpperGunGetShootCommand();
 			if(gRobot.upperGun.commandState == GUN_HAVE_COMMAND)
 			{
