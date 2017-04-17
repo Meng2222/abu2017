@@ -1171,6 +1171,13 @@ status_t ROBOT_RightGunCheckAim(void)
 		{
 			//检查防守台上盘状态的变化，如果有改变立即跳出循环重新打盘
 			//fix me 耦合太高
+			if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
+			{
+				if(gRobot.upperGun.targetZone &0x0f)
+				{
+					break;
+				}
+			}
 			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 			{
 				if (lastTargetZone != gRobot.upperGun.targetZone)
