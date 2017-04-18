@@ -979,7 +979,6 @@ void UpperGunShootTask(void)
 				gRobot.upperGun.targetPose.speed1 = pose.speed1;
 
 				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
