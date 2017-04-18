@@ -370,9 +370,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
-	if (fabs(posErr) > 300.0f)
+	if (fabs(posErr) > 150.0f)
 	{
-		posErr = 0.0f;
+		posErr = 150.0f;
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
@@ -384,14 +384,14 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			LockWheel();
 		}
 	}
-	if((outputSpeed > 4200.0f) ||(outputSpeed < -4200.0f))
+	if((outputSpeed > 4500.0f) ||(outputSpeed < -4500.0f))
 	{
 		USART_SendData(UART5, (uint8_t)(outputSpeed/100.0f));
 	}		
 	
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	velY = fabs(0.10f * velX) /*+ 100.0f*/;
+	velY = fabs(0.07f * velX) /*+ 100.0f*/;
 	if(velY <= 50)
 	{
 		velY = 50;
