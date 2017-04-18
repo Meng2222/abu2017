@@ -818,11 +818,11 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-//	static uint8_t LeftGunLastLandId = PLANT7;
+	#define LEFT_AUTO_NUMBER 2
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
-	if(gRobot.plantState[PLANT6].ball == 0)
-		shootCommand.shootMethod = SHOOT_METHOD1;
-	for(uint8_t i = 0;i < 3;i++)
+	uint8_t searchRange = 2;
+	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)searchRange = 7;
+	for(uint8_t i = 0;i < searchRange;i++)
 	{
 		//有球
 		if(gRobot.plantState[LeftGunPriority[i]].ball == 1)
@@ -843,7 +843,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 
 			break;		
 		}
-		if(i == 2)
+		if(i == (searchRange-1))
 		{
 			gRobot.leftGun.commandState = GUN_NO_COMMAND;
 		}
@@ -896,10 +896,11 @@ status_t ROBOT_LeftGunAim(void)
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
-//	static uint8_t RightGunLastLandId = PLANT7;
+	#define RIGHT_AUTO_NUMBER 2
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
-	
-	for(uint8_t i = 0;i < 3;i++)
+	uint8_t searchRange = 2;
+	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)searchRange = 7;
+	for(uint8_t i = 0;i < searchRange;i++)
 	{
 		//有球
 		if(gRobot.plantState[RightGunPriority[i]].ball == 1)
@@ -920,7 +921,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 			break;
 		
 		}
-		if(i==2)
+		if(i==(searchRange-1))
 		{
 			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 			gRobot.rightGun.commandState = GUN_NO_COMMAND;
@@ -969,7 +970,6 @@ status_t ROBOT_RightGunAim(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-//	static uint8_t UpperGunLastLandId = PLANT7;
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
 	
 	for(uint8_t i = 0;i < 3;i++)

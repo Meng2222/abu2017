@@ -16,7 +16,7 @@
 #include "database.h"
 #include "flash.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 /*
 ===============================================================
                         信号量定义
@@ -610,6 +610,7 @@ void LeftGunShootTask(void)
 				else
 				{
 					OSTimeDly(6);
+//					LeftBack();
 				}
 //			}
 //			else
@@ -813,6 +814,7 @@ void RightGunShootTask(void)
 				else
 				{
 					OSTimeDly(6);
+//					RightBack();
 				}
 				
 //			}

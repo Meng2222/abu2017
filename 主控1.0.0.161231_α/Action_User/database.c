@@ -353,7 +353,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {37.4f,18.5f,14.5f,95.0f,14.0f},
 		 //6#着陆台
 //		 {4.4f,19.7f, 4.7f,123.0f,16.0f},
-		 {6.4f,19.2f,0.4f,124.0f,16.0f},
+		 {5.3f,20.8f,6.5f,124.0f,19.0f},
 		 //7#着陆台
 		 {-9.0f,35.0f, 2.9f,12.0f,55.0f}}
 
@@ -443,7 +443,6 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][L
 		 //3#着陆台
 		 {-5.5f, 23.5f, 12.7f, 111.0f, 5.0f},
 		 //4#着陆台
-//		 {16.3f, 17.3f, 12.1f, 109.0f,0.0f},
 		 {15.3f,16.8f,12.1f,116.0f,0.0f},
 		 //5#着陆台
 		 {32.3f,9.5f, 12.4f,116.0f,0.0f},
@@ -461,15 +460,12 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][L
 		 //3#着陆台
 		 {2.8f, 24.4f, 6.1f, 92.0f, 22.0f},
 		 //4#着陆台
-//		 {16.3f, 23.1f, 19.1f, 87.0f,20.0f},
 		 {18.4f,25.1f,17.5f,90.0f,20.0f},
 		 //5#着陆台
-//	 	 {33.7f,17.5f,20.9f,90.0f,20.0f},
-		 {37.4f,19.0f,15.5f,96.0f,14.0f},
-
+		 {37.4f,18.5f,14.5f,95.0f,14.0f},
 		 //6#着陆台
 //		 {4.4f,19.7f, 4.7f,123.0f,16.0f},
-		 {6.4f,19.2f,0.4f,124.0f,16.0f},
+		 {5.3f,20.8f,6.5f,124.0f,19.0f},
 		 //7#着陆台
 		 {-9.0f,35.0f, 2.9f,12.0f,55.0f}}
 
@@ -661,13 +657,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
   * @brief
   * @{
   */
-uint8_t LeftGunPriority[7] = {PLANT1,PLANT2/*,PLANT7,PLANT3*/,PLANT6/*,PLANT4,PLANT5*/};
+uint8_t LeftGunPriority[7] = {PLANT1,PLANT2,PLANT6,PLANT3,PLANT7,PLANT4,PLANT5};
 
 /** @defgroup LeftGunPriority
   * @brief
   * @{
   */
-uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
+uint8_t RightGunPriority[7] = {PLANT5,PLANT4,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1};
 
 
 uint8_t UpperGunPriority[7] = {PLANT3,PLANT7,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
