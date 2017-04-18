@@ -174,7 +174,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>/</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -330,6 +329,11 @@
           <count>4</count>
           <WinNumber>2</WinNumber>
           <ItemText>gRobot.upperGun.shootStep</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>ch</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>

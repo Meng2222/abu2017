@@ -75,22 +75,22 @@ void sendDebugInfo(void)
 	
 	USART_SendData(UART5,(int8_t)status);
 	
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
 	
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
 	
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0]);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1]);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2]);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0]);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1]);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2]);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
 
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
+//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
 
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
@@ -549,7 +549,7 @@ void LeftGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 //	LeftBack();
-	OSTimeDly(100);
+	OSTimeDly(250);
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
@@ -583,17 +583,18 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunReload();				
 					
 					//检查上弹是否到位
-					ROBOT_LeftGunCheckReload();
+//					ROBOT_LeftGunCheckReload();
 					//获取并更新枪目标姿态  发射姿态
 					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
 																		[leftGunShootCommand.shootMethod]\
 																		[leftGunShootCommand.plantNum];
 
 					ROBOT_LeftGunAim();
-					ROBOT_LeftGunCheckAim();
+//					ROBOT_LeftGunCheckAim();
 //				OSTimeDly(75);
 //				if(leftGunShootCommand.plantNum==PLANT6)
-//					OSTimeDly(100);
+					gRobot.leftGun.ready = GUN_AIM_DONE;
+					OSTimeDly(250);
 								
 //				//再次检查该柱子的状态，确定是否发射				
 //				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -778,7 +779,7 @@ void RightGunShootTask(void)
 					ROBOT_RightGunReload();				
 
 					//检查上弹是否到位
-					ROBOT_RightGunCheckReload();
+//					ROBOT_RightGunCheckReload();
 					//瞄准，此函数最好瞄准完成后再返回
 
 					//获取并更新枪目标姿态  发射姿态
@@ -788,10 +789,12 @@ void RightGunShootTask(void)
 
 
 					ROBOT_RightGunAim();
-					ROBOT_RightGunCheckAim();
+//					ROBOT_RightGunCheckAim();
+					OSTimeDly(250);					
+					gRobot.rightGun.ready = GUN_AIM_DONE;
 //				OSTimeDly(75);
 //				if(rightGunShootCommand.plantNum==PLANT6)
-//					OSTimeDly(100);
+
 
 				
 //				//再次检查该柱子的状态，确定是否发射
