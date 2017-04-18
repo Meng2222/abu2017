@@ -164,7 +164,25 @@ typedef struct
     float angle;
     
 }posture_t;
-
+typedef struct
+{
+    float x;
+    float y;
+    float angle;
+}position_t;
+typedef struct
+{
+	//abbr. translational velocity  即平移速度
+	float vt;
+	//abbr. the direction of translational velocitiy
+	float vtAngle;
+	//abbr. displacement
+	float disp;
+	//路程
+	float journey;
+	//姿态  以角度衡量
+	float poseAngle;
+}kenimaticInfo_t;
 
 typedef struct
 {
@@ -213,6 +231,13 @@ typedef struct
 	float actualYPos;
 	//摄像头返回相对场地中央位置，靠近出发区为0 范围【0，512】，场地正中间为256，单位毫米
 	unsigned short relativePos;
+		//期望位姿
+	position_t targetPosition;
+	//实际位姿
+	position_t actualPosition;
+
+	kenimaticInfo_t targetKenimaticInfo;
+	kenimaticInfo_t actualKenimaticInfo;
 }movebase_t;
 /* Exported functions ------------------------------------------------------- */
 

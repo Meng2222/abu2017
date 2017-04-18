@@ -384,7 +384,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			LockWheel();
 		}
 	}
-	if((outputSpeed > 4200.0f) ||(outputSpeed < 4200.0f))
+	if((outputSpeed > 4200.0f) ||(outputSpeed < -4200.0f))
 	{
 		USART_SendData(UART5, (uint8_t)(outputSpeed/100.0f));
 	}		

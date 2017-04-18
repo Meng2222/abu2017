@@ -15,6 +15,7 @@
 #include "movebase.h"
 #include "database.h"
 #include "flash.h"
+#include "movebase2.h"
 
 //#define NO_WALK_TASK
 /*
@@ -120,13 +121,14 @@ void sendDebugInfo(void)
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
 
 	//X位移分米部分范围是【-140，10】，单位分米
-	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
+	USART_SendData(UART5, (uint8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
 	//X位移厘米部分范围是【-100，100】，单位厘米
 	USART_SendData(UART5, (uint8_t)((((int)gRobot.moveBase.actualXPos))%100/10));
 
 	//根据场地约束，范围设计为【-130，130】，单位cm
 	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualYPos/10.0f));
 
+	USART_SendData(UART5,(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.01f));
 	//连续发送4个-100作为结束标识符
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -387,7 +389,7 @@ void WalkTask(void)
 		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
 
-		
+		UpdateKenimaticInfo();	
 		sendDebugInfo();
 		switch (status)
 		{
