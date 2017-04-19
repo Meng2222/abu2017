@@ -391,7 +391,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	velY = fabs(0.07f * velX) /*+ 100.0f*/;
+	velY = fabs(0.05f * velX) /*+ 100.0f*/;
 	if(velY <= 50)
 	{
 		velY = 50;
@@ -576,14 +576,14 @@ void MoveToCenter(float targetPos, float velX, float accX)
 		formerTargetPos = targetPos;
 		
 		startPos = GetPosX();
-		if (velX >= 0)
-		{
-			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
-		}
-		else
-		{
-			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
-		}
+//		if (velX >= 0)
+//		{
+//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
+//		}
+//		else
+//		{
+//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
+//		}
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
 	}
