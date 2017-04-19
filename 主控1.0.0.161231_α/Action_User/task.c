@@ -406,7 +406,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
-				MoveToCenter(-13043.14f, -3800.0f, 2000.0f);
+				MoveToCenter(-13043.14f, -3500.0f, 2000.0f);
 	/*		    MoveTo(-12776.96f, -3200.0f, 2000.0f);*/
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
@@ -551,7 +551,8 @@ void LeftGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 //	LeftBack();
-	OSTimeDly(250);
+	OSTimeDly(100);
+	LeftPush();
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
@@ -622,8 +623,8 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(10);
-					//LeftBack();
+					OSTimeDly(30);
+					LeftBack();
 				}
 //			}
 //			else
@@ -758,6 +759,7 @@ void RightGunShootTask(void)
 #endif
 //	RightBack();
 	OSTimeDly(100);
+	RightPush();
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
@@ -842,8 +844,8 @@ void RightGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(10);
-					//RightBack();
+					OSTimeDly(30);
+					RightBack();
 				}
 				
 //			}

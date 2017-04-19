@@ -391,7 +391,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	velY = fabs(0.05f * velX) /*+ 100.0f*/;
+	velY = fabs(0.07f * velX) /*+ 100.0f*/;
 	if(velY <= 50)
 	{
 		velY = 50;

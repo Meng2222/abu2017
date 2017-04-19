@@ -580,13 +580,13 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.plantState[i].ball = 1;
 	}
-    gRobot.plantState[PLANT6].ball = 0;
+    gRobot.plantState[PLANT6].ball = 1;
 	
-//	for(uint8_t i = 0; i < 7;i++)
-//	{
-//		gRobot.plantState[i].plate = 1;
-//	}
-    gRobot.plantState[PLANT6].plate = 1;
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.plantState[i].plate = 2;
+	}
+  gRobot.plantState[PLANT6].plate = 2;
 
 	LeftGunInit();
 	RightGunInit();
@@ -656,7 +656,7 @@ status_t ROBOT_LeftGunReload(void)
 //	uint8_t pushTimes = 5;
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
-		LeftPush();
+//		LeftPush();
 		if(gRobot.leftGun.shootTimes == 0)
 		{
 			OSTimeDly(60);
@@ -697,7 +697,7 @@ status_t ROBOT_RightGunReload(void)
 //	uint8_t pushTimes = 8;
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
-		RightPush();
+//		RightPush();
 		if(gRobot.rightGun.shootTimes == 0)
 		{
 			OSTimeDly(60);
@@ -827,20 +827,20 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	for(uint8_t i = 0;i < searchRange;i++)
 	{
 		//有球
-		if(gRobot.plantState[LeftGunPriority[i]].ball == 1)
+		if(gRobot.plantState[LeftGunPriority[i]].ball >= 1)
 		{
 			shootCommand.plantNum = LeftGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD1;
-			gRobot.plantState[LeftGunPriority[i]].ball = 0;
+			gRobot.plantState[LeftGunPriority[i]].ball -= 1;
 			gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 			break;
 		}
 		//没盘
-		if(gRobot.plantState[LeftGunPriority[i]].plate == 1)
+		if(gRobot.plantState[LeftGunPriority[i]].plate >= 1)
 		{
 			shootCommand.plantNum = LeftGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD2;
-			gRobot.plantState[LeftGunPriority[i]].plate = 0;
+			gRobot.plantState[LeftGunPriority[i]].plate -= 1;
 			gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 
 			break;		
@@ -906,20 +906,20 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	for(uint8_t i = 0;i < searchRange;i++)
 	{
 		//有球
-		if(gRobot.plantState[RightGunPriority[i]].ball == 1)
+		if(gRobot.plantState[RightGunPriority[i]].ball >= 1)
 		{
 			shootCommand.plantNum = RightGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD1;
-			gRobot.plantState[RightGunPriority[i]].ball = 0;
+			gRobot.plantState[RightGunPriority[i]].ball -= 1;
 			gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 			break;
 		}
 		//没盘
-		if(gRobot.plantState[RightGunPriority[i]].plate == 1)
+		if(gRobot.plantState[RightGunPriority[i]].plate >= 1)
 		{
 			shootCommand.plantNum = RightGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD2;
-			gRobot.plantState[RightGunPriority[i]].plate = 0;
+			gRobot.plantState[RightGunPriority[i]].plate -= 1;
 			gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 			break;
 		
@@ -980,20 +980,20 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 	for( i = 0;i < 2;i++)
 	{
 		//有球
-		if(gRobot.plantState[UpperGunPriority[i]].ball == 1 && UpperGunPriority[i]!=PLANT6)
+		if(gRobot.plantState[UpperGunPriority[i]].ball >= 1 && UpperGunPriority[i]!=PLANT6)
 		{
 			shootCommand.plantNum = UpperGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD1;
-			gRobot.plantState[UpperGunPriority[i]].ball = 0;
+			gRobot.plantState[UpperGunPriority[i]].ball -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
 			break;
 		}
 		//没盘
-		if(gRobot.plantState[UpperGunPriority[i]].plate == 1)
+		if(gRobot.plantState[UpperGunPriority[i]].plate >= 1)
 		{
 			shootCommand.plantNum = UpperGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD2;
-			gRobot.plantState[UpperGunPriority[i]].plate = 0;
+			gRobot.plantState[UpperGunPriority[i]].plate -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
 			break;
 		
