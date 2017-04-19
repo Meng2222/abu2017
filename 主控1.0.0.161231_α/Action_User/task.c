@@ -406,7 +406,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
-				MoveToCenter(-13043.14f, -2500.0f, 2000.0f);
+				MoveToCenter(-13043.14f, -3200.0f, 2000.0f);
 	/*		    MoveTo(-12776.96f, -3200.0f, 2000.0f);*/
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
@@ -513,7 +513,7 @@ void WalkTask(void)
 				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveToCenter(-6459.14f, 2500.0f, 2000.0f);
+                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
