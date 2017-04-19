@@ -406,7 +406,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
-				MoveToCenter(-13043.14f, -3500.0f, 2000.0f);
+				MoveToCenter(-13043.14f, -2500.0f, 2000.0f);
 	/*		    MoveTo(-12776.96f, -3200.0f, 2000.0f);*/
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
@@ -513,7 +513,7 @@ void WalkTask(void)
 				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
-                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
+                MoveToCenter(-6459.14f, 2500.0f, 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -592,11 +592,11 @@ void LeftGunShootTask(void)
 																		[leftGunShootCommand.plantNum];
 
 					ROBOT_LeftGunAim();
-//					ROBOT_LeftGunCheckAim();
+					ROBOT_LeftGunCheckAim();
 //				OSTimeDly(75);
 //				if(leftGunShootCommand.plantNum==PLANT6)
-					gRobot.leftGun.ready = GUN_AIM_DONE;
-					OSTimeDly(250);
+//					gRobot.leftGun.ready = GUN_AIM_DONE;
+//					OSTimeDly(250);
 								
 //				//再次检查该柱子的状态，确定是否发射				
 //				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -791,9 +791,9 @@ void RightGunShootTask(void)
 
 
 					ROBOT_RightGunAim();
-//					ROBOT_RightGunCheckAim();
-					OSTimeDly(250);					
-					gRobot.rightGun.ready = GUN_AIM_DONE;
+					ROBOT_RightGunCheckAim();
+//					OSTimeDly(250);					
+//					gRobot.rightGun.ready = GUN_AIM_DONE;
 //				OSTimeDly(75);
 //				if(rightGunShootCommand.plantNum==PLANT6)
 
