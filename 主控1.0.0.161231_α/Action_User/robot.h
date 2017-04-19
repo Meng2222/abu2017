@@ -297,6 +297,8 @@ typedef struct
 	//射击过程中每一步实际发射次数
 	unsigned char actualStepShootTimes[7][2];
 	
+	//手自动切换标志位
+	unsigned char modeChangeFlag;
 	unsigned char commandState; 
 }gun_t;
 

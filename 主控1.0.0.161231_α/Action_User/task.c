@@ -557,7 +557,11 @@ void LeftGunShootTask(void)
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
 	{
-		
+		if(gRobot.leftGun.modeChangeFlag == 1)
+		{
+			LeftBack();
+			gRobot.leftGun.modeChangeFlag = 0;
+		}
 		//自动模式
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
 		{
@@ -568,8 +572,7 @@ void LeftGunShootTask(void)
 			//
 
 				shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
-				if(leftGunShootCommand.plantNum == PLANT6)
-						OSTimeDly(20);
+
 				if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 				{
 					gRobot.leftGun.targetPlant = leftGunShootCommand.plantNum;
@@ -599,7 +602,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunAim();
 					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
 					{
-						OSTimeDly(250);
+						OSTimeDly(300);
 						gRobot.leftGun.ready = GUN_AIM_DONE;
 					}
 					else
@@ -764,6 +767,11 @@ void RightGunShootTask(void)
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
 	{
+		if(gRobot.rightGun.modeChangeFlag == 1)
+		{
+			RightBack();
+			gRobot.rightGun.modeChangeFlag = 0;
+		}
 		//检查手动or自动
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
 		if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_AUTO_MODE)
@@ -773,8 +781,7 @@ void RightGunShootTask(void)
 
 
 				shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
-				if(rightGunShootCommand.plantNum == PLANT6)
-						OSTimeDly(20);
+
 				if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 				{
 					gRobot.rightGun.nextStep = 2;
@@ -809,7 +816,7 @@ void RightGunShootTask(void)
 
 					if(rightGunShootCommand.plantNum == PLANT6)
 					{
-						OSTimeDly(250);
+						OSTimeDly(300);
 						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 					else

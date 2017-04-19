@@ -584,9 +584,9 @@ status_t ROBOT_Init(void)
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.plantState[i].plate = 2;
+		gRobot.plantState[i].plate = 1;
 	}
-  gRobot.plantState[PLANT6].plate = 2;
+  gRobot.plantState[PLANT6].plate = 1;
 
 	LeftGunInit();
 	RightGunInit();
@@ -1059,8 +1059,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.25f || \
-				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.25f)
+			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f || \
+				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
 			{
 				continue;
 			}
@@ -1070,13 +1070,13 @@ status_t ROBOT_LeftGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f || \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 2.0f || \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 2.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 2.0f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 2.0f)
 			{
 				continue;
 			}	
@@ -1123,8 +1123,8 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.25f || \
-				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.25f)
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f || \
+				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
 			{
 				continue;
 			}
@@ -1314,8 +1314,10 @@ status_t ROBOT_LeftGunShoot(void)
 	}
 	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
 	{
-		LeftShoot();	
-		OSTimeDly(50);
+		LeftShoot();
+		OSTimeDly(20);
+		LeftPush();
+		OSTimeDly(8);
 		LeftShootReset();
 		gRobot.leftGun.shootTimes++;
 		gRobot.leftGun.bulletNumber--;
@@ -1361,7 +1363,9 @@ status_t ROBOT_RightGunShoot(void)
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
 	{
 		RightShoot();	
-		OSTimeDly(50);
+		OSTimeDly(20);
+		RightPush();
+		OSTimeDly(8);
 		RightShootReset();
 		gRobot.rightGun.shootTimes++;
 		gRobot.rightGun.bulletNumber--;

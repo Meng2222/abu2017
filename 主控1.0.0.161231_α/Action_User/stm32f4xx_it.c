@@ -975,12 +975,14 @@ void UART4_IRQHandler(void)
 						case 7:
 							//左枪手动模式
 							gRobot.leftGun.mode = GUN_MANUAL_MODE;
-							LeftBack();
+							gRobot.leftGun.modeChangeFlag = 1;
+//							LeftBack();
 							break;
 						case 8:
 							//右枪手动模式
 							gRobot.rightGun.mode = GUN_MANUAL_MODE;
-							RightBack();
+							gRobot.rightGun.modeChangeFlag = 1;
+//							RightBack();
 							break;
 						case 9:
 							//上枪手动模式
