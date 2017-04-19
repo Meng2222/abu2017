@@ -44,7 +44,7 @@
 #define STDPULSE 2000.0f
 
 //电机最大速度   单位:脉冲/s
-#define INSANEVEL 400000.0f
+#define INSANEVEL 500000.0f
 //电机最大加速度  单位:脉冲/s^2
 #define MAXACC 3000000.0f
 
