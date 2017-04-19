@@ -564,7 +564,11 @@ void LeftGunShootTask(void)
 //			if(gRobot.leftGun.shootTimes >=   ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
 //			{
 				//自动调度
+			//
+
 				shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
+				if(leftGunShootCommand.plantNum == PLANT6)
+						OSTimeDly(20);
 				if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 				{
 					gRobot.leftGun.targetPlant = leftGunShootCommand.plantNum;
@@ -592,11 +596,17 @@ void LeftGunShootTask(void)
 																		[leftGunShootCommand.plantNum];
 
 					ROBOT_LeftGunAim();
-					ROBOT_LeftGunCheckAim();
+					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
+					{
+						OSTimeDly(250);
+						gRobot.leftGun.ready = GUN_AIM_DONE;
+					}
+					else
+						ROBOT_LeftGunCheckAim();
 //				OSTimeDly(75);
 //				if(leftGunShootCommand.plantNum==PLANT6)
 //					gRobot.leftGun.ready = GUN_AIM_DONE;
-//					OSTimeDly(250);
+//					OSTimeDly(250);	
 								
 //				//再次检查该柱子的状态，确定是否发射				
 //				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -612,8 +622,8 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(6);
-//					LeftBack();
+					OSTimeDly(10);
+					//LeftBack();
 				}
 //			}
 //			else
@@ -758,7 +768,11 @@ void RightGunShootTask(void)
 		{
 //			if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
 //			{
+
+
 				shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
+				if(rightGunShootCommand.plantNum == PLANT6)
+						OSTimeDly(20);
 				if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 				{
 					gRobot.rightGun.nextStep = 2;
@@ -770,10 +784,9 @@ void RightGunShootTask(void)
 																		[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 
-					//更新枪目标位姿
-
-
+					//调整枪姿为上弹姿态 need some time
 					ROBOT_RightGunAim();
+					
 					if(rightGunShootCommand.plantNum == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 					{
 						ROBOT_RightGunCheckAim();
@@ -789,9 +802,20 @@ void RightGunShootTask(void)
 																		[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 
-
+					//调整枪姿为发射姿态 need some time
 					ROBOT_RightGunAim();
-					ROBOT_RightGunCheckAim();
+
+					if(rightGunShootCommand.plantNum == PLANT6)
+					{
+						OSTimeDly(250);
+						gRobot.rightGun.ready = GUN_AIM_DONE;
+					}
+					else
+						ROBOT_RightGunCheckAim();
+					
+//					ROBOT_RightGunCheckAim();
+
+					
 //					OSTimeDly(250);					
 //					gRobot.rightGun.ready = GUN_AIM_DONE;
 //				OSTimeDly(75);
@@ -818,8 +842,8 @@ void RightGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(6);
-//					RightBack();
+					OSTimeDly(10);
+					//RightBack();
 				}
 				
 //			}

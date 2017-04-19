@@ -714,7 +714,8 @@ status_t ROBOT_RightGunReload(void)
 //			OSTimeDly(8);
 //		}
 		RightBack();
-		OSTimeDly(10);
+		OSTimeDly(10);//看似无用
+
 //		OSTimeDly(50);
 //		RightHold();
 		gRobot.rightGun.reloadState = GUN_ALREADY_RELOAD;
@@ -972,9 +973,11 @@ status_t ROBOT_RightGunAim(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
+	uint8_t i = 0u;
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
-	
-	for(uint8_t i = 0;i < 3;i++)
+	//为使上枪接收命令更难
+	OSTimeDly(5);
+	for( i = 0;i < 2;i++)
 	{
 		//有球
 		if(gRobot.plantState[UpperGunPriority[i]].ball == 1 && UpperGunPriority[i]!=PLANT6)
@@ -995,12 +998,13 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			break;
 		
 		}
-		if(i==2)
+		if(i==1)
 		{
 			gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
 			gRobot.upperGun.commandState = GUN_NO_COMMAND;
 		}
 	}
+	
 	return shootCommand;
 }
 /**
@@ -1292,7 +1296,7 @@ status_t ROBOT_LeftGunShoot(void)
 				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
 					gRobot.rightGun.shoot == GUN_START_SHOOT)
 				{
-					OSTimeDly(50);
+					OSTimeDly(100);
 				}
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
@@ -1303,7 +1307,8 @@ status_t ROBOT_LeftGunShoot(void)
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.leftGun.shootTimes++;
-				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum][gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
+				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum]\
+																						[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
 				gRobot.leftGun.bulletNumber--;
 		}
 	}
@@ -1334,10 +1339,10 @@ status_t ROBOT_RightGunShoot(void)
 		if(gRobot.rightGun.ready == GUN_AIM_DONE)
 		{
 
-				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
-					gRobot.leftGun.shoot == GUN_START_SHOOT)
+				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant
+					&& 	gRobot.leftGun.shoot == GUN_START_SHOOT)
 				{
-					OSTimeDly(50);
+					OSTimeDly(100);
 				}
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();	
