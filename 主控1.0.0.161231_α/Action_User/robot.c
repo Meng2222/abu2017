@@ -1,3 +1,4 @@
+#include <math.h>
 #include "robot.h"
 #include "elmo.h"
 #include "database.h"
@@ -1070,16 +1071,32 @@ status_t ROBOT_LeftGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f|| \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
+			if(gRobot.leftGun.targetPlant == PLANT1 || gRobot.leftGun.targetPlant == PLANT6)
 			{
-				continue;
+				if(fabs(gRobot.leftGun.actualPose.speed1 + gRobot.leftGun.actualPose.speed2 
+					- gRobot.leftGun.targetPose.speed1 - gRobot.leftGun.targetPose.speed2) > 1.25f)
+				{
+					continue;
+				}
+				if(fabs(gRobot.leftGun.actualPose.speed1 - gRobot.leftGun.actualPose.speed2 
+					- gRobot.leftGun.targetPose.speed1 + gRobot.leftGun.targetPose.speed2) > 1.25f)
+				{
+					continue;
+				}
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
+			else
 			{
-				continue;
-			}	
+				if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.5f|| \
+					gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.5f)
+				{
+					continue;
+				}
+				if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.5f || \
+					gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.5f)
+				{
+					continue;
+				}
+			}
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
@@ -1109,7 +1126,6 @@ status_t ROBOT_RightGunCheckAim(void)
 		int timeout = 20;
 		while(timeout--)
 		{
-			//fix me,发送3组命令需要200us*3，加上返回的5帧数据，会达到2ms，这里最好使用组ID实现，需要驱动器支持
 			//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
 			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
 			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
@@ -1135,16 +1151,32 @@ status_t ROBOT_RightGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
+			if(gRobot.rightGun.targetPlant == PLANT5 || gRobot.rightGun.targetPlant == PLANT6)
 			{
-				continue;
+				if(fabs(gRobot.rightGun.actualPose.speed1 + gRobot.rightGun.actualPose.speed2 
+					- gRobot.rightGun.targetPose.speed1 - gRobot.rightGun.targetPose.speed2) > 1.25f)
+				{
+					continue;
+				}
+				if(fabs(gRobot.rightGun.actualPose.speed1 - gRobot.rightGun.actualPose.speed2 
+					- gRobot.rightGun.targetPose.speed1 + gRobot.rightGun.targetPose.speed2) > 1.25f)
+				{
+					continue;
+				}
 			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
+			else
 			{
-				continue;
-			}	
+				if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.5f || \
+					gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.5f)
+				{
+					continue;
+				}
+				if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.5f || \
+					gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.5f)
+				{
+					continue;
+				}
+			}
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
@@ -1297,6 +1329,7 @@ status_t ROBOT_LeftGunShoot(void)
 					gRobot.rightGun.shoot == GUN_START_SHOOT)
 				{
 					OSTimeDly(100);
+
 				}
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
@@ -1308,7 +1341,7 @@ status_t ROBOT_LeftGunShoot(void)
 				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.leftGun.shootTimes++;
 				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum]\
-																						[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
+												[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
 				gRobot.leftGun.bulletNumber--;
 		}
 	}
@@ -1355,7 +1388,8 @@ status_t ROBOT_RightGunShoot(void)
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.rightGun.shootTimes++;
-				gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum][gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
+				gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum]\
+												[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
 				//fix me, 应该检查子弹是否用完
 				gRobot.rightGun.bulletNumber--;
 		}
@@ -1389,7 +1423,8 @@ status_t ROBOT_UpperGunShoot(void)
 			OSTimeDly(40);
 			UpperShootReset();
 			gRobot.upperGun.shootTimes++;
-			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum][gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod]++;			
+			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum]\
+											[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod]++;			
 			//fix me, 应该检查子弹是否用完
 			gRobot.upperGun.bulletNumber--;
 	}
