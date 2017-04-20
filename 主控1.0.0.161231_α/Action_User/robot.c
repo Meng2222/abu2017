@@ -825,14 +825,14 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	uint8_t searchRange = 3;
 //	gRobot.plantState[PLANT6].plate = 1;
 //	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)searchRange = 7;
-	if(gRobot.rightGun.shootTimes >= 18u)
-		searchRange = 7;
-	if(gRobot.leftGun.shootTimes >= 18u)
-	{
-		gRobot.leftGun.commandState = GUN_NO_COMMAND;
-	}
-	else
-	{
+//	if(gRobot.rightGun.shootTimes >= 18u)
+//		searchRange = 7;
+//	if(gRobot.leftGun.shootTimes >= 18u)
+//	{
+//		gRobot.leftGun.commandState = GUN_NO_COMMAND;
+//	}
+//	else
+//	{
 		for(uint8_t i = 0;i < searchRange;i++)
 		{
 			//有球
@@ -862,7 +862,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				gRobot.leftGun.commandState = GUN_NO_COMMAND;
 			}
 		}
-	}
+//	}
 	return shootCommand;
 }
 
@@ -913,17 +913,17 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	#define RIGHT_AUTO_NUMBER 2u
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
 	uint8_t searchRange = 3;
-//	gRobot.plantState[PLANT6].plate = 1;
+//	gRobot.plantState[PLANT4].ball = 1;
 //	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)searchRange = 7;
-	if(gRobot.leftGun.shootTimes >= 18u)
-		searchRange = 7;
-	
-	if(gRobot.rightGun.shootTimes >= 18u)
-	{
-		gRobot.rightGun.commandState = GUN_NO_COMMAND;
-	}
-	else
-	{
+//	if(gRobot.leftGun.shootTimes >= 18u)
+//		searchRange = 7;
+//	
+//	if(gRobot.rightGun.shootTimes >= 18u)
+//	{
+//		gRobot.rightGun.commandState = GUN_NO_COMMAND;
+//	}
+//	else
+//	{
 		for(uint8_t i = 0;i < searchRange;i++)
 		{
 			//有球
@@ -954,7 +954,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.commandState = GUN_NO_COMMAND;
 			}
 		}
-	}
+//	}
 	return shootCommand;
 }
 
