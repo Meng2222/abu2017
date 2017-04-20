@@ -200,6 +200,10 @@ void UpperGunSendDebugInfo(void)
 {
 	USART_SendData(UART5,3);
 	
+	USART_SendData(UART5,	gRobot.upperGun.targetPlant);
+	
+	USART_SendData(UART5, gRobot.upperGun.shootParaMode);
+	
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetZone);
 		
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.yaw);
@@ -608,8 +612,9 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunAim();
 					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
 					{
-						OSTimeDly(300);
-						gRobot.leftGun.ready = GUN_AIM_DONE;
+						ROBOT_LeftGunCheckAim();
+//						OSTimeDly(300);
+//						gRobot.leftGun.ready = GUN_AIM_DONE;
 					}
 					else
 					{
@@ -834,8 +839,9 @@ void RightGunShootTask(void)
 
 					if(rightGunShootCommand.plantNum == PLANT6)
 					{
-						OSTimeDly(300);
-						gRobot.rightGun.ready = GUN_AIM_DONE;
+//						OSTimeDly(300);
+						ROBOT_RightGunCheckAim();
+//						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 					else
 					{

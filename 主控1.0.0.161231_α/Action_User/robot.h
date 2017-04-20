@@ -706,6 +706,6 @@ void ShootCtr(shootCtr_t *shootPara);
 
 void LeftGunSendDebugInfo(void);
 void RightGunSendDebugInfo(void);
-
+void UpperGunSendDebugInfo(void);
 
 #endif

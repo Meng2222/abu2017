@@ -1074,7 +1074,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 			ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
 			ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-			USART_SendData(UART5, 0);
+			USART_SendData(UART5, (uint8_t)-22);
 			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
@@ -1109,16 +1109,16 @@ status_t ROBOT_LeftGunCheckAim(void)
 //			}
 //			else
 //			{
-				if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.5f|| \
-					gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.5f)
-				{
-					continue;
-				}
-				if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.5f || \
-					gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.5f)
-				{
-					continue;
-				}
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.5f|| \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.5f)
+			{
+				continue;
+			}
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.5f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.5f)
+			{
+				continue;
+			}
 //			}
 			//运行到这里，表示都满足指标，跳出循环
 			break;
@@ -1153,7 +1153,7 @@ status_t ROBOT_RightGunCheckAim(void)
 			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
 			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-			USART_SendData(UART5, 0);
+			USART_SendData(UART5, (uint8_t)-44);
 			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
@@ -1251,6 +1251,8 @@ status_t ROBOT_RightGunCheckAim(void)
 			ReadActualPos(CAN1, UPPER_GUN_GROUP_ID);
 			ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
+			USART_SendData(UART5,(uint8_t)-88);
+			UpperGunSendDebugInfo();
 			
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.5f || \
