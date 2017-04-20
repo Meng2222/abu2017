@@ -551,7 +551,7 @@ void LeftGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 //	LeftBack();
-	OSTimeDly(100);
+	OSTimeDly(50);
 	LeftPush();
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -612,7 +612,10 @@ void LeftGunShootTask(void)
 						gRobot.leftGun.ready = GUN_AIM_DONE;
 					}
 					else
+					{
 							OSTimeDly(150);
+							gRobot.leftGun.ready = GUN_AIM_DONE;					
+					}
 //						ROBOT_LeftGunCheckAim();
 //				OSTimeDly(75);
 //				if(leftGunShootCommand.plantNum==PLANT6)
@@ -768,7 +771,7 @@ void RightGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 //	RightBack();
-	OSTimeDly(100);
+	OSTimeDly(50);
 	RightPush();
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -835,7 +838,10 @@ void RightGunShootTask(void)
 						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 					else
-						OSTimeDly(150);
+					{
+						OSTimeDly(150);					
+						gRobot.rightGun.ready = GUN_AIM_DONE;
+					}
 //						ROBOT_RightGunCheckAim();
 					
 //					ROBOT_RightGunCheckAim();
