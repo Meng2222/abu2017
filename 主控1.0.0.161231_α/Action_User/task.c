@@ -579,15 +579,14 @@ void LeftGunShootTask(void)
 					gRobot.leftGun.nextStep = 2;
 					gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
 					
-					//获取并更新枪目标姿态  上弹姿态
-					gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootPoint]\
-																		[leftGunShootCommand.shootMethod]\
-																		[leftGunShootCommand.plantNum];
-
-
-					ROBOT_LeftGunAim();
 					if(leftGunShootCommand.plantNum == PLANT7 || leftGunShootCommand.plantNum == PLANT3)
 					{
+						//获取并更新枪目标姿态  上弹姿态
+						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
+																			[leftGunShootCommand.shootMethod]\
+																			[leftGunShootCommand.plantNum];
+
+						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
 					}
 					ROBOT_LeftGunReload();				
@@ -788,16 +787,16 @@ void RightGunShootTask(void)
 					gRobot.rightGun.targetPlant = rightGunShootCommand.plantNum;
 					gRobot.rightGun.shootParaMode = rightGunShootCommand.shootMethod;
 
-					//获取并更新枪目标姿态  上弹姿态
-					gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootPoint]\
-																		[rightGunShootCommand.shootMethod]\
-																		[rightGunShootCommand.plantNum];
-
-					//调整枪姿为上弹姿态 need some time
-					ROBOT_RightGunAim();
-					
 					if(rightGunShootCommand.plantNum == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 					{
+						//获取并更新枪目标姿态  上弹姿态
+						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
+																			[rightGunShootCommand.shootMethod]\
+																			[rightGunShootCommand.plantNum];
+
+						//调整枪姿为上弹姿态 need some time
+						ROBOT_RightGunAim();
+
 						ROBOT_RightGunCheckAim();
 					}
 					ROBOT_RightGunReload();				

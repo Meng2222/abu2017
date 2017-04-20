@@ -453,7 +453,7 @@ void CAN2_RX0_IRQHandler(void)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考almo手册
+				//msg.data32[1]为单位为摄氏度的整数，范围是25~135，参考elmo手册
 				gRobot.moveBase.driverTemperature.leftWheelDriverTemperature = (msg.data32[1]);
 			}
 			if(canNodeId == FORWARD_WHEEL_ID) 
