@@ -613,10 +613,10 @@ void LeftGunShootTask(void)
 					}
 					else
 					{
-							OSTimeDly(150);
-							gRobot.leftGun.ready = GUN_AIM_DONE;					
+//							OSTimeDly(150);
+							ROBOT_LeftGunCheckAim();
+//							gRobot.leftGun.ready = GUN_AIM_DONE;					
 					}
-//						ROBOT_LeftGunCheckAim();
 //				OSTimeDly(75);
 //				if(leftGunShootCommand.plantNum==PLANT6)
 //					gRobot.leftGun.ready = GUN_AIM_DONE;
@@ -839,10 +839,10 @@ void RightGunShootTask(void)
 					}
 					else
 					{
-						OSTimeDly(150);					
-						gRobot.rightGun.ready = GUN_AIM_DONE;
+						ROBOT_RightGunCheckAim();
+//						OSTimeDly(150);					
+//						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
-//						ROBOT_RightGunCheckAim();
 					
 //					ROBOT_RightGunCheckAim();
 
