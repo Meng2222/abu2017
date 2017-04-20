@@ -587,7 +587,7 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.plantState[i].plate = 1;
 	}
-  gRobot.plantState[PLANT6].plate = 1;
+	gRobot.plantState[PLANT6].plate = 1;
 
 	LeftGunInit();
 	RightGunInit();

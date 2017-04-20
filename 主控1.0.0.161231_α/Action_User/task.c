@@ -594,7 +594,7 @@ void LeftGunShootTask(void)
 						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
 																				[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
-							ROBOT_LeftGunAim();
+						ROBOT_LeftGunAim();
 					}
 					ROBOT_LeftGunReload();				
 					
