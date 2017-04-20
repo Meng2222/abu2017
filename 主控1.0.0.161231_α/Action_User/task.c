@@ -582,12 +582,19 @@ void LeftGunShootTask(void)
 					if(leftGunShootCommand.plantNum == PLANT7 || leftGunShootCommand.plantNum == PLANT3)
 					{
 						//获取并更新枪目标姿态  上弹姿态
-						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
+						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootPoint]\
 																			[leftGunShootCommand.shootMethod]\
 																			[leftGunShootCommand.plantNum];
 
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
+					}
+					else
+					{
+						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
+																				[leftGunShootCommand.shootMethod]\
+																				[leftGunShootCommand.plantNum];
+							ROBOT_LeftGunAim();
 					}
 					ROBOT_LeftGunReload();				
 					
@@ -605,7 +612,8 @@ void LeftGunShootTask(void)
 						gRobot.leftGun.ready = GUN_AIM_DONE;
 					}
 					else
-						ROBOT_LeftGunCheckAim();
+							OSTimeDly(150);
+//						ROBOT_LeftGunCheckAim();
 //				OSTimeDly(75);
 //				if(leftGunShootCommand.plantNum==PLANT6)
 //					gRobot.leftGun.ready = GUN_AIM_DONE;
@@ -790,7 +798,7 @@ void RightGunShootTask(void)
 					if(rightGunShootCommand.plantNum == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 					{
 						//获取并更新枪目标姿态  上弹姿态
-						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
+						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootPoint]\
 																			[rightGunShootCommand.shootMethod]\
 																			[rightGunShootCommand.plantNum];
 
@@ -798,6 +806,14 @@ void RightGunShootTask(void)
 						ROBOT_RightGunAim();
 
 						ROBOT_RightGunCheckAim();
+					}
+					else
+					{
+						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
+																		[rightGunShootCommand.shootMethod]\
+																		[rightGunShootCommand.plantNum];
+						ROBOT_RightGunAim();
+
 					}
 					ROBOT_RightGunReload();				
 
@@ -819,7 +835,8 @@ void RightGunShootTask(void)
 						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 					else
-						ROBOT_RightGunCheckAim();
+						OSTimeDly(150);
+//						ROBOT_RightGunCheckAim();
 					
 //					ROBOT_RightGunCheckAim();
 
