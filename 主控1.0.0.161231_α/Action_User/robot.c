@@ -1053,37 +1053,37 @@ status_t ROBOT_LeftGunCheckAim(void)
 			USART_SendData(UART5, 0);
 			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
-				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
+			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.0f || \
+				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.0f)
 			{
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f || \
-				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
+			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.0f || \
+				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.0f)
 			{
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f || \
-				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5f)
+			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.0f || \
+				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 2.0f || \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 2.0f)
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 +0.0f|| \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 0.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 2.0f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 2.0f)
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 0.0f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 0.0f)
 			{
 				continue;
 			}	
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime += (20-timeout);	
+		checkTime += (50-timeout);	
 	}
 	gRobot.leftGun.checkTimeUsage = checkTime;
 	gRobot.leftGun.ready = GUN_AIM_DONE;
@@ -1117,38 +1117,38 @@ status_t ROBOT_RightGunCheckAim(void)
 			USART_SendData(UART5, 0);
 			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
-				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
+			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.0f || \
+				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.0f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f || \
-				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.0f || \
+				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.0f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f || \
-				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.5f)
+			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.0f || \
+				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.0f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 0.0f || \
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 0.0f)
 			{
 				continue;
 			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 0.0f || \
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 0.0f)
 			{
 				continue;
 			}	
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime+=(20-timeout);	
+		checkTime+=(50-timeout);	
 	}
 	gRobot.rightGun.checkTimeUsage = checkTime;
 	gRobot.rightGun.ready = GUN_AIM_DONE;
