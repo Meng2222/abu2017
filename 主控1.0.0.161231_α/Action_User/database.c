@@ -877,11 +877,11 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		//第三种参数类型对应打盘
 		{
 			{-5.4f, -3.3f, 0.0f, 131.0f, 0.0f},
-			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{-5.4f, -3.3f, 0.0f, 131.0f, 0.0f},
 			{0.4f, -2.8f, 0.0f, 131.0f, 0.0f},			
 			{-1.4f, -3.6f, 0.0f, 131.0f, 0.0f},
 			{4.6f, -3.6f, 0.0f, 131.0f, 0.0f},
-			{0.0f,0.0f,0.0f,0.0f,0.0f}
+			{4.6f, -3.6f, 0.0f, 131.0f, 0.0f}
 		}
 	}
 };
