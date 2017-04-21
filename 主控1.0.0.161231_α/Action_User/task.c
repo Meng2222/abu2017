@@ -16,7 +16,8 @@
 #include "database.h"
 #include "flash.h"
 #include "movebase2.h"
-
+//#define RED_FIELD
+#define BLUE_FIELD
 //#define NO_WALK_TASK
 /*
 ===============================================================
@@ -410,8 +411,8 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
+#ifdef RED_FIELD
 				MoveToCenter(-13043.14f, -3500.0f, 2000.0f);
-	/*		    MoveTo(-12776.96f, -3200.0f, 2000.0f);*/
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -427,7 +428,27 @@ void WalkTask(void)
 					moveTimFlag = 0;
 					status = load;
 					BEEP_OFF;
+				}			
+#endif
+#ifdef BLUE_FIELD
+				MoveToCenter(13043.14f, 1000.0f, 2000.0f);		
+				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
+				{
+					if (amendXFlag == 0)
+					{
+						amendX = 12776.96f - GetPosX();
+						amendXFlag = 1;
+					}
+					BEEP_ON;
 				}
+				if(GetPosX()>=13043.14f)
+				{
+					moveTimFlag = 0;
+					status = load;
+					BEEP_OFF;
+				}				
+#endif
+
 				break;
 			
 			//停车
@@ -517,6 +538,7 @@ void WalkTask(void)
 				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
+#ifdef RED_FIELD
                 MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
@@ -527,6 +549,19 @@ void WalkTask(void)
 					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 					status++;
 				}
+#endif
+#ifdef BLUE_FIELD
+                MoveToCenter(6459.14f, -1000.0f, 2000.0f);
+			    if (GetPosX() <= 6459.14f)
+				{
+					ClampReset();
+					LockWheel();
+					moveTimFlag = 0;
+					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					status++;
+				}
+#endif
 				break;
 			
 			//发射飞盘
