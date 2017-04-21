@@ -938,6 +938,8 @@ void UpperGunShootTask(void)
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
 		{
 			shoot_command_t shootCommand = ROBOT_UpperGunGetShootCommand();
+			gRobot.upperGun.targetPlant = shootCommand.plantNum;
+			gRobot.upperGun.shootParaMode = shootCommand.shootMethod;
 			if(gRobot.upperGun.commandState == GUN_HAVE_COMMAND)
 			{
 				uint8_t targetPlant = shootCommand.plantNum;
@@ -958,7 +960,15 @@ void UpperGunShootTask(void)
 				}
 				else
 				{
-						ROBOT_UpperGunShoot();
+					ROBOT_UpperGunShoot();
+					if(gRobot.upperGun.shootParaMode == SHOOT_METHOD2)
+					{
+						gRobot.plantState[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
+					}
+					else
+					{
+						gRobot.plantState[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;						
+					}
 				}
 				gRobot.upperGun.commandState = GUN_NO_COMMAND;
 			}

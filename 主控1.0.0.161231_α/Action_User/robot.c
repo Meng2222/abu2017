@@ -986,6 +986,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			shootCommand.shootMethod = SHOOT_METHOD1;
 			gRobot.plantState[UpperGunPriority[i]].ball -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
+			gRobot.plantState[UpperGunPriority[i]].ballState = COMMAND_IN_PROCESS;
 			break;
 		}
 		//没盘
@@ -995,6 +996,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			shootCommand.shootMethod = SHOOT_METHOD2;
 			gRobot.plantState[UpperGunPriority[i]].plate -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
+			gRobot.plantState[UpperGunPriority[i]].plateState = COMMAND_IN_PROCESS;
 			break;
 		
 		}
