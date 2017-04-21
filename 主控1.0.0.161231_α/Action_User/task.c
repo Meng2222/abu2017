@@ -782,10 +782,7 @@ void RightGunShootTask(void)
 //						OSTimeDly(150);					
 //						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
-					
 //					ROBOT_RightGunCheckAim();
-
-					
 //					OSTimeDly(250);					
 //					gRobot.rightGun.ready = GUN_AIM_DONE;
 //				OSTimeDly(75);
@@ -916,7 +913,7 @@ void UpperGunShootTask(void)
 				gRobot.upperGun.targetPose.yaw = pose.yaw;
 				gRobot.upperGun.targetPose.speed1 = pose.speed1;
 
-				//瞄准，此函数最好瞄准完成后再返回
+				//瞄准，此函数最好瞄准完成后再返回 
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)

@@ -963,14 +963,17 @@ void UART4_IRQHandler(void)
 						case 4:
 							//左枪自动模式
 							gRobot.leftGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 						break;
 						case 5:
 							//右枪自动模式
 							gRobot.rightGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 						break;
 						case 6:
 							//上枪自动模式
 							gRobot.upperGun.mode = GUN_ATTACK_MODE;
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 							break;
 						case 7:
 							//左枪手动模式
