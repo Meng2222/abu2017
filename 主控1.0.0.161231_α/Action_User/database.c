@@ -456,9 +456,9 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 	{
 		//第一类参数，对应打球参数
 		{//1#着陆台
-		 {-36.1f, 11.8f, 7.9f, 113.0f, 2.0f},
+		 {-39.1f, 8.8f, 15.4f, 116.0f, 0.0f},
 		 //2#着陆台
-		 {-23.3f, 14.6f, 6.0f, 119.0f, 0.0f},
+		 {-28.3f, 15.5f, 15.5f, 119.0f, 0.0f},
 		 //3#着陆台
 		 {-5.5f, 23.5f, 12.7f, 111.0f, 5.0f},
 		 //4#着陆台
@@ -474,9 +474,9 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		
 		//第二类参数，对应落盘参数
 		{//1#着陆台
-		 {-32.0f, 18.5f, 7.9f, 106.0f, 11.0f},
+		 {-38.5f, 18.5f, 15.5f, 103.0f, 11.0f},
 		 //2#着陆台
-		 {-22.0f, 22.4f, 14.6f, 95.0f, 18.0f},
+		 {-22.0f, 22.4f, 15.5f, 91.0f, 18.0f},
 		 //3#着陆台
 		 {2.8f, 24.4f, 6.1f, 92.0f, 22.0f},
 		 //4#着陆台
