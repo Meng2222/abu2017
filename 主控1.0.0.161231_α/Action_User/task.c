@@ -638,6 +638,14 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckShootPoint();
 #endif
 					ROBOT_LeftGunShoot();
+					if(gRobot.leftGun.shootParaMode == SHOOT_METHOD2)
+					{
+						gRobot.plantState[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
+					}
+					else
+					{
+						gRobot.plantState[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;						
+					}
 				}
 				else
 				{
@@ -801,6 +809,14 @@ void RightGunShootTask(void)
 					ROBOT_RightGunCheckShootPoint();
 #endif
 					ROBOT_RightGunShoot();
+					if(gRobot.rightGun.shootParaMode == SHOOT_METHOD2)
+					{
+						gRobot.plantState[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
+					}
+					else
+					{
+						gRobot.plantState[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;						
+					}
 				}
 				else
 				{

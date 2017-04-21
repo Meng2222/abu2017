@@ -130,6 +130,9 @@
 
 #define GUN_NO_COMMAND    0
 #define GUN_HAVE_COMMAND  1
+
+#define COMMAND_IN_PROCESS 0
+#define COMMAND_DONE 1
 //进入下一步
 #define GUN_NEXT_STEP  1
 //不进入下一步
@@ -305,10 +308,14 @@ typedef struct
 //着陆台状态
 typedef struct
 {
-	//是否有球
+	//是否有打球命令
 	unsigned char ball;
-	//是否已经落上盘
+	//是否有落盘命令
 	unsigned char plate;
+	//命令的执行状态
+	unsigned char ballState;
+	unsigned char plateState;
+
 }plant_t;
 //着陆台类型
 typedef struct

@@ -997,11 +997,17 @@ void UART4_IRQHandler(void)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
 						case 1:
-							gRobot.plantState[id - 10].ball = 1;
+							if(gRobot.plantState[id - 10].ballState == COMMAND_DONE)
+							{
+								gRobot.plantState[id - 10].ball = 1;
+							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
-							gRobot.plantState[id - 20].plate = 1;							
+							if(gRobot.plantState[id - 20].plateState == COMMAND_DONE)
+							{
+								gRobot.plantState[id - 20].plate = 1;
+							}								
 							break;
 					}
 				}

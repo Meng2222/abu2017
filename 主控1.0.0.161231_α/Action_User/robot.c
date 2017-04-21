@@ -818,6 +818,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					shootCommand.shootMethod = SHOOT_METHOD1;
 				gRobot.plantState[LeftGunPriority[i]].ball -= 1;
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+				gRobot.plantState[LeftGunPriority[i]].ballState = COMMAND_IN_PROCESS;
 				break;
 			}
 			//没盘
@@ -827,7 +828,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				shootCommand.shootMethod = SHOOT_METHOD2;
 				gRobot.plantState[LeftGunPriority[i]].plate -= 1;
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-
+				gRobot.plantState[LeftGunPriority[i]].plateState = COMMAND_IN_PROCESS;
 				break;		
 			}
 			if(i == (searchRange-1))
@@ -909,6 +910,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					shootCommand.shootMethod = SHOOT_METHOD1;
 				gRobot.plantState[RightGunPriority[i]].ball -= 1;
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+				gRobot.plantState[RightGunPriority[i]].ballState = COMMAND_IN_PROCESS;
 				break;
 			}
 			//没盘
@@ -918,6 +920,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				shootCommand.shootMethod = SHOOT_METHOD2;
 				gRobot.plantState[RightGunPriority[i]].plate -= 1;
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+				gRobot.plantState[RightGunPriority[i]].plateState = COMMAND_IN_PROCESS;
 				break;
 			
 			}
@@ -1228,8 +1231,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			UpperGunSendDebugInfo();
 			
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.5f || \
-				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 1.5f)
+			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.0f || \
+				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 1.0f)
 			{
 				continue;
 			}
