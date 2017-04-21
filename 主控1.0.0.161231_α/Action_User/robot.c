@@ -794,7 +794,9 @@ status_t ROBOT_RightGunCheckReload(void)
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
 	#define LEFT_AUTO_NUMBER 4u
-	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
+	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
+	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
 //	gRobot.plantState[PLANT6].plate = 1;
 	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)searchRange = 7;
@@ -835,6 +837,23 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 			{
 				gRobot.leftGun.commandState = GUN_NO_COMMAND;
 			}
+		}
+		if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+		{
+			if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+			{
+				gRobot.plantState[shootCommand.plantNum].ball = 1;
+			}
+			if(shootCommand.shootMethod == SHOOT_METHOD2)
+			{
+				gRobot.plantState[shootCommand.plantNum].plate = 1;
+			}
+			gRobot.leftGun.commandState = GUN_NO_COMMAND;		
+		}
+		else
+		{
+			lastPlant = shootCommand.plantNum;
+			lastParaMode = shootCommand.shootMethod;
 		}
 //	}
 	return shootCommand;
@@ -885,7 +904,9 @@ status_t ROBOT_LeftGunAim(void)
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
 	#define RIGHT_AUTO_NUMBER 4u
-	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
+	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
+	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
 //	gRobot.plantState[PLANT4].ball = 1;
 	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)searchRange = 7;
@@ -929,6 +950,23 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 				gRobot.rightGun.commandState = GUN_NO_COMMAND;
 			}
+		}
+		if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+		{
+			if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+			{
+				gRobot.plantState[shootCommand.plantNum].ball = 1;
+			}
+			if(shootCommand.shootMethod == SHOOT_METHOD2)
+			{
+				gRobot.plantState[shootCommand.plantNum].plate = 1;
+			}
+			gRobot.rightGun.commandState = GUN_NO_COMMAND;		
+		}
+		else
+		{
+			lastPlant = shootCommand.plantNum;
+			lastParaMode = shootCommand.shootMethod;
 		}
 //	}
 	return shootCommand;
@@ -974,7 +1012,9 @@ status_t ROBOT_RightGunAim(void)
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
 	uint8_t i = 0u;
-	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
+	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
+	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	//为使上枪接收命令更难
 	OSTimeDly(5);
 	for( i = 0;i < 2;i++)
@@ -1005,6 +1045,23 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
 			gRobot.upperGun.commandState = GUN_NO_COMMAND;
 		}
+	}
+	if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+	{
+		if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+		{
+			gRobot.plantState[shootCommand.plantNum].ball = 1;
+		}
+		if(shootCommand.shootMethod == SHOOT_METHOD2)
+		{
+			gRobot.plantState[shootCommand.plantNum].plate = 1;
+		}
+		gRobot.upperGun.commandState = GUN_NO_COMMAND;		
+	}
+	else
+	{
+		lastPlant = shootCommand.plantNum;
+		lastParaMode = shootCommand.shootMethod;
 	}
 	
 	return shootCommand;

@@ -181,6 +181,7 @@
 #define PLANT7 6
 
 //发射参数模式，对应打球和落盘
+#define INVALID_SHOOT_METHOD 8
 //打球模式
 #define SHOOT_METHOD1  0
 //落盘模式
