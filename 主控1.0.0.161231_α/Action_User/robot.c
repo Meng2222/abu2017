@@ -229,8 +229,16 @@ static void UpperGunInit(void)
 */
 int32_t LeftGunYawTransform(float yaw)
 {
-	if(yaw > gRobot.leftGun.maxPoseLimit.yaw) yaw = gRobot.leftGun.maxPoseLimit.yaw;	
-	if(yaw < gRobot.leftGun.minPoseLimit.yaw) yaw = gRobot.leftGun.minPoseLimit.yaw;
+	if(yaw > gRobot.leftGun.maxPoseLimit.yaw)
+	{	
+		gRobot.leftGun.targetPose.yaw = gRobot.leftGun.maxPoseLimit.yaw;
+		yaw = gRobot.leftGun.maxPoseLimit.yaw;	
+	}
+	if(yaw < gRobot.leftGun.minPoseLimit.yaw)
+	{		
+		gRobot.leftGun.targetPose.yaw = gRobot.leftGun.minPoseLimit.yaw;
+		yaw = gRobot.leftGun.minPoseLimit.yaw;
+	}
 	return (int32_t)((50.0f + yaw) * 102.4f);
 }
 
@@ -255,8 +263,16 @@ float LeftGunYawInverseTransform(int32_t position)
 */
 int32_t RightGunPitchTransform(float pitch)
 {
-	if(pitch > gRobot.leftGun.maxPoseLimit.pitch) pitch = gRobot.leftGun.maxPoseLimit.pitch;	
-	if(pitch < gRobot.leftGun.minPoseLimit.pitch) pitch = gRobot.leftGun.minPoseLimit.pitch;
+	if(pitch > gRobot.rightGun.maxPoseLimit.pitch)
+	{	
+		gRobot.rightGun.targetPose.pitch = gRobot.rightGun.maxPoseLimit.pitch;
+		pitch = gRobot.rightGun.maxPoseLimit.pitch;	
+	}
+	if(pitch < gRobot.rightGun.minPoseLimit.pitch)
+	{		
+		gRobot.rightGun.targetPose.pitch = gRobot.rightGun.minPoseLimit.pitch;
+		pitch = gRobot.rightGun.minPoseLimit.pitch;
+	}	
 	return (int32_t)((pitch - 7.0f) * 141.0844f);
 }
 
@@ -281,8 +297,16 @@ float RightGunPitchInverseTransform(int32_t position)
 */
 int32_t RightGunRollTransform(float roll)
 {
-	if(roll > gRobot.leftGun.maxPoseLimit.roll) roll = gRobot.leftGun.maxPoseLimit.roll;	
-	if(roll < gRobot.leftGun.minPoseLimit.roll) roll = gRobot.leftGun.minPoseLimit.roll;
+	if(roll > gRobot.rightGun.maxPoseLimit.roll) 
+	{
+		gRobot.rightGun.targetPose.roll = gRobot.rightGun.maxPoseLimit.roll;
+		roll = gRobot.rightGun.maxPoseLimit.roll;	
+	}
+	if(roll < gRobot.rightGun.minPoseLimit.roll)
+	{
+		gRobot.rightGun.targetPose.roll = gRobot.rightGun.minPoseLimit.roll;
+		roll = gRobot.rightGun.minPoseLimit.roll;
+	}
 	return (int32_t)((roll - 46.54f) * 141.0844f);
 }
 
@@ -308,8 +332,16 @@ float RightGunRollInverseTransform(int32_t position)
 int32_t RightGunLeftSpeedTransform(float speed)
 {
 	
-	if(speed > gRobot.leftGun.maxPoseLimit.speed1) speed = gRobot.leftGun.maxPoseLimit.speed1;	
-	if(speed < gRobot.leftGun.minPoseLimit.speed1) speed = gRobot.leftGun.minPoseLimit.speed1;
+	if(speed > gRobot.rightGun.maxPoseLimit.speed1)
+	{		
+		gRobot.rightGun.targetPose.speed1 = gRobot.rightGun.maxPoseLimit.speed1; 
+		speed = gRobot.rightGun.maxPoseLimit.speed1;
+	}		
+	if(speed < gRobot.rightGun.minPoseLimit.speed1) 
+	{
+		gRobot.rightGun.targetPose.speed1 = gRobot.rightGun.minPoseLimit.speed1; 		
+		speed = gRobot.rightGun.minPoseLimit.speed1;
+	}
 	return -4096*(int32_t)speed;
 }
 
@@ -335,8 +367,16 @@ float RightGunLeftSpeedInverseTransform(int32_t speed)
 */
 int32_t RightGunRightSpeedTransform(float speed)
 {
-	if(speed > gRobot.leftGun.maxPoseLimit.speed2) speed = gRobot.leftGun.maxPoseLimit.speed2;	
-	if(speed < gRobot.leftGun.minPoseLimit.speed2) speed = gRobot.leftGun.minPoseLimit.speed2;
+	if(speed > gRobot.rightGun.maxPoseLimit.speed2)
+	{
+		gRobot.rightGun.targetPose.speed2 = gRobot.rightGun.maxPoseLimit.speed2;	 
+		speed = gRobot.rightGun.maxPoseLimit.speed2;	
+	}
+	if(speed < gRobot.rightGun.minPoseLimit.speed2)
+	{
+		gRobot.rightGun.targetPose.speed2 = gRobot.rightGun.minPoseLimit.speed2;	 		
+		speed = gRobot.rightGun.minPoseLimit.speed2;
+	}
 	return 4096*(int32_t)speed;
 }
 
@@ -362,8 +402,16 @@ float RightGunRightSpeedInverseTransform(int32_t speed)
 */
 int32_t RightGunYawTransform(float yaw)
 {
-	if(yaw > gRobot.rightGun.maxPoseLimit.yaw) yaw = gRobot.rightGun.maxPoseLimit.yaw;	
-	if(yaw < gRobot.rightGun.minPoseLimit.yaw) yaw = gRobot.rightGun.minPoseLimit.yaw;
+	if(yaw > gRobot.rightGun.maxPoseLimit.yaw)
+	{		
+		gRobot.rightGun.targetPose.yaw = gRobot.rightGun.maxPoseLimit.yaw;
+		yaw = gRobot.rightGun.maxPoseLimit.yaw;
+	}		
+	if(yaw < gRobot.rightGun.minPoseLimit.yaw) 
+	{
+		gRobot.rightGun.targetPose.yaw = gRobot.rightGun.minPoseLimit.yaw;
+		yaw = gRobot.rightGun.minPoseLimit.yaw;
+	}
 	return (int32_t)((yaw - 50.0f) * 102.4f);
 }
 
@@ -388,8 +436,16 @@ float RightGunYawInverseTransform(int32_t position)
 */
 int32_t LeftGunPitchTransform(float pitch)
 {
-	if(pitch > gRobot.rightGun.maxPoseLimit.pitch) pitch = gRobot.rightGun.maxPoseLimit.pitch;	
-	if(pitch < gRobot.rightGun.minPoseLimit.pitch) pitch = gRobot.rightGun.minPoseLimit.pitch;
+	if(pitch > gRobot.leftGun.maxPoseLimit.pitch)
+	{
+		gRobot.leftGun.targetPose.pitch = gRobot.leftGun.maxPoseLimit.pitch;	
+		pitch = gRobot.leftGun.maxPoseLimit.pitch;	
+	}
+	if(pitch < gRobot.leftGun.minPoseLimit.pitch)
+	{
+		gRobot.leftGun.targetPose.pitch = gRobot.leftGun.minPoseLimit.pitch;	
+		pitch = gRobot.leftGun.minPoseLimit.pitch;
+	}
 	return -(int32_t)((pitch - 7.0f) * 141.0844f);	
 }
 
@@ -414,8 +470,16 @@ float LeftGunPitchInverseTransform(int32_t position)
 */
 int32_t LeftGunRollTransform(float roll)
 {
-	if(roll > gRobot.rightGun.maxPoseLimit.roll) roll = gRobot.rightGun.maxPoseLimit.roll;	
-	if(roll < gRobot.rightGun.minPoseLimit.roll) roll = gRobot.rightGun.minPoseLimit.roll;
+	if(roll > gRobot.leftGun.maxPoseLimit.roll)
+	{
+		gRobot.leftGun.targetPose.roll = gRobot.leftGun.maxPoseLimit.roll;
+		roll = gRobot.leftGun.maxPoseLimit.roll;	
+	}
+	if(roll < gRobot.leftGun.minPoseLimit.roll)
+	{
+		gRobot.leftGun.targetPose.roll = gRobot.leftGun.minPoseLimit.roll;		
+		roll = gRobot.leftGun.minPoseLimit.roll;
+	}
 	return -(int32_t)((roll - 46.54f) * 141.0844f);
 }
 
@@ -440,8 +504,16 @@ float LeftGunRollInverseTransform(int32_t position)
 */
 int32_t LeftGunLeftSpeedTransform(float speed)
 {
-	if(speed > gRobot.rightGun.maxPoseLimit.speed1) speed = gRobot.rightGun.maxPoseLimit.speed1;	
-	if(speed < gRobot.rightGun.minPoseLimit.speed1) speed = gRobot.rightGun.minPoseLimit.speed1;
+	if(speed > gRobot.leftGun.maxPoseLimit.speed1)
+	{
+		gRobot.leftGun.targetPose.speed1 = gRobot.leftGun.maxPoseLimit.speed1;
+		speed = gRobot.leftGun.maxPoseLimit.speed1;
+	}		
+	if(speed < gRobot.leftGun.minPoseLimit.speed1)
+	{
+		gRobot.leftGun.targetPose.speed1 = gRobot.leftGun.minPoseLimit.speed1;
+		speed = gRobot.leftGun.minPoseLimit.speed1;
+	}
 	return -4096*(int32_t)speed;
 }
 
@@ -465,8 +537,16 @@ float LeftGunLeftSpeedInverseTransform(int32_t speed)
 */
 int32_t LeftGunRightSpeedTransform(float speed)
 {
-	if(speed > gRobot.rightGun.maxPoseLimit.speed2) speed = gRobot.rightGun.maxPoseLimit.speed2;	
-	if(speed < gRobot.rightGun.minPoseLimit.speed2) speed = gRobot.rightGun.minPoseLimit.speed2;
+	if(speed > gRobot.leftGun.maxPoseLimit.speed2)
+	{
+		gRobot.leftGun.targetPose.speed2 = gRobot.leftGun.maxPoseLimit.speed2;
+		speed = gRobot.leftGun.maxPoseLimit.speed2;
+	}		
+	if(speed < gRobot.leftGun.minPoseLimit.speed2)
+	{
+		gRobot.leftGun.targetPose.speed2 = gRobot.leftGun.minPoseLimit.speed2;
+		speed = gRobot.leftGun.minPoseLimit.speed2;
+	}
 	return 4096 * (int32_t)speed;
 }
 
@@ -490,8 +570,16 @@ float LeftGunRightSpeedInverseTransform(int32_t speed)
 */
 int32_t UpperGunYawTransform(float yaw)
 { 
-	if(yaw > gRobot.upperGun.maxPoseLimit.yaw) yaw = gRobot.upperGun.maxPoseLimit.yaw;	
-	if(yaw < gRobot.upperGun.minPoseLimit.yaw) yaw = gRobot.upperGun.minPoseLimit.yaw;
+	if(yaw > gRobot.upperGun.maxPoseLimit.yaw)
+	{
+		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.maxPoseLimit.yaw;	
+		yaw = gRobot.upperGun.maxPoseLimit.yaw;	
+	}
+	if(yaw < gRobot.upperGun.minPoseLimit.yaw)
+	{
+		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.minPoseLimit.yaw;	
+		yaw = gRobot.upperGun.minPoseLimit.yaw;
+	}
 	return (int32_t)((20.0f + yaw) * 102.4f);
 }
 
@@ -516,8 +604,16 @@ float UpperGunYawInverseTransform(int32_t position)
 */
 int32_t UpperGunPitchTransform(float pitch)
 {
-	if(pitch > gRobot.upperGun.maxPoseLimit.pitch) pitch = gRobot.upperGun.maxPoseLimit.pitch;	
-	if(pitch < gRobot.upperGun.minPoseLimit.pitch) pitch = gRobot.upperGun.minPoseLimit.pitch;
+	if(pitch > gRobot.upperGun.maxPoseLimit.pitch)
+	{
+		gRobot.upperGun.targetPose.pitch = gRobot.upperGun.maxPoseLimit.pitch;
+		pitch = gRobot.upperGun.maxPoseLimit.pitch;	
+	}
+	if(pitch < gRobot.upperGun.minPoseLimit.pitch)
+	{
+		gRobot.upperGun.targetPose.pitch = gRobot.upperGun.minPoseLimit.pitch;		
+		pitch = gRobot.upperGun.minPoseLimit.pitch;
+	}
 	return (int32_t)((10.0f + pitch) * 141.0844f);	
 }
 
@@ -542,8 +638,16 @@ float UpperGunPitchInverseTransform(int32_t position)
 */
 int32_t UpperGunLeftSpeedTransform(float speed)
 {
-	if(speed > gRobot.upperGun.maxPoseLimit.speed1) speed = gRobot.upperGun.maxPoseLimit.speed1;	
-	if(speed < gRobot.upperGun.minPoseLimit.speed1) speed = gRobot.upperGun.minPoseLimit.speed1;
+	if(speed > gRobot.upperGun.maxPoseLimit.speed1)
+	{
+		gRobot.upperGun.targetPose.speed1 = gRobot.upperGun.maxPoseLimit.speed1;
+		speed = gRobot.upperGun.maxPoseLimit.speed1;
+	}		
+	if(speed < gRobot.upperGun.minPoseLimit.speed1)
+	{
+		gRobot.upperGun.targetPose.speed1 = gRobot.upperGun.minPoseLimit.speed1;
+		speed = gRobot.upperGun.minPoseLimit.speed1;
+	}
 	return -4096*(int32_t)speed;
 }
 
