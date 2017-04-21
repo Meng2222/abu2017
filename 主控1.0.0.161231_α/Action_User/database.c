@@ -681,6 +681,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
@@ -688,10 +690,14 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第三种参数类型对应打盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -705,6 +711,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
@@ -712,10 +720,14 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第三种参数类型对应打盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -729,6 +741,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{2.6f,9.7f,0.0f,118.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
@@ -736,10 +750,14 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{11.4f,22.4f,0.0f,97.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第三种参数类型对应打盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -754,9 +772,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 		},
 		//第二种参数类型对应落盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -764,6 +786,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第三种参数类型对应打盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -777,6 +801,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
@@ -784,10 +810,14 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第三种参数类型对应打盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -801,6 +831,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{11.2f,16.0f,0.0f,125.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
@@ -808,10 +840,14 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{11.2f,16.0f,0.0f,125.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第三种参数类型对应打盘
 		{
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -823,6 +859,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		//第一种参数类型对应打球
 		{
 			{0.8f, 1.3f, 0.0f, 114.0f, 0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
 			{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
 			{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
@@ -832,14 +870,18 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{8.7f,23.3f,0.0f,46.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第三种参数类型对应打盘
 		{
 			{-5.4f, -3.3f, 0.0f, 131.0f, 0.0f},
-			{0.4f, -2.8f, 0.0f, 131.0f, 0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.4f, -2.8f, 0.0f, 131.0f, 0.0f},			
 			{-1.4f, -3.6f, 0.0f, 131.0f, 0.0f},
-			{4.6f, -3.6f, 0.0f, 131.0f, 0.0f}
+			{4.6f, -3.6f, 0.0f, 131.0f, 0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		}
 	}
 };

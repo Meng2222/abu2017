@@ -18,8 +18,7 @@
 #define UPPER_SHOOT_METHOD_NUMBER  3
 //发射位置个数
 #define SHOOT_POINT_NUMBER 3
-//防守台分区数
-#define ZONE_NUMBER 4
+
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
@@ -197,15 +196,21 @@
 //场地中央发射点
 #define SHOOT_POINT3 2
 
+//防守台分区数
+#define ZONE_NUMBER 6
 #define INVALID_ZONE_NUMBER 0u
-//7#着陆台左侧区域
+//7#着陆台左后侧区域
 #define ZONE1 0u
-//7#着陆台中后区域
+//7#着陆台左前区域
 #define ZONE2 1u
-//7#着陆台中前区域
+//7#着陆台中后区域
 #define ZONE3 2u
-//7#着陆台右侧区域
+//7#着陆台中前区域
 #define ZONE4 3u
+//7#着陆台右后区域
+#define ZONE5 4u
+//7#着陆台右前区域
+#define ZONE6 5u
 
 //枪自动射击时命令结构体
 typedef struct

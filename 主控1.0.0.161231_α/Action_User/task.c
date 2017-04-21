@@ -889,7 +889,7 @@ void UpperGunShootTask(void)
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
-			if(gRobot.upperGun.targetZone & 0x0f) upperGunShootFlag = 1;
+			if(gRobot.upperGun.targetZone & 0xff) upperGunShootFlag = 1;
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;
@@ -900,6 +900,8 @@ void UpperGunShootTask(void)
 				else if(gRobot.upperGun.targetZone & 0x02) zoneId = ZONE2;
 				else if(gRobot.upperGun.targetZone & 0x04) zoneId = ZONE3;
 				else if(gRobot.upperGun.targetZone & 0x08) zoneId = ZONE4;
+				else if(gRobot.upperGun.targetZone & 0x10) zoneId = ZONE5;
+				else if(gRobot.upperGun.targetZone & 0x20) zoneId = ZONE6;
 				//fix me,there may be something wrong
 				else                                       continue;
 
@@ -954,7 +956,7 @@ void UpperGunShootTask(void)
 				
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
-				if(gRobot.upperGun.targetZone & 0x0f)
+				if(gRobot.upperGun.targetZone & 0xff)
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
 				}
