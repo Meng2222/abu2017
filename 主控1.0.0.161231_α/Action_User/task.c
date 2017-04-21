@@ -883,7 +883,9 @@ void UpperGunShootTask(void)
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
-		if(gRobot.upperGun.targetZone & 0x0f)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+#ifndef NO_WALK_TASK
+		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+#endif
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
@@ -987,11 +989,11 @@ void UpperGunShootTask(void)
 			{
 				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
 				ROBOT_UpperGunAim();
-				ROBOT_UpperGunCheckAim();
 				gRobot.upperGun.aim = GUN_STOP_AIM;
 			}
 			else if(gRobot.upperGun.shoot==GUN_START_SHOOT)
 			{
+				ROBOT_UpperGunCheckAim();				
 				ROBOT_UpperGunShoot();
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.upperGun.shoot = GUN_STOP_SHOOT;

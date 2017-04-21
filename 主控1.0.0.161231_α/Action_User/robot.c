@@ -1334,9 +1334,7 @@ status_t ROBOT_LeftGunShoot(void)
 				LeftShootReset();
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
-				gRobot.leftGun.shootTimes++;
-				gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].plantNum]\
-												[gRobot.leftGun.shootCommand[gRobot.leftGun.shootStep].shootMethod]++;			
+				gRobot.leftGun.shootTimes++;		
 				gRobot.leftGun.bulletNumber--;
 		}
 	}
@@ -1378,9 +1376,6 @@ status_t ROBOT_RightGunShoot(void)
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 				gRobot.rightGun.shootTimes++;
-				gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].plantNum]\
-												[gRobot.rightGun.shootCommand[gRobot.rightGun.shootStep].shootMethod]++;			
-				//fix me, 应该检查子弹是否用完
 				gRobot.rightGun.bulletNumber--;
 		}
 	}
