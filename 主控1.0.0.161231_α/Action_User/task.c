@@ -431,7 +431,7 @@ void WalkTask(void)
 				}			
 #endif
 #ifdef BLUE_FIELD
-				MoveToCenter(13043.14f, 1000.0f, 2000.0f);		
+				MoveToCenter(13043.14f, 3000.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -551,7 +551,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, -1000.0f, 2000.0f);
+                MoveToCenter(6459.14f, -3000.0f, 2000.0f);
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();
