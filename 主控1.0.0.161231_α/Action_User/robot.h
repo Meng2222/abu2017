@@ -422,17 +422,6 @@ status_t ROBOT_LeftGunCheckReload(void);
 *注意：上面的枪不需要上子弹
 */
 status_t ROBOT_RightGunCheckReload(void);
-/*
-*名称：ROBOT_GunReload
-*功能：根据枪膛传感器，检测子弹状态，决定后面开枪的具体参数
-*参数：
-*gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR，GUN_RELOAD_ERROR
-*注意：上面的枪不需要上子弹，因为是手动上弹
-*/
-status_t ROBOT_GunCheckBulletState(unsigned char gun);
-
-
 /** @defgroup Shoot Tragedy
   * @brief 
   * @{
@@ -585,72 +574,22 @@ status_t ROBOT_RightGunHome(void);
 *status:
 */
 status_t ROBOT_GunCheckMode(unsigned char gun);
+/*
+*名称：ROBOT_LeftGunCheckConflict
+*功能：左枪检测两个枪是否冲突
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunCheckConflict(void);
+/*
+*名称：ROBOT_RightGunCheckConflict
+*功能：右枪检测两个枪是否冲突
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunCheckConflict(void);
 
-/*
-*名称：ROBOT_LeftGunCheckPlantState
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunCheckPlantState(void);
 
-/*
-*名称：ROBOT_RightGunCheckPlantState
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunCheckPlantState(void);
-/*
-*名称：ROBOT_UpperGunCheckPlantState
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_UpperGunCheckPlantState(void);
-
-/*
-*名称：ROBOT_LeftGunReloadAim
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_LeftGunReloadAim(void);
-/*
-*名称：ROBOT_RightGunReloadAim
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_RightGunReloadAim(void);
-/*
-*名称：ROBOT_LeftGunPoint1ShootTimes
-*功能：计算左枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_LeftGunPoint1ShootTimes(void);
-/*
-*名称：ROBOT_RightGunPoint1ShootTimes
-*功能：计算右枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_RightGunPoint1ShootTimes(void);
-/*
-*名称：ROBOT_LeftGunPoint3ShootTimes
-*功能：计算左枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_LeftGunPoint3ShootTimes(void);
-/*
-*名称：ROBOT_RightGunPoint3ShootTimes
-*功能：计算右枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_RightGunPoint3ShootTimes(void);
 
 /*
 ============================================================
@@ -691,18 +630,7 @@ float UpperGunYawInverseTransform(int32_t position);
 float UpperGunPitchInverseTransform(int32_t position);
 float UpperGunLeftSpeedInverseTransform(int32_t speed);
 
-//temrary
-typedef struct
-{
-	float yawAng;
-	float pitchAng;
-	float rollAng;
-	float vel1;
-	float vel2;
-	int gunNum;
-}shootCtr_t;
 
-void ShootCtr(shootCtr_t *shootPara);
 
 void LeftGunSendDebugInfo(void);
 void RightGunSendDebugInfo(void);

@@ -778,33 +778,6 @@ status_t ROBOT_RightGunCheckReload(void)
 	return GUN_RELOAD_ERROR;
 }
 
-/*
-*名称：ROBOT_GunCheckBulletState
-*功能：根据枪膛传感器，检测子弹状态，决定后面开枪的具体参数
-*参数：
-*gun :LEFT_GUN, RIGHT_GUN
-*status:GUN_NO_ERROR，GUN_RELOAD_ERROR
-*注意：上面的枪不需要上子弹，因为是手动上弹
-*/
-status_t ROBOT_GunCheckBulletState(unsigned char gun)
-{
-//	switch(gun)
-//	{
-//		case LEFT_GUN:
-//			//fix me, should be replaced by senser results
-//			gRobot.leftGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
-//			break;
-//		case RIGHT_GUN:
-//			gRobot.rightGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
-//			break;
-//		case UPPER_GUN:
-//			gRobot.upperGun.champerBulletState = CHAMPER_BULLET_FEATURE0_STATE;
-//			break;
-//		default:
-//			break;
-//	}
-	return GUN_NO_ERROR;
-}
 /** @defgroup Left_Gun_Shoot_Tragedy
   * @brief 
   * @{
@@ -820,11 +793,11 @@ status_t ROBOT_GunCheckBulletState(unsigned char gun)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-	#define LEFT_AUTO_NUMBER 2u
+	#define LEFT_AUTO_NUMBER 4u
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
 	uint8_t searchRange = 3;
 //	gRobot.plantState[PLANT6].plate = 1;
-//	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)searchRange = 7;
+	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)searchRange = 7;
 //	if(gRobot.rightGun.shootTimes >= 18u)
 //		searchRange = 7;
 //	if(gRobot.leftGun.shootTimes >= 18u)
@@ -910,11 +883,11 @@ status_t ROBOT_LeftGunAim(void)
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
-	#define RIGHT_AUTO_NUMBER 2u
+	#define RIGHT_AUTO_NUMBER 4u
 	shoot_command_t shootCommand = {SHOOT_POINT3, PLANT6, SHOOT_METHOD2};
 	uint8_t searchRange = 3;
 //	gRobot.plantState[PLANT4].ball = 1;
-//	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)searchRange = 7;
+	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)searchRange = 7;
 //	if(gRobot.leftGun.shootTimes >= 18u)
 //		searchRange = 7;
 //	
@@ -1219,7 +1192,7 @@ status_t ROBOT_RightGunCheckAim(void)
 *status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
 *注意：
 */
- status_t ROBOT_UpperGunCheckAim(void)
+status_t ROBOT_UpperGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，5秒
 	uint8_t checkTimes = 5;
@@ -1304,8 +1277,7 @@ status_t ROBOT_RightGunCheckAim(void)
  status_t ROBOT_LeftGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if(gRobot.leftGun.shootTimes == 0||gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() ||\
-		gRobot.leftGun.shootTimes ==  ROBOT_LeftGunPoint1ShootTimes() + LEFT_GUN_POINT2_AUTO_BULLET_NUMBER)
+	if(gRobot.leftGun.shootTimes == 0)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 		OSTimeDly(50);
@@ -1327,8 +1299,7 @@ status_t ROBOT_RightGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 
-	if(gRobot.rightGun.shootTimes == 0||gRobot.rightGun.shootTimes ==  ROBOT_RightGunPoint1ShootTimes() ||\
-		gRobot.rightGun.shootTimes == ROBOT_RightGunPoint1ShootTimes() + RIGHT_GUN_POINT2_AUTO_BULLET_NUMBER)
+	if(gRobot.rightGun.shootTimes == 0)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
 		OSTimeDly(50);
@@ -1349,13 +1320,7 @@ status_t ROBOT_LeftGunShoot(void)
 	{
 		if(gRobot.leftGun.ready == GUN_AIM_DONE)
 		{
-
-				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant && \
-					gRobot.rightGun.shoot == GUN_START_SHOOT)
-				{
-					OSTimeDly(100);
-
-				}
+				ROBOT_LeftGunCheckConflict();
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
 				OSTimeDly(20);
@@ -1398,12 +1363,7 @@ status_t ROBOT_RightGunShoot(void)
 	{
 		if(gRobot.rightGun.ready == GUN_AIM_DONE)
 		{
-
-				if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant
-					&& 	gRobot.leftGun.shoot == GUN_START_SHOOT)
-				{
-					OSTimeDly(100);
-				}
+				ROBOT_RightGunCheckConflict();
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();	
 				OSTimeDly(20);
@@ -1513,286 +1473,82 @@ status_t ROBOT_GunCheckMode(unsigned char gun)
 	return -1;
 }
 
+
 /*
-*名称：ROBOT_LeftGunCheckPlantState
-*功能：左枪检查各个柱子状态并更新指令
+*名称：ROBOT_LeftGunCheckConflict
+*功能：左枪检测两个枪是否冲突
 *参数：
 *status:
 */
-status_t ROBOT_LeftGunCheckPlantState(void)
+status_t ROBOT_LeftGunCheckConflict(void)
 {
-	uint8_t i = 0;
-	for(i = 0;i < LEFT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
+	if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant)
 	{
-		//着陆台上有球有盘
-		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 1)
+		if(gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
-			}
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
-			}				
+			OSTimeDly(80);
 		}
-		//着陆台上有球没盘
-		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 0)
+	}
+	else if(gRobot.leftGun.targetPlant <= PLANT3)
+	{
+		if(gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant && gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 1;
-			}
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
-			}				
+			OSTimeDly(80);
 		}
-		//着陆台上没球有盘
-		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 1)
+	}
+	else if(gRobot.leftGun.targetPlant >= PLANT6)
+	{
+		if(gRobot.rightGun.targetPlant <= PLANT2 && gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
-			}
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
-			}				
+			OSTimeDly(80);
 		}
-		//着陆台上没球没盘
-		if(gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.leftGun.shootCommand[i].plantNum].plate == 0)
+	}
+	else
+	{
+		if((gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant || gRobot.leftGun.targetPlant > PLANT5)\
+			&&gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = gRobot.leftGun.actualStepShootTimes[gRobot.leftGun.shootCommand[i].plantNum][gRobot.leftGun.shootCommand[i].shootMethod];
-			}
-			if(gRobot.leftGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.leftGun.shootCommand[i].stepTargetShootTime = 2;
-			}				
-		}		
+			OSTimeDly(80);
+		}
 	}
 	return GUN_NO_ERROR;
 }
-
 /*
-*名称：ROBOT_RightGunCheckPlantState
-*功能：左枪检查各个柱子状态并更新指令
+*名称：ROBOT_RightGunCheckConflict
+*功能：右枪检测两个枪是否冲突
 *参数：
 *status:
 */
-status_t ROBOT_RightGunCheckPlantState(void)
+status_t ROBOT_RightGunCheckConflict(void)
 {
-	uint8_t i = 0;
-	for(i = 0;i < RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
+	if(gRobot.leftGun.targetPlant == gRobot.rightGun.targetPlant)
 	{
-		//着陆台上有球有盘
-		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 1)
+		if(gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
-			}
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
-			}				
+			OSTimeDly(80);
 		}
-		//着陆台上有球没盘
-		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 0)
+	}
+	else if(gRobot.leftGun.targetPlant <= PLANT3)
+	{
+		if(gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant && gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 1;
-			}
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
-			}				
+			OSTimeDly(80);
 		}
-		//着陆台上没球有盘
-		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 1)
+	}
+	else if(gRobot.leftGun.targetPlant >= PLANT6)
+	{
+		if(gRobot.rightGun.targetPlant <= PLANT2 && gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
-			}
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
-			}				
+			OSTimeDly(80);
 		}
-		//着陆台上没球没盘
-		if(gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.rightGun.shootCommand[i].plantNum].plate == 0)
+	}
+	else
+	{
+		if((gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant || gRobot.leftGun.targetPlant > PLANT5)\
+			&&gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = gRobot.rightGun.actualStepShootTimes[gRobot.rightGun.shootCommand[i].plantNum][gRobot.rightGun.shootCommand[i].shootMethod];
-			}
-			if(gRobot.rightGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.rightGun.shootCommand[i].stepTargetShootTime = 2;
-			}				
-		}		
+			OSTimeDly(80);
+		}
 	}
 	return GUN_NO_ERROR;
 }
-
-/*
-*名称：ROBOT_UpperGunCheckPlantState
-*功能：左枪检查各个柱子状态并更新指令
-*参数：
-*status:
-*/
-status_t ROBOT_UpperGunCheckPlantState(void)
-{
-	uint8_t i = 0;
-	for(i = 0;i < 3;i++)
-	{
-		//着陆台上有球有盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 1)
-		{
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
-			}
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
-			}				
-		}
-		//着陆台上有球没盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 0&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 0)
-		{
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
-			}
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
-			}				
-		}
-		//着陆台上没球有盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 1)
-		{
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
-			}
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
-			}				
-		}
-		//着陆台上没球没盘
-		if(gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].ball == 1&& \
-			gRobot.plantState[gRobot.upperGun.shootCommand[i].plantNum].plate == 0)
-		{
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD1)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = \
-				gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[i].plantNum][gRobot.upperGun.shootCommand[i].shootMethod];
-			}
-			if(gRobot.upperGun.shootCommand[i].shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.upperGun.shootCommand[i].stepTargetShootTime = 1;
-			}				
-		}		
-	}
-	return GUN_NO_ERROR;
-}
-
-/*
-*名称：ROBOT_LeftGunPoint1ShootTimes
-*功能：计算左枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_LeftGunPoint1ShootTimes(void)
-{
-	uint8_t i = 0;
-	uint8_t point1ShootTimes = 0;
-	for(i = 0;i < LEFT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
-	{
-		if(gRobot.leftGun.shootCommand[i].shootPoint == SHOOT_POINT1)
-		{
-			point1ShootTimes+=gRobot.leftGun.shootCommand[i].stepTargetShootTime;
-		}	
-	}
-	return point1ShootTimes;
-}
-/*
-*名称：ROBOT_RightGunPoint1ShootTimes
-*功能：计算右枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_RightGunPoint1ShootTimes(void)
-{
-	uint8_t i = 0;
-	uint8_t point1ShootTimes = 0;
-	for(i = 0;i < RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
-	{
-		if(gRobot.rightGun.shootCommand[i].shootPoint == SHOOT_POINT1)
-		{
-			point1ShootTimes+=gRobot.rightGun.shootCommand[i].stepTargetShootTime;
-		}	
-	}
-	return point1ShootTimes;
-}
-/*
-*名称：ROBOT_LeftGunPoint3ShootTimes
-*功能：计算左枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_LeftGunPoint3ShootTimes(void)
-{
-	uint8_t i = 0;
-	uint8_t point3ShootTimes = 0;
-	for(i = 0;i < LEFT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
-	{
-		if(gRobot.leftGun.shootCommand[i].shootPoint == SHOOT_POINT3)
-		{
-			point3ShootTimes+=gRobot.leftGun.shootCommand[i].stepTargetShootTime;
-		}	
-	}
-	return point3ShootTimes;
-}
-/*
-*名称：ROBOT_RightGunPoint3ShootTimes
-*功能：计算右枪第一个发射位置的目标发射次数
-*参数：
-*status:
-*/
-unsigned char ROBOT_RightGunPoint3ShootTimes(void)
-{
-	uint8_t i = 0;
-	uint8_t point3ShootTimes = 0;
-	for(i = 0;i < RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER;i++)
-	{
-		if(gRobot.rightGun.shootCommand[i].shootPoint == SHOOT_POINT3)
-		{
-			point3ShootTimes+=gRobot.rightGun.shootCommand[i].stepTargetShootTime;
-		}	
-	}
-	return point3ShootTimes;
-}
-
-
