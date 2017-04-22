@@ -96,8 +96,7 @@ static void RightGunInit(void)
 	gRobot.rightGun.actualPose.yaw = 0.0f;
 	gRobot.rightGun.actualPose.roll = 0.0f;
 	
-//	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT5].roll = -10.0f;
-//	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT5].roll = -10.0f;
+
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
 
@@ -942,22 +941,48 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				gRobot.leftGun.commandState = GUN_NO_COMMAND;
 			}
 		}
-		if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+		//左右枪交叉打1#和5#柱子时机械上会有干涉
+		if(gRobot.rightGun.targetPlant == PLANT1 && gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 		{
-			if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+			if(shootCommand.plantNum == PLANT5)
 			{
-				gRobot.plantState[shootCommand.plantNum].ball = 1;
+				gRobot.leftGun.commandState = GUN_NO_COMMAND;
+				switch(shootCommand.shootMethod)
+				{
+					case SHOOT_METHOD1:
+						gRobot.plantState[shootCommand.plantNum].ball = 1;
+						break;
+					case SHOOT_METHOD2:
+						gRobot.plantState[shootCommand.plantNum].plate = 1;
+						break;
+					case SHOOT_METHOD3:
+						gRobot.plantState[shootCommand.plantNum].ball = 1;
+						break;
+					default:
+						break;
+				}
 			}
-			if(shootCommand.shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.plantState[shootCommand.plantNum].plate = 1;
-			}
-			gRobot.leftGun.commandState = GUN_NO_COMMAND;		
 		}
-		else
+		if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 		{
-			lastPlant = shootCommand.plantNum;
-			lastParaMode = shootCommand.shootMethod;
+			//一个枪不连续打同一组参数，让两个枪交替打
+			if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+			{
+				if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+				{
+					gRobot.plantState[shootCommand.plantNum].ball = 1;
+				}
+				if(shootCommand.shootMethod == SHOOT_METHOD2)
+				{
+					gRobot.plantState[shootCommand.plantNum].plate = 1;
+				}
+				gRobot.leftGun.commandState = GUN_NO_COMMAND;		
+			}
+			else
+			{
+				lastPlant = shootCommand.plantNum;
+				lastParaMode = shootCommand.shootMethod;
+			}
 		}
 //	}
 	return shootCommand;
@@ -1055,22 +1080,48 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.commandState = GUN_NO_COMMAND;
 			}
 		}
-		if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+		//左右枪交叉打1#和5#柱子时机械上会有干涉
+		if(gRobot.leftGun.targetPlant == PLANT5 && gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 		{
-			if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+			if(shootCommand.plantNum == PLANT1)
 			{
-				gRobot.plantState[shootCommand.plantNum].ball = 1;
+				gRobot.rightGun.commandState = GUN_NO_COMMAND;
+				switch(shootCommand.shootMethod)
+				{
+					case SHOOT_METHOD1:
+						gRobot.plantState[shootCommand.plantNum].ball = 1;
+						break;
+					case SHOOT_METHOD2:
+						gRobot.plantState[shootCommand.plantNum].plate = 1;
+						break;
+					case SHOOT_METHOD3:
+						gRobot.plantState[shootCommand.plantNum].ball = 1;
+						break;
+					default:
+						break;
+				}
 			}
-			if(shootCommand.shootMethod == SHOOT_METHOD2)
-			{
-				gRobot.plantState[shootCommand.plantNum].plate = 1;
-			}
-			gRobot.rightGun.commandState = GUN_NO_COMMAND;		
 		}
-		else
+		if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 		{
-			lastPlant = shootCommand.plantNum;
-			lastParaMode = shootCommand.shootMethod;
+			//一个枪不连续打同一组参数，让两个枪交替打
+			if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+			{
+				if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+				{
+					gRobot.plantState[shootCommand.plantNum].ball = 1;
+				}
+				if(shootCommand.shootMethod == SHOOT_METHOD2)
+				{
+					gRobot.plantState[shootCommand.plantNum].plate = 1;
+				}
+				gRobot.rightGun.commandState = GUN_NO_COMMAND;		
+			}
+			else
+			{
+				lastPlant = shootCommand.plantNum;
+				lastParaMode = shootCommand.shootMethod;
+			}
 		}
 //	}
 	return shootCommand;
@@ -1248,13 +1299,13 @@ status_t ROBOT_LeftGunCheckAim(void)
 //			}
 //			else
 //			{
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.5f|| \
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.5f)
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f|| \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.5f || \
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.5f)
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
 			{
 				continue;
 			}
@@ -1328,13 +1379,13 @@ status_t ROBOT_RightGunCheckAim(void)
 //			}
 //			else
 //			{
-				if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.5f || \
-					gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.5f)
+				if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
+					gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
 				{
 					continue;
 				}
-				if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.5f || \
-					gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.5f)
+				if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
+					gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
 				{
 					continue;
 				}

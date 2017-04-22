@@ -785,7 +785,6 @@ void RightGunShootTask(void)
 
 						//调整枪姿为上弹姿态 need some time
 						ROBOT_RightGunAim();
-
 						ROBOT_RightGunCheckAim();
 					}
 					else
@@ -794,7 +793,6 @@ void RightGunShootTask(void)
 																		[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 						ROBOT_RightGunAim();
-
 					}
 					ROBOT_RightGunReload();				
 
