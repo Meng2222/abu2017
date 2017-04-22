@@ -267,6 +267,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	}
 	
 }
+float distDebug = 0.0f;
+float speedDebug = 0.0f;
 void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
 {
 	float targetDist = 0.0f;
@@ -312,10 +314,10 @@ void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float tar
 	/*三角形速度规划部分*/
 	else if (2.0f * distAcc >= targetDist)
 	{
-		timeAcc = sqrt((targetDist + pow(ENDSPEED, 2) / (2 * accX)) / accX);
+		timeAcc = sqrtf(targetDist/accX);
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
 		distDec = targetDist - distAcc;
-		timeDec = timeAcc - ENDSPEED / accX;
+		timeDec = timeAcc ;
 		
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
@@ -324,14 +326,13 @@ void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float tar
 		}
 		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
 		{
-			pExpData->dist = 0.5f * accX * pow(2.0f * timeAcc - moveTimer, 2)
-			                             - pow(timeAcc - timeDec, 2);
+			pExpData->dist = 0.5f * accX * pow(2.0f * timeAcc - moveTimer, 2);
 			pExpData->speed = accX * (2.0f * timeAcc - moveTimer - 0.01f);
 		}
-		else if (moveTimer > (timeAcc + timeDec))    /*低速匀速准备停车*/
+		else if (moveTimer > (timeAcc + timeDec))    
 		{
-			pExpData->dist = ENDSPEED * ((timeAcc + timeDec) - moveTimer);
-			pExpData->speed = ENDSPEED;
+			pExpData->dist = 0;
+			pExpData->speed = 0;
 		}
 	}
 	
@@ -398,7 +399,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}
 #define MAXMOVEACC (Vel2Pulse(2000))
 #define PULSE_Y 100
-	
+	speedDebug = velX;
+	distDebug = posErr;
 //	if(GetPosX() < -12214.46f)
 //	{
 //		pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );

@@ -18,7 +18,7 @@
 #include "movebase2.h"
 //#define RED_FIELD
 #define BLUE_FIELD
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 /*
 ===============================================================
                         信号量定义
@@ -73,8 +73,12 @@ void UpperGunShootTask(void);
 //调试数据发送不能超过30个字节，发送10个字节需要1ms
 void sendDebugInfo(void)
 {
-#define POS_X_OFFSET 50
-	
+#ifdef RED_FIELD
+#define POS_X_OFFSET (50)
+#endif
+#ifdef BLUE_FIELD
+#define POS_X_OFFSET (-50)
+#endif
 	USART_SendData(UART5,(int8_t)status);
 	
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
@@ -120,7 +124,6 @@ void sendDebugInfo(void)
 	
 	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
-
 	//X位移分米部分范围是【-140，10】，单位分米
 	USART_SendData(UART5, (uint8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
 	//X位移厘米部分范围是【-100，100】，单位厘米
@@ -433,8 +436,8 @@ void WalkTask(void)
 					moveTimFlag = 0;
 					status = load;
 					BEEP_OFF;
-				}			
-#endif
+				}
+#endif				
 #ifdef BLUE_FIELD
 				MoveToCenter(13043.14f, 3000.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)

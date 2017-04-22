@@ -394,9 +394,15 @@ void CAN_Config(CAN_TypeDef* CANx,
 	CAN_ITConfig(CANx, CAN_IT_FMP0, ENABLE);
 	
 	//使能CAN总线关闭中断
-	NVIC_InitStructure.NVIC_IRQChannel = CAN1_SCE_IRQn|CAN2_SCE_IRQn;//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannel = CAN1_SCE_IRQn;//串口1中断通道
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;//抢占优先级1
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;		//子优先级4
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
+	
+	NVIC_InitStructure.NVIC_IRQChannel = CAN2_SCE_IRQn;//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;//抢占优先级1
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;		//子优先级4
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
 	CAN_ITConfig(CANx, CAN_IT_BOF, ENABLE);
