@@ -225,7 +225,12 @@ void CameraInit(void)
 {
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
+#ifdef BLUE_FIELD
 	USART_SendData(USART3, 'b');
+#endif
+#ifdef RED_FIELD
+	USART_SendData(USART3, 'r');
+#endif
 }
 //到达场地中央后通知摄像头开始发坐标
 void SendStop2Camera(void)
