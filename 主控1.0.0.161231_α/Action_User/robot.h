@@ -301,8 +301,13 @@ typedef struct
 	unsigned char modeChangeFlag;
 	//是否有命令标志位
 	unsigned char commandState; 
+	//记录上一次的目标柱子
+	unsigned char lastPlant;
+	//记录上一次射击参数模式
+	unsigned char lastParaMode;
 	//等待命令计时
 	int noCommandTimer;
+
 }gun_t;
 
 //着陆台状态
