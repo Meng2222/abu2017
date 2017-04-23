@@ -25,9 +25,10 @@
 
 extern robot_t gRobot;
 float moveTimer=0.0f;
+extern float amendX;
 float GetPosX(void)
 {
-	return -gRobot.moveBase.actualXPos;
+	return -gRobot.moveBase.actualXPos+amendX;
 }
 
 float GetAngle(void)
@@ -595,8 +596,6 @@ void MoveToCenter(float targetPos, float velX, float accX)
 
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
-	
-
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);

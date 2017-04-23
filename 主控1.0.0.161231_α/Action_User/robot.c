@@ -1619,9 +1619,7 @@ status_t ROBOT_UpperGunShoot(void)
 			USART_SendData(USART3,'b');
 			OSTimeDly(40);
 			UpperShootReset();
-			gRobot.upperGun.shootTimes++;
-			gRobot.upperGun.actualStepShootTimes[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].plantNum]\
-											[gRobot.upperGun.shootCommand[gRobot.upperGun.shootStep].shootMethod]++;			
+			gRobot.upperGun.shootTimes++;		
 			//fix me, 应该检查子弹是否用完
 			gRobot.upperGun.bulletNumber--;
 	}
@@ -1656,6 +1654,21 @@ status_t ROBOT_RightGunHome(void)
 	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
 	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
 	
+	return GUN_NO_ERROR;
+}
+
+/**
+*@name ROBOT_UpperGunHome
+*功能:上枪归位，完成攻击任务后回到接近防守的姿态，做好防守的准备
+*@param None
+*@retval status:GUN_NO_ERROR
+*@note fix me, 此处发出命令后等待两秒以确保其能够归位，应加位置检测
+*/
+status_t ROBOT_UpperGunHome(void)
+{
+	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(-0.4f));	
+	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(131.0f));	
 	return GUN_NO_ERROR;
 }
 

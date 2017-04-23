@@ -295,20 +295,14 @@ typedef struct
 	int checkTimeUsage;
 	//标志枪中是否已经上弹
 	unsigned char reloadState;
-	//射击步数，对于步的定义暂时为在一个位置打一个柱子的一种参数
-	unsigned char shootStep;
 	//下一步标志位,用于接收平板指令   置1为下一步
 	unsigned char nextStep;
-	//下一步标志位，用于GunTask
-	unsigned char stepState;
-	//射击过程中每一步命令发射次数
-	unsigned char targetStepShootTimes;
-	//射击过程中每一步实际发射次数
-	unsigned char actualStepShootTimes[7][2];
-	
 	//手自动切换标志位
 	unsigned char modeChangeFlag;
+	//是否有命令标志位
 	unsigned char commandState; 
+	//等待命令计时
+	int noCommandTimer;
 }gun_t;
 
 //着陆台状态
@@ -579,6 +573,14 @@ status_t ROBOT_LeftGunHome(void);
 *@note fix me, 此处发出命令后等待两秒以确保其能够归位，应加位置检测
 */
 status_t ROBOT_RightGunHome(void);
+/**
+*@name ROBOT_UpperGunHome
+*功能:上枪归位，完成攻击任务后回到接近防守的姿态，做好防守的准备
+*@param None
+*@retval status:GUN_NO_ERROR
+*@note fix me, 此处发出命令后等待两秒以确保其能够归位，应加位置检测
+*/
+status_t ROBOT_UpperGunHome(void);
 /*
 *名称：ROBOT_GunCheckMode
 *功能：检查枪的模式

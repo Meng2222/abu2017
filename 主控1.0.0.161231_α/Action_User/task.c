@@ -18,7 +18,7 @@
 #include "movebase2.h"
 //#define RED_FIELD
 #define BLUE_FIELD
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 /*
 ===============================================================
                         信号量定义
@@ -420,7 +420,7 @@ void WalkTask(void)
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
-				MoveToCenter(-13043.14f, -3500.0f, 2000.0f);
+				MoveToCenter(-13023.14f, -3500.0f, 2000.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -431,7 +431,7 @@ void WalkTask(void)
 					BEEP_ON;
 //					status++;					
 				}
-				if(GetPosX()<=-13043.14f)
+				if(GetPosX()<=-13023.14f)
 				{
 					moveTimFlag = 0;
 					status = load;
@@ -439,7 +439,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveToCenter(13043.14f, 3000.0f, 2000.0f);		
+				MoveToCenter(13023.14f, 3000.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -449,7 +449,7 @@ void WalkTask(void)
 					}
 					BEEP_ON;
 				}
-				if(GetPosX()>=13043.14f)
+				if(GetPosX()>=13023.14f)
 				{
 					moveTimFlag = 0;
 					status = load;
@@ -1016,6 +1016,7 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
+				ROBOT_UpperGunHome();
 				OSTimeDly(6);
 			}
 		}
