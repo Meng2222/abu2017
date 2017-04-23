@@ -18,7 +18,7 @@
 #include "movebase2.h"
 //#define RED_FIELD
 #define BLUE_FIELD
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 /*
 ===============================================================
                         信号量定义
@@ -332,7 +332,7 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
-	TIM_Delayms(TIM5, 10000);
+//	TIM_Delayms(TIM5, 10000);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
