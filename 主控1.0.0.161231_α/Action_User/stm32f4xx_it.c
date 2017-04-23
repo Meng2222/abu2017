@@ -326,7 +326,8 @@ void CAN1_SCE_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	USART_SendData(UART5, 1);	
+	USART_SendData(UART5, 1);
+	USART_SendData(UART5, (uint8_t)111);		
 	USART_SendData(UART5, CAN_GetLastErrorCode(CAN1));
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -349,7 +350,8 @@ void CAN2_SCE_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
-	USART_SendData(UART5, 2);	
+	USART_SendData(UART5, 2);
+	USART_SendData(UART5, (uint8_t)111);	
 	USART_SendData(UART5, CAN_GetLastErrorCode(CAN2));
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);

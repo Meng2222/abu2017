@@ -405,6 +405,9 @@ void CAN_Config(CAN_TypeDef* CANx,
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;		//子优先级4
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
+	
+	CAN_ITConfig(CANx, CAN_IT_ERR, ENABLE);
+	
 	CAN_ITConfig(CANx, CAN_IT_BOF, ENABLE);
 
 	

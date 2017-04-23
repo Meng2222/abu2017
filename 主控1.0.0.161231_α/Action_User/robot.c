@@ -787,7 +787,7 @@ status_t ROBOT_LeftGunReload(void)
 //			OSTimeDly(7);
 //		}
 		LeftBack();
-		OSTimeDly(10);
+//		OSTimeDly(10);
 //		OSTimeDly(50);
 //		LeftHold();
 		gRobot.leftGun.reloadState = GUN_ALREADY_RELOAD;
@@ -824,7 +824,7 @@ status_t ROBOT_RightGunReload(void)
 //			OSTimeDly(8);
 //		}
 		RightBack();
-		OSTimeDly(10);//看似无用
+//		OSTimeDly(10);//看似无用
 
 //		OSTimeDly(50);
 //		RightHold();
