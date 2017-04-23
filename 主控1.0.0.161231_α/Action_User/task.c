@@ -357,7 +357,7 @@ void ConfigTask(void)
 	{
 		//WAIT
 	}
-	MoveY(50);
+//	MoveY(50);
 	OSTaskSuspend(Walk_TASK_PRIO);
 #endif
 
@@ -933,6 +933,8 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
+	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(118.0f));
+//	OSTimeDly(250);
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
