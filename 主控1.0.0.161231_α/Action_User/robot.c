@@ -1666,8 +1666,8 @@ status_t ROBOT_RightGunHome(void)
 */
 status_t ROBOT_UpperGunHome(void)
 {
-	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
-	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(-0.4f));	
+	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-0.4f));	
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(131.0f));	
 	return GUN_NO_ERROR;
 }
