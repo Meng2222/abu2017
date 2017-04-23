@@ -608,11 +608,9 @@ void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
 	#define DEBUG_PERIOD_COUNTER 10
-
 	//用来计数10次，产生10ms的定时器
 	static uint8_t periodCounter = PERIOD_COUNTER;
 	static uint8_t debugPeriodCounter = DEBUG_PERIOD_COUNTER;
-
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
@@ -621,7 +619,6 @@ void TIM2_IRQHandler(void)
 
 	if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
-		canErrCode = CAN1 ->ESR/*CAN_GetLastErrorCode(CAN1)*/;
 
 		//更新10ms计数器
 		periodCounter--;
@@ -635,6 +632,14 @@ void TIM2_IRQHandler(void)
 		{
 			OSSemPost(DebugPeriodSem);
 			debugPeriodCounter = DEBUG_PERIOD_COUNTER;
+		}
+		if(gRobot.leftGun.commandState == GUN_NO_COMMAND)
+		{
+			gRobot.leftGun.noCommandTimer++;
+		}
+		if(gRobot.rightGun.commandState == GUN_NO_COMMAND)
+		{
+			gRobot.rightGun.noCommandTimer++;
 		}
 		if(moveTimFlag==1)
 		{

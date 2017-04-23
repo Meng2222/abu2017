@@ -19,6 +19,7 @@
 //#define RED_FIELD
 #define BLUE_FIELD
 //#define NO_WALK_TASK
+#define NO_COMMAND_COUNTER 300
 /*
 ===============================================================
                         信号量定义
@@ -604,10 +605,16 @@ void LeftGunShootTask(void)
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
 	{
+		//手自动切换时上弹气缸推到头后收回
 		if(gRobot.leftGun.modeChangeFlag == 1)
 		{
 			LeftBack();
 			gRobot.leftGun.modeChangeFlag = 0;
+		}
+		//等待命令时上弹气缸推到头后收回
+		if(gRobot.leftGun.noCommandTimer >= NO_COMMAND_COUNTER)
+		{
+			LeftBack();
 		}
 		//自动模式
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
@@ -622,6 +629,7 @@ void LeftGunShootTask(void)
 
 				if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 				{
+					gRobot.leftGun.noCommandTimer = 0;
 					gRobot.leftGun.targetPlant = leftGunShootCommand.plantNum;
 					gRobot.leftGun.nextStep = 2;
 					gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
@@ -692,8 +700,7 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(30);
-					LeftBack();
+					OSTimeDly(6);
 				}
 
 		}
@@ -758,10 +765,16 @@ void RightGunShootTask(void)
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
 	{
+		//手自动切换时上弹气缸推到头后收回
 		if(gRobot.rightGun.modeChangeFlag == 1)
 		{
 			RightBack();
 			gRobot.rightGun.modeChangeFlag = 0;
+		}
+		//等待命令时上弹气缸推到头后收回
+		if(gRobot.rightGun.noCommandTimer >= NO_COMMAND_COUNTER)
+		{
+			RightBack();
 		}
 		//检查手动or自动
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
@@ -775,6 +788,7 @@ void RightGunShootTask(void)
 
 				if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 				{
+					gRobot.rightGun.noCommandTimer = 0;
 					gRobot.rightGun.nextStep = 2;
 					gRobot.rightGun.targetPlant = rightGunShootCommand.plantNum;
 					gRobot.rightGun.shootParaMode = rightGunShootCommand.shootMethod;
@@ -858,8 +872,7 @@ void RightGunShootTask(void)
 				}
 				else
 				{
-					OSTimeDly(30);
-					RightBack();
+					OSTimeDly(6);
 				}
 				
 		}
