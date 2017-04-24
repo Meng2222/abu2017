@@ -90,6 +90,7 @@ void RecordWalkingTrack(void);
   * @}
   */
 
+void Sendfloat(float val);
 
 
 /** @defgroup 

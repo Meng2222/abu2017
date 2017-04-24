@@ -365,7 +365,7 @@ void ConfigTask(void)
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
 */
-
+#ifndef NO_WALK_TASK
 	if(KEYSWITCH==1)
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -379,6 +379,7 @@ void ConfigTask(void)
 		OSTaskSuspend(DEBUG_TASK_PRIO);
 		OSTaskSuspend(OS_PRIO_SELF);		
 	}
+#endif
 //	LeftHold();
 //	RightHold();
 //////测试使用！！！！！！！！！！！！！！！！
