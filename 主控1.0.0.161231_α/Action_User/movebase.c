@@ -103,7 +103,32 @@ void MOVEBASE_Run(void)
 	return;
 }
 
-
+/**
+  * @brief  在三个轮子自检速度检测
+  * @param  speed:三轮电机速度
+  * @retval None
+  */
+void ThreeWheelVelControlSelfCheck(int direction)
+{
+	if(direction==1)
+	{
+		VelCrl(CAN2, 1,30000);
+		VelCrl(CAN2, 2,30000);
+		VelCrl(CAN2, 3,30000);
+	}
+	else if(direction==2)
+	{
+		VelCrl(CAN2, 1,-30000);
+		VelCrl(CAN2, 2,-30000);
+		VelCrl(CAN2, 3,-30000);
+	}
+	else
+	{
+		VelCrl(CAN2, 1,0);
+		VelCrl(CAN2, 2,0);
+		VelCrl(CAN2, 3,0);
+	}
+}
 
 
 /******************************************旧movebase***********************/
