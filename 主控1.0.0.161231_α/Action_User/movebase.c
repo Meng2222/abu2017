@@ -427,48 +427,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 #define PULSE_Y 100
 	speedDebug = velX;
 	distDebug = posErr;
-//	if(GetPosX() < -12214.46f)
-//	{
-//		pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );
-//		//速度分配至各轮
-//		if(-gRobot.moveBase.actualSpeed.forwardWheelSpeed > pSpeedOut->forwardWheelSpeed + MAXMOVEACC)
-//		{
-//			pSpeedOut->forwardWheelSpeed	= 		-gRobot.moveBase.actualSpeed.forwardWheelSpeed +	MAXMOVEACC;
-//			pSpeedOut->leftWheelSpeed		= 0.5f * gRobot.moveBase.actualSpeed.forwardWheelSpeed - 0.5f * MAXMOVEACC + PULSE_Y;
-//			pSpeedOut->backwardWheelSpeed	= 0.5f * gRobot.moveBase.actualSpeed.forwardWheelSpeed - 0.5f * MAXMOVEACC - PULSE_Y;
-//		}
-//		else if(-gRobot.moveBase.actualSpeed.forwardWheelSpeed < pSpeedOut->forwardWheelSpeed - MAXMOVEACC)
-//		{
-//			pSpeedOut->forwardWheelSpeed	= 		-gRobot.moveBase.actualSpeed.forwardWheelSpeed - MAXMOVEACC;
-//			pSpeedOut->leftWheelSpeed		= 0.5f * gRobot.moveBase.actualSpeed.forwardWheelSpeed + 0.5f * MAXMOVEACC + PULSE_Y;
-//			pSpeedOut->backwardWheelSpeed	= 0.5f * gRobot.moveBase.actualSpeed.forwardWheelSpeed + 0.5f * MAXMOVEACC - PULSE_Y;
-//		}
-//		else
-//		{
-//			pSpeedOut->forwardWheelSpeed	=  0.8f * Vel2Pulse(-velX) + 0.2f * (-gRobot.moveBase.actualSpeed.forwardWheelSpeed);
-//			pSpeedOut->leftWheelSpeed		= 0.5f * -pSpeedOut->forwardWheelSpeed + 0 + PULSE_Y;
-//			pSpeedOut->backwardWheelSpeed	= 0.5f * -pSpeedOut->forwardWheelSpeed + 0 - PULSE_Y;
-//		}
-//	}
-//	else
-//	{
-		pSpeedOut->backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
-		pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );
-		pSpeedOut->leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
-//	}
-
-	
-	
-////	pSpeedOut->backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
-//	pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );
-////	pSpeedOut->leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
-
-//	pSpeedOut->backwardWheelSpeed = Vel2Pulse(-750.0f)*CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f));/* velY 约等于  0.07*velX */
-//	if(GetPosX()<12214.46f)
-//	{
-//		pSpeedOut->backwardWheelSpeed = (Vel2Pulse(-750.0f) - pSpeedOut->backwardWheelSpeed) * 3.0f / 4.0f + pSpeedOut->backwardWheelSpeed;
-//		pSpeedOut->leftWheelSpeed = (Vel2Pulse(-750.0f) - pSpeedOut->leftWheelSpeed) * 1.0f / 10.0f + pSpeedOut->leftWheelSpeed;
-//	}
+	pSpeedOut->backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
+	pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );
+	pSpeedOut->leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
 
 	//姿态修正
 	if(GetAngle() >= 0.0f)

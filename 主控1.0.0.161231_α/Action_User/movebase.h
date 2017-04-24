@@ -284,7 +284,7 @@ void ThreeWheelVelControlSelfCheck(int direction);
 */
 
 //姿态修正PID
-#define PPOSE 5.0f
+#define PPOSE 7.0f
 //速度闭环PID
 #define PVEL 6.0f
 

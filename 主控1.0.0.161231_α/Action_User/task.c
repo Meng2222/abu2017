@@ -18,7 +18,7 @@
 #include "movebase2.h"
 //#define RED_FIELD
 #define BLUE_FIELD
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 #define NO_COMMAND_COUNTER 300
 /*
 ===============================================================
@@ -136,10 +136,11 @@ void sendDebugInfo(void)
 	
 	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
 	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
+	USART_SendData(UART5, (int8_t)((gRobot.moveBase.actualAngle-(int)gRobot.moveBase.actualAngle)*10.0f));
 	//X位移分米部分范围是【-140，10】，单位分米
-	USART_SendData(UART5, (uint8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
+	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
 	//X位移厘米部分范围是【-100，100】，单位厘米
-	USART_SendData(UART5, (uint8_t)((((int)gRobot.moveBase.actualXPos))%100/10));
+	USART_SendData(UART5, (int8_t)((((int)gRobot.moveBase.actualXPos))%100/10));
 
 	//根据场地约束，范围设计为【-130，130】，单位cm
 	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualYPos/10.0f));
@@ -347,7 +348,7 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
-	TIM_Delayms(TIM5, 10000);
+	TIM_Delayms(TIM5, 17000);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
@@ -378,6 +379,10 @@ void ConfigTask(void)
 		OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 		OSTaskSuspend(DEBUG_TASK_PRIO);
 		OSTaskSuspend(OS_PRIO_SELF);		
+	}
+	else
+	{
+		OSTaskDel(SELFCHECK_TASK_PRIO);
 	}
 #endif
 //	LeftHold();
@@ -681,7 +686,15 @@ void WalkTask(void)
 			case getReady:				
 				if(PHOTOSENSORUPGUN)
 				{
+					USART_SendData(USART6,'A');
+					USART_SendData(USART6,'C');			
+					USART_SendData(USART6,'C');
+					USART_SendData(USART6,'T');
+					USART_SendData(USART6,'0');			
+					USART_SendData(USART6,'0');
+					USART_SendData(USART6,'0');
 					ClampOpen();
+					TIM_Delayms(TIM5,20);
 					ROBOT_LeftGunAim();
 					ROBOT_RightGunAim();
 					status ++;
