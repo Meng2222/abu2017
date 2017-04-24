@@ -921,9 +921,7 @@ void UpperGunShootTask(void)
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
-#ifndef NO_WALK_TASK
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
-#endif
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
