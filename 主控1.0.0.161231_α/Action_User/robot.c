@@ -31,9 +31,12 @@ static void LeftGunInit(void)
 	//特殊上弹角度
 	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
-	
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT7].pitch = 20.0f;	
 	
 	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
 	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
@@ -102,10 +105,12 @@ static void RightGunInit(void)
 
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
-
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
-
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT7].pitch = 20.0f;
 	
 	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
 	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
@@ -690,13 +695,13 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.plantState[i].ball = 1;
 	}
-    gRobot.plantState[PLANT6].ball = 2;
+    gRobot.plantState[PLANT6].ball = 0;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
 		gRobot.plantState[i].plate = 1;
 	}
-	gRobot.plantState[PLANT6].plate = 4;
+	gRobot.plantState[PLANT6].plate = 6;
 
 	LeftGunInit();
 	RightGunInit();
@@ -766,7 +771,10 @@ status_t ROBOT_LeftGunReload(void)
 //	uint8_t pushTimes = 5;
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
-//		LeftPush();
+		if(gRobot.leftGun.lastPlant == PLANT7)
+		{
+			LeftPush();
+		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
 			OSTimeDly(60);
@@ -807,7 +815,10 @@ status_t ROBOT_RightGunReload(void)
 //	uint8_t pushTimes = 8;
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
-//		RightPush();
+		if(gRobot.rightGun.lastPlant ==PLANT7)
+		{
+			RightPush();
+		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
 			OSTimeDly(60);
@@ -949,13 +960,16 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				else
 					shootCommand.shootMethod = SHOOT_METHOD4;			
 				//不连续打同一组参数
-				if(LeftGunPriority[i] == gRobot.leftGun.lastPlant && \
-					gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
+				if(LeftGunPriority[i]!=PLANT6)
 				{
-					if(gRobot.rightGun.lastPlant != LeftGunPriority[i] ||\
-						gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+					if(LeftGunPriority[i] == gRobot.leftGun.lastPlant && \
+						gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
 					{
-						continue;
+						if(gRobot.rightGun.lastPlant != LeftGunPriority[i] ||\
+							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+						{
+							continue;
+						}
 					}
 				}
 				gRobot.plantState[LeftGunPriority[i]].plate -= 1;
@@ -1049,6 +1063,8 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	#define RIGHT_AUTO_NUMBER 5u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
+	//右枪获得命令变难
+	OSTimeDly(2);
 	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)searchRange = 7;
 //	if(gRobot.leftGun.shootTimes >= 18u)
 //		searchRange = 7;
@@ -1094,14 +1110,17 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				else
 					shootCommand.shootMethod = SHOOT_METHOD4;
 				//不连续打同一组参数
-				if(RightGunPriority[i] == gRobot.rightGun.lastPlant && \
-					gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
+				if(RightGunPriority[i]!=PLANT6)
 				{
-					if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
-						gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+					if(RightGunPriority[i] == gRobot.rightGun.lastPlant && \
+						gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
 					{
-						continue;
-					}				
+						if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
+							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+						{
+							continue;
+						}				
+					}
 				}
 				gRobot.plantState[RightGunPriority[i]].plate -= 1;
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
@@ -1286,8 +1305,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 			ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
 			ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-//			USART_SendData(UART5, (uint8_t)-22);
-//			LeftGunSendDebugInfo();
+			USART_SendData(UART5, (uint8_t)-22);
+			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
 				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
@@ -1365,8 +1384,8 @@ status_t ROBOT_RightGunCheckAim(void)
 			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
 			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-//			USART_SendData(UART5, (uint8_t)-44);
-//			RightGunSendDebugInfo();
+			USART_SendData(UART5, (uint8_t)-44);
+			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
 				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
@@ -1463,8 +1482,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			ReadActualPos(CAN1, UPPER_GUN_GROUP_ID);
 			ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-//			USART_SendData(UART5,(uint8_t)-88);
-//			UpperGunSendDebugInfo();
+			USART_SendData(UART5,(uint8_t)-88);
+			UpperGunSendDebugInfo();
 			
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.0f || \
@@ -1563,7 +1582,10 @@ status_t ROBOT_LeftGunShoot(void)
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 				LeftShoot();
 				OSTimeDly(20);
-				LeftPush();
+				if(gRobot.leftGun.targetPlant!= PLANT7)
+				{
+					LeftPush();
+				}
 				OSTimeDly(8);
 				LeftShootReset();
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
@@ -1604,7 +1626,10 @@ status_t ROBOT_RightGunShoot(void)
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();	
 				OSTimeDly(20);
-				RightPush();
+				if(gRobot.rightGun.targetPlant != PLANT7)
+				{
+					RightPush();
+				}
 				OSTimeDly(8);
 				RightShootReset();
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;

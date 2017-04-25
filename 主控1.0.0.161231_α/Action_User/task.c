@@ -695,8 +695,8 @@ void WalkTask(void)
 					USART_SendData(USART6,'0');
 					ClampOpen();
 					TIM_Delayms(TIM5,20);
-					ROBOT_LeftGunAim();
-					ROBOT_RightGunAim();
+					ROBOT_LeftGunHome();
+					ROBOT_RightGunHome();
 					status ++;
 				}
 				break;
@@ -723,7 +723,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveToCenter(13023.14f, 3000.0f, 2000.0f);		
+				MoveToCenter(13023.14f, 3500.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -921,7 +921,7 @@ void LeftGunShootTask(void)
 					gRobot.leftGun.nextStep = 2;
 					gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
 					
-					if(leftGunShootCommand.plantNum == PLANT7 || leftGunShootCommand.plantNum == PLANT3)
+					if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT3 )
 					{
 						//获取并更新枪目标姿态  上弹姿态
 						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootPoint]\
@@ -1081,7 +1081,7 @@ void RightGunShootTask(void)
 					gRobot.rightGun.targetPlant = rightGunShootCommand.plantNum;
 					gRobot.rightGun.shootParaMode = rightGunShootCommand.shootMethod;
 
-					if(rightGunShootCommand.plantNum == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
+					if(gRobot.rightGun.lastPlant == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 					{
 						//获取并更新枪目标姿态  上弹姿态
 						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootPoint]\

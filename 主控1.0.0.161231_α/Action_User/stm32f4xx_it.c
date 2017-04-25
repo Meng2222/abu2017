@@ -1018,6 +1018,13 @@ void UART4_IRQHandler(void)
 							{
 								gRobot.plantState[id - 20].plate = 1;
 							}								
+							else
+							{
+								if(id-20==PLANT6)
+								{
+									gRobot.plantState[id - 20].plate = 1;									
+								}
+							}							
 							break;
 					}
 				}
