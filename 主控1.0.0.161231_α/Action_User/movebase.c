@@ -397,9 +397,13 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
-	if (fabs(posErr) > 150.0f)
+	if (posErr > 150.0f)
 	{
 		posErr = 150.0f;
+	}
+	else if(posErr < -150.0f)
+	{
+		posErr = -150.0f;
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
@@ -562,8 +566,7 @@ void MoveToCenter(float targetPos, float velX, float accX)
 	//新运动过程初始化
 	if(formerTargetPos != targetPos)
 	{	
-		formerTargetPos = targetPos;
-		
+		formerTargetPos = targetPos;		
 		startPos = GetPosX();
 //		if (velX >= 0)
 //		{
@@ -583,8 +586,11 @@ void MoveToCenter(float targetPos, float velX, float accX)
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
 	USART_SendData(UART5,(uint8_t)moveTimer);
-	USART_SendData(UART5,(uint8_t)(expData.pos/100.0f));
-	USART_SendData(UART5,(uint8_t)expData.speed);
+	USART_SendData(UART5,(int8_t)(expData.pos/100.0f));
+	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
+	USART_SendData(UART5,(int8_t)(speedDebug/100.0f));
+	USART_SendData(UART5,(int8_t)(distDebug/10.0f));
+	
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);

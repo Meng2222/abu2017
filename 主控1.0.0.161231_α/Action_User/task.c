@@ -145,7 +145,7 @@ void sendDebugInfo(void)
 	//根据场地约束，范围设计为【-130，130】，单位cm
 	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualYPos/10.0f));
 
-	USART_SendData(UART5,(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.01f));
+//	USART_SendData(UART5,(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.01f));
 	//连续发送4个-100作为结束标识符
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);
@@ -772,7 +772,7 @@ void WalkTask(void)
 //					status++;
 //					OSTaskResume(DEBUG_TASK_PRIO);
 					ROBOT_UpperGunAim();	
-					status+=5;
+					status=goToLaunchingArea;
 				}
 				break;
 				
@@ -850,9 +850,6 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
 #endif
@@ -862,6 +859,9 @@ void WalkTask(void)
 			case launch:
 				OSTimeDly(50);
 				LockWheel();
+				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
 //				MoveY(50.0f);
 				SendStop2Camera();
@@ -976,7 +976,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckShootPoint();
 #endif
 					ROBOT_LeftGunShoot();
-					if(gRobot.leftGun.shootParaMode == SHOOT_METHOD2)
+					if(gRobot.leftGun.shootParaMode == SHOOT_METHOD2 ||gRobot.leftGun.shootParaMode == SHOOT_METHOD4)
 					{
 						gRobot.plantState[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 					}
@@ -1033,7 +1033,7 @@ void LeftGunShootTask(void)
 			USART_SendData(UART5, (uint8_t)-100);
 			while(1) {}
 		}
-		LeftGunSendDebugInfo();
+//		LeftGunSendDebugInfo();
 		gRobot.leftGun.checkTimeUsage = 0;
 	}
 }
@@ -1149,7 +1149,7 @@ void RightGunShootTask(void)
 					ROBOT_RightGunCheckShootPoint();
 #endif
 					ROBOT_RightGunShoot();
-					if(gRobot.rightGun.shootParaMode == SHOOT_METHOD2)
+					if(gRobot.rightGun.shootParaMode == SHOOT_METHOD2 ||gRobot.rightGun.shootParaMode == SHOOT_METHOD4)
 					{
 						gRobot.plantState[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 					}
@@ -1206,7 +1206,7 @@ void RightGunShootTask(void)
 			USART_SendData(UART5, (uint8_t)-100);
 			while(1) {}
 		}
-		RightGunSendDebugInfo();
+//		RightGunSendDebugInfo();
 		gRobot.rightGun.checkTimeUsage = 0;
 	}
 
