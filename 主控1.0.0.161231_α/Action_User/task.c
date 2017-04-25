@@ -835,10 +835,11 @@ void WalkTask(void)
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
-					LockWheel();
+					MoveY(50.0f);
 					moveTimFlag = 0;
 					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
 #endif
@@ -847,10 +848,11 @@ void WalkTask(void)
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();
-					LockWheel();
+					MoveY(50.0f);
 					moveTimFlag = 0;
 					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
 #endif
@@ -858,11 +860,12 @@ void WalkTask(void)
 			
 			//发射飞盘
 			case launch:
+				OSTimeDly(50);
 				LockWheel();
 //				CameraInit();
-				MoveY(50.0f);
+//				MoveY(50.0f);
 				SendStop2Camera();
-				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+				
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
 			

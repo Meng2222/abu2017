@@ -79,13 +79,13 @@ void MOVEBASE_Init(void)
     //电机初始化及使能
 	elmo_Init(CAN2);
 	
-//	elmo_Enable(1);
-//	elmo_Enable(2);
-//	elmo_Enable(3);
+	elmo_Enable(CAN2,1);
+	elmo_Enable(CAN2,2);
+	elmo_Enable(CAN2,3);
 
-	Vel_cfg(CAN2, 1, 100000, 100000);
-	Vel_cfg(CAN2, 2, 100000, 100000);
-	Vel_cfg(CAN2, 3, 100000, 100000);
+//	Vel_cfg(CAN2, 1, 100000, 100000);
+//	Vel_cfg(CAN2, 2, 100000, 100000);
+//	Vel_cfg(CAN2, 3, 100000, 100000);
 
 
 	return;
@@ -530,11 +530,11 @@ void MoveTo(float targetPos, float velX, float accX)
 		startPos = GetPosX();
 		if (velX >= 0)
 		{
-			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
+//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
 		}
 		else
 		{
-			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
+//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
 		}
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
