@@ -385,6 +385,9 @@ void ConfigTask(void)
 		OSTaskDel(SELFCHECK_TASK_PRIO);
 	}
 #endif
+#ifdef NO_WALK_TASK
+	OSTaskDel(SELFCHECK_TASK_PRIO);
+#endif
 //	LeftHold();
 //	RightHold();
 //////测试使用！！！！！！！！！！！！！！！！
