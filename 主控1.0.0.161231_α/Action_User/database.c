@@ -184,7 +184,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		  {-34.1f, 19.7f, 16.0f, 22.0f, 95.0f},
 		 //2#着陆台
 //		 {-13.6f, 25.3f, 17.3f, 20.0f, 95.0f},
-		 {-24.9f, 25.3f, 2.0f, 19.0f, 95.0f},
+		 {-14.9f, 23.2f, 16.0f, 20.0f, 91.0f},
 		 //3#着陆台
 		 {-2.0f, 30.4f, 2.1f, 20.0f, 99.0f},
 		 //4#着陆台

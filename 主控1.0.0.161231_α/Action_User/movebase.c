@@ -582,6 +582,9 @@ void MoveToCenter(float targetPos, float velX, float accX)
 
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
+	USART_SendData(UART5,(uint8_t)moveTimer);
+	USART_SendData(UART5,(uint8_t)(expData.pos/100.0f));
+	USART_SendData(UART5,(uint8_t)expData.speed);
 	
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
