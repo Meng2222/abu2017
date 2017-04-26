@@ -1014,11 +1014,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				}
 			}
 		}
-		if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
-		{
-			gRobot.leftGun.lastPlant = shootCommand.plantNum;
-			gRobot.leftGun.lastParaMode = shootCommand.shootMethod;
-		}
 //	}
 	return shootCommand;
 }
@@ -1178,11 +1173,6 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 						break;
 				}
 			}
-		}
-		if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
-		{
-				gRobot.rightGun.lastPlant = shootCommand.plantNum;
-				gRobot.rightGun.lastParaMode = shootCommand.shootMethod;
 		}
 //	}
 	return shootCommand;
