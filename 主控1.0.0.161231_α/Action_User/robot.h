@@ -251,6 +251,8 @@ typedef struct
 {
 	//枪的目标姿态
 	gun_pose_t targetPose;
+	//上弹姿势
+	gun_pose_t reloadPose;
 	//枪的目标姿态
 	gun_pose_t actualPose;
 	
@@ -490,6 +492,8 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void);
 status_t ROBOT_LeftGunAim(void);
 status_t ROBOT_RightGunAim(void);
 status_t ROBOT_UpperGunAim(void);
+status_t ROBOT_LeftGunReloadAim(void);
+status_t ROBOT_RightGunReloadAim(void);
 
 /*
 *名称：ROBOT_LeftGunCheckShootPoint

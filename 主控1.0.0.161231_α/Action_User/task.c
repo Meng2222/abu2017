@@ -1008,20 +1008,23 @@ void LeftGunShootTask(void)
 				//更新数据库中参数并写入FLASH
 //				UpdateLeftGunPosDatabaseManualMode();
 //				FlashWriteGunPosData();
-				ROBOT_LeftGunCheckAim();
 				gRobot.leftGun.aim = GUN_STOP_AIM;
 			}
 			else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
 			{
+				if(gRobot.leftGun.targetPlant == PLANT7)
+				{
+						ROBOT_LeftGunAim();
+				}
 				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunShoot();
 				if(gRobot.leftGun.targetPlant == PLANT7)
 				{
-						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[SHOOT_POINT3]\
+						gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[SHOOT_POINT3]\
 																			[gRobot.leftGun.shootParaMode]\
 																			[gRobot.leftGun.targetPlant];
 
-						ROBOT_LeftGunAim();
+						ROBOT_LeftGunReloadAim();
 						ROBOT_LeftGunCheckAim();
 						LeftPush();
 				}
@@ -1196,15 +1199,19 @@ void RightGunShootTask(void)
 			}
 			else if(gRobot.rightGun.shoot==GUN_START_SHOOT)
 			{
+				if(gRobot.rightGun.targetPlant == PLANT7)
+				{
+					ROBOT_RightGunAim();
+				}
 				ROBOT_RightGunCheckAim();
 				ROBOT_RightGunShoot();
 				if(gRobot.rightGun.targetPlant == PLANT7)
 				{
-					gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[SHOOT_POINT3]\
+					gRobot.rightGun.reloadPose = gRightGunReloadPosDatabase[SHOOT_POINT3]\
 																[gRobot.rightGun.shootParaMode]\
 																[gRobot.rightGun.targetPlant];
 
-					ROBOT_RightGunAim();
+					ROBOT_RightGunReloadAim();
 					ROBOT_RightGunCheckAim();
 					RightPush();
 				}

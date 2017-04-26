@@ -771,7 +771,7 @@ status_t ROBOT_LeftGunReload(void)
 //	uint8_t pushTimes = 5;
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
-		if(gRobot.leftGun.lastPlant == PLANT7)
+		if(gRobot.leftGun.lastPlant == PLANT7 && gRobot.leftGun.targetPlant == PLANT7)
 		{
 			LeftPush();
 		}
@@ -815,7 +815,7 @@ status_t ROBOT_RightGunReload(void)
 //	uint8_t pushTimes = 8;
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
-		if(gRobot.rightGun.lastPlant ==PLANT7)
+		if(gRobot.rightGun.lastPlant ==PLANT7 && gRobot.rightGun.targetPlant == PLANT7)
 		{
 			RightPush();
 		}
@@ -1050,7 +1050,20 @@ status_t ROBOT_LeftGunAim(void)
 
 	return GUN_NO_ERROR;
 }
+status_t ROBOT_LeftGunReloadAim(void)
+{
+	
+	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 
+	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gRobot.leftGun.reloadPose.yaw));
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.reloadPose.pitch));			
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gRobot.leftGun.reloadPose.roll));	
+
+	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gRobot.leftGun.reloadPose.speed1));
+	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gRobot.leftGun.reloadPose.speed2));
+
+	return GUN_NO_ERROR;
+}
 /** @defgroup Right_Gun_Shoot_Tragedy
   * @brief 
   * @{
@@ -1202,7 +1215,19 @@ status_t ROBOT_RightGunAim(void)
 
 	return GUN_NO_ERROR;
 }
+status_t ROBOT_RightGunReloadAim(void)
+{
+	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
+			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
+			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.reloadPose.yaw));
+			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.reloadPose.pitch));			
+			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.reloadPose.roll));	
 
+			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRobot.rightGun.reloadPose.speed1));
+			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRobot.rightGun.reloadPose.speed2));
+
+	return GUN_NO_ERROR;
+}
 /**
   * @brief	Get upper gun shoot command
   * @note	
