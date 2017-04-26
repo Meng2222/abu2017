@@ -853,6 +853,7 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
+					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
 #endif
@@ -864,7 +865,6 @@ void WalkTask(void)
 				LockWheel();
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
 //				MoveY(50.0f);
 				SendStop2Camera();
@@ -1015,6 +1015,16 @@ void LeftGunShootTask(void)
 			{
 				ROBOT_LeftGunCheckAim();
 				ROBOT_LeftGunShoot();
+				if(gRobot.leftGun.targetPlant == PLANT7)
+				{
+						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[SHOOT_POINT3]\
+																			[gRobot.leftGun.shootParaMode]\
+																			[gRobot.leftGun.targetPlant];
+
+						ROBOT_LeftGunAim();
+						ROBOT_LeftGunCheckAim();
+						LeftPush();
+				}
 				ROBOT_LeftGunReload();
 //				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
@@ -1188,6 +1198,16 @@ void RightGunShootTask(void)
 			{
 				ROBOT_RightGunCheckAim();
 				ROBOT_RightGunShoot();
+				if(gRobot.rightGun.targetPlant == PLANT7)
+				{
+					gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[SHOOT_POINT3]\
+																[gRobot.rightGun.shootParaMode]\
+																[gRobot.rightGun.targetPlant];
+
+					ROBOT_RightGunAim();
+					ROBOT_RightGunCheckAim();
+					RightPush();
+				}
 				ROBOT_RightGunReload();
 //				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新

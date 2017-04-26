@@ -695,7 +695,7 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.plantState[i].ball = 1;
 	}
-    gRobot.plantState[PLANT6].ball = 0;
+    gRobot.plantState[PLANT6].ball = 2;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
@@ -1605,8 +1605,10 @@ status_t ROBOT_LeftGunShoot(void)
 	{
 		LeftShoot();
 		OSTimeDly(20);
-		LeftPush();
-		OSTimeDly(8);
+		if(gRobot.leftGun.targetPlant!= PLANT7)
+		{
+			LeftPush();
+		}		OSTimeDly(8);
 		LeftShootReset();
 		gRobot.leftGun.shootTimes++;
 		gRobot.leftGun.bulletNumber--;
@@ -1649,7 +1651,10 @@ status_t ROBOT_RightGunShoot(void)
 	{
 		RightShoot();	
 		OSTimeDly(20);
-		RightPush();
+		if(gRobot.rightGun.targetPlant != PLANT7)
+		{
+			RightPush();
+		}
 		OSTimeDly(8);
 		RightShootReset();
 		gRobot.rightGun.shootTimes++;
