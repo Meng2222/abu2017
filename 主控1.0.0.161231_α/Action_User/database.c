@@ -192,7 +192,8 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //5#着陆台
 		 {32.2f,16.6f, 4.4f,19.0f,100.0f},
 		 //6#着陆台
-		 {-3.6f,19.8f,2.0f,21.0f,124.0f},
+		 {-2.6f,19.8f,2.0f,21.0f,131.0f},
+		 //{-3.6f,19.8f,2.0f,21.0f,124.0f}
 		 //7#着陆台
 		 {4.5f,35.7f, 2.8f,13.0f,56.0f}},
 		
@@ -200,7 +201,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		{//1#着陆台
 		 {-28.0f, 7.7f, 14.1f, 11.0f, 117.0f},
 		 //2#着陆台
-		 {-16.4f, 12.2f, 1.8f, 13.0f, 114.0f},
+		 {-11.4f, 11.7f, 14.5f, 22.0f, 107.0f},
 		 //3#着陆台
 		 {1.5f, 22.8f, -0.9f, 6.0f, 110.0f},
 		 //4#着陆台
@@ -637,7 +638,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 //4#着陆台
 		 {19.4f,24.1f,15.5f,88.0f,20.0f},
 		 //5#着陆台
-		 {39.4f,19.5f,13.5f,96.0f,18.0f},
+		 {38.4f,18.0f,14.0f,96.0f,20.0f},
 		 //6#着陆台
 		 {5.3f,20.8f,6.5f,124.0f,19.0f},
 		 //7#着陆台
@@ -921,7 +922,8 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球
 		{
-			{1.0f,9.2f,0.0f,118.0f,0.0f},
+			{1.0f,8.3f,0.0f,133.0f
+			,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -930,7 +932,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{10.4f,22.5f,0.0f,99.0f,0.0f},
+			{10.4f,22.5f,0.0f,103.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -1050,7 +1052,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{8.7f,23.3f,0.0f,46.0f,0.0f},
+			{8.7f,23.3f,0.0f,51.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -1103,7 +1105,23 @@ shoot_command_t gLeftGunShootCmds[LEFT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 	{SHOOT_POINT3, PLANT2,	SHOOT_METHOD2 , 2},
 //	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD1 , 1},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
+	
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},	
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},	
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3}
+
 };
 
 //右枪射击柱子的顺序
@@ -1122,15 +1140,30 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 //	{SHOOT_POINT3, PLANT7,	SHOOT_METHOD2 , 1},
 //	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD1 , 2},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},
+	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3},	
 	{SHOOT_POINT3, PLANT6,	SHOOT_METHOD2 , 3}
+
 
 };
 
 ////上面枪射击柱子的顺序
 shoot_command_t gUpperGunShootCmds[UPPER_GUN_AUTO_STEP_NUMBER] = \
 {
-	{SHOOT_POINT3,PLANT3,SHOOT_METHOD1,1},
 	{SHOOT_POINT3,PLANT7,SHOOT_METHOD1,1},	
+	{SHOOT_POINT3,PLANT3,SHOOT_METHOD1,1},
 	{SHOOT_POINT3,PLANT3,SHOOT_METHOD2,1},		
 	{SHOOT_POINT3,PLANT7,SHOOT_METHOD2,1}
 };

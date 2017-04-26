@@ -225,11 +225,11 @@ void UpperGunSendDebugInfo(void)
 		
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.pitch);
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.speed1);
+	USART_SendData(UART5,(uint8_t)gRobot.upperGun.targetPose.speed1);
 	
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.yaw);
 	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.pitch);
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.speed1);
+	USART_SendData(UART5,(uint8_t)gRobot.upperGun.actualPose.speed1);
 
 	USART_SendData(UART5, (uint8_t)-100);
 	USART_SendData(UART5, (uint8_t)-100);

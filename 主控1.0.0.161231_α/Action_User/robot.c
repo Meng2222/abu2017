@@ -1504,8 +1504,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.0f || \
-				gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.0f)
+			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +2.0f || \
+				gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -2.0f)
 			{
 				continue;
 			}
