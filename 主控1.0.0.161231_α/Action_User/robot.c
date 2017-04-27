@@ -771,7 +771,7 @@ status_t ROBOT_LeftGunReload(void)
 //	uint8_t pushTimes = 5;
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
-		if(gRobot.leftGun.lastPlant == PLANT7 && gRobot.leftGun.targetPlant == PLANT7)
+		if(gRobot.leftGun.lastPlant == PLANT7)
 		{
 			LeftPush();
 		}
@@ -815,7 +815,7 @@ status_t ROBOT_RightGunReload(void)
 //	uint8_t pushTimes = 8;
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
-		if(gRobot.rightGun.lastPlant ==PLANT7 && gRobot.rightGun.targetPlant == PLANT7)
+		if(gRobot.rightGun.lastPlant ==PLANT7)
 		{
 			RightPush();
 		}
