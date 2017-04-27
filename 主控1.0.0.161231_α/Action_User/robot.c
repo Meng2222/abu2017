@@ -916,6 +916,8 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	#define LEFT_AUTO_NUMBER 5u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
+	//防止同一个枪连续执行命令
+	OSTimeDly(1);
 //	if(gRobot.leftGun.shootTimes%2==0)
 //	{
 //		gRobot.plantState[PLANT1].plate = 1;	
