@@ -1319,7 +1319,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 5;
+	uint8_t checkTimes = 2;
 	int checkTime = 0;
 	while(checkTimes--)
 	{
@@ -1389,7 +1389,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 status_t ROBOT_LeftGunCheckReloadAim(void)
 {
 	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 5;
+	uint8_t checkTimes = 2;
 	int checkTime = 0;
 	while(checkTimes--)
 	{
@@ -1466,7 +1466,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 status_t ROBOT_RightGunCheckAim(void)
 {
 	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 5;
+	uint8_t checkTimes = 2;
 	int checkTime = 0;
 	while(checkTimes--)
 	{
@@ -1536,7 +1536,7 @@ status_t ROBOT_RightGunCheckAim(void)
 status_t ROBOT_RightGunCheckReloadAim(void)
 {
 	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 5;
+	uint8_t checkTimes = 2;
 	int checkTime = 0;
 	while(checkTimes--)
 	{
@@ -1615,7 +1615,7 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 status_t ROBOT_UpperGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，5秒
-	uint8_t checkTimes = 5;
+	uint8_t checkTimes = 2;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	while(checkTimes--)
@@ -1659,8 +1659,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			{
 				continue;
 			}
-			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +2.0f || \
-				gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -2.0f)
+			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.5f || \
+				gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.5f)
 			{
 				continue;
 			}

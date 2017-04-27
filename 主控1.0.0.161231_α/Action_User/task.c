@@ -737,7 +737,7 @@ void WalkTask(void)
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
-				MoveToCenter(-13023.14f, -3500.0f, 2000.0f);
+				MoveToCenter(-13023.14f, -3800.0f, 2000.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -756,7 +756,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveToCenter(13023.14f, 3500.0f, 2000.0f);		
+				MoveToCenter(13023.14f, 3800.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -864,7 +864,7 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
+                MoveToCenter(-6459.14f, 3200.0f, 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -877,7 +877,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, -3000.0f, 2000.0f);
+                MoveToCenter(6459.14f, -3200.0f, 2000.0f);
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();
@@ -1283,7 +1283,6 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
-	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(118.0f));
 //	OSTimeDly(250);
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
