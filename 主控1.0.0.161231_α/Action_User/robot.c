@@ -1383,6 +1383,75 @@ status_t ROBOT_LeftGunCheckAim(void)
 	return GUN_NO_ERROR;
 }
 
+
+status_t ROBOT_LeftGunCheckReloadAim(void)
+{
+	//超时时间为20*5*10ms，1秒
+	uint8_t checkTimes = 5;
+	int checkTime = 0;
+	while(checkTimes--)
+	{
+		int timeout = 20;
+		while(timeout--)
+		{
+			ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
+			ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
+			OSTimeDly(5);
+			USART_SendData(UART5, (uint8_t)-22);
+			LeftGunSendDebugInfo();
+			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
+			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.reloadPose.pitch + 0.5f || \
+				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.reloadPose.pitch - 0.5f)
+			{
+				continue;
+			}
+			
+			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.reloadPose.roll + 0.5f || \
+				gRobot.leftGun.actualPose.roll < gRobot.leftGun.reloadPose.roll - 0.5f)
+			{
+				continue;
+			}
+			
+			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.reloadPose.yaw + 0.5f || \
+				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.reloadPose.yaw - 0.5f)
+			{
+				continue;
+			}
+//			if(gRobot.leftGun.targetPlant == PLANT1 || gRobot.leftGun.targetPlant == PLANT6)
+//			{
+//				if(fabs(gRobot.leftGun.actualPose.speed1 + gRobot.leftGun.actualPose.speed2 
+//					- gRobot.leftGun.targetPose.speed1 - gRobot.leftGun.targetPose.speed2) > 4.0f)
+//				{
+//					continue;
+//				}
+//				if(fabs(gRobot.leftGun.actualPose.speed1 - gRobot.leftGun.actualPose.speed2 
+//					- gRobot.leftGun.targetPose.speed1 + gRobot.leftGun.targetPose.speed2) > 4.0f)
+//				{
+//					continue;
+//				}
+//			}
+//			else
+//			{
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.reloadPose.speed1 + 1.0f|| \
+				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.reloadPose.speed1 - 1.0f)
+			{
+				continue;
+			}
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.reloadPose.speed2 + 1.0f || \
+				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.reloadPose.speed2 - 1.0f)
+			{
+				continue;
+			}
+//			}
+			//运行到这里，表示都满足指标，跳出循环
+			break;
+		}
+		checkTime += (50-timeout);	
+	}
+	gRobot.leftGun.checkTimeUsage = checkTime;
+	gRobot.leftGun.ready = GUN_AIM_DONE;
+	return GUN_NO_ERROR;
+}
 /*
 *名称：ROBOT_RightGunCheckAim
 *功能：检查瞄准是否已完成，不同枪分开检测为了防止重入，
@@ -1462,7 +1531,76 @@ status_t ROBOT_RightGunCheckAim(void)
 	gRobot.rightGun.ready = GUN_AIM_DONE;
 	return GUN_NO_ERROR;
 }
-
+status_t ROBOT_RightGunCheckReloadAim(void)
+{
+	//超时时间为20*5*10ms，1秒
+	uint8_t checkTimes = 5;
+	int checkTime = 0;
+	while(checkTimes--)
+	{
+		int timeout = 20;
+		while(timeout--)
+		{
+			//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
+			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
+			OSTimeDly(5);
+			USART_SendData(UART5, (uint8_t)-44);
+			RightGunSendDebugInfo();
+			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
+			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.reloadPose.pitch + 0.5f || \
+				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.reloadPose.pitch - 0.5f)
+			{
+				continue;
+			}
+			
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.reloadPose.roll + 0.5f || \
+				gRobot.rightGun.actualPose.roll < gRobot.rightGun.reloadPose.roll - 0.5f)
+			{
+				continue;
+			}
+			
+			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.reloadPose.yaw + 0.5f || \
+				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.reloadPose.yaw - 0.5f)
+			{
+				continue;
+			}
+			
+//			if(gRobot.rightGun.targetPlant == PLANT5 || gRobot.rightGun.targetPlant == PLANT6)
+//			{
+//				if(fabs(gRobot.rightGun.actualPose.speed1 + gRobot.rightGun.actualPose.speed2 
+//					- gRobot.rightGun.targetPose.speed1 - gRobot.rightGun.targetPose.speed2) > 4.0f)
+//				{
+//					continue;
+//				}
+//				if(fabs(gRobot.rightGun.actualPose.speed1 - gRobot.rightGun.actualPose.speed2 
+//					- gRobot.rightGun.targetPose.speed1 + gRobot.rightGun.targetPose.speed2) > 4.0f)
+//				{
+//					continue;
+//				}
+//			}
+//			else
+//			{
+				if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.reloadPose.speed1 + 1.0f || \
+					gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.reloadPose.speed1 - 1.0f)
+				{
+					continue;
+				}
+				if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.reloadPose.speed2 + 1.0f || \
+					gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.reloadPose.speed2 - 1.0f)
+				{
+					continue;
+				}
+//			}
+			//运行到这里，表示都满足指标，跳出循环
+			break;
+		}
+		checkTime+=(50-timeout);	
+	}
+	gRobot.rightGun.checkTimeUsage = checkTime;
+	gRobot.rightGun.ready = GUN_AIM_DONE;
+	return GUN_NO_ERROR;
+}
 /*
 *名称：ROBOT_UpperGunCheckAim
 *功能：检查瞄准是否已完成，不同枪分开检测为了防止重入，

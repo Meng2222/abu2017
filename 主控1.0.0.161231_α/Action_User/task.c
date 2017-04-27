@@ -1022,13 +1022,13 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunShoot();
 				if(gRobot.leftGun.targetPlant == PLANT7)
 				{
-						gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[SHOOT_POINT3]\
-																			[gRobot.leftGun.shootParaMode]\
-																			[gRobot.leftGun.targetPlant];
+					gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[SHOOT_POINT3]\
+																		[gRobot.leftGun.shootParaMode]\
+																		[gRobot.leftGun.targetPlant];
 
-						ROBOT_LeftGunReloadAim();
-						ROBOT_LeftGunCheckAim();
-						LeftPush();
+					ROBOT_LeftGunReloadAim();
+					ROBOT_LeftGunCheckReloadAim();
+					LeftPush();
 				}
 				ROBOT_LeftGunReload();
 //				OSTimeDly(50);
@@ -1216,7 +1216,7 @@ void RightGunShootTask(void)
 																[gRobot.rightGun.targetPlant];
 
 					ROBOT_RightGunReloadAim();
-					ROBOT_RightGunCheckAim();
+					ROBOT_RightGunCheckReloadAim();
 					RightPush();
 				}
 				ROBOT_RightGunReload();

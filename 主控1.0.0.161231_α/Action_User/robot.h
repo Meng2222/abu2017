@@ -494,6 +494,8 @@ status_t ROBOT_RightGunAim(void);
 status_t ROBOT_UpperGunAim(void);
 status_t ROBOT_LeftGunReloadAim(void);
 status_t ROBOT_RightGunReloadAim(void);
+status_t ROBOT_LeftGunCheckReloadAim(void);
+status_t ROBOT_RightGunCheckReloadAim(void);
 
 /*
 *名称：ROBOT_LeftGunCheckShootPoint
