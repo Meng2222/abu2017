@@ -82,7 +82,17 @@ static 	OS_STK  SelfCheckTaskStk[SELFCHECK_TASK_STK_SIZE];
 void LeftGunShootTask(void);
 void RightGunShootTask(void);
 void UpperGunShootTask(void);
-
+//定位系统初始化
+void GyroInit(void)
+{
+	USART_SendData(USART6,'A');
+	USART_SendData(USART6,'C');			
+	USART_SendData(USART6,'C');
+	USART_SendData(USART6,'T');
+	USART_SendData(USART6,'0');			
+	USART_SendData(USART6,'0');
+	USART_SendData(USART6,'0');
+}
 //调试数据发送不能超过30个字节，发送10个字节需要1ms
 void sendDebugInfo(void)
 {
@@ -456,13 +466,7 @@ void SelfCheckTask(void)
 				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);	
 			break;
 		case gpsCheck:
-			USART_SendData(USART6,'A');
-			USART_SendData(USART6,'C');			
-			USART_SendData(USART6,'C');
-			USART_SendData(USART6,'T');
-			USART_SendData(USART6,'0');			
-			USART_SendData(USART6,'0');
-			USART_SendData(USART6,'0');
+			GyroInit();
 			Sendfloat(gRobot.moveBase.actualXPos);
 			Sendfloat(gRobot.moveBase.actualYPos);
 			Sendfloat(gRobot.moveBase.actualAngle);
@@ -698,13 +702,8 @@ void WalkTask(void)
 			case getReady:				
 				if(PHOTOSENSORUPGUN)
 				{
-					USART_SendData(USART6,'A');
-					USART_SendData(USART6,'C');			
-					USART_SendData(USART6,'C');
-					USART_SendData(USART6,'T');
-					USART_SendData(USART6,'0');			
-					USART_SendData(USART6,'0');
-					USART_SendData(USART6,'0');
+					GyroInit();
+					//等待定位系统信号量
 					OSSemSet(GyroSem, 0, &os_err);
 					OSSemPend(GyroSem,200, &os_err);
 					if(os_err == OS_ERR_TIMEOUT)
