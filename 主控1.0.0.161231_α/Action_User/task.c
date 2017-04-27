@@ -588,9 +588,9 @@ void SelfCheckTask(void)
 			Sendfloat(gRobot.moveBase.actualYPos);
 			if(KEYSWITCH==1)
 			{
-		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
-		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
-		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);					
+				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
+				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
+				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);					
 				status_check++;
 			}
 			//gRobot.upperGun.targetZone
@@ -725,6 +725,7 @@ void WalkTask(void)
 							TIM_Delayms(TIM5,500);	
 						}
 					}
+					OSSemSet(PeriodSem, 0, &os_err);
 					ClampOpen();
 					TIM_Delayms(TIM5,20);
 					ROBOT_LeftGunHome();
