@@ -1617,7 +1617,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	//超时时间为100*5*10ms，5秒
 	uint8_t checkTimes = 5;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
-	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 2;
+	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	while(checkTimes--)
 	{
 		int timeout = 20;

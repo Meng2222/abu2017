@@ -28,6 +28,7 @@
 OS_EXT INT8U OSCPUUsage;
 OS_EVENT *PeriodSem;
 OS_EVENT *DebugPeriodSem;
+OS_EVENT *GyroSem;
 //定义互斥型信号量用于管理CAN发送资源
 OS_EVENT *CANSendMutex;
 //邮箱定义
@@ -266,6 +267,7 @@ void App_Task()
 	/*创建信号量*/
     PeriodSem				=	OSSemCreate(0);
 	DebugPeriodSem          =   OSSemCreate(0);
+	GyroSem                 =	OSSemCreate(0);
 	
 	//创建互斥型信号量
 	CANSendMutex            =   OSMutexCreate(9,&os_err);
@@ -454,6 +456,13 @@ void SelfCheckTask(void)
 				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);	
 			break;
 		case gpsCheck:
+			USART_SendData(USART6,'A');
+			USART_SendData(USART6,'C');			
+			USART_SendData(USART6,'C');
+			USART_SendData(USART6,'T');
+			USART_SendData(USART6,'0');			
+			USART_SendData(USART6,'0');
+			USART_SendData(USART6,'0');
 			Sendfloat(gRobot.moveBase.actualXPos);
 			Sendfloat(gRobot.moveBase.actualYPos);
 			Sendfloat(gRobot.moveBase.actualAngle);
@@ -661,7 +670,7 @@ void WalkTask(void)
 {
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
-	os_err = os_err;
+	os_err = os_err;	
 	int shootPointMsg = MOVEBASE_POS_READY;
     OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
@@ -696,6 +705,26 @@ void WalkTask(void)
 					USART_SendData(USART6,'0');			
 					USART_SendData(USART6,'0');
 					USART_SendData(USART6,'0');
+					OSSemSet(GyroSem, 0, &os_err);
+					OSSemPend(GyroSem,200, &os_err);
+					if(os_err == OS_ERR_TIMEOUT)
+					{
+						while(1)
+						{
+							USART_SendData(UART5 ,(uint8_t)99);
+							USART_SendData(UART5 ,(uint8_t)66);
+							USART_SendData(UART5 ,(uint8_t)99);
+							USART_SendData(UART5 ,(uint8_t)66);
+							USART_SendData(UART5 ,(uint8_t)-100);
+							USART_SendData(UART5 ,(uint8_t)-100);
+							USART_SendData(UART5 ,(uint8_t)-100);
+							USART_SendData(UART5 ,(uint8_t)-100);							
+							BEEP_ON;
+							TIM_Delayms(TIM5,500);
+							BEEP_OFF;
+							TIM_Delayms(TIM5,500);	
+						}
+					}
 					ClampOpen();
 					TIM_Delayms(TIM5,20);
 					ROBOT_LeftGunHome();

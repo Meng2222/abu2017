@@ -1071,6 +1071,7 @@ void UART4_IRQHandler(void)
 
 /****************陀螺仪串口接受中断********************/
 
+extern  OS_EVENT 		*GyroSem;
 void USART6_IRQHandler(void)       //更新频率200Hz
 {	 
 	static uint8_t ch;
@@ -1089,6 +1090,7 @@ void USART6_IRQHandler(void)       //更新频率200Hz
 
 	if(USART_GetITStatus(USART6, USART_IT_RXNE)==SET)   
 	{
+		OSSemPost(GyroSem);		
 		USART_ClearITPendingBit( USART6,USART_IT_RXNE);
 		ch=USART_ReceiveData(USART6);
 		switch(count)
