@@ -922,7 +922,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球
 		{
-			{1.0f,8.3f,0.0f,133.0f,0.0f},
+			{0.2f,8.1f,0.0f,133.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
