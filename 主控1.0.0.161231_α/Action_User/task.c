@@ -681,7 +681,7 @@ void WalkTask(void)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
-		if(status >= 3)
+		if(status >= load)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}

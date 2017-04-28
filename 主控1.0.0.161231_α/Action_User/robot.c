@@ -1935,21 +1935,21 @@ status_t ROBOT_LeftGunCheckConflict(void)
 	{
 		if(gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(30);
 		}
 	}
 	else if(gRobot.leftGun.targetPlant <= PLANT3)
 	{
 		if(gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant && gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(50);
 		}
 	}
 	else if(gRobot.leftGun.targetPlant >= PLANT6)
 	{
 		if(gRobot.rightGun.targetPlant <= PLANT2 && gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(50);
 		}
 	}
 	else
@@ -1957,7 +1957,7 @@ status_t ROBOT_LeftGunCheckConflict(void)
 		if((gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant || gRobot.leftGun.targetPlant > PLANT5)\
 			&&gRobot.rightGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(50);
 		}
 	}
 	return GUN_NO_ERROR;
@@ -1974,21 +1974,21 @@ status_t ROBOT_RightGunCheckConflict(void)
 	{
 		if(gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(30);
 		}
 	}
 	else if(gRobot.leftGun.targetPlant <= PLANT3)
 	{
 		if(gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant && gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(50);
 		}
 	}
 	else if(gRobot.leftGun.targetPlant >= PLANT6)
 	{
 		if(gRobot.rightGun.targetPlant <= PLANT2 && gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(50);
 		}
 	}
 	else
@@ -1996,7 +1996,7 @@ status_t ROBOT_RightGunCheckConflict(void)
 		if((gRobot.rightGun.targetPlant < gRobot.leftGun.targetPlant || gRobot.leftGun.targetPlant > PLANT5)\
 			&&gRobot.leftGun.shoot == GUN_START_SHOOT)
 		{
-			OSTimeDly(80);
+			OSTimeDly(50);
 		}
 	}
 	return GUN_NO_ERROR;
