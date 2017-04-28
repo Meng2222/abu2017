@@ -93,6 +93,10 @@ static void LeftGunInit(void)
 	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 30000,30000,80000);//翻滚
 	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,30000,30000,80000);//航向
 	
+	
+	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
+	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
+
 
 }
 
@@ -165,6 +169,10 @@ static void RightGunInit(void)
 	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 30000,30000,80000);//俯仰
 	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 30000,30000,80000);//翻滚
 	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,30000,30000,80000);//航向
+	
+	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
+	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
+
 }
 
 static void UpperGunInit(void)
@@ -222,6 +230,8 @@ static void UpperGunInit(void)
 	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,350000,350000);
 	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,30000,30000,50000);//航向
 	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,30000,30000,50000);//俯仰
+	
+	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
 
 /*
