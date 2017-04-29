@@ -420,11 +420,6 @@
               <FilePath>..\Action_User\can.c</FilePath>
             </File>
             <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\adc.c</FilePath>
-            </File>
-            <File>
               <FileName>gasvalvecontrol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Action_User\gasvalvecontrol.c</FilePath>

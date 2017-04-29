@@ -1,9 +1,43 @@
+/**
+  *******************************************************************************************************
+  * @file	 dma.c
+  * @author  ACTION_2017
+  * @version V
+  * @date	 2017/04/29
+  * @brief   This file contains 
+  *
+  *******************************************************************************************************
+  * @attention
+  *
+  *
+  *******************************************************************************************************
+  */
+
+/* Includes -------------------------------------------------------------------------------------------*/
+
 #include "stm32f4xx_dma.h"
 #include "stm32f4xx_rcc.h"
 #include "misc.h"
 #include "usart.h"
+#include "dma.h"
 
+/* Private typedef ------------------------------------------------------------------------------------*/
+/* Private define -------------------------------------------------------------------------------------*/
 #define BUFF_CAPACITY 500
+/* Private macro --------------------------------------------------------------------------------------*/
+/* Private variables ----------------------------------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
+
+/**
+  * @brief  
+  * @note
+  * @param  
+  * @retval None
+  */
+
+
+
 uint8_t UART5SendBuff[BUFF_CAPACITY] = {0};
 
 void UART5DMAInit(void)
@@ -29,13 +63,14 @@ void UART5DMAInit(void)
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;        //8 bit data  32??MCU?1?half-word?16 bits
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;         
+	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;       
 	DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
 	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
 	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 	DMA_Init(DMA1_Stream7, &DMA_InitStructure);
 	DMA_Cmd(DMA1_Stream7, ENABLE);
 		
+	USART_DMACmd(UART5,USART_DMAReq_Tx,ENABLE);
 	DMA_ITConfig(DMA1_Stream7,DMA_IT_TC,ENABLE);  	
 
 	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream7_IRQn;

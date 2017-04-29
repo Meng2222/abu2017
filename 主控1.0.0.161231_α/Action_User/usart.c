@@ -419,7 +419,6 @@ void UART5_Init(uint32_t BaudRate)
 	USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
 	/* Enable USART */
 	USART_Cmd(UART5, ENABLE);
-	USART_DMACmd(UART5,USART_DMAReq_Tx,ENABLE);
 
  //------------------------------------------------------------
 	//以下三句若使用蓝牙需屛掉
