@@ -351,8 +351,8 @@ void ConfigTask(void)
 	
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
-//	UART5_Init(115200);		//调试用wifi
-	UART5DMAInit();
+	UART5_Init(115200);		//调试用wifi
+//	UART5DMAInit();
 	//******************
 //	USART3_Init(115200);    //摄像头
 	//*******************
