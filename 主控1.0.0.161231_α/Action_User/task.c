@@ -16,9 +16,10 @@
 #include "database.h"
 #include "flash.h"
 #include "movebase2.h"
+#include "dma.h"
 //#define RED_FIELD
 #define BLUE_FIELD
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 #define NO_COMMAND_COUNTER 300
 /*
 ===============================================================
@@ -350,8 +351,8 @@ void ConfigTask(void)
 	
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
-	UART5_Init(115200);		//调试用wifi
-	
+//	UART5_Init(115200);		//调试用wifi
+	UART5DMAInit();
 	//******************
 //	USART3_Init(115200);    //摄像头
 	//*******************
@@ -918,7 +919,7 @@ void LeftGunShootTask(void)
 #endif
 //	LeftBack();
 	OSTimeDly(50);
-	LeftPush();
+//	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -969,6 +970,11 @@ void LeftGunShootTask(void)
 																				[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
 						ROBOT_LeftGunAim();
+					}
+					if(gRobot.leftGun.shootTimes == 0)
+					{
+						ROBOT_LeftGunCheckAim();
+						LeftPush();
 					}
 					ROBOT_LeftGunReload();				
 					
@@ -1094,7 +1100,7 @@ void RightGunShootTask(void)
 #endif
 //	RightBack();
 	OSTimeDly(50);
-	RightPush();
+//	RightPush();
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -1145,6 +1151,11 @@ void RightGunShootTask(void)
 																		[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 						ROBOT_RightGunAim();
+					}
+					if(gRobot.rightGun.shootTimes == 0)
+					{
+						ROBOT_RightGunCheckAim();
+						RightPush();
 					}
 					ROBOT_RightGunReload();				
 
@@ -1422,14 +1433,41 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
+			if(	gRobot.plantState[PLANT1].ball == 0 &&\
+				gRobot.plantState[PLANT2].ball == 0 &&\
+				gRobot.plantState[PLANT3].ball == 0 &&\
+				gRobot.plantState[PLANT4].ball == 0 &&\
+				gRobot.plantState[PLANT5].ball == 0 &&\
+				gRobot.plantState[PLANT6].ball == 0 &&\
+				gRobot.plantState[PLANT7].ball == 0 &&\
+				gRobot.plantState[PLANT1].plate == 0 &&\
+				gRobot.plantState[PLANT2].plate == 0 &&\
+				gRobot.plantState[PLANT3].plate == 0 &&\
+				gRobot.plantState[PLANT4].plate == 0 &&\
+				gRobot.plantState[PLANT5].plate == 0 &&\
+				gRobot.plantState[PLANT6].plate == 0 &&\
+				gRobot.plantState[PLANT7].plate == 0
+			)
+			{
+				for(uint8_t i = 0; i < 7;i++)
+				{
+					gRobot.plantState[i].ball = 1;
+				}
+				gRobot.plantState[PLANT6].ball = 2;
+				for(uint8_t i = 0; i < 7;i++)
+				{
+					gRobot.plantState[i].plate = 1;
+				}
+				gRobot.plantState[PLANT6].plate = 6;
+			}
 //			if(PHOTOSENSORUPGUN)
 //			{
 //				ClampClose();
 //			}
-			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
-			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
-			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
-			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);
+//			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+//			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
+//			ReadActualPos(CAN1,LEFT_GUN_GROUP_ID);		
+//			ReadActualVel(CAN1,LEFT_GUN_VEL_GROUP_ID);
 //			USART_SendData(UART5,OSCPUUsage);
 //			USART_SendData(UART5,(uint8_t)-100);
 //			USART_SendData(UART5,(uint8_t)-100);

@@ -787,11 +787,11 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
-			OSTimeDly(60);
+			OSTimeDly(30);
 		}
 		else
 		{
-			OSTimeDly(45);
+			OSTimeDly(20);
 		}
 //		if(gRobot.leftGun.shootTimes == 0)
 //		{
@@ -831,11 +831,11 @@ status_t ROBOT_RightGunReload(void)
 		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
-			OSTimeDly(60);
+			OSTimeDly(30);
 		}
 		else
 		{
-			OSTimeDly(45);
+			OSTimeDly(20);
 		}
 //		while(pushTimes--)
 //		{
@@ -923,7 +923,7 @@ status_t ROBOT_RightGunCheckReload(void)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-	#define LEFT_AUTO_NUMBER 10u
+	#define LEFT_AUTO_NUMBER 5u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
 	//防止同一个枪连续执行命令
@@ -1087,7 +1087,7 @@ status_t ROBOT_LeftGunReloadAim(void)
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
-	#define RIGHT_AUTO_NUMBER 10u
+	#define RIGHT_AUTO_NUMBER 5u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
 	//右枪获得命令变难
@@ -1657,8 +1657,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			UpperGunSendDebugInfo();
 			
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 1.0f || \
-				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 1.0f)
+			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f || \
+				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}

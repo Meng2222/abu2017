@@ -45,7 +45,7 @@ void UART5DMAInit(void)
 	DMA_InitTypeDef DMA_InitStructure;
 	NVIC_InitTypeDef 	NVIC_InitStructure;
 
-	RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA1, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
 	UART5_Init(115200);
 
@@ -56,7 +56,7 @@ void UART5DMAInit(void)
 	DMA_InitStructure.DMA_PeripheralBaseAddr =(uint32_t)&(UART5->DR); // peripheral address, = & USART5->DR;
 	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)UART5SendBuf;	// memory address to save DMA data
 	DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;				// data dirction:  memory to peripheral
-	DMA_InitStructure.DMA_BufferSize = UART5_SEND_BUF_CAPACITY;					//the buffer size, in data unit
+	DMA_InitStructure.DMA_BufferSize = 0;					//the buffer size, in data unit
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;//8 bit data
@@ -68,7 +68,7 @@ void UART5DMAInit(void)
 	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
 	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 	DMA_Init(DMA1_Stream7, &DMA_InitStructure);
-	DMA_Cmd(DMA1_Stream7, ENABLE);
+//	DMA_Cmd(DMA1_Stream7, ENABLE);
 
 	USART_DMACmd(UART5,USART_DMAReq_Tx,ENABLE);
 	DMA_ITConfig(DMA1_Stream7,DMA_IT_TC,ENABLE);
@@ -95,9 +95,9 @@ void DMA1_Stream7_IRQHandler(void)
   * @param	None
   * @retval	None
   */
-void USART5_DMA_Send(void)
+void UART5_DMA_Send(void)
 {
-	while(DMA_GetFlagStatus(DMA1_Stream7,DMA_FLAG_TCIF7) == RESET);
+	while(DMA_GetCurrDataCounter(DMA1_Stream7) != 0u);
 	DMA_ClearFlag(DMA1_Stream7,DMA_FLAG_TCIF7);
 	DMA_Cmd(DMA1_Stream7, DISABLE);
 	while (DMA_GetCmdStatus(DMA1_Stream7) != DISABLE){}
