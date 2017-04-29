@@ -118,9 +118,9 @@ void sendDebugInfo(void)
 //	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2]);
 //	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
 
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
+	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
 
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
 //	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
@@ -687,7 +687,7 @@ void WalkTask(void)
 			ROBOT_CheckGunOpenSafety();
 		}
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
@@ -1433,32 +1433,34 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			if(	gRobot.plantState[PLANT1].ball == 0 &&\
-				gRobot.plantState[PLANT2].ball == 0 &&\
+			if(/*	gRobot.plantState[PLANT1].ball == 0 &&\
+				gRobot.plantState[PLANT2].ball == 0 &&\  */
 				gRobot.plantState[PLANT3].ball == 0 &&\
-				gRobot.plantState[PLANT4].ball == 0 &&\
-				gRobot.plantState[PLANT5].ball == 0 &&\
-				gRobot.plantState[PLANT6].ball == 0 &&\
+//				gRobot.plantState[PLANT4].ball == 0 &&\
+//				gRobot.plantState[PLANT5].ball == 0 &&\
+//				gRobot.plantState[PLANT6].ball == 0 &&
 				gRobot.plantState[PLANT7].ball == 0 &&\
-				gRobot.plantState[PLANT1].plate == 0 &&\
-				gRobot.plantState[PLANT2].plate == 0 &&\
-				gRobot.plantState[PLANT3].plate == 0 &&\
-				gRobot.plantState[PLANT4].plate == 0 &&\
-				gRobot.plantState[PLANT5].plate == 0 &&\
-				gRobot.plantState[PLANT6].plate == 0 &&\
+//				gRobot.plantState[PLANT1].plate == 0 &&\
+//				gRobot.plantState[PLANT2].plate == 0 &&
+				gRobot.plantState[PLANT3].plate == 0 &&
+//				gRobot.plantState[PLANT4].plate == 0 &&\
+//				gRobot.plantState[PLANT5].plate == 0 &&\
+//				gRobot.plantState[PLANT6].plate == 0 &&
 				gRobot.plantState[PLANT7].plate == 0
 			)
 			{
-				for(uint8_t i = 0; i < 7;i++)
-				{
-					gRobot.plantState[i].ball = 1;
-				}
-				gRobot.plantState[PLANT6].ball = 2;
-				for(uint8_t i = 0; i < 7;i++)
-				{
-					gRobot.plantState[i].plate = 1;
-				}
-				gRobot.plantState[PLANT6].plate = 6;
+//				for(uint8_t i = 0; i < 7;i++)
+//				{
+//					gRobot.plantState[i].ball = 1;
+//				}
+				gRobot.plantState[PLANT3].ball = 1;
+				gRobot.plantState[PLANT7].ball = 1;
+//				for(uint8_t i = 0; i < 7;i++)
+//				{
+//					gRobot.plantState[i].plate = 1;
+//				}
+				gRobot.plantState[PLANT3].plate = 1;
+				gRobot.plantState[PLANT7].plate = 1;				
 			}
 //			if(PHOTOSENSORUPGUN)
 //			{
