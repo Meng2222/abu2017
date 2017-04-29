@@ -35,7 +35,7 @@ void UART5DMAInit(void);
   * @param	None
   * @retval	None
   */
-void USART5_DMA_Send(void)
+void USART5_DMA_Send(void);
 void DMA1_Stream7_IRQHandler(void);
 
 /**
