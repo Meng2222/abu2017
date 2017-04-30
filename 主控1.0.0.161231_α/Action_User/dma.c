@@ -97,10 +97,56 @@ void DMA1_Stream7_IRQHandler(void)
   */
 void UART5_DMA_Send(void)
 {
-	while(DMA_GetCurrDataCounter(DMA1_Stream7) != 0u);
+	uint64_t timeout = 0;
+	while(DMA_GetCurrDataCounter(DMA1_Stream7) != 0u)
+	{
+		timeout++;
+		if(timeout > 0x0fffffff)
+		{
+			USART_SendData(UART5,'D');
+			USART_SendData(UART5,'M');
+			USART_SendData(UART5,'A');
+			USART_SendData(UART5,'C');
+			USART_SendData(UART5,'O');
+			USART_SendData(UART5,'U');
+			USART_SendData(UART5,'N');
+			USART_SendData(UART5,'T');
+			USART_SendData(UART5,'E');
+			USART_SendData(UART5,'R');	
+			USART_SendData(UART5,'R');
+			USART_SendData(UART5,'O');
+			USART_SendData(UART5,'R');
+			USART_SendData(UART5,'\r');
+			USART_SendData(UART5,'\n');
+
+		}
+	}
 	DMA_ClearFlag(DMA1_Stream7,DMA_FLAG_TCIF7);
 	DMA_Cmd(DMA1_Stream7, DISABLE);
-	while (DMA_GetCmdStatus(DMA1_Stream7) != DISABLE){}
+	timeout = 0;
+	while (DMA_GetCmdStatus(DMA1_Stream7) != DISABLE)
+	{
+		timeout++;
+		if(timeout > 0x0fffffff)
+		{
+			USART_SendData(UART5,'D');
+			USART_SendData(UART5,'M');
+			USART_SendData(UART5,'A');
+			USART_SendData(UART5,'N');
+			USART_SendData(UART5,'O');
+			USART_SendData(UART5,'T');
+			USART_SendData(UART5,'D');
+			USART_SendData(UART5,'I');
+			USART_SendData(UART5,'S');
+			USART_SendData(UART5,'A');	
+			USART_SendData(UART5,'B');
+			USART_SendData(UART5,'L');
+			USART_SendData(UART5,'E');
+			USART_SendData(UART5,'\r');
+			USART_SendData(UART5,'\n');
+
+		}	
+	}
 	DMA_SetCurrDataCounter(DMA1_Stream7, sendBufferCnt);
 	DMA_Cmd(DMA1_Stream7, ENABLE);
 	sendBufferCnt = 0u;

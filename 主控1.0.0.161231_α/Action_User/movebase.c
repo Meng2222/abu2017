@@ -413,6 +413,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 		while(1)
 		{
+			UART5_OUT((uint8_t *)"Outputspeed Over MAXSPEED error!!!!!!!!!!\r\n");
 			LockWheel();
 		}
 	}
@@ -455,6 +456,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 		while(1)
 		{
+			UART5_OUT((uint8_t *)"One Of The Motor Overspeed!!!!!!!!!!!!\r\n");
 			LockWheel();
 		}
 	}

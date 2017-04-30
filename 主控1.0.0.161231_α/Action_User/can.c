@@ -21,7 +21,7 @@
 #include "ucos_ii.h"
 #include "cpu.h"
 #include "gpio.h"
-
+#include "usart.h"
 /**
   * @brief  Initialize the CANx as encoder
   * @param  CANx:  CANx, where x can be 1,2
@@ -442,7 +442,15 @@ uint8_t CAN_TxMsg(CAN_TypeDef* CANx,
   
 	mbox= CAN_Transmit(CANx, &TxMessage);         	
 	i=0;
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+	uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN Error in Elmo Init!!!!!!!!!\r\n");
+		}
+	}
 	return 1;		
 }
 
@@ -495,7 +503,15 @@ int OSCANSendCmd(CAN_TypeDef* CANx, CanTxMsg* TxMessage)
 	OSMutexPend(CANSendMutex,0,&os_err);
 	//发送CAN消息
 	mailBox = CAN_Transmit(CANx,TxMessage);
-	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok));
+	uint16_t timeout = 0;
+	while(!(CAN_TransmitStatus(CANx,mailBox) == CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"OSCANSend Error!!!!!!!\r\n");
+		}
+	}
 	OSMutexPost(CANSendMutex);
 	return CAN_SEND_OK;
 

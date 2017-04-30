@@ -27,10 +27,25 @@
 
 /* Exported types ------------------------------------------------------------*/
 
-/** 
-  * @brief  
+/** @defgroup 
+  * @brief 
+  * @{
   */
 
+typedef struct
+{
+	float x;
+	float y;
+	float angle;
+	//路程
+	float journey;
+	//abbr. displacement
+	float disp;
+}recordWalkTrackInfo_t;
+
+/**
+  * @}
+  */
 
  
 /* Exported constants --------------------------------------------------------*/

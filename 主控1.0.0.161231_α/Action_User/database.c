@@ -19,7 +19,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-
+uint16_t recordPointTotalNum = 1u;
 /** @defgroup Gun_Shoot_Position_Database
   * @brief
   * @{
@@ -1183,7 +1183,18 @@ posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY]={0};
 /**
   * @}
   */
-
+/** @defgroup Walk_Track_Database
+  * @brief    此结构体数组的大小为 WALKTRACKDATABASE_POINT_NUMBER * 3 * 4 Byte
+  * @{
+  */
+#ifdef COLLECTING_DOT_ENABLE
+recordWalkTrackInfo_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY]={0};
+#else
+//const recordWalkTrackInfo_t *gWalkTrackDatabase = (recordWalkTrackInfo_t *)(0x08060004);
+#endif
+/**
+  * @}
+  */
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

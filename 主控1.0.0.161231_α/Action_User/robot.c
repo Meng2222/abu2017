@@ -1388,7 +1388,11 @@ status_t ROBOT_LeftGunCheckAim(void)
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime += (50-timeout);	
+		checkTime += (20-timeout)*5;	
+	}
+	if(checkTime > 300)
+	{
+		UART5_OUT((uint8_t *)"Left Gun Check Time Out !!!\r\n");
 	}
 	gRobot.leftGun.checkTimeUsage = checkTime;
 	gRobot.leftGun.ready = GUN_AIM_DONE;
@@ -1457,7 +1461,11 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime += (50-timeout);	
+		checkTime += (20-timeout)*5;	
+	}
+	if(checkTime > 300)
+	{
+		UART5_OUT((uint8_t *)"Left Gun  Reload Check Time Out !!!\r\n");
 	}
 	gRobot.leftGun.checkTimeUsage = checkTime;
 	gRobot.leftGun.ready = GUN_AIM_DONE;
@@ -1535,7 +1543,11 @@ status_t ROBOT_RightGunCheckAim(void)
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime+=(50-timeout);	
+		checkTime+=(20-timeout)*5;	
+	}
+	if(checkTime > 300)
+	{
+		UART5_OUT((uint8_t *)"Right Gun Check Time Out !!!\r\n");
 	}
 	gRobot.rightGun.checkTimeUsage = checkTime;
 	gRobot.rightGun.ready = GUN_AIM_DONE;
@@ -1604,7 +1616,11 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime+=(50-timeout);	
+		checkTime+=(20-timeout)*5;	
+	}
+	if(checkTime > 300)
+	{
+		UART5_OUT((uint8_t *)"Right Gun Reload Check Time Out !!!\r\n");
 	}
 	gRobot.rightGun.checkTimeUsage = checkTime;
 	gRobot.rightGun.ready = GUN_AIM_DONE;
@@ -1623,6 +1639,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	//超时时间为100*5*10ms，5秒
 	uint8_t checkTimes = 2;
+	int checkTime = 0;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	while(checkTimes--)
@@ -1674,8 +1691,12 @@ status_t ROBOT_UpperGunCheckAim(void)
 			//这里检查传送带的速度，暂时没有加
 			break;
 		}
+		checkTime+=(20 - timeout) *5;
 	}
-	
+	if(checkTime > 300)
+	{
+		UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
+	}	
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
 		gRobot.upperGun.shoot = GUN_START_SHOOT;

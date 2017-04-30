@@ -1,5 +1,6 @@
 #include "elmo.h"
 #include "can.h"
+#include "usart.h"
 #include "gpio.h"
 
  /**************初始化驱动器********************/
@@ -33,7 +34,15 @@ void elmo_Enable(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+	uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in Elmo Enable!!!!!!!!!\r\n");
+		}
+	}
 }
 /**************失能电机***************************/
 void elmo_Disable(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -62,7 +71,15 @@ void elmo_Disable(CAN_TypeDef* CANx, uint8_t ElmoNum)
 		TxMessage.Data[6] = (*(unsigned long*)&data[i][1]>>16)&0xff;
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 		mbox= CAN_Transmit(CANx, &TxMessage);
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		uint16_t timeout = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			timeout++;
+			if(timeout > 60000)
+			{
+				UART5_OUT((uint8_t *)"CAN error in Elmo Disable!!!!!!!!!\r\n");
+			}
+		}
 	}
 
 }
@@ -106,7 +123,15 @@ void Vel_cfg(CAN_TypeDef* CANx, uint8_t ElmoNum,uint32_t acc,uint32_t dec)
 			TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
 			mbox= CAN_Transmit(CANx, &TxMessage);
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+			uint16_t timeout = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			timeout++;
+			if(timeout > 60000)
+			{
+				UART5_OUT((uint8_t *)"CAN error in Vel_Cfg!!!!!!!!!\r\n");
+			}
+		}
 	}
 }
 
@@ -139,7 +164,15 @@ void VelCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,int vel)
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
 		mbox= CAN_Transmit(CANx, &TxMessage);
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		uint16_t timeout = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			timeout++;
+			if(timeout > 60000)
+			{
+				UART5_OUT((uint8_t *)"CAN error in VelCrl!!!!!!!!!\r\n");
+			}
+		}
 	}
 }
 
@@ -200,7 +233,15 @@ void Pos_cfg(CAN_TypeDef* CANx, uint8_t ElmoNum,uint32_t acc,uint32_t dec,uint32
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
 		mbox= CAN_Transmit(CANx, &TxMessage);
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		uint16_t timeout = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			timeout++;
+			if(timeout > 60000)
+			{
+				UART5_OUT((uint8_t *)"CAN error in Pos_Cfg!!!!!!!!!\r\n");
+			}
+		}
 	}
 }
 
@@ -243,7 +284,15 @@ void PosCrl(CAN_TypeDef* CANx, uint8_t ElmoNum,uint8_t rel_abs,int pos)
 		TxMessage.Data[7] = (*(unsigned long*)&data[i][1]>>24)&0xff;
 
 		mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		uint16_t timeout = 0;
+		while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+		{
+			timeout++;
+			if(timeout > 60000)
+			{
+				UART5_OUT((uint8_t *)"CAN error in PosCrl!!!!!!!!!\r\n");
+			}
+		}
 	}
 
 }
@@ -271,7 +320,15 @@ void ReadActualVoltage(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadVoltage!!!!!!!!!\r\n");
+		}
+	}
  }
 
 /* 读取电机电流 */
@@ -298,8 +355,15 @@ void ReadActualCurrent(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
- }
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadCurrent!!!!!!!!!\r\n");
+		}
+	} }
 
 /* 读取电机位置 */
 void ReadActualPos(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -325,8 +389,15 @@ void ReadActualPos(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
- }
+	uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadPos!!!!!!!!!\r\n");
+		}
+	} }
 
 /* 读取电机速度 */
 void ReadActualVel(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -352,8 +423,15 @@ void ReadActualVel(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
-}
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadVel!!!!!!!!!\r\n");
+		}
+	}}
 
 void ReadActualTemperature(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
@@ -378,7 +456,15 @@ void ReadActualTemperature(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadTemperature!!!!!!!!!\r\n");
+		}
+	}
 }
 void ReadCurrentLimitFlag(CAN_TypeDef* CANx, uint8_t ElmoNum)
 {
@@ -405,7 +491,15 @@ void ReadCurrentLimitFlag(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadCurrentLimitFlag!!!!!!!!!\r\n");
+		}
+	}
 }
 
 void ReadVelocityError(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -433,7 +527,15 @@ void ReadVelocityError(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadVelError!!!!!!!!!\r\n");
+		}
+	}
 }
 
 void ReadCommandVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -461,7 +563,15 @@ void ReadCommandVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadDV!!!!!!!!!\r\n");
+		}
+	}
 }
 
 void ReadJoggingVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -489,7 +599,15 @@ void ReadJoggingVelocity(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+	uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadJV!!!!!!!!!\r\n");
+		}
+	}
 }
 
 void ReadUnitMode(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -517,7 +635,15 @@ void ReadUnitMode(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadUnitMode!!!!!!!!!\r\n");
+		}
+	}
 }
 
 void ReadReferenceMode(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -545,7 +671,15 @@ void ReadReferenceMode(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadRM!!!!!!!!!\r\n");
+		}
+	}
 }
 
 void ReadMotorFailure(CAN_TypeDef* CANx, uint8_t ElmoNum)
@@ -573,7 +707,15 @@ void ReadMotorFailure(CAN_TypeDef* CANx, uint8_t ElmoNum)
 	TxMessage.Data[7] = (*(unsigned long*)&data[0][1]>>24)&0xff;
 
 	mbox= CAN_Transmit(CANx, &TxMessage);         //1.4us
-	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok));//μè′y238us
+		uint16_t timeout = 0;
+	while((CAN_TransmitStatus(CANx, mbox)!= CAN_TxStatus_Ok))
+	{
+		timeout++;
+		if(timeout > 60000)
+		{
+			UART5_OUT((uint8_t *)"CAN error in ReadMotorFailure!!!!!!!!!\r\n");
+		}
+	}
 }
 
 /**

@@ -97,12 +97,6 @@ void GyroInit(void)
 //调试数据发送不能超过30个字节，发送10个字节需要1ms
 void sendDebugInfo(void)
 {
-#ifdef RED_FIELD
-#define POS_X_OFFSET (50)
-#endif
-#ifdef BLUE_FIELD
-#define POS_X_OFFSET (-50)
-#endif
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
@@ -134,10 +128,10 @@ void sendDebugInfo(void)
 //	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 //			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
 			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
 		
-//	USART_SendData(UART5,(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.01f));
+	UART5_OUT((uint8_t *)"%d",(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
 	UART5BufPut('\r');
 	UART5BufPut('\n');
@@ -1035,13 +1029,10 @@ void LeftGunShootTask(void)
 		else
 		{
 			BEEP_ON;
-			USART_SendData(UART5, 1);	
-			USART_SendData(UART5, 44);
-			USART_SendData(UART5, (uint8_t)-100);
-			USART_SendData(UART5, (uint8_t)-100);
-			USART_SendData(UART5, (uint8_t)-100);
-			USART_SendData(UART5, (uint8_t)-100);
-			while(1) {}
+			while(1) 
+			{
+				UART5_OUT((uint8_t *)"Left Gun Mode Error!!!!!!!!!!\r\n");
+			}
 		}
 //		LeftGunSendDebugInfo();
 		gRobot.leftGun.checkTimeUsage = 0;
@@ -1229,13 +1220,10 @@ void RightGunShootTask(void)
 		else
 		{
 			BEEP_ON;
-			USART_SendData(UART5, 2);	
-			USART_SendData(UART5, 44);
-			USART_SendData(UART5, (uint8_t)-100);
-			USART_SendData(UART5, (uint8_t)-100);
-			USART_SendData(UART5, (uint8_t)-100);
-			USART_SendData(UART5, (uint8_t)-100);
-			while(1) {}
+			while(1) 
+			{
+				UART5_OUT((uint8_t *)"Right Gun Mode Error!!!!!!!!\r\n");
+			}
 		}
 //		RightGunSendDebugInfo();
 		gRobot.rightGun.checkTimeUsage = 0;
@@ -1378,7 +1366,10 @@ void UpperGunShootTask(void)
 		else
 		{
 			BEEP_ON;
-			while(1) {}
+			while(1) 
+			{
+				UART5_OUT((uint8_t *)"Upper Gun Mode Error!!!!!!!!!\r\n");
+			}
 		}
 	}
 }

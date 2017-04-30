@@ -649,7 +649,7 @@ void TIM2_IRQHandler(void)
 		{
 			moveTimer+=0.001f;
 		}
-		
+		velTimerCounting();
 		
 		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
@@ -1339,6 +1339,7 @@ void NMI_Handler(void)
 {
    while (1)
    {
+	   UART5_OUT((uint8_t *)"NMI exception !!!!!!!!!!!!!\r\n");
    }
 }
 
@@ -1353,6 +1354,7 @@ void HardFault_Handler(void)
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
+	  UART5_OUT((uint8_t *)"Hard Fault exception!!!!!!!!!!\r\n");
   }
 }
 
@@ -1366,6 +1368,7 @@ void MemManage_Handler(void)
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
   {
+	  UART5_OUT((uint8_t *)"Memory Manage exception occurs!!!!!!!!!\r\n");
   }
 }
 
@@ -1380,6 +1383,7 @@ void BusFault_Handler(void)
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
   {
+	  UART5_OUT((uint8_t *)"Bus Fault exception!!!!!!!!\r\n");
   }
 }
 
@@ -1394,6 +1398,7 @@ void UsageFault_Handler(void)
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
   {
+	  UART5_OUT((uint8_t *)"Usage Fault exception!!!!!!!!!\r\n");
   }
 }
 
