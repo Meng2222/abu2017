@@ -169,7 +169,10 @@ void UART5BufPut(uint8_t data)
 		UART5SendBuf[sendBufferCnt++] = data;
 		if(DMA_GetCmdStatus(DMA1_Stream7) == DISABLE && DMA_GetCurrDataCounter(DMA1_Stream7) == 0u)
 		{
-			UART5_DMA_Send();
+			if(sendBufferCnt > 100u)
+			{
+				UART5_DMA_Send();
+			}
 		}
 		else if(sendBufferCnt > 144u)
 		{

@@ -98,8 +98,8 @@ void GyroInit(void)
 void sendDebugInfo(void)
 {
 	
-	u5_printf((char *)"%.1f\t%d\t%d\t%d\t",status,\
-			gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+	u5_printf((char *)"%d\t%d\t%d\t%d\t%d\t",KEYSWITCH,status,\
+			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
