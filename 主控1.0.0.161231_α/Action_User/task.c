@@ -104,37 +104,37 @@ void sendDebugInfo(void)
 #define POS_X_OFFSET (-50)
 #endif
 	
-	UART5_OUT((uint8_t *)"%d %d %d %d ",status,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.targetSpeed.forwardWheelSpeed,(int)gRobot.moveBase.targetSpeed.backwardWheelSpeed);			
 
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.actualSpeed.leftWheelSpeed,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.actualSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.actualSpeed.forwardWheelSpeed,(int)gRobot.moveBase.actualSpeed.backwardWheelSpeed);			
 
-	UART5_OUT((uint8_t *)"%d %d %d %d ",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
 			(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1],\
 			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2],\
 			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
 			
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.acturalCurrent.leftWheelCurrent,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.acturalCurrent.leftWheelCurrent,\
 			(int)gRobot.moveBase.acturalCurrent.forwardWheelCurrent,(int)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);			
 
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature,\
 			(int)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature,(int)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);			
 
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
 			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
 
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
-	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
-	UART5_OUT((uint8_t *)"%d %d %d",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
 			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
 		
 //	USART_SendData(UART5,(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.01f));
@@ -144,22 +144,22 @@ void sendDebugInfo(void)
 }
 void LeftGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"l %d %d %d ",(int)gRobot.leftGun.checkTimeUsage,\
+	UART5_OUT((uint8_t *)"l\t%d\t%d\t%d\t",(int)gRobot.leftGun.checkTimeUsage,\
 		(int)gRobot.leftGun.targetPlant,(int) gRobot.leftGun.shootParaMode);
 	
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.yaw*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.leftGun.actualPose.yaw*10.0f));
 
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.pitch*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.pitch*10.0f),\
 		(int)(gRobot.leftGun.actualPose.pitch*10.0f));
 
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.roll*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.roll*10.0f),\
 		(int)(gRobot.leftGun.actualPose.roll*10.0f));
 	
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.speed1),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.speed1),\
 		(int)(gRobot.leftGun.actualPose.speed1));
 	
-	UART5_OUT((uint8_t *)"%d %d",(int)(gRobot.leftGun.targetPose.speed2),\
+	UART5_OUT((uint8_t *)"%d\t%d",(int)(gRobot.leftGun.targetPose.speed2),\
 		(int)(gRobot.leftGun.actualPose.speed2));	
 	
 	UART5BufPut('\r');
@@ -168,22 +168,22 @@ void LeftGunSendDebugInfo(void)
 }
 void RightGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"r %d %d %d ",(int)gRobot.rightGun.checkTimeUsage,\
+	UART5_OUT((uint8_t *)"r\t%d\t%d\t%d\t",(int)gRobot.rightGun.checkTimeUsage,\
 		(int)gRobot.rightGun.targetPlant,(int) gRobot.rightGun.shootParaMode);
 	
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.yaw*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.rightGun.actualPose.yaw*10.0f));
 
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.pitch*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.pitch*10.0f),\
 		(int)(gRobot.rightGun.actualPose.pitch*10.0f));
 
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.roll*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.roll*10.0f),\
 		(int)(gRobot.rightGun.actualPose.roll*10.0f));
 	
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.speed1),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.speed1),\
 		(int)(gRobot.rightGun.actualPose.speed1));
 	
-	UART5_OUT((uint8_t *)"%d %d",(int)(gRobot.rightGun.targetPose.speed2),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.speed2),\
 		(int)(gRobot.rightGun.actualPose.speed2));	
 	
 	UART5BufPut('\r');
@@ -192,16 +192,16 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u %d %d %d ",(int)gRobot.upperGun.checkTimeUsage,\
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
 		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode);
 	
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
 
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.upperGun.targetPose.pitch*10.0f),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.pitch*10.0f),\
 		(int)(gRobot.upperGun.actualPose.pitch*10.0f));
 	
-	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.upperGun.targetPose.speed1),\
+	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.speed1),\
 		(int)(gRobot.upperGun.actualPose.speed1));
 		
 	UART5BufPut('\r');

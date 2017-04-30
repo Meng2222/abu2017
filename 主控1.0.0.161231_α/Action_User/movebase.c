@@ -589,8 +589,8 @@ void MoveToCenter(float targetPos, float velX, float accX)
 //	USART_SendData(UART5,(uint8_t)moveTimer);
 //	USART_SendData(UART5,(int8_t)(expData.pos/100.0f));
 //	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
-	UART5BufPut((int)(speedDebug/100.0f));
-	UART5BufPut((int)(distDebug/10.0f));
+	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug/100.0f));
+	UART5_OUT((uint8_t *)"%d\t",(int)(distDebug/10.0f));
 	
 	
 	//速度给出至各轮

@@ -423,16 +423,16 @@ void CAN2_RX0_IRQHandler(void)
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
 				//下面代码除以100为了将m/s转换为0.1m/s，fix me
-				gRobot.moveBase.actualSpeed.leftWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+				gRobot.moveBase.actualSpeed.leftWheelSpeed =((msg.data32[1]))/100;
 			}
 			if(canNodeId == FORWARD_WHEEL_ID) 
 			{
-				gRobot.moveBase.actualSpeed.forwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+				gRobot.moveBase.actualSpeed.forwardWheelSpeed =((msg.data32[1]))/100;
 
 			}
 			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
-				gRobot.moveBase.actualSpeed.backwardWheelSpeed =(Pulse2Vel(msg.data32[1]))/100;
+				gRobot.moveBase.actualSpeed.backwardWheelSpeed =((msg.data32[1]))/100;
 			}
 		}
 		
@@ -488,11 +488,11 @@ void CAN2_RX0_IRQHandler(void)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+				gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity =(msg.data32[1])/100.0f;
 			}
 			if(canNodeId == FORWARD_WHEEL_ID) 
 			{
-				gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+				gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity = (msg.data32[1])/100.0f;
 			}
 			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
@@ -503,15 +503,15 @@ void CAN2_RX0_IRQHandler(void)
 		{
 			if(canNodeId == LEFT_WHEEL_ID) 
 			{
-				gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+				gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity = (msg.data32[1])/100.0f;
 			}
 			if(canNodeId == FORWARD_WHEEL_ID) 
 			{
-				gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+				gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity = (msg.data32[1])/100.0f;
 			}
 			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
-				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = (msg.data32[1])/100.0f;
 			}
 		}
 
