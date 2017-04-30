@@ -229,7 +229,18 @@ typedef struct
 **************************************************************************************/
 
 typedef int status_t;
+//着陆台状态
+typedef struct
+{
+	//是否有打球命令
+	unsigned char ball;
+	//是否有落盘命令
+	unsigned char plate;
+	//命令的执行状态
+	unsigned char ballState;
+	unsigned char plateState;
 
+}plant_t;
 typedef struct
 {
 	//枪航向角度
@@ -312,20 +323,10 @@ typedef struct
 	//等待命令计时
 	int noCommandTimer;
 
+	plant_t * gunCommand;
 }gun_t;
 
-//着陆台状态
-typedef struct
-{
-	//是否有打球命令
-	unsigned char ball;
-	//是否有落盘命令
-	unsigned char plate;
-	//命令的执行状态
-	unsigned char ballState;
-	unsigned char plateState;
 
-}plant_t;
 //着陆台类型
 typedef struct
 {
@@ -355,7 +356,7 @@ typedef struct
 	
 	plant_t autoCommand[7];
 	
-	plant_t * gunCommand;
+
 }robot_t;
 
 /*
