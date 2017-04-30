@@ -1141,7 +1141,7 @@ void USART6_IRQHandler(void)       //更新频率200Hz
 					gRobot.moveBase.actualXPos  = posture.ActVal[3];
 					gRobot.moveBase.actualYPos  = posture.ActVal[4];
 					posture.ActVal[5]           = posture.ActVal[5];
-					UpdateXYAngle(-posture.ActVal[0], posture.ActVal[3], posture.ActVal[4]);
+					UpdateXYAngle(posture.ActVal[0], posture.ActVal[3], posture.ActVal[4]);
 				}
 				count = 0;
 				break;

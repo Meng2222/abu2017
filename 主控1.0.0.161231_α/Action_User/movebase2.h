@@ -40,8 +40,6 @@
 
 
 /* Exported macro ------------------------------------------------------------*/
-#define RED_FIELD
-//#define BLUE_FIELD
 /* Exported functions --------------------------------------------------------*/
 
 /** @defgroup Get_Kinematic_Information
@@ -56,27 +54,7 @@
   * @retval	None
   */
 void SetXCorrection(float theoreticalX);
-/**
-  * @brief	设定位移量的矫正量 注意： 此矫正量并没有真正更改了gRobot 中的actualDisp
-  * @param	theoreticalDisp 理论上相对于原点的位移
-  * @retval	None
-  */
 void SetDispCorrection(float theoreticalDisp);
-
-/**
-  * @brief	为计算速度计数
-  * @note	
- * @param	None
-  * @retval	
-  */
-void velTimerCounting(void);
-
-/**
-  * @brief	获取位移的改正量
-  * @note	
-  * @retval	dispCorrection
-  */
-float GetDispCorrection(void);
 
 /**
   * @brief  UpdateMoveBaseData
@@ -87,22 +65,12 @@ float GetDispCorrection(void);
   * @retval None
   */
 void UpdateXYAngle(float angle, float posX, float posY);
-
-/**
-  * @brief  Calculate the absolute value of actual velocity and return it
-  *			This Function is suppose to be called every 10 ms
-  *			如果数据没有更新，则输出上一次计算的的速度
-  *			如果调用此函数之间超过多个10ms 也能输出正确的速度，
-  * @note 	fix me actualPosition 的更新是异步的,必须配合UpdateMOveBaseData()调用
-  * @param	None
-  * @retval a float that is the absolute value of velocity Unit: mm/s^2
-  */
 void UpdateKenimaticInfo(void);
+
+
 /**
   * @}
   */
-
-
 
 
 /** @defgroup Record_Walk_Track
@@ -117,13 +85,6 @@ void UpdateKenimaticInfo(void);
   * @retval
   */
 void RecordWalkingTrack(void);
-
-//fix me  Group is wrong
-/**
-  * @brief Find the point that displacement that is the closest one to the LAUNCH_AREA_DISP
-  * @retval	None
-  */
-void FindClosestPoint(void);
 
 /**
   * @}
