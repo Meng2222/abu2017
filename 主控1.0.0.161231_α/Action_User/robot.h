@@ -13,11 +13,10 @@
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
 //参数种类，打球，落盘
-#define SHOOT_METHOD_NUMBER		4
+#define SHOOT_METHOD_NUMBER		6
 //上枪参数种类
 #define UPPER_SHOOT_METHOD_NUMBER  3
-//发射位置个数
-#define SHOOT_POINT_NUMBER 3
+
 
 
 #define LEFT_GUN				1
@@ -190,7 +189,10 @@
 #define SHOOT_METHOD3  2
 //旧盘落盘参数
 #define SHOOT_METHOD4  3
-
+//补弹打球参数
+#define SHOOT_METHOD5  4
+//补弹落盘参数
+#define SHOOT_METHOD6  5
 //发射点位置
 //靠近装载区发射点
 #define SHOOT_POINT1 0

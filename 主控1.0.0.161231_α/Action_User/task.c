@@ -108,10 +108,10 @@ void sendDebugInfo(void)
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.actualSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.actualSpeed.forwardWheelSpeed,(int)gRobot.moveBase.actualSpeed.backwardWheelSpeed);			
 
-	u5_printf((char *)"%d\t%d\t%d\t%d\t",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
-			(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1],\
-			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2],\
-			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
+//	u5_printf((char *)"%d\t%d\t%d\t%d\t",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
+//			(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1],\
+//			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2],\
+//			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
 			
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.acturalCurrent.leftWheelCurrent,\
 			(int)gRobot.moveBase.acturalCurrent.forwardWheelCurrent,(int)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);			
@@ -119,8 +119,8 @@ void sendDebugInfo(void)
 //	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature,\
 //			(int)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature,(int)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);			
 
-	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
-			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
+//	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
+//			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
 
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
@@ -642,11 +642,11 @@ void WalkTask(void)
 		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
 //		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
 		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
 
 		UpdateKenimaticInfo();	
 		sendDebugInfo();
@@ -907,8 +907,7 @@ void LeftGunShootTask(void)
 					if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT3 )
 					{
 						//获取并更新枪目标姿态  上弹姿态
-						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootPoint]\
-																			[leftGunShootCommand.shootMethod]\
+						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootMethod]\
 																			[leftGunShootCommand.plantNum];
 
 						ROBOT_LeftGunAim();
@@ -916,13 +915,11 @@ void LeftGunShootTask(void)
 					}
 					else
 					{
-						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
-																				[leftGunShootCommand.shootMethod]\
+						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
 						ROBOT_LeftGunAim();
 					}
-					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
-																		[leftGunShootCommand.shootMethod]\
+					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																		[leftGunShootCommand.plantNum];
 
 					ROBOT_LeftGunAim();	
@@ -1009,8 +1006,7 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunShoot();
 				if(gRobot.leftGun.targetPlant == PLANT7)
 				{
-					gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[SHOOT_POINT3]\
-																		[gRobot.leftGun.shootParaMode]\
+					gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[gRobot.leftGun.shootParaMode]\
 																		[gRobot.leftGun.targetPlant];
 
 					ROBOT_LeftGunReloadAim();
@@ -1086,8 +1082,7 @@ void RightGunShootTask(void)
 					if(gRobot.rightGun.lastPlant == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 					{
 						//获取并更新枪目标姿态  上弹姿态
-						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootPoint]\
-																			[rightGunShootCommand.shootMethod]\
+						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootMethod]\
 																			[rightGunShootCommand.plantNum];
 
 						//调整枪姿为上弹姿态 need some time
@@ -1096,8 +1091,7 @@ void RightGunShootTask(void)
 					}
 					else
 					{
-						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
-																		[rightGunShootCommand.shootMethod]\
+						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 						ROBOT_RightGunAim();
 					}
@@ -1106,8 +1100,7 @@ void RightGunShootTask(void)
 						OSTimeDly(30);
 						RightPush();
 					}
-					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
-																		[rightGunShootCommand.shootMethod]\
+					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 
 					//调整枪姿为发射姿态 need some time
@@ -1200,8 +1193,7 @@ void RightGunShootTask(void)
 				ROBOT_RightGunShoot();
 				if(gRobot.rightGun.targetPlant == PLANT7)
 				{
-					gRobot.rightGun.reloadPose = gRightGunReloadPosDatabase[SHOOT_POINT3]\
-																[gRobot.rightGun.shootParaMode]\
+					gRobot.rightGun.reloadPose = gRightGunReloadPosDatabase[gRobot.rightGun.shootParaMode]\
 																[gRobot.rightGun.targetPlant];
 
 					ROBOT_RightGunReloadAim();
@@ -1382,40 +1374,19 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			GyroInit();
-			UART5_OUT((uint8_t *)"%d %d %d\r\n",\
-						(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-						(int)gRobot.moveBase.actualYPos);
-
-			
-			if(/*	gRobot.plantState[PLANT1].ball == 0 &&\
-				gRobot.plantState[PLANT2].ball == 0 &&\  */
-				gRobot.plantState[PLANT3].ball == 0 &&\
-//				gRobot.plantState[PLANT4].ball == 0 &&\
-//				gRobot.plantState[PLANT5].ball == 0 &&\
-//				gRobot.plantState[PLANT6].ball == 0 &&
-				gRobot.plantState[PLANT7].ball == 0 &&\
-//				gRobot.plantState[PLANT1].plate == 0 &&\
-//				gRobot.plantState[PLANT2].plate == 0 &&
-				gRobot.plantState[PLANT3].plate == 0 &&
-//				gRobot.plantState[PLANT4].plate == 0 &&\
-//				gRobot.plantState[PLANT5].plate == 0 &&\
-//				gRobot.plantState[PLANT6].plate == 0 &&
-				gRobot.plantState[PLANT7].plate == 0
-			)
+			if(gRobot.autoCommand[PLANT1].ball == 0&&\
+				gRobot.autoCommand[PLANT2].ball == 0 &&\
+				gRobot.autoCommand[PLANT1].plate == 0 &&\
+				gRobot.autoCommand[PLANT2].plate == 0)
 			{
-//				for(uint8_t i = 0; i < 7;i++)
-//				{
-//					gRobot.plantState[i].ball = 1;
-//				}
-				gRobot.plantState[PLANT3].ball = 1;
-				gRobot.plantState[PLANT7].ball = 1;
-//				for(uint8_t i = 0; i < 7;i++)
-//				{
-//					gRobot.plantState[i].plate = 1;
-//				}
-				gRobot.plantState[PLANT3].plate = 1;
-				gRobot.plantState[PLANT7].plate = 1;				
+				for(uint8_t i = 0; i < 7;i++)
+				{
+					gRobot.autoCommand[i].ball = 1;
+				}
+				for(uint8_t i = 0; i < 7;i++)
+				{
+					gRobot.autoCommand[i].plate = 1;
+				}			
 			}
 //			if(PHOTOSENSORUPGUN)
 //			{

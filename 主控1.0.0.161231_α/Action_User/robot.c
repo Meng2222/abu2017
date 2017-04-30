@@ -29,18 +29,18 @@ static void LeftGunInit(void)
 //	gRobot.leftGun.targetPose.yaw = 0.0f;
 //	gRobot.leftGun.targetPose.roll = 0.0f;
 	//特殊上弹角度
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT7].pitch = 20.0f;	
+	gLeftGunReloadPosDatabase[SHOOT_METHOD1][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;	
 	
-	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
-	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
-	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootPoint][gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].roll;
+	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
+	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
+	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].roll;
 	
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.leftGun.maxPoseLimit.yaw = 50.0f;
@@ -108,18 +108,18 @@ static void RightGunInit(void)
 	gRobot.rightGun.actualPose.roll = 0.0f;
 	
 
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD1][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD3][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;
 	
-	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
-	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
-	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootPoint][gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].roll;
+	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
+	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
+	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].roll;
 	
 	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
@@ -929,7 +929,7 @@ status_t ROBOT_RightGunCheckReload(void)
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
 	#define LEFT_AUTO_NUMBER 4u
-	#define NEW_PLATE_NUM 10u
+	#define LEFT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
 	//防止同一个枪连续执行命令
@@ -961,10 +961,12 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 			if(gRobot.leftGun.gunCommand[LeftGunPriority[i]].ball >= 1)
 			{
 				shootCommand.plantNum = LeftGunPriority[i];
-				if(gRobot.leftGun.shootTimes < NEW_PLATE_NUM)
+				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD3;
+				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+					shootCommand.shootMethod = SHOOT_METHOD5;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD1;
+					shootCommand.shootMethod = SHOOT_METHOD1;					
 				//不连续打同一组参数
 				if(LeftGunPriority[i] == gRobot.leftGun.lastPlant && \
 					gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
@@ -984,8 +986,10 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 			if(gRobot.leftGun.gunCommand[LeftGunPriority[i]].plate >= 1)
 			{
 				shootCommand.plantNum = LeftGunPriority[i];
-				if(gRobot.leftGun.shootTimes < NEW_PLATE_NUM)
+				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
+				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+					shootCommand.shootMethod = SHOOT_METHOD6;					
 				else
 					shootCommand.shootMethod = SHOOT_METHOD4;			
 				//不连续打同一组参数
@@ -1017,23 +1021,10 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 			if(shootCommand.plantNum == PLANT5)
 			{
 				gRobot.leftGun.commandState = GUN_NO_COMMAND;
-				switch(shootCommand.shootMethod)
-				{
-					case SHOOT_METHOD1:
-						gRobot.leftGun.gunCommand[shootCommand.plantNum].ball += 1;
-						break;
-					case SHOOT_METHOD2:
-						gRobot.leftGun.gunCommand[shootCommand.plantNum].plate += 1;
-						break;
-					case SHOOT_METHOD3:
-						gRobot.leftGun.gunCommand[shootCommand.plantNum].ball += 1;
-						break;
-					case SHOOT_METHOD4:
-						gRobot.leftGun.gunCommand[shootCommand.plantNum].plate += 1;
-						break;					
-					default:
-						break;
-				}
+				if(shootCommand.shootMethod%2)
+					gRobot.leftGun.gunCommand[shootCommand.plantNum].plate += 1;
+				else
+					gRobot.leftGun.gunCommand[shootCommand.plantNum].ball += 1;
 			}
 		}
 //	}
@@ -1098,7 +1089,7 @@ status_t ROBOT_LeftGunReloadAim(void)
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
 	#define RIGHT_AUTO_NUMBER 4u
-	#define NEW_PLATE_NUM 10u
+	#define RIGHT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
 	//右枪获得命令变难
@@ -1123,8 +1114,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 			if(gRobot.rightGun.gunCommand[RightGunPriority[i]].ball >= 1)
 			{
 				shootCommand.plantNum = RightGunPriority[i];
-				if(gRobot.rightGun.shootTimes < NEW_PLATE_NUM)
+				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD3;
+				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
+					shootCommand.shootMethod = SHOOT_METHOD5;					
 				else
 					shootCommand.shootMethod = SHOOT_METHOD1;
 				//不连续同一组参数
@@ -1146,8 +1139,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 			if(gRobot.rightGun.gunCommand[RightGunPriority[i]].plate >= 1)
 			{
 				shootCommand.plantNum = RightGunPriority[i];
-				if(gRobot.rightGun.shootTimes < NEW_PLATE_NUM)
+				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
+				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
+					shootCommand.shootMethod = SHOOT_METHOD6;					
 				else
 					shootCommand.shootMethod = SHOOT_METHOD4;
 				//不连续打同一组参数
@@ -1181,23 +1176,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 			if(shootCommand.plantNum == PLANT1)
 			{
 				gRobot.rightGun.commandState = GUN_NO_COMMAND;
-				switch(shootCommand.shootMethod)
-				{
-					case SHOOT_METHOD1:
-						gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;
-						break;
-					case SHOOT_METHOD2:
-						gRobot.rightGun.gunCommand[shootCommand.plantNum].plate += 1;
-						break;
-					case SHOOT_METHOD3:
-						gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;
-						break;
-					case SHOOT_METHOD4:
-						gRobot.rightGun.gunCommand[shootCommand.plantNum].plate += 1;
-						break;
-					default:
-						break;
-				}
+				if(shootCommand.shootMethod%2)
+					gRobot.rightGun.gunCommand[shootCommand.plantNum].plate += 1;
+				else
+					gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;					
 			}
 		}
 //	}

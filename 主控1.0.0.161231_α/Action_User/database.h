@@ -86,10 +86,10 @@ typedef struct
   * @{
   */
 
-extern gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUMBER];
-extern gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUMBER];
-extern gun_pose_t gLeftGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUMBER];
-extern gun_pose_t gRightGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUMBER];
+extern gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER];
+extern gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER];
+extern gun_pose_t gLeftGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER];
+extern gun_pose_t gRightGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER];
 
 extern gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUMBER];
 
@@ -131,21 +131,21 @@ extern posture_t gWalkTrackDatabase[WALKTRACKDATABASE_POINT_CAPACITY];
   */
 
 /* Exported functions --------------------------------------------------------*/
-/**
-  * @brief  Update LeftGunPosDatabase in Manual Mode
-  * @note   this function will update the 
-  * @param  None
-  * @retval None
-  */
-void UpdateLeftGunPosDatabaseManualMode(void);
+///**
+//  * @brief  Update LeftGunPosDatabase in Manual Mode
+//  * @note   this function will update the 
+//  * @param  None
+//  * @retval None
+//  */
+//void UpdateLeftGunPosDatabaseManualMode(void);
 
-/**
-  * @brief  Update RightGunPosDatabase in Manual Mode
-  * @note   this function will update the 
-  * @param  None
-  * @retval None
-  */
-void UpdateRightGunPosDatabaseManualMode(void);
+///**
+//  * @brief  Update RightGunPosDatabase in Manual Mode
+//  * @note   this function will update the 
+//  * @param  None
+//  * @retval None
+//  */
+//void UpdateRightGunPosDatabaseManualMode(void);
 
 #ifdef __cplusplus
 }
