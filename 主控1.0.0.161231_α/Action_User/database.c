@@ -43,7 +43,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //5#着陆台
 		 {45.8f,32.5f, 40.6f,81.0f,24.0f},
 		 //6#着陆台
-		 {0.5f,26.9f, 3.7f,93.0f,15.0f},
+		 {0.5f,27.4f, 3.7f,93.0f,15.0f},
 		 //7#着陆台
 		 {26.2f,34.0f, 20.4f,83.0f,24.0f}},
 
@@ -175,13 +175,13 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 		 //5#着陆台
 		 {38.6f,13.0f, 8.4f,0.0f,112.0f},
 		 //6#着陆台
-		 {1.8f,8.5f,0.5f,22.0f,126.0f},
+		 {1.8f,9.0f,0.5f,22.0f,126.0f},
 		 //7#着陆台
 		 {5.5f, 25.4f, 7.9f,17.0f,81.0f}},
 
 		//第二类参数，对应新盘落盘参数
 		{//1#着陆台
-		  {-35.1f, 20.2f, 16.0f, 21.0f, 94.0f},
+		  {-34.6f, 20.2f, 16.0f, 21.0f, 94.0f},
 		 //2#着陆台
 //		 {-13.6f, 25.3f, 17.3f, 20.0f, 95.0f},
 		 {-16.8f, 26.2f, 13.5f, 18.0f, 94.0f},
@@ -583,7 +583,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		{//1#着陆台
 		 {-39.1f, 8.8f, 15.4f, 116.0f, 0.0f},
 		 //2#着陆台
-		 {-28.3f, 15.5f, 15.5f, 119.0f, 0.0f},
+		 {-28.3f, 15.8f, 15.5f, 119.0f, 0.0f},
 		 //3#着陆台
 		 {-5.5f, 23.5f, 12.7f, 111.0f, 5.0f},
 		 //4#着陆台
@@ -592,7 +592,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NU
 		 {30.3f,6.8f, 17.0f,115.0f,10.0f},
 		 //6#着陆台
 //		 {1.9f,8.0f, -1.4f,130.0f,23.0f},
-		 {4.9f,9.5f,0.6f,123.0f,19.0f},
+		 {4.9f,9.0f,0.6f,123.0f,19.0f},
 		 //7#着陆台
 		 {-5.0f,24.9f, 7.0f,11.0f,76.0f}},
 

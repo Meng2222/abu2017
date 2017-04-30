@@ -98,8 +98,8 @@ void GyroInit(void)
 void sendDebugInfo(void)
 {
 	
-	u5_printf((char *)"%d\t%d\t%d\t%d\t",status,\
-			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+	u5_printf((char *)"%.1f\t%d\t%d\t%d\t",status,\
+			gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
@@ -823,7 +823,6 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
 #endif
@@ -834,7 +833,6 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
 #endif
@@ -846,6 +844,7 @@ void WalkTask(void)
 				LockWheel();
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);		
+				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
 //				MoveY(50.0f);
 				SendStop2Camera();
@@ -942,13 +941,13 @@ void LeftGunShootTask(void)
 					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
 					{
 						ROBOT_LeftGunCheckAim();
-						OSTimeDly(200);
+//						OSTimeDly(200);
 //						gRobot.leftGun.ready = GUN_AIM_DONE;
 					}
 					else
 					{
 							ROBOT_LeftGunCheckAim();
-							OSTimeDly(200);
+//							OSTimeDly(200);
 //							gRobot.leftGun.ready = GUN_AIM_DONE;					
 					}
 //				OSTimeDly(75);
@@ -1124,13 +1123,13 @@ void RightGunShootTask(void)
 					if(rightGunShootCommand.plantNum == PLANT6)
 					{
 						ROBOT_RightGunCheckAim();
-						OSTimeDly(200);
+//						OSTimeDly(200);
 //						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 					else
 					{
 						ROBOT_RightGunCheckAim();
-						OSTimeDly(200);					
+//						OSTimeDly(200);					
 //						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 //					ROBOT_RightGunCheckAim();
@@ -1240,7 +1239,7 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
-//	OSTimeDly(250);
+	OSTimeDly(50);
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{

@@ -701,6 +701,7 @@ status_t ROBOT_Init(void)
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
 	gRobot.moveBase.targetPoint = 2;
+//	gRobot.gunCommand = gRobot.autoCommand;
 	for(uint8_t i = 0; i < 7;i++)
 	{
 		gRobot.plantState[i].ball = 1;

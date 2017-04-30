@@ -353,6 +353,9 @@ typedef struct
 	//着陆台状态
 	plant_t plantState[7];
 	
+	plant_t autoCommand[7];
+	
+	plant_t * gunCommand;
 }robot_t;
 
 /*
