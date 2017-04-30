@@ -923,7 +923,7 @@ status_t ROBOT_RightGunCheckReload(void)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-	#define LEFT_AUTO_NUMBER 5u
+	#define LEFT_AUTO_NUMBER 2u
 	#define NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
@@ -1088,7 +1088,7 @@ status_t ROBOT_LeftGunReloadAim(void)
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
-	#define RIGHT_AUTO_NUMBER 5u
+	#define RIGHT_AUTO_NUMBER 2u
 	#define NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
@@ -1677,8 +1677,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 				continue;
 			}
 			
-			if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.3f || \
-				gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.3f)
+			if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.2f || \
+				gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.2f)
 			{
 				continue;
 			}

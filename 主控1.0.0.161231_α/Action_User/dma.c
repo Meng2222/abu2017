@@ -14,7 +14,7 @@
   */
 
 /* Includes -------------------------------------------------------------------------------------------*/
-
+#include <string.h>
 #include "stm32f4xx_dma.h"
 #include "stm32f4xx_rcc.h"
 #include "misc.h"
@@ -30,6 +30,7 @@
 /* Private variables ----------------------------------------------------------------------------------*/
 static uint16_t sendBufferCnt = 0u;
 static uint8_t UART5SendBuf[UART5_SEND_BUF_CAPACITY] = {0};
+static uint8_t UART5DMASendBuf[UART5_SEND_BUF_CAPACITY] = {0};
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -54,7 +55,7 @@ void UART5DMAInit(void)
 
 	DMA_InitStructure.DMA_Channel = DMA_Channel_4;
 	DMA_InitStructure.DMA_PeripheralBaseAddr =(uint32_t)&(UART5->DR); // peripheral address, = & USART5->DR;
-	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)UART5SendBuf;	// memory address to save DMA data
+	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)UART5DMASendBuf;	// memory address to save DMA data
 	DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;				// data dirction:  memory to peripheral
 	DMA_InitStructure.DMA_BufferSize = 0;					//the buffer size, in data unit
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -123,6 +124,7 @@ void UART5_DMA_Send(void)
 	}
 	DMA_ClearFlag(DMA1_Stream7,DMA_FLAG_TCIF7);
 	DMA_Cmd(DMA1_Stream7, DISABLE);
+	memcpy(UART5DMASendBuf, UART5SendBuf, sendBufferCnt);
 	timeout = 0;
 	while (DMA_GetCmdStatus(DMA1_Stream7) != DISABLE)
 	{

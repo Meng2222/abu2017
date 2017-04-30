@@ -922,21 +922,23 @@ void LeftGunShootTask(void)
 																				[leftGunShootCommand.plantNum];
 						ROBOT_LeftGunAim();
 					}
+					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
+																		[leftGunShootCommand.shootMethod]\
+																		[leftGunShootCommand.plantNum];
+
+					ROBOT_LeftGunAim();	
 					if(gRobot.leftGun.shootTimes == 0)
 					{
 						OSTimeDly(30);
 						LeftPush();
 					}
+				
 					ROBOT_LeftGunReload();				
 					
 					//检查上弹是否到位
 //					ROBOT_LeftGunCheckReload();
 					//获取并更新枪目标姿态  发射姿态
-					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootPoint]\
-																		[leftGunShootCommand.shootMethod]\
-																		[leftGunShootCommand.plantNum];
 
-					ROBOT_LeftGunAim();
 					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
 					{
 						ROBOT_LeftGunCheckAim();
@@ -1105,6 +1107,12 @@ void RightGunShootTask(void)
 						OSTimeDly(30);
 						RightPush();
 					}
+					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
+																		[rightGunShootCommand.shootMethod]\
+																		[rightGunShootCommand.plantNum];
+
+					//调整枪姿为发射姿态 need some time
+					ROBOT_RightGunAim();
 					ROBOT_RightGunReload();				
 
 					//检查上弹是否到位
@@ -1112,12 +1120,6 @@ void RightGunShootTask(void)
 					//瞄准，此函数最好瞄准完成后再返回
 
 					//获取并更新枪目标姿态  发射姿态
-					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootPoint]\
-																		[rightGunShootCommand.shootMethod]\
-																		[rightGunShootCommand.plantNum];
-
-					//调整枪姿为发射姿态 need some time
-					ROBOT_RightGunAim();
 
 					if(rightGunShootCommand.plantNum == PLANT6)
 					{
