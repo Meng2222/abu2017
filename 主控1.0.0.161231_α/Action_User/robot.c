@@ -706,12 +706,13 @@ status_t ROBOT_Init(void)
 		gRobot.plantState[i].ball = 1;
 	}
     gRobot.plantState[PLANT6].ball = 2;
+
 	
-//	for(uint8_t i = 0; i < 7;i++)
-//	{
-//		gRobot.plantState[i].plate = 1;
-//	}
-//	gRobot.plantState[PLANT6].plate = 6;
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.plantState[i].plate = 1;
+	}
+	gRobot.plantState[PLANT6].plate = 2;
 
 	LeftGunInit();
 	RightGunInit();
@@ -923,7 +924,7 @@ status_t ROBOT_RightGunCheckReload(void)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-	#define LEFT_AUTO_NUMBER 2u
+	#define LEFT_AUTO_NUMBER 4u
 	#define NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
@@ -1088,7 +1089,7 @@ status_t ROBOT_LeftGunReloadAim(void)
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
-	#define RIGHT_AUTO_NUMBER 2u
+	#define RIGHT_AUTO_NUMBER 4u
 	#define NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;

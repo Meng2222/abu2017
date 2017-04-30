@@ -98,40 +98,40 @@ void GyroInit(void)
 void sendDebugInfo(void)
 {
 	
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
+	u5_printf((char *)"%d\t%d\t%d\t%d\t",status,\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
+	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.targetSpeed.forwardWheelSpeed,(int)gRobot.moveBase.targetSpeed.backwardWheelSpeed);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.actualSpeed.leftWheelSpeed,\
+	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.actualSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.actualSpeed.forwardWheelSpeed,(int)gRobot.moveBase.actualSpeed.backwardWheelSpeed);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
+	u5_printf((char *)"%d\t%d\t%d\t%d\t",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
 			(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1],\
 			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2],\
 			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
 			
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.acturalCurrent.leftWheelCurrent,\
+	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.acturalCurrent.leftWheelCurrent,\
 			(int)gRobot.moveBase.acturalCurrent.forwardWheelCurrent,(int)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);			
 
 //	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature,\
 //			(int)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature,(int)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
+	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
 			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
+	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
 //	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 //			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
+	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
 			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
 		
-	UART5_OUT((uint8_t *)"%d",(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
+	u5_printf((char *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
 	UART5BufPut('\r');
 	UART5BufPut('\n');
@@ -942,13 +942,13 @@ void LeftGunShootTask(void)
 					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
 					{
 						ROBOT_LeftGunCheckAim();
-//						OSTimeDly(300);
+						OSTimeDly(200);
 //						gRobot.leftGun.ready = GUN_AIM_DONE;
 					}
 					else
 					{
-//							OSTimeDly(150);
 							ROBOT_LeftGunCheckAim();
+							OSTimeDly(200);
 //							gRobot.leftGun.ready = GUN_AIM_DONE;					
 					}
 //				OSTimeDly(75);
@@ -1123,14 +1123,14 @@ void RightGunShootTask(void)
 
 					if(rightGunShootCommand.plantNum == PLANT6)
 					{
-//						OSTimeDly(300);
 						ROBOT_RightGunCheckAim();
+						OSTimeDly(200);
 //						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 					else
 					{
 						ROBOT_RightGunCheckAim();
-//						OSTimeDly(150);					
+						OSTimeDly(200);					
 //						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
 //					ROBOT_RightGunCheckAim();
