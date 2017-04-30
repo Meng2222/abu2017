@@ -325,7 +325,7 @@ void ConfigTask(void)
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
-//	ROBOT_Init();
+	ROBOT_Init();
 
 	ClampClose();
 	LeftBack();

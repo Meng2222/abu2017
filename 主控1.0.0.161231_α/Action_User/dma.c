@@ -115,9 +115,24 @@ void UART5_DMA_Send(void)
   */
 void UART5BufPut(uint8_t data)
 {
+	uint16_t i = 0u;
 	if(sendBufferCnt < UART5_SEND_BUF_CAPACITY)
 	{
 		UART5SendBuf[sendBufferCnt++] = data;
+		if(DMA_GetCmdStatus(DMA1_Stream7) == DISABLE && DMA_GetCurrDataCounter(DMA1_Stream7) == 0u)
+		{
+			UART5_DMA_Send();
+		}
+		else if(sendBufferCnt > 144u)
+		{
+			while(DMA_GetCmdStatus(DMA1_Stream7) == ENABLE || DMA_GetCurrDataCounter(DMA1_Stream7) != 0u)
+			{
+				i++;
+				if(i == 0)
+					break;
+			}
+			UART5_DMA_Send();
+		}
 	}
 	else
 	{
