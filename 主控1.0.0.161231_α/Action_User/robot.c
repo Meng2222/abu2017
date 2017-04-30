@@ -89,9 +89,9 @@ static void LeftGunInit(void)
 	Vel_cfg(CAN1, LEFT_GUN_LEFT_ID, 300000,300000);	
 	Vel_cfg(CAN1, LEFT_GUN_RIGHT_ID, 300000,300000);	
 
-	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 30000,30000,80000);//俯仰
-	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 30000,30000,80000);//翻滚
-	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,30000,30000,80000);//航向
+	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 50000,50000,80000);//俯仰
+	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
+	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,50000,50000,80000);//航向
 	
 	
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
@@ -707,11 +707,11 @@ status_t ROBOT_Init(void)
 	}
     gRobot.plantState[PLANT6].ball = 2;
 	
-	for(uint8_t i = 0; i < 7;i++)
-	{
-		gRobot.plantState[i].plate = 1;
-	}
-	gRobot.plantState[PLANT6].plate = 6;
+//	for(uint8_t i = 0; i < 7;i++)
+//	{
+//		gRobot.plantState[i].plate = 1;
+//	}
+//	gRobot.plantState[PLANT6].plate = 6;
 
 	LeftGunInit();
 	RightGunInit();

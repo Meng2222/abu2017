@@ -845,7 +845,7 @@ void WalkTask(void)
 				OSTimeDly(50);
 				LockWheel();
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);		
 //				CameraInit();
 //				MoveY(50.0f);
 				SendStop2Camera();
@@ -869,7 +869,7 @@ void LeftGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 //	LeftBack();
-	OSTimeDly(50);
+//	OSTimeDly(50);
 //	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
@@ -924,7 +924,7 @@ void LeftGunShootTask(void)
 					}
 					if(gRobot.leftGun.shootTimes == 0)
 					{
-						ROBOT_LeftGunCheckAim();
+						OSTimeDly(30);
 						LeftPush();
 					}
 					ROBOT_LeftGunReload();				
@@ -1047,7 +1047,7 @@ void RightGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 //	RightBack();
-	OSTimeDly(50);
+//	OSTimeDly(50);
 //	RightPush();
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
@@ -1102,7 +1102,7 @@ void RightGunShootTask(void)
 					}
 					if(gRobot.rightGun.shootTimes == 0)
 					{
-						ROBOT_RightGunCheckAim();
+						OSTimeDly(30);
 						RightPush();
 					}
 					ROBOT_RightGunReload();				

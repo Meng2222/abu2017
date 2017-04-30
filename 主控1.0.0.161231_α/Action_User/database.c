@@ -181,7 +181,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LAND_NUM
 
 		//第二类参数，对应新盘落盘参数
 		{//1#着陆台
-		  {-33.6f, 20.2f, 16.0f, 20.0f, 94.0f},
+		  {-35.1f, 20.2f, 16.0f, 21.0f, 94.0f},
 		 //2#着陆台
 //		 {-13.6f, 25.3f, 17.3f, 20.0f, 95.0f},
 		 {-16.8f, 26.2f, 13.5f, 18.0f, 94.0f},
@@ -387,7 +387,7 @@ gun_pose_t gLeftGunReloadPosDatabase[SHOOT_POINT_NUMBER][SHOOT_METHOD_NUMBER][LA
 
 		//第二类参数，对应新盘落盘参数
 		{//1#着陆台
-		  {-33.6f, 20.2f, 16.0f, 20.0f, 94.0f},
+		  {-35.1f, 20.2f, 16.0f, 21.0f, 94.0f},
 		 //2#着陆台
 //		 {-13.6f, 25.3f, 17.3f, 20.0f, 95.0f},
 		 {-16.8f, 26.2f, 13.5f, 18.0f, 94.0f},
