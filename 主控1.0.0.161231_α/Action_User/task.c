@@ -965,7 +965,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunShoot();
 					gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
 					gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
-					if(gRobot.leftGun.shootParaMode == SHOOT_METHOD2 ||gRobot.leftGun.shootParaMode == SHOOT_METHOD4)
+					if(gRobot.leftGun.shootParaMode%2)
 					{
 						gRobot.plantState[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 					}
@@ -1151,7 +1151,7 @@ void RightGunShootTask(void)
 					ROBOT_RightGunShoot();
 					gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
 					gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
-					if(gRobot.rightGun.shootParaMode == SHOOT_METHOD2 ||gRobot.rightGun.shootParaMode == SHOOT_METHOD4)
+					if(gRobot.rightGun.shootParaMode%2)
 					{
 						gRobot.plantState[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 					}
