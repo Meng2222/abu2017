@@ -23,6 +23,7 @@ void USART6_Init(uint32_t BaudRate);
 
 void USART_OUT(USART_TypeDef* USARTx, const uint8_t *Data,...);
 char *itoa(int value, char *string, int radix);
+void UART5_OUT(const uint8_t *Data, ...);
 
 #endif
 

@@ -50,6 +50,7 @@
 #include "movebase.h"
 #include "robot.h"
 #include "movebase2.h"
+#include "dma.h"
 
 //用来处理CAN接收数据
 union MSG
@@ -610,6 +611,7 @@ void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
 	#define DEBUG_PERIOD_COUNTER 20
+	
 	//用来计数10次，产生10ms的定时器
 	static uint8_t periodCounter = PERIOD_COUNTER;
 	static uint8_t debugPeriodCounter = DEBUG_PERIOD_COUNTER;
@@ -633,6 +635,7 @@ void TIM2_IRQHandler(void)
 		if(debugPeriodCounter == 0)
 		{
 			OSSemPost(DebugPeriodSem);
+			UART5_DMA_Send();
 			debugPeriodCounter = DEBUG_PERIOD_COUNTER;
 		}
 		if(gRobot.leftGun.commandState == GUN_NO_COMMAND)

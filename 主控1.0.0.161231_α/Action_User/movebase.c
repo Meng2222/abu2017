@@ -21,6 +21,7 @@
 #include "movebase.h"
 #include "stm32f4xx_usart.h"
 #include "robot.h"
+#include "dma.h"
 /* Exported functions ---------------------------------------------------------*/
 
 extern robot_t gRobot;
@@ -180,9 +181,9 @@ void SetMotorAcc(motorAcc_t motorAcc)
 
 void ThreeWheelVelControl(wheelSpeed_t speed)
 {
-	gRobot.moveBase.targetSpeed.leftWheelSpeed = Pulse2Vel(-speed.leftWheelSpeed)/100.0f;
-	gRobot.moveBase.targetSpeed.backwardWheelSpeed = Pulse2Vel(-speed.backwardWheelSpeed)/100.0f;
-	gRobot.moveBase.targetSpeed.forwardWheelSpeed = Pulse2Vel(-speed.forwardWheelSpeed)/100.0f;
+	gRobot.moveBase.targetSpeed.leftWheelSpeed = -speed.leftWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.backwardWheelSpeed = -speed.backwardWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.forwardWheelSpeed = -speed.forwardWheelSpeed/100.0f;
 	
 	VelCrl(CAN2, 1, -speed.backwardWheelSpeed);
 	VelCrl(CAN2, 2, -speed.forwardWheelSpeed);
@@ -417,7 +418,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}
 	if((outputSpeed > 5000.0f) ||(outputSpeed < -5000.0f))
 	{
-		USART_SendData(UART5, (uint8_t)(outputSpeed/100.0f));
+		UART5BufPut((uint8_t)(outputSpeed/100.0f));
 	}		
 	
 	velX = outputSpeed;
@@ -588,8 +589,8 @@ void MoveToCenter(float targetPos, float velX, float accX)
 //	USART_SendData(UART5,(uint8_t)moveTimer);
 //	USART_SendData(UART5,(int8_t)(expData.pos/100.0f));
 //	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
-	USART_SendData(UART5,(int8_t)(speedDebug/100.0f));
-	USART_SendData(UART5,(int8_t)(distDebug/10.0f));
+	UART5BufPut((int)(speedDebug/100.0f));
+	UART5BufPut((int)(distDebug/10.0f));
 	
 	
 	//速度给出至各轮

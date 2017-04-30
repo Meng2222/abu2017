@@ -103,150 +103,110 @@ void sendDebugInfo(void)
 #ifdef BLUE_FIELD
 #define POS_X_OFFSET (-50)
 #endif
-	USART_SendData(UART5,(int8_t)status);
 	
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.leftWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.forwardWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.targetSpeed.backwardWheelSpeed);
-	
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.leftWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.forwardWheelSpeed);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualSpeed.backwardWheelSpeed);
-	
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0]);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1]);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2]);
-//	USART_SendData(UART5, (int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
+	UART5_OUT((uint8_t *)"%d %d %d %d ",status,\
+			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+			(int)gRobot.moveBase.actualYPos);
 
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.leftWheelCurrent);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.forwardWheelCurrent);
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
+			(int)gRobot.moveBase.targetSpeed.forwardWheelSpeed,(int)gRobot.moveBase.targetSpeed.backwardWheelSpeed);			
 
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.actualSpeed.leftWheelSpeed,\
+			(int)gRobot.moveBase.actualSpeed.forwardWheelSpeed,(int)gRobot.moveBase.actualSpeed.backwardWheelSpeed);			
 
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);
-	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.leftMotorVelocityError);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.forwardMotorVelocityError);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverVelocityError.backwardMotorVelocityError);
+	UART5_OUT((uint8_t *)"%d %d %d %d ",(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[0],\
+			(int)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[1],\
+			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[2],\
+			(int)(int8_t)gRobot.moveBase.motorFailure.forwardMotorFailure.failureInfo[3]);
+			
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.acturalCurrent.leftWheelCurrent,\
+			(int)gRobot.moveBase.acturalCurrent.forwardWheelCurrent,(int)gRobot.moveBase.acturalCurrent.backwardWheelCurrent);			
 
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.leftDriverUnitMode);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.forwardDriverUnitMode);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverUnitMode.backwardDriverUnitMode);
-//	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);
-//	
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity);
-//	USART_SendData(UART5, (uint8_t)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);
-	
-	//角度范围【-180，180】，但是实际走行中角度值基本在0度附近，fix me
-	USART_SendData(UART5, (int8_t)gRobot.moveBase.actualAngle);
-	USART_SendData(UART5, (int8_t)((gRobot.moveBase.actualAngle-(int)gRobot.moveBase.actualAngle)*10.0f));
-	//X位移分米部分范围是【-140，10】，单位分米
-	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualXPos/100.0f+ POS_X_OFFSET));
-	//X位移厘米部分范围是【-100，100】，单位厘米
-	USART_SendData(UART5, (int8_t)((((int)gRobot.moveBase.actualXPos))%100/10));
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverTemperature.leftWheelDriverTemperature,\
+			(int)gRobot.moveBase.driverTemperature.forwardWheelDrvierTemperature,(int)gRobot.moveBase.driverTemperature.backwardWheelDriverTemperature);			
 
-	//根据场地约束，范围设计为【-130，130】，单位cm
-	USART_SendData(UART5, (int8_t)(gRobot.moveBase.actualYPos/10.0f));
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
+			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
 
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
+			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
+
+	UART5_OUT((uint8_t *)"%d %d %d ",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
+			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
+
+	UART5_OUT((uint8_t *)"%d %d %d",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
+			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
+		
 //	USART_SendData(UART5,(uint8_t)(gRobot.moveBase.actualKenimaticInfo.vt*0.01f));
-	//连续发送4个-100作为结束标识符
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
+
+	UART5BufPut('\r');
+	UART5BufPut('\n');
 }
 void LeftGunSendDebugInfo(void)
 {
-	USART_SendData(UART5,1);
+	UART5_OUT((uint8_t *)"l %d %d %d ",(int)gRobot.leftGun.checkTimeUsage,\
+		(int)gRobot.leftGun.targetPlant,(int) gRobot.leftGun.shootParaMode);
 	
-	USART_SendData(UART5,gRobot.leftGun.checkTimeUsage);
-	
-	USART_SendData(UART5,	gRobot.leftGun.targetPlant);
-	
-	USART_SendData(UART5, gRobot.leftGun.shootParaMode);
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.yaw*10.0f),\
+		(int)(gRobot.leftGun.actualPose.yaw*10.0f));
 
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.yaw);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.yaw);
-	USART_SendData(UART5,(int8_t)((gRobot.leftGun.actualPose.yaw-(int8_t)gRobot.leftGun.actualPose.yaw)*10));
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.pitch);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.pitch);
-	USART_SendData(UART5,(int8_t)((gRobot.leftGun.actualPose.pitch-(int8_t)gRobot.leftGun.actualPose.pitch)*10));
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.roll);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.roll);
-	USART_SendData(UART5,(int8_t)((gRobot.leftGun.actualPose.roll-(int8_t)gRobot.leftGun.actualPose.roll)*10));
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed1);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed1);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.targetPose.speed2);
-	USART_SendData(UART5,(int8_t)gRobot.leftGun.actualPose.speed2);
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.pitch*10.0f),\
+		(int)(gRobot.leftGun.actualPose.pitch*10.0f));
+
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.roll*10.0f),\
+		(int)(gRobot.leftGun.actualPose.roll*10.0f));
 	
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.leftGun.targetPose.speed1),\
+		(int)(gRobot.leftGun.actualPose.speed1));
 	
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
+	UART5_OUT((uint8_t *)"%d %d",(int)(gRobot.leftGun.targetPose.speed2),\
+		(int)(gRobot.leftGun.actualPose.speed2));	
+	
+	UART5BufPut('\r');
+	UART5BufPut('\n');
 	
 }
 void RightGunSendDebugInfo(void)
 {
-	USART_SendData(UART5,2);
+	UART5_OUT((uint8_t *)"r %d %d %d ",(int)gRobot.rightGun.checkTimeUsage,\
+		(int)gRobot.rightGun.targetPlant,(int) gRobot.rightGun.shootParaMode);
 	
-	USART_SendData(UART5,gRobot.rightGun.checkTimeUsage);
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.yaw*10.0f),\
+		(int)(gRobot.rightGun.actualPose.yaw*10.0f));
+
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.pitch*10.0f),\
+		(int)(gRobot.rightGun.actualPose.pitch*10.0f));
+
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.roll*10.0f),\
+		(int)(gRobot.rightGun.actualPose.roll*10.0f));
 	
-	USART_SendData(UART5,	gRobot.rightGun.targetPlant);
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.rightGun.targetPose.speed1),\
+		(int)(gRobot.rightGun.actualPose.speed1));
 	
-	USART_SendData(UART5, gRobot.rightGun.shootParaMode);
+	UART5_OUT((uint8_t *)"%d %d",(int)(gRobot.rightGun.targetPose.speed2),\
+		(int)(gRobot.rightGun.actualPose.speed2));	
 	
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.yaw);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.yaw);
-	USART_SendData(UART5,(int8_t)((gRobot.rightGun.actualPose.yaw-(int8_t)gRobot.rightGun.actualPose.yaw)*10));
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.pitch);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.pitch);
-	USART_SendData(UART5,(int8_t)((gRobot.rightGun.actualPose.pitch-(int8_t)gRobot.rightGun.actualPose.pitch)*10));
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.roll);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.roll);
-	USART_SendData(UART5,(int8_t)((gRobot.rightGun.actualPose.roll-(int8_t)gRobot.rightGun.actualPose.roll)*10));
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed1);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed1);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.targetPose.speed2);
-	USART_SendData(UART5,(int8_t)gRobot.rightGun.actualPose.speed2);
-	
-	
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
+	UART5BufPut('\r');
+	UART5BufPut('\n');
+
 }
 void UpperGunSendDebugInfo(void)
 {
-	USART_SendData(UART5,3);
+	UART5_OUT((uint8_t *)"u %d %d %d ",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode);
 	
-	USART_SendData(UART5,	gRobot.upperGun.targetPlant);
-	
-	USART_SendData(UART5, gRobot.upperGun.shootParaMode);
-	
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetZone);
-		
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.yaw);
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.targetPose.pitch);
-	USART_SendData(UART5,(uint8_t)gRobot.upperGun.targetPose.speed1);
-	
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.yaw);
-	USART_SendData(UART5,(int8_t)gRobot.upperGun.actualPose.pitch);
-	USART_SendData(UART5,(uint8_t)gRobot.upperGun.actualPose.speed1);
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
+		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
 
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
-	USART_SendData(UART5, (uint8_t)-100);
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.upperGun.targetPose.pitch*10.0f),\
+		(int)(gRobot.upperGun.actualPose.pitch*10.0f));
+	
+	UART5_OUT((uint8_t *)"%d %d ",(int)(gRobot.upperGun.targetPose.speed1),\
+		(int)(gRobot.upperGun.actualPose.speed1));
+		
+	UART5BufPut('\r');
+	UART5BufPut('\n');
+
 }
 //摄像头初始化
 void CameraInit(void)
@@ -351,8 +311,8 @@ void ConfigTask(void)
 	
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
-	UART5_Init(115200);		//调试用wifi
-//	UART5DMAInit();
+//	UART5_Init(115200);		//调试用wifi
+	UART5DMAInit();
 	//******************
 //	USART3_Init(115200);    //摄像头
 	//*******************
@@ -365,7 +325,7 @@ void ConfigTask(void)
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	TIM_Delayms(TIM5, 50);
 
-	ROBOT_Init();
+//	ROBOT_Init();
 
 	ClampClose();
 	LeftBack();
@@ -420,7 +380,6 @@ void ConfigTask(void)
 	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 #endif
 	OSTaskSuspend(DEBUG_TASK_PRIO);
-
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
@@ -870,8 +829,6 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					status++;
 				}
@@ -1433,6 +1390,12 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
+			GyroInit();
+			UART5_OUT((uint8_t *)"%d %d %d\r\n",\
+						(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+						(int)gRobot.moveBase.actualYPos);
+
+			
 			if(/*	gRobot.plantState[PLANT1].ball == 0 &&\
 				gRobot.plantState[PLANT2].ball == 0 &&\  */
 				gRobot.plantState[PLANT3].ball == 0 &&\
