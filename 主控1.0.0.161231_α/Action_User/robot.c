@@ -1258,6 +1258,10 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 		{
 			shootCommand.plantNum = UpperGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD1;
+			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
+			{
+				shootCommand.shootMethod = SHOOT_METHOD4;
+			}	
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ballState = COMMAND_IN_PROCESS;
@@ -1268,6 +1272,10 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 		{
 			shootCommand.plantNum = UpperGunPriority[i];
 			shootCommand.shootMethod = SHOOT_METHOD2;
+			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
+			{
+				shootCommand.shootMethod = SHOOT_METHOD5;
+			}	
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plateState = COMMAND_IN_PROCESS;
@@ -1282,7 +1290,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 	}
 	if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
 	{
-		if(shootCommand.shootMethod%2)
+		if(shootCommand.shootMethod%3)
 		{
 			gRobot.upperGun.gunCommand[shootCommand.plantNum].plate += 1;
 		}

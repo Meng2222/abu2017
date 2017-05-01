@@ -1305,7 +1305,7 @@ void UpperGunShootTask(void)
 				else
 				{
 					ROBOT_UpperGunShoot();
-					if(gRobot.upperGun.shootParaMode%2)
+					if(gRobot.upperGun.shootParaMode%3)
 					{
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
 					}

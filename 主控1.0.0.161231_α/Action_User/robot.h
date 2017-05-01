@@ -15,7 +15,7 @@
 //参数种类，打球，落盘
 #define SHOOT_METHOD_NUMBER		6
 //上枪参数种类
-#define UPPER_SHOOT_METHOD_NUMBER  3
+#define UPPER_SHOOT_METHOD_NUMBER  5
 
 
 
