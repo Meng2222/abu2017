@@ -208,7 +208,7 @@ void CameraInit(void)
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
 #ifdef BLUE_FIELD
-	USART_SendData(USART3, 'b');
+	USART_SendData(USART3, 'r');
 #endif
 #ifdef RED_FIELD
 	USART_SendData(USART3, 'r');
@@ -964,6 +964,7 @@ void LeftGunShootTask(void)
 				else
 				{
 					OSTimeDly(6);
+					ROBOT_LeftGunReturn();
 				}
 
 		}
@@ -1140,6 +1141,7 @@ void RightGunShootTask(void)
 				else
 				{
 					OSTimeDly(6);
+					ROBOT_RightGunReturn();
 				}
 				
 		}
@@ -1216,8 +1218,11 @@ void UpperGunShootTask(void)
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
 		{
-			gRobot.upperGun.mode = GUN_ATTACK_MODE;
-			gRobot.plantState[PLANT7].plate = 1;
+			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
+			{
+				gRobot.upperGun.mode = GUN_ATTACK_MODE;
+				gRobot.plantState[PLANT7].plate = 1;
+			}
 		}
 #endif
 		//检查手动or自动

@@ -630,6 +630,8 @@ status_t ROBOT_LeftGunCheckConflict(void);
 */
 status_t ROBOT_RightGunCheckConflict(void);
 
+status_t ROBOT_LeftGunReturn(void);
+status_t ROBOT_RightGunReturn(void);
 
 
 /*

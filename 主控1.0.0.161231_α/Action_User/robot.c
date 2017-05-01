@@ -1959,3 +1959,39 @@ status_t ROBOT_RightGunCheckConflict(void)
 	}
 	return GUN_NO_ERROR;
 }
+/*
+*名称：ROBOT_LeftGunReturn
+*功能：左枪没有命令时复位
+*参数：
+*status:
+*/
+status_t ROBOT_LeftGunReturn(void)
+{
+	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].yaw));
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));			
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].roll));
+
+	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].speed1));
+	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));
+	
+	return GUN_NO_ERROR;
+}
+
+/*
+*名称：ROBOT_RightGunReturn
+*功能：右枪没有命令时复位
+*参数：
+*status:
+*/
+status_t ROBOT_RightGunReturn(void)
+{
+	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].yaw));
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));			
+	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].roll));
+
+	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed1));
+	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));	
+	
+	return GUN_NO_ERROR;
+
+}
