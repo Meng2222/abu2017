@@ -1287,13 +1287,13 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 	}
 	if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
 	{
-		if(shootCommand.shootMethod == SHOOT_METHOD1||shootCommand.shootMethod == SHOOT_METHOD3)
+		if(shootCommand.shootMethod%2)
 		{
-			gRobot.upperGun.gunCommand[shootCommand.plantNum].ball = 1;
+			gRobot.upperGun.gunCommand[shootCommand.plantNum].plate += 1;
 		}
-		if(shootCommand.shootMethod == SHOOT_METHOD2)
+		else
 		{
-			gRobot.upperGun.gunCommand[shootCommand.plantNum].plate = 1;
+			gRobot.upperGun.gunCommand[shootCommand.plantNum].ball += 1;
 		}
 		gRobot.upperGun.commandState = GUN_NO_COMMAND;		
 	}
