@@ -217,6 +217,11 @@
 //7#着陆台右前区域
 #define ZONE6 5u
 
+//7#需要落盘
+#define SELF_EMPTY 1
+//7#不需要落盘
+#define SELF_OK 0
+
 //枪自动射击时命令结构体
 typedef struct
 {
@@ -322,6 +327,8 @@ typedef struct
 	unsigned char lastPlant;
 	//记录上一次射击参数模式
 	unsigned char lastParaMode;
+	//上枪记录7#是否需要落盘
+	unsigned char isSelfEmpty;
 	//等待命令计时
 	int noCommandTimer;
 

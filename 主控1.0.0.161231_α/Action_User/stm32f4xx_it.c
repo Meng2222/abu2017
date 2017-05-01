@@ -1181,6 +1181,9 @@ void USART3_IRQHandler(void)
 #define HEADER1 0x80
 #define HEADER2 0x80
 
+#define SELF_HEADER1 0x81
+#define SELF_HEADER2 0x81
+	
 #define POS_HEADER1 0x88	
 #define POS_HEADER2 0x88	
 
@@ -1192,7 +1195,10 @@ void USART3_IRQHandler(void)
 #define HEADER_STATE3 3
 #define POS_DATA_STATE1  4
 #define POS_DATA_STATE2 5
-
+#define SELF_DATA_STATE 6
+	
+#define SELF_NEED_PLATE 0x90
+#define SELF_ALREADY_HAVE 0x91	
 	static uint8_t data = 0;
  	static int state = 0;
 	static union
@@ -1226,6 +1232,10 @@ void USART3_IRQHandler(void)
 				{
 					state ++;
 				}
+				else if(data == SELF_HEADER1)
+				{
+					state ++;
+				}
 				else
 				{
 					state = 0;
@@ -1234,12 +1244,16 @@ void USART3_IRQHandler(void)
 			case HEADER_STATE2:
 				if(data == HEADER2)
 				{
-					state++;
+					state = DATA_STATE;
 				}
 				else if(data == READY_HEADER)
 				{
 					//fix me 摄像头已经初始化完毕，还没有加蜂鸣器提醒
 					state = 0;
+				}
+				else if(data == SELF_HEADER2)
+				{
+					state = SELF_DATA_STATE;
 				}
 				else
 				{						
@@ -1256,7 +1270,7 @@ void USART3_IRQHandler(void)
 			case HEADER_STATE3:
 				if(data == POS_HEADER2)
 				{
-					state++;
+					state = POS_DATA_STATE1;
 				}
 			break;
 				//到场地中央后初始化摄像头，返回位置信息16位 0-512
@@ -1271,6 +1285,17 @@ void USART3_IRQHandler(void)
 				gRobot.moveBase.relativePos = posInfo.ActPos;
 				state = 0;
 			break;
+			case SELF_DATA_STATE:
+				if(data == SELF_NEED_PLATE)
+				{
+					gRobot.upperGun.isSelfEmpty = SELF_EMPTY;
+				}
+				else if(data == SELF_ALREADY_HAVE)
+				{
+					gRobot.upperGun.isSelfEmpty = SELF_OK;				
+				}
+				state = 0;
+				break;
 			default:
 				break;
 		}	

@@ -885,12 +885,7 @@ void LeftGunShootTask(void)
 		//自动模式
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
 		{
-
-//			if(gRobot.leftGun.shootTimes >=   ROBOT_LeftGunPoint1ShootTimes() + ROBOT_LeftGunPoint3ShootTimes())
-//			{
-				//自动调度
-			//
-
+			//自动调度
 				shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
 
 				if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
@@ -943,10 +938,6 @@ void LeftGunShootTask(void)
 //							OSTimeDly(200);
 //							gRobot.leftGun.ready = GUN_AIM_DONE;					
 					}
-//				OSTimeDly(75);
-//				if(leftGunShootCommand.plantNum==PLANT6)
-//					gRobot.leftGun.ready = GUN_AIM_DONE;
-//					OSTimeDly(250);	
 								
 //				//再次检查该柱子的状态，确定是否发射				
 //				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
@@ -1062,9 +1053,6 @@ void RightGunShootTask(void)
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
 		if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_AUTO_MODE)
 		{
-//			if(gRobot.rightGun.shootTimes >= ROBOT_RightGunPoint1ShootTimes() + ROBOT_RightGunPoint3ShootTimes())
-//			{
-
 
 				shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
 
@@ -1121,14 +1109,7 @@ void RightGunShootTask(void)
 //						OSTimeDly(200);					
 //						gRobot.rightGun.ready = GUN_AIM_DONE;
 					}
-//					ROBOT_RightGunCheckAim();
-//					OSTimeDly(250);					
-//					gRobot.rightGun.ready = GUN_AIM_DONE;
-//				OSTimeDly(75);
-//				if(rightGunShootCommand.plantNum==PLANT6)
-
-
-				
+					
 //				//再次检查该柱子的状态，确定是否发射
 //				if((rightGunShootCommand.shootMethod == SHOOT_METHOD1)\
 //					&&(gRobot.plantState[rightGunShootCommand.plantNum].ball == 1))
@@ -1233,6 +1214,11 @@ void UpperGunShootTask(void)
 	{
 #ifndef NO_WALK_TASK
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+		{
+			gRobot.upperGun.mode = GUN_ATTACK_MODE;
+			gRobot.plantState[PLANT7].plate = 1;
+		}
 #endif
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
@@ -1240,6 +1226,7 @@ void UpperGunShootTask(void)
 		{
 			//fix me,此处应该检查目标区域是否合法
 			if(gRobot.upperGun.targetZone & 0xff) upperGunShootFlag = 1;
+
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;
