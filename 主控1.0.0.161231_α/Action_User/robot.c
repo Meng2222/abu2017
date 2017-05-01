@@ -955,8 +955,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-//	if(gRobot.rightGun.shootTimes >= 18u)
-//		searchRange = 7;
 //	if(gRobot.leftGun.shootTimes >= 18u)
 //	{
 //		gRobot.leftGun.commandState = GUN_NO_COMMAND;
@@ -976,7 +974,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				else
 					shootCommand.shootMethod = SHOOT_METHOD1;					
 				//不连续打同一组参数
-				if(LeftGunPriority[i] == gRobot.leftGun.lastPlant && \
+				if(LeftGunPriority[i] == gRobot.leftGun.lastPlant &&\
 					gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
 				{
 					if(gRobot.rightGun.lastPlant != LeftGunPriority[i] ||\
@@ -1003,7 +1001,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				//不连续打同一组参数
 				if(LeftGunPriority[i]!=PLANT6)
 				{
-					if(LeftGunPriority[i] == gRobot.leftGun.lastPlant && \
+					if(LeftGunPriority[i] == gRobot.leftGun.lastPlant &&\
 						gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
 					{
 						if(gRobot.rightGun.lastPlant != LeftGunPriority[i] ||\
@@ -1107,9 +1105,6 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-//	if(gRobot.leftGun.shootTimes >= 18u)
-//		searchRange = 7;
-//	
 //	if(gRobot.rightGun.shootTimes >= 18u)
 //	{
 //		gRobot.rightGun.commandState = GUN_NO_COMMAND;
@@ -1129,7 +1124,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				else
 					shootCommand.shootMethod = SHOOT_METHOD1;
 				//不连续同一组参数
-				if(RightGunPriority[i] == gRobot.rightGun.lastPlant && \
+				if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
 					gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
 				{
 					if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
@@ -1156,7 +1151,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				//不连续打同一组参数
 				if(RightGunPriority[i]!=PLANT6)
 				{
-					if(RightGunPriority[i] == gRobot.rightGun.lastPlant && \
+					if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
 						gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
 					{
 						if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
@@ -1350,49 +1345,33 @@ status_t ROBOT_LeftGunCheckAim(void)
 			OSTimeDly(5);
 			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f || \
+			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f ||\
 				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f || \
+			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f ||\
 				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f || \
+			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f ||\
 				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5f)
 			{
 				continue;
 			}
-//			if(gRobot.leftGun.targetPlant == PLANT1 || gRobot.leftGun.targetPlant == PLANT6)
-//			{
-//				if(fabs(gRobot.leftGun.actualPose.speed1 + gRobot.leftGun.actualPose.speed2 
-//					- gRobot.leftGun.targetPose.speed1 - gRobot.leftGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//				if(fabs(gRobot.leftGun.actualPose.speed1 - gRobot.leftGun.actualPose.speed2 
-//					- gRobot.leftGun.targetPose.speed1 + gRobot.leftGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//			}
-//			else
-//			{
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f|| \
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f||\
 				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f || \
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f ||\
 				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
 			{
 				continue;
 			}
-//			}
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
@@ -1423,49 +1402,35 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 			OSTimeDly(5);
 			LeftGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.reloadPose.pitch + 0.5f || \
+			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.reloadPose.pitch + 0.5f ||\
 				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.reloadPose.pitch - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.reloadPose.roll + 0.5f || \
+			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.reloadPose.roll + 0.5f ||\
 				gRobot.leftGun.actualPose.roll < gRobot.leftGun.reloadPose.roll - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.reloadPose.yaw + 0.5f || \
+			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.reloadPose.yaw + 0.5f ||\
 				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.reloadPose.yaw - 0.5f)
 			{
 				continue;
 			}
-//			if(gRobot.leftGun.targetPlant == PLANT1 || gRobot.leftGun.targetPlant == PLANT6)
-//			{
-//				if(fabs(gRobot.leftGun.actualPose.speed1 + gRobot.leftGun.actualPose.speed2 
-//					- gRobot.leftGun.targetPose.speed1 - gRobot.leftGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//				if(fabs(gRobot.leftGun.actualPose.speed1 - gRobot.leftGun.actualPose.speed2 
-//					- gRobot.leftGun.targetPose.speed1 + gRobot.leftGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//			}
-//			else
-//			{
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.reloadPose.speed1 + 1.0f|| \
+
+			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.reloadPose.speed1 + 1.0f||\
 				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.reloadPose.speed1 - 1.0f)
 			{
 				continue;
 			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.reloadPose.speed2 + 1.0f || \
+			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.reloadPose.speed2 + 1.0f ||\
 				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.reloadPose.speed2 - 1.0f)
 			{
 				continue;
 			}
-//			}
+
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
@@ -1504,50 +1469,33 @@ status_t ROBOT_RightGunCheckAim(void)
 			OSTimeDly(5);
 			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f || \
+			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f ||\
 				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f || \
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f ||\
 				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f || \
+			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f ||\
 				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.5f)
 			{
 				continue;
+			}			
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f ||\
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
+			{
+				continue;
 			}
-			
-//			if(gRobot.rightGun.targetPlant == PLANT5 || gRobot.rightGun.targetPlant == PLANT6)
-//			{
-//				if(fabs(gRobot.rightGun.actualPose.speed1 + gRobot.rightGun.actualPose.speed2 
-//					- gRobot.rightGun.targetPose.speed1 - gRobot.rightGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//				if(fabs(gRobot.rightGun.actualPose.speed1 - gRobot.rightGun.actualPose.speed2 
-//					- gRobot.rightGun.targetPose.speed1 + gRobot.rightGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//			}
-//			else
-//			{
-				if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f || \
-					gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
-				{
-					continue;
-				}
-				if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f || \
-					gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
-				{
-					continue;
-				}
-//			}
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f ||\
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
+			{
+				continue;
+			}
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
@@ -1577,50 +1525,35 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 			OSTimeDly(5);
 			RightGunSendDebugInfo();
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.reloadPose.pitch + 0.5f || \
+			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.reloadPose.pitch + 0.5f ||\
 				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.reloadPose.pitch - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.reloadPose.roll + 0.5f || \
+			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.reloadPose.roll + 0.5f ||\
 				gRobot.rightGun.actualPose.roll < gRobot.rightGun.reloadPose.roll - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.reloadPose.yaw + 0.5f || \
+			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.reloadPose.yaw + 0.5f ||\
 				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.reloadPose.yaw - 0.5f)
 			{
 				continue;
 			}
 			
-//			if(gRobot.rightGun.targetPlant == PLANT5 || gRobot.rightGun.targetPlant == PLANT6)
-//			{
-//				if(fabs(gRobot.rightGun.actualPose.speed1 + gRobot.rightGun.actualPose.speed2 
-//					- gRobot.rightGun.targetPose.speed1 - gRobot.rightGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//				if(fabs(gRobot.rightGun.actualPose.speed1 - gRobot.rightGun.actualPose.speed2 
-//					- gRobot.rightGun.targetPose.speed1 + gRobot.rightGun.targetPose.speed2) > 4.0f)
-//				{
-//					continue;
-//				}
-//			}
-//			else
-//			{
-				if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.reloadPose.speed1 + 1.0f || \
-					gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.reloadPose.speed1 - 1.0f)
-				{
-					continue;
-				}
-				if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.reloadPose.speed2 + 1.0f || \
-					gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.reloadPose.speed2 - 1.0f)
-				{
-					continue;
-				}
-//			}
+			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.reloadPose.speed1 + 1.0f ||\
+				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.reloadPose.speed1 - 1.0f)
+			{
+				continue;
+			}
+			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.reloadPose.speed2 + 1.0f ||\
+				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.reloadPose.speed2 - 1.0f)
+			{
+				continue;
+			}
+
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
@@ -1679,18 +1612,18 @@ status_t ROBOT_UpperGunCheckAim(void)
 			UpperGunSendDebugInfo();
 			
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f || \
+			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f ||\
 				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}
 			
-			if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.2f || \
+			if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.2f ||\
 				gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.2f)
 			{
 				continue;
 			}
-			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.5f || \
+			if(gRobot.upperGun.actualPose.speed1 > gRobot.upperGun.targetPose.speed1 +1.5f ||\
 				gRobot.upperGun.actualPose.speed1 < gRobot.upperGun.targetPose.speed1 -1.5f)
 			{
 				continue;
