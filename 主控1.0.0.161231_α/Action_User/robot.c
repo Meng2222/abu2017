@@ -706,6 +706,14 @@ status_t ROBOT_Init(void)
 	gRobot.moveBase.targetPoint = 2;
 	for(uint8_t i = 0; i < 7;i++)
 	{
+		gRobot.plantState[i].ballState = COMMAND_DONE;
+	}
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.plantState[i].plateState = COMMAND_DONE;
+	}
+	for(uint8_t i = 0; i < 7;i++)
+	{
 		gRobot.autoCommand[i].ball = 1;
 	}
     gRobot.autoCommand[PLANT6].ball = 2;
