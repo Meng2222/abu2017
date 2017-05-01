@@ -112,7 +112,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {5.5f, 25.4f, 7.9f,17.0f,81.0f}},
 		//第六类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		  {-34.6f, 20.2f, 16.0f, 21.0f, 95.0f},
+		  {-35.1f, 20.2f, 16.0f, 21.0f, 94.0f},
 		 //2#着陆台
 //		 {-13.6f, 25.3f, 17.3f, 20.0f, 95.0f},
 		 {-16.8f, 27.2f, 13.5f, 18.0f, 94.0f},
@@ -335,7 +335,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 
 };
 
-//右侧枪姿态数据库
+//右侧枪上弹姿态数据库
 gun_pose_t gRightGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 {
 		//第一类参数，对应打球参数
@@ -634,7 +634,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{8.7f,24.5f,0.0f,49.0f,0.0f},
+			{8.5f,24.7f,0.0f,46.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
