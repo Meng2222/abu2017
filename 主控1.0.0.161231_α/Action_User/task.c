@@ -421,13 +421,9 @@ void SelfCheckTask(void)
 			break;
 		case gpsCheck:
 			GyroInit();
-			Sendfloat(gRobot.moveBase.actualXPos);
-			Sendfloat(gRobot.moveBase.actualYPos);
-			Sendfloat(gRobot.moveBase.actualAngle);
-			USART_SendData(UART5,(uint8_t)-100);		
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);
+	u5_printf((char *)"%d\t%d\t%d\r\n",\
+			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+			(int)gRobot.moveBase.actualYPos);
 			
 		
 			if(KEYSWITCH==1)
@@ -967,11 +963,11 @@ void LeftGunShootTask(void)
 					gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
 					if(gRobot.leftGun.shootParaMode%2)
 					{
-						gRobot.plantState[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
+						gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 					}
 					else
 					{
-						gRobot.plantState[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;						
+						gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;						
 					}
 				}
 				else
@@ -1153,11 +1149,11 @@ void RightGunShootTask(void)
 					gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
 					if(gRobot.rightGun.shootParaMode%2)
 					{
-						gRobot.plantState[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
+						gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 					}
 					else
 					{
-						gRobot.plantState[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;						
+						gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;						
 					}
 				}
 				else
@@ -1317,13 +1313,13 @@ void UpperGunShootTask(void)
 				else
 				{
 					ROBOT_UpperGunShoot();
-					if(gRobot.upperGun.shootParaMode == SHOOT_METHOD2)
+					if(gRobot.upperGun.shootParaMode%2)
 					{
-						gRobot.plantState[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
 					}
 					else
 					{
-						gRobot.plantState[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;						
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;						
 					}
 				}
 				gRobot.upperGun.commandState = GUN_NO_COMMAND;
