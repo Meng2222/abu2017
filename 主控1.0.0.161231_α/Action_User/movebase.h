@@ -288,9 +288,9 @@ void ThreeWheelVelControlSelfCheck(int direction);
 */
 
 //姿态修正PID
-#define PPOSE 7.0f
+#define PPOSE (7.0f)
 //速度闭环PID
-#define PVEL 6.0f
+#define PVEL (6.0f)
 
 #define PVELY (1.0f)
 /*
@@ -399,8 +399,8 @@ void MoveX(float velX);
 //运动函数
 void MoveTo(float targetPos, float velX, float accX);
 void MoveY(float velY);
-void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
-void MoveToCenter(float targetPos, float velX, float accX);
+void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX , float decX);
+void MoveToCenter(float targetPos, float velX, float accX, float decX);
 
 float GetPosX(void);
 float GetAngle(void);

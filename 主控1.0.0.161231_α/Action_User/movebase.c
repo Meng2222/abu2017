@@ -311,7 +311,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 }
 float distDebug = 0.0f;
 float speedDebug = 0.0f;
-void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
+void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX ,float decX)
 {
 	float targetDist = 0.0f;
 	float distAcc = 0.0f, timeAcc = 0.0f;
@@ -572,7 +572,7 @@ void MoveTo(float targetPos, float velX, float accX)
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
 }
-void MoveToCenter(float targetPos, float velX, float accX)
+void MoveToCenter(float targetPos, float velX, float accX , float decX)
 {
 	//速度控制需要的过程变量
 	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
@@ -598,7 +598,7 @@ void MoveToCenter(float targetPos, float velX, float accX)
 	}
 
 	//轨迹计算
-	CalcPathToCenter(&expData, velX, startPos, targetPos, accX);
+	CalcPathToCenter(&expData, velX, startPos, targetPos, accX , decX);
 
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
