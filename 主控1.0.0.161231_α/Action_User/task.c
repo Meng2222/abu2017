@@ -422,15 +422,15 @@ void SelfCheckTask(void)
 			break;
 		case gpsCheck:
 			GyroInit();
-<<<<<<< HEAD
+
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
-=======
-			u5_printf((char *)"%d\t%d\t%d\r\n",\
+
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
 					(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 					(int)gRobot.moveBase.actualYPos);
->>>>>>> f1153d95426e77bf83575d118d50ed39dda2ae03
+
 			
 		
 			if(KEYSWITCH==1)
@@ -540,7 +540,7 @@ void SelfCheckTask(void)
 			break;
 		case cameraCheck:
 			
-			u5_printf((char *)"%d\r\n",(int)gRobot.upperGun.targetZone);
+			UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.targetZone);
 		
 			Sendfloat(gRobot.moveBase.actualYPos);
 			if(KEYSWITCH==1)
