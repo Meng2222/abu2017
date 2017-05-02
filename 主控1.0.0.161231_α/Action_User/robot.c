@@ -235,6 +235,8 @@ static void UpperGunInit(void)
 	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,30000,30000,50000);//航向
 	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,30000,30000,50000);//俯仰
 	
+	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));	
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
 
@@ -1643,11 +1645,22 @@ status_t ROBOT_UpperGunCheckAim(void)
 		}
 		checkTime+=(20 - timeout) *5;
 	}
-	if(checkTime > 100)
+	if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
 	{
-		OSTaskResume(DEBUG_TASK_PRIO);
-		UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
-	}	
+		if(checkTime > 100)
+		{
+			OSTaskResume(DEBUG_TASK_PRIO);
+			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
+		}
+	}
+	else
+	{
+		if(checkTime >= 200)
+		{
+			OSTaskResume(DEBUG_TASK_PRIO);
+			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
+		}		
+	}
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
 		gRobot.upperGun.shoot = GUN_START_SHOOT;

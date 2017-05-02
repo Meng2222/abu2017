@@ -125,8 +125,6 @@ void sendDebugInfo(void)
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
-//	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
-//			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
 	u5_printf((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
 			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
@@ -629,6 +627,7 @@ void WalkTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;	
 	int shootPointMsg = MOVEBASE_POS_READY;
+	uint8_t upperPhotoSensorCounter = 0;
     OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
 	{
@@ -756,8 +755,12 @@ void WalkTask(void)
 				{
 //					status++;
 //					OSTaskResume(DEBUG_TASK_PRIO);
-					ROBOT_UpperGunAim();	
-					status=goToLaunchingArea;
+					upperPhotoSensorCounter++;
+					if(upperPhotoSensorCounter > 6)
+					{
+						ROBOT_UpperGunAim();	
+						status=goToLaunchingArea;
+					}
 				}
 				break;
 				
