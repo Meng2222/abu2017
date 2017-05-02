@@ -125,8 +125,6 @@ void sendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
-//	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
-//			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
 			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
@@ -138,8 +136,8 @@ void sendDebugInfo(void)
 }
 void LeftGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"l\t%d\t%d\t%d\t",(int)gRobot.leftGun.checkTimeUsage,\
-		(int)gRobot.leftGun.targetPlant,(int) gRobot.leftGun.shootParaMode);
+	UART5_OUT((uint8_t *)"l\t%d\t%d\t%d\t%d\t",(int)gRobot.leftGun.checkTimeUsage,\
+		(int)gRobot.leftGun.targetPlant,(int) gRobot.leftGun.shootParaMode,(int)gRobot.leftGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.leftGun.actualPose.yaw*10.0f));
@@ -162,8 +160,8 @@ void LeftGunSendDebugInfo(void)
 }
 void RightGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"r\t%d\t%d\t%d\t",(int)gRobot.rightGun.checkTimeUsage,\
-		(int)gRobot.rightGun.targetPlant,(int) gRobot.rightGun.shootParaMode);
+	UART5_OUT((uint8_t *)"r\t%d\t%d\t%d\t%d\t",(int)gRobot.rightGun.checkTimeUsage,\
+		(int)gRobot.rightGun.targetPlant,(int) gRobot.rightGun.shootParaMode,(int)gRobot.rightGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.rightGun.actualPose.yaw*10.0f));
@@ -186,8 +184,8 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
-		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode);
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
@@ -424,9 +422,15 @@ void SelfCheckTask(void)
 			break;
 		case gpsCheck:
 			GyroInit();
+<<<<<<< HEAD
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
+=======
+			u5_printf((char *)"%d\t%d\t%d\r\n",\
+					(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+					(int)gRobot.moveBase.actualYPos);
+>>>>>>> f1153d95426e77bf83575d118d50ed39dda2ae03
 			
 		
 			if(KEYSWITCH==1)
@@ -536,11 +540,7 @@ void SelfCheckTask(void)
 			break;
 		case cameraCheck:
 			
-			USART_SendData(UART5,(uint8_t)gRobot.upperGun.targetZone);
-			USART_SendData(UART5,(uint8_t)-100);		
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);
-			USART_SendData(UART5,(uint8_t)-100);
+			u5_printf((char *)"%d\r\n",(int)gRobot.upperGun.targetZone);
 		
 			Sendfloat(gRobot.moveBase.actualYPos);
 			if(KEYSWITCH==1)
@@ -629,6 +629,7 @@ void WalkTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;	
 	int shootPointMsg = MOVEBASE_POS_READY;
+	uint8_t upperPhotoSensorCounter = 0;
     OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
 	{
@@ -756,8 +757,12 @@ void WalkTask(void)
 				{
 //					status++;
 //					OSTaskResume(DEBUG_TASK_PRIO);
-					ROBOT_UpperGunAim();	
-					status=goToLaunchingArea;
+					upperPhotoSensorCounter++;
+					if(upperPhotoSensorCounter > 6)
+					{
+						ROBOT_UpperGunAim();	
+						status=goToLaunchingArea;
+					}
 				}
 				break;
 				
@@ -1022,7 +1027,7 @@ void LeftGunShootTask(void)
 				UART5_OUT((uint8_t *)"Left Gun Mode Error!!!!!!!!!!\r\n");
 			}
 		}
-//		LeftGunSendDebugInfo();
+		LeftGunSendDebugInfo();
 		gRobot.leftGun.checkTimeUsage = 0;
 	}
 }
@@ -1200,7 +1205,7 @@ void RightGunShootTask(void)
 				UART5_OUT((uint8_t *)"Right Gun Mode Error!!!!!!!!\r\n");
 			}
 		}
-//		RightGunSendDebugInfo();
+		RightGunSendDebugInfo();
 		gRobot.rightGun.checkTimeUsage = 0;
 	}
 
@@ -1223,8 +1228,12 @@ void UpperGunShootTask(void)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
-				gRobot.upperGun.mode = GUN_ATTACK_MODE;
-				gRobot.plantState[PLANT7].plate = 1;
+				OSTimeDly(40);
+				if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+				{
+					gRobot.upperGun.mode = GUN_ATTACK_MODE;
+					gRobot.plantState[PLANT7].plate = 1;
+				}
 			}
 		}
 #endif

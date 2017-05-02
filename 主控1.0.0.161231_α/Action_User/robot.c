@@ -95,7 +95,7 @@ static void LeftGunInit(void)
 	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
 	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,50000,50000,80000);//航向
 	
-	
+	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(5.0f));
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
 	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
 
@@ -172,7 +172,8 @@ static void RightGunInit(void)
 	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 50000,50000,80000);//俯仰
 	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
 	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,50000,50000,80000);//航向
-	
+
+	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-5.0f));
 	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
 	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
 
@@ -232,9 +233,11 @@ static void UpperGunInit(void)
 	elmo_Enable(CAN1, UPPER_GUN_PITCH_ID);
 	
 	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,350000,350000);
-	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,30000,30000,50000);//航向
-	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,30000,30000,50000);//俯仰
+	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,50000,50000,80000);//航向
+	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,50000,50000,80000);//俯仰
 	
+	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));	
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
 
@@ -726,6 +729,8 @@ status_t ROBOT_Init(void)
 	}
 	gRobot.autoCommand[PLANT6].plate = 2;
 	gRobot.plantState[PLANT6].plate = 2;
+	gRobot.plantState[PLANT7].plate = 0;
+	gRobot.autoCommand[PLANT7].plate = 0;
 
 	LeftGunInit();
 	RightGunInit();
@@ -1241,7 +1246,7 @@ status_t ROBOT_RightGunReloadAim(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 4u
+	#define UPPER_AUTO_NUM 3u
 	uint8_t i = 0u;
 	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
 	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
@@ -1601,7 +1606,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 			//fix me 耦合太高
 			if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
 			{
-				if(gRobot.upperGun.targetZone &0x0f)
+				if(gRobot.upperGun.targetZone &0xff)
 				{
 					break;
 				}
@@ -1643,11 +1648,22 @@ status_t ROBOT_UpperGunCheckAim(void)
 		}
 		checkTime+=(20 - timeout) *5;
 	}
-	if(checkTime > 100)
+	if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
 	{
-		OSTaskResume(DEBUG_TASK_PRIO);
-		UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
-	}	
+		if(checkTime > 100)
+		{
+			OSTaskResume(DEBUG_TASK_PRIO);
+			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
+		}
+	}
+	else
+	{
+		if(checkTime >= 200)
+		{
+			OSTaskResume(DEBUG_TASK_PRIO);
+			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
+		}		
+	}
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
 		gRobot.upperGun.shoot = GUN_START_SHOOT;
