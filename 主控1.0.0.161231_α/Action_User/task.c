@@ -335,7 +335,7 @@ void ConfigTask(void)
 进入自检任务
 */
 #ifndef NO_WALK_TASK
-	if(KEYSWITCH==1)
+	if(KEYSWITCH==1&&(!PHOTOSENSORLEFT)&&(!PHOTOSENSORRIGHT))
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -690,7 +690,7 @@ void WalkTask(void)
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
-				MoveToCenter(-13033.14f, -3500.0f, 2000.0f);
+				MoveToCenter(-13033.14f, -1500.0f, 2000.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -709,7 +709,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveToCenter(13033.14f, 3500.0f, 2000.0f);		
+				MoveToCenter(13033.14f, 1500.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -821,7 +821,7 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
+                MoveToCenter(-6459.14f, 1500.0f, 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -831,7 +831,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, -3000.0f, 2000.0f);
+                MoveToCenter(6459.14f, -1500.0f, 2000.0f);
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();

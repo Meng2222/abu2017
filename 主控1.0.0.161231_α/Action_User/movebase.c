@@ -181,16 +181,31 @@ void SetMotorAcc(motorAcc_t motorAcc)
 
 void ThreeWheelVelControl(wheelSpeed_t speed)
 {
-	gRobot.moveBase.targetSpeed.leftWheelSpeed = -speed.leftWheelSpeed/100.0f;
-	gRobot.moveBase.targetSpeed.backwardWheelSpeed = -speed.backwardWheelSpeed/100.0f;
-	gRobot.moveBase.targetSpeed.forwardWheelSpeed = -speed.forwardWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.leftWheelSpeed = speed.leftWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.backwardWheelSpeed = speed.backwardWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.forwardWheelSpeed = speed.forwardWheelSpeed/100.0f;
 	
-	VelCrl(CAN2, 1, -speed.backwardWheelSpeed);
-	VelCrl(CAN2, 2, -speed.forwardWheelSpeed);
-	VelCrl(CAN2, 3, -speed.leftWheelSpeed);
+	VelCrl(CAN2, BACKWARD_WHEEL_ID, speed.backwardWheelSpeed);
+	VelCrl(CAN2, FORWARD_WHEEL_ID, speed.forwardWheelSpeed);
+	VelCrl(CAN2, LEFT_WHEEL_ID, speed.leftWheelSpeed);
 }
-
-
+/**
+* @brief 将车的平动速度分解到三个轮上
+* @param  carVel : 车速  
+*		velAngle ：速度方向（以面向场地方向为0度，顺时针为负，逆时针为正，范围-180-180）
+  * @retval 分解到三个轮的速度
+  */
+wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
+{
+	#define BACK_WHEEL_VEL_ANG (30.0f)
+	#define LEFT_WHEEL_VEL_ANG (-90.0f)
+	#define FORWARD_WHEEL_VEL_ANG (150.0f)
+	wheelSpeed_t wheelSpeed = {0.0f};
+	wheelSpeed.backwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - BACK_WHEEL_VEL_ANG));
+	wheelSpeed.leftWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - LEFT_WHEEL_VEL_ANG));
+	wheelSpeed.forwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - FORWARD_WHEEL_VEL_ANG));
+	return wheelSpeed;
+}
 
 /*
 ============================================================
@@ -424,32 +439,31 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	if(velY <= 50)
+	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
+	if(velY <= 50.0f)
 	{
-		velY = 50;
+		velY = 50.0f;
 	}
 #define MAXMOVEACC (Vel2Pulse(2000))
 #define PULSE_Y 100
 	speedDebug = velX;
 	distDebug = posErr;
-	pSpeedOut->backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
-	pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );
-	pSpeedOut->leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
-
+	if(velX <= 0.0f)
+	{
+		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , 90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
+		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , 90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
+		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , 90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
+	}
+	else if(velX > 0.0f)
+	{
+		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
+		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
+		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);	
+	}
 	//姿态修正
-	if(GetAngle() >= 0.0f)
-	{
-		pSpeedOut->backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
-	}
-	else if(GetAngle() < 0.0f)
-	{
-		pSpeedOut->backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
-	}
+	pSpeedOut->backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	pSpeedOut->forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	pSpeedOut->leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 
 	//防止电机速度超过极限速度
 	if(fabs(pSpeedOut->backwardWheelSpeed) > INSANEVEL || fabs(pSpeedOut->forwardWheelSpeed) > INSANEVEL || fabs(pSpeedOut->leftWheelSpeed) > INSANEVEL)

@@ -496,7 +496,7 @@ void CAN2_RX0_IRQHandler(void)
 			}
 			if(canNodeId == BACKWARD_WHEEL_ID) 
 			{
-				gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity = Pulse2Vel(msg.data32[1])/100.0f;
+				gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity = (msg.data32[1])/100.0f;
 			}
 		}
 		if(msg.data32[0] == 0x0000564A)
@@ -1084,7 +1084,8 @@ void USART6_IRQHandler(void)       //更新频率200Hz
     }posture;
 	static uint8_t count = 0;
 	static uint8_t i = 0;
-	
+	static float lastPosY = 0.0f;
+	static float lastPosYDerivative = 0.0f;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -1135,6 +1136,8 @@ void USART6_IRQHandler(void)       //更新频率200Hz
 			case 4:
 				if(ch == 0x0d)
 				{
+					lastPosY = gRobot.moveBase.actualYPos;
+					lastPosYDerivative = gRobot.moveBase.posYDerivative;
 					gRobot.moveBase.actualAngle = -posture.ActVal[0];
 					posture.ActVal[1]           = posture.ActVal[1];
 					posture.ActVal[2]           = posture.ActVal[2];
@@ -1142,6 +1145,8 @@ void USART6_IRQHandler(void)       //更新频率200Hz
 					gRobot.moveBase.actualYPos  = posture.ActVal[4];
 					posture.ActVal[5]           = posture.ActVal[5];
 					UpdateXYAngle(posture.ActVal[0], posture.ActVal[3], posture.ActVal[4]);
+					gRobot.moveBase.posYDerivative = fabs(lastPosY - posture.ActVal[4])/0.01f;
+					gRobot.moveBase.posYSecondDerivative = fabs(lastPosYDerivative - gRobot.moveBase.posYDerivative)/0.01f;
 				}
 				count = 0;
 				break;
