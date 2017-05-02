@@ -266,7 +266,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //5#着陆台
 		 {38.7f,20.5f,14.0f,96.0f,21.0f},
 		 //6#着陆台
-		 {3.5f,21.4f,6.5f,131.0f,15.0f},
+		 {4.0f,21.4f,6.5f,131.0f,16.0f},
 		 //7#着陆台
 		 {-1.0f,35.5f, 2.9f,50.0f,15.0f}},
 		
@@ -329,7 +329,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //5#着陆台
 		 {37.7f,20.5f,14.0f,96.0f,21.0f},
 		 //6#着陆台
-		 {3.5f,21.4f,6.5f,131.0f,15.0f},
+		 {4.0f,21.4f,6.5f,131.0f,16.0f},
 		 //7#着陆台
 		 {-1.0f,35.5f, 2.9f,50.0f,15.0f}}
 
@@ -799,7 +799,7 @@ uint8_t LeftGunPriority[7] = {PLANT2,PLANT1,PLANT6,PLANT3,PLANT7,PLANT4,PLANT5};
 uint8_t RightGunPriority[7] = {PLANT4,PLANT5,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1};
 
 
-uint8_t UpperGunPriority[7] = {PLANT3,PLANT7,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
+uint8_t UpperGunPriority[7] = {PLANT7,PLANT3,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
 /** @defgroup Gun_Shoot_Command
   * @brief
   * @{
@@ -872,7 +872,7 @@ shoot_command_t gRightGunShootCmds[RIGHT_GUN_AUTO_SHOOT_STEP_NUMBER] = \
 ////上面枪射击柱子的顺序
 shoot_command_t gUpperGunShootCmds[UPPER_GUN_AUTO_STEP_NUMBER] = \
 {
-	{SHOOT_POINT3,PLANT3,SHOOT_METHOD1,1},	
+	{SHOOT_POINT3,PLANT7,SHOOT_METHOD1,1},	
 	{SHOOT_POINT3,PLANT3,SHOOT_METHOD1,1},
 	{SHOOT_POINT3,PLANT3,SHOOT_METHOD2,1},		
 	{SHOOT_POINT3,PLANT7,SHOOT_METHOD2,1}

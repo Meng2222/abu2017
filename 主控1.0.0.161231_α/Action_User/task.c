@@ -136,8 +136,8 @@ void sendDebugInfo(void)
 }
 void LeftGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"l\t%d\t%d\t%d\t",(int)gRobot.leftGun.checkTimeUsage,\
-		(int)gRobot.leftGun.targetPlant,(int) gRobot.leftGun.shootParaMode);
+	UART5_OUT((uint8_t *)"l\t%d\t%d\t%d\t%d\t",(int)gRobot.leftGun.checkTimeUsage,\
+		(int)gRobot.leftGun.targetPlant,(int) gRobot.leftGun.shootParaMode,(int)gRobot.leftGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.leftGun.actualPose.yaw*10.0f));
@@ -160,8 +160,8 @@ void LeftGunSendDebugInfo(void)
 }
 void RightGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"r\t%d\t%d\t%d\t",(int)gRobot.rightGun.checkTimeUsage,\
-		(int)gRobot.rightGun.targetPlant,(int) gRobot.rightGun.shootParaMode);
+	UART5_OUT((uint8_t *)"r\t%d\t%d\t%d\t%d\t",(int)gRobot.rightGun.checkTimeUsage,\
+		(int)gRobot.rightGun.targetPlant,(int) gRobot.rightGun.shootParaMode,(int)gRobot.rightGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.rightGun.actualPose.yaw*10.0f));
@@ -184,8 +184,8 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
-		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode);
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
@@ -1021,7 +1021,7 @@ void LeftGunShootTask(void)
 				UART5_OUT((uint8_t *)"Left Gun Mode Error!!!!!!!!!!\r\n");
 			}
 		}
-//		LeftGunSendDebugInfo();
+		LeftGunSendDebugInfo();
 		gRobot.leftGun.checkTimeUsage = 0;
 	}
 }
@@ -1199,7 +1199,7 @@ void RightGunShootTask(void)
 				UART5_OUT((uint8_t *)"Right Gun Mode Error!!!!!!!!\r\n");
 			}
 		}
-//		RightGunSendDebugInfo();
+		RightGunSendDebugInfo();
 		gRobot.rightGun.checkTimeUsage = 0;
 	}
 
@@ -1222,8 +1222,12 @@ void UpperGunShootTask(void)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
-				gRobot.upperGun.mode = GUN_ATTACK_MODE;
-				gRobot.plantState[PLANT7].plate = 1;
+				OSTimeDly(40);
+				if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+				{
+					gRobot.upperGun.mode = GUN_ATTACK_MODE;
+					gRobot.plantState[PLANT7].plate = 1;
+				}
 			}
 		}
 #endif
