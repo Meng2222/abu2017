@@ -317,6 +317,9 @@ void ConfigTask(void)
 
 	TIM_Delayms(TIM5, 17000);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
+	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+
 	TIM_Delayms(TIM5, 50);
 
 	ROBOT_Init();
@@ -1362,20 +1365,23 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			if(gRobot.autoCommand[PLANT1].ball == 0&&\
-				gRobot.autoCommand[PLANT2].ball == 0 &&\
-				gRobot.autoCommand[PLANT1].plate == 0 &&\
-				gRobot.autoCommand[PLANT2].plate == 0)
-			{
-				for(uint8_t i = 0; i < 7;i++)
-				{
-					gRobot.autoCommand[i].ball = 1;
-				}
-				for(uint8_t i = 0; i < 7;i++)
-				{
-					gRobot.autoCommand[i].plate = 1;
-				}			
-			}
+			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+			OSTimeDly(10);
+			GPIO_SetBits(GPIOE, GPIO_Pin_2);
+//			if(gRobot.autoCommand[PLANT1].ball == 0&&\
+//				gRobot.autoCommand[PLANT2].ball == 0 &&\
+//				gRobot.autoCommand[PLANT1].plate == 0 &&\
+//				gRobot.autoCommand[PLANT2].plate == 0)
+//			{
+//				for(uint8_t i = 0; i < 7;i++)
+//				{
+//					gRobot.autoCommand[i].ball = 1;
+//				}
+//				for(uint8_t i = 0; i < 7;i++)
+//				{
+//					gRobot.autoCommand[i].plate = 1;
+//				}			
+//			}
 //			if(PHOTOSENSORUPGUN)
 //			{
 //				ClampClose();

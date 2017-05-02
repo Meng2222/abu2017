@@ -187,18 +187,20 @@ void UART5BufPut(uint8_t data)
 	}
 	else
 	{
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, 56);
-		USART_SendData(UART5, (uint8_t)-100);
-		USART_SendData(UART5, (uint8_t)-100);
-		USART_SendData(UART5, (uint8_t)-100);
-		USART_SendData(UART5, (uint8_t)-100);
+		USART_SendData(UART5,'D');
+		USART_SendData(UART5,'M');
+		USART_SendData(UART5,'A');
+		USART_SendData(UART5,'O');
+		USART_SendData(UART5,'V');
+		USART_SendData(UART5,'E');
+		USART_SendData(UART5,'R');
+		USART_SendData(UART5,'F');
+		USART_SendData(UART5,'L');
+		USART_SendData(UART5,'O');	
+		USART_SendData(UART5,'W');
+		USART_SendData(UART5,'\r');
+		USART_SendData(UART5,'\n');
+		sendBufferCnt = 0;
 	}
-
 }
 

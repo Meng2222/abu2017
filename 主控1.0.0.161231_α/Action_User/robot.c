@@ -8,6 +8,7 @@
 #include "gpio.h"
 #include "cpu.h"
 #include "usart.h"
+#include "app_cfg.h"
 robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
 extern OS_EVENT *LeftGunShootPointMbox;
@@ -1642,8 +1643,9 @@ status_t ROBOT_UpperGunCheckAim(void)
 		}
 		checkTime+=(20 - timeout) *5;
 	}
-	if(checkTime > 300)
+	if(checkTime > 100)
 	{
+		OSTaskResume(DEBUG_TASK_PRIO);
 		UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
 	}	
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
