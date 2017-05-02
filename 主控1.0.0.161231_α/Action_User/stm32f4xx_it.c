@@ -1303,18 +1303,9 @@ void USART3_IRQHandler(void)
 	
 	OSIntExit();
 }
-/*********************************WIFI*************************/
-/**************************************************************/
 
-//通过判断接收连续2个字符之间的时间差不大于100ms来决定是不是一次连续的数据.
-//如果2个字符接收间隔超过100ms,则认为不是1次连续数据.也就是超过100ms没有接收到
-//任何数据,则表示此次接收完毕.
-//接收到的数据状态
-//[15]:0,没有接收到数据;1,接收到了一批数据.
-//[14:0]:接收到的数据长度
 void UART5_IRQHandler(void)
 {
-	u8 res;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
@@ -1322,38 +1313,10 @@ void UART5_IRQHandler(void)
 	if(USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)   
 	{
 		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
-		res = USART_ReceiveData(UART5);		
-		if((USART5_RX_STA&(1 << 15)) == 0)//接收完的一批数据,还没有被处理,则不再接收其他数据
-		{ 
-			if(USART5_RX_STA<USART5_MAX_RECV_LEN)		//还可以接收数据
-			{
-				TIM_SetCounter(TIM7, 0);//计数器清空        				 
-				if(USART5_RX_STA == 0)		
-					TIM_Cmd(TIM7, ENABLE);  //使能定时器7 
-				USART5_RX_BUF[USART5_RX_STA++] = res;		//记录接收到的值	 
-			}
-			else 
-			{
-				USART5_RX_STA |= 1 << 15;					//强制标记接收完成
-			} 
-		}
+		
 	}
 	OSIntExit();		
 }
-
-//定时器7中断服务程序		    
-void TIM7_IRQHandler(void)
-{ 	
-	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)//是更新中断
-	{	 			   
-		USART5_RX_STA |= 1 << 15;	//标记接收完成
-		TIM_ClearITPendingBit(TIM7, TIM_IT_Update);  //清除TIM7更新中断标志    
-		TIM_Cmd(TIM7, DISABLE);  //关闭TIM7 
-	}	    
-}
-
-/*********************************WIFI*************************/
-/**************************************************************/
 
 /**
   * @brief   This function handles NMI exception.

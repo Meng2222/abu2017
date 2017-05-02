@@ -10,12 +10,6 @@
 #include "timer.h"
 #include "dma.h"
 
-//串口发送缓存区 	
-__align(8) u8 USART5_TX_BUF[USART5_MAX_SEND_LEN]; 	//发送缓冲,最大USART3_MAX_SEND_LEN字节  	  
-//串口接收缓存区 	
-u8 USART5_RX_BUF[USART5_MAX_RECV_LEN]; 				//接收缓冲,最大USART3_MAX_RECV_LEN个字节.
-u16 USART5_RX_STA = 0; 
-
 /**
   * @brief  Retargets the C library printf function to the USART.
   * @param  None
@@ -217,6 +211,73 @@ void UART4_Init(uint32_t BaudRate)
 
 }
 
+/*********************************WIFI*************************/
+/**************************************************************/
+//PC12:  UART5 Tx
+//PD2 :  UART5 Rx
+void UART5_Init(uint32_t BaudRate)
+{
+	NVIC_InitTypeDef NVIC_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
+	USART_InitTypeDef USART_InitStructure;
+	/* USARTx configured as follow:
+	- BaudRate = 57600 baud  
+	- Word Length = 8 Bits
+	- One Stop Bit
+	- No parity
+	- Hardware flow control disabled (RTS and CTS signals)
+	- Receive and transmit enabled
+	*/
+	USART_InitStructure.USART_BaudRate = BaudRate;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+//------------------------------------------------------------
+	 
+  /* Enable GPIO clock */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD, ENABLE);
+
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
+
+  //若使用蓝牙屏掉此句
+  USART_DeInit(UART5);  //复位串口5
+	
+  /* Connect PXx to USARTx_Tx*/
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
+  /* Connect PXx to USARTx_Rx*/
+  GPIO_PinAFConfig(GPIOD, GPIO_PinSource2,  GPIO_AF_UART5);
+
+  /* Configure USART Tx as alternate function  */
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  /* Configure USART Rx as alternate function  */
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+  /* USART configuration */
+  USART_Init(UART5, & USART_InitStructure);
+  
+	//////////   设置UART5中断       ///////////////
+	NVIC_InitStructure.NVIC_IRQChannel = UART5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	NVIC_Init(&NVIC_InitStructure);
+
+	USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
+	/* Enable USART */
+	USART_Cmd(UART5, ENABLE);
+}
 
  /****************************************************************************
 * 名    称：void USART_OUT(USART_TypeDef* USARTx, uint8_t *Data,...)
@@ -408,100 +469,4 @@ char *itoa(int value, char *string, int radix)
     return string;
 
 } 
-
-
-/*********************************WIFI*************************/
-/**************************************************************/
-//PC12:  UART5 Tx
-//PD2 :  UART5 Rx
-void UART5_Init(uint32_t BaudRate)
-{
-	NVIC_InitTypeDef NVIC_InitStructure;
-	GPIO_InitTypeDef GPIO_InitStructure;
-	USART_InitTypeDef USART_InitStructure;
-	/* USARTx configured as follow:
-	- BaudRate = 57600 baud  
-	- Word Length = 8 Bits
-	- One Stop Bit
-	- No parity
-	- Hardware flow control disabled (RTS and CTS signals)
-	- Receive and transmit enabled
-	*/
-	USART_InitStructure.USART_BaudRate = BaudRate;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-	USART_InitStructure.USART_Parity = USART_Parity_No;
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-//------------------------------------------------------------
-	 
-  /* Enable GPIO clock */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD, ENABLE);
-
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
-
-  //若使用蓝牙屏掉此句
-  USART_DeInit(UART5);  //复位串口5
-	
-  /* Connect PXx to USARTx_Tx*/
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
-  /* Connect PXx to USARTx_Rx*/
-  GPIO_PinAFConfig(GPIOD, GPIO_PinSource2,  GPIO_AF_UART5);
-
-  /* Configure USART Tx as alternate function  */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-  /* Configure USART Rx as alternate function  */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-  /* USART configuration */
-  USART_Init(UART5, & USART_InitStructure);
-  
-	//////////   设置UART5中断       ///////////////
-	NVIC_InitStructure.NVIC_IRQChannel = UART5_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	NVIC_Init(&NVIC_InitStructure);
-
-	USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
-	/* Enable USART */
-	USART_Cmd(UART5, ENABLE);
-
- //------------------------------------------------------------
-	//以下三句若使用蓝牙需屛掉
-	//使能USART5接收中断,
-	
-	TIM7_Int_Init(1000-1,8400-1);		//100ms中断
-	USART5_RX_STA=0;		//清零
-	TIM_Cmd(TIM7, DISABLE); //关闭定时器7
-}
-
-
-//串口5,printf 函数
-//确保一次发送数据不超过USART5_MAX_SEND_LEN字节
-void u5_printf(char* fmt, ...)  
-{  
-	u16 i, j;
-	va_list ap;
-	va_start(ap,fmt);
-	vsprintf((char*)USART5_TX_BUF, fmt, ap);
-	va_end(ap);
-	i = strlen((const char*)USART5_TX_BUF);//此次发送数据的长度
-	for(j = 0; j < i; j++)//循环发送数据
-	{
-		UART5BufPut((uint8_t)USART5_TX_BUF[j]); 	 //发送数据到串口5
-	}
-}
-/*********************************WIFI*************************/
-/**************************************************************/
  
