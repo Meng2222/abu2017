@@ -882,22 +882,17 @@ status_t ROBOT_RightGunReload(void)
 */
 status_t ROBOT_LeftGunCheckReload(void)
 {
-	int timeOut = 20;
-	while(timeOut--)
+	if(PHOTOSENSORLEFTGUN)
 	{
-		if(PHOTOSENSORLEFTGUN)
-		{
-			gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
-			break;
-		}
-		else
-		{
-			ROBOT_LeftGunHome();
-		}
-		OSTimeDly(5);
+		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	}
-	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
-	return GUN_RELOAD_ERROR;
+	else
+	{
+		gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
+		gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
+		OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+	}
+	return GUN_NO_ERROR;
 }
 
 /**
@@ -909,22 +904,17 @@ status_t ROBOT_LeftGunCheckReload(void)
 */
 status_t ROBOT_RightGunCheckReload(void)
 {
-	int timeOut = 20;
-	while(timeOut--)
+	if(!PHOTOSENSORRIGHTGUN)
 	{
-		if(!PHOTOSENSORRIGHTGUN)
-		{
-			gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
-			break;
-		}
-		else
-		{
-			ROBOT_RightGunHome();
-		}
-		OSTimeDly(5);
+		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
 	}
-	gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
-	return GUN_RELOAD_ERROR;
+	else
+	{
+		gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
+		gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
+		OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+	}
+	return GUN_NO_ERROR;
 }
 
 /** @defgroup Left_Gun_Shoot_Tragedy
@@ -961,12 +951,12 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-//	if(gRobot.leftGun.shootTimes >= 18u)
-//	{
-//		gRobot.leftGun.commandState = GUN_NO_COMMAND;
-//	}
-//	else
-//	{
+	if(gRobot.leftGun.shootTimes >= 18u)
+	{
+		gRobot.leftGun.commandState = GUN_NO_COMMAND;
+	}
+	else
+	{
 		for(uint8_t i = 0;i < searchRange;i++)
 		{
 			//有球
@@ -1039,7 +1029,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					gRobot.leftGun.gunCommand[shootCommand.plantNum].ball += 1;
 			}
 		}
-//	}
+	}
 	return shootCommand;
 }
 
@@ -1111,12 +1101,12 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-//	if(gRobot.rightGun.shootTimes >= 18u)
-//	{
-//		gRobot.rightGun.commandState = GUN_NO_COMMAND;
-//	}
-//	else
-//	{
+	if(gRobot.rightGun.shootTimes >= 18u)
+	{
+		gRobot.rightGun.commandState = GUN_NO_COMMAND;
+	}
+	else
+	{
 		for(uint8_t i = 0;i < searchRange;i++)
 		{
 			//有球
@@ -1191,7 +1181,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;					
 			}
 		}
-//	}
+	}
 	return shootCommand;
 }
 
