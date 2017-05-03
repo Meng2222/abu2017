@@ -52,10 +52,6 @@ typedef enum
 	stopRobot,
 	load,
 	beginToGo1,
-	goToHalfLaunchingArea,
-	beginToGo2,
-	goTo3QuarterArea,
-	beginToGo3,
 	goToLaunchingArea,
 	launch
 }Status_t;
@@ -683,7 +679,7 @@ void WalkTask(void)
 					TIM_Delayms(TIM5,20);
 					ROBOT_LeftGunHome();
 					ROBOT_RightGunHome();
-					status ++;
+					status = goToLoadingArea;
 				}
 				break;
 			//从出发区走向装载区
@@ -748,7 +744,7 @@ void WalkTask(void)
 				{
 					timeCounter = 0;
 					ClampRotate();
-					status ++;
+					status = beginToGo1;
 				}
 				break;
 			
@@ -766,58 +762,6 @@ void WalkTask(void)
 				}
 				break;
 				
-			//四分之三位置停车
-			case goToHalfLaunchingArea:
-			{
-				int backCnt = 0u;
-				if(backCnt < 50u)
-				{
-					backCnt ++;
-				}
-				else if(backCnt == 50u)
-				{
-					LeftBack();
-					RightBack();
-				}
-				MoveToCenter(-9459.14f, 2000.0f, 2000.0f);
-			    if (GetPosX() >= -9459.14f)
-				{
-					LockWheel();
-					MoveY(50.0f);
-					moveTimFlag = 0;
-					status++;
-					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				}
-				break;
-			}
-			case beginToGo2:
-				if (PHOTOSENSORUPGUN)
-				{
-					OSMboxPend(LeftGunNextPointMbox, 0, &os_err);
-					OSMboxPend(RightGunNextPointMbox, 0, &os_err);
-					OSSemSet(PeriodSem, 0, &os_err);
-//					status++;
-					status+=3;
-				}
-				break;
-			case goTo3QuarterArea:
-				MoveTo(-2925.14f, 1500.0f, 1200.0f);
-			    if (GetPosX() >= -2925.14f)
-				{
-					LockWheel();
-					moveTimFlag = 0;
-					status++;
-					OSTaskSuspend(OS_PRIO_SELF);
-				}
-				break;
-			
-			case beginToGo3:
-				if (PHOTOSENSORUPGUN)
-				{
-					status++;
-				}
-				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
@@ -827,7 +771,7 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					status++;
+					status = launch;
 				}
 #endif
 #ifdef BLUE_FIELD
@@ -837,7 +781,7 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					status++;
+					status = launch;
 				}
 #endif
 				break;
