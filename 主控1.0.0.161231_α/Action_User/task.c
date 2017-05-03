@@ -53,7 +53,9 @@ typedef enum
 	load,
 	beginToGo1,
 	goToLaunchingArea,
-	launch
+	launch,
+	reset,
+	resetRun
 }Status_t;
 
 Status_t status = getReady;
@@ -635,17 +637,24 @@ void WalkTask(void)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
-		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+		if(RESET_SWITCH)
+		{
+			status = reset;
+		}
+		if(status != load && status != reset)
+		{
+			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
 
-		UpdateKenimaticInfo();	
-		sendDebugInfo();
+			UpdateKenimaticInfo();	
+			sendDebugInfo();
+		}
 		switch (status)
 		{
 			//准备阶段
