@@ -55,7 +55,9 @@ typedef enum
 	goToLaunchingArea,
 	launch,
 	reset,
-	resetRun
+	resetConfig,
+	resetRunToLoad,
+	resetRunToLaunch
 }Status_t;
 
 Status_t status = getReady;
@@ -805,10 +807,16 @@ void WalkTask(void)
 //				CameraInit();
 //				MoveY(50.0f);
 				SendStop2Camera();
-				
 				OSTaskSuspend(OS_PRIO_SELF);
 				break;
-			
+			case reset:
+				break;
+			case resetConfig:
+				break;
+			case resetRunToLoad:
+				break;
+			case resetRunToLaunch:
+				break;
 			default:
 				break;		
 		}

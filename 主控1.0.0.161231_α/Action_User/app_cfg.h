@@ -69,8 +69,8 @@ static void   SelfCheckTask(void);
 *********************************************************************************************************
 */
 #define  APP_TASK_START_STK_SIZE					256u
-#define  Config_TASK_START_STK_SIZE					1024u
-#define  Walk_TASK_STK_SIZE							8192u
+#define  Config_TASK_START_STK_SIZE					256u
+#define  Walk_TASK_STK_SIZE							512u
 #define  LEFT_GUN_AUTO_SHOOT_STK_SIZE				1024u
 #define  RIGHT_GUN_SHOOT_STK_SIZE					1024u
 #define  UPPER_GUN_SHOOT_STK_SIZE					1024u
