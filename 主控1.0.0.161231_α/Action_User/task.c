@@ -186,8 +186,9 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
-		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.targetZone,(int) gRobot.upperGun.shootParaMode,\
+		(int)gRobot.upperGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
