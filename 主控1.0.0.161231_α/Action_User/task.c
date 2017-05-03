@@ -1218,7 +1218,6 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
-	OSTimeDly(150);
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
