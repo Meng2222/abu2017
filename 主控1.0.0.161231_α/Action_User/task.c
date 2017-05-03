@@ -98,9 +98,9 @@ void GyroInit(void)
 void sendDebugInfo(void)
 {
 	
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t%d\t",KEYSWITCH,status,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t%d\t%d\t",KEYSWITCH,status,\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-			(int)gRobot.moveBase.actualYPos);
+			(int)gRobot.moveBase.actualYPos,(int)(gRobot.moveBase.posYSecondDerivative*100.0f));
 
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.targetSpeed.forwardWheelSpeed,(int)gRobot.moveBase.targetSpeed.backwardWheelSpeed);			

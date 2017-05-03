@@ -292,7 +292,7 @@ void ThreeWheelVelControlSelfCheck(int direction);
 //速度闭环PID
 #define PVEL (6.0f)
 
-#define PVELY (1.0f)
+#define PVELY (10.0f)
 /*
 ============================================================
                         其他宏定义           

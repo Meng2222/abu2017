@@ -440,9 +440,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	velX = outputSpeed;
 //	velY = fabs(0.07f * velX) /*+ 100.0f*/;
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
-	if(velY <= 50.0f)
+	if(velY <= 30.0f)
 	{
-		velY = 50.0f;
+		velY = 30.0f;
 	}
 #define MAXMOVEACC (Vel2Pulse(2000))
 #define PULSE_Y 100
