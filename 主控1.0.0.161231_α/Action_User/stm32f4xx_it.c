@@ -1264,7 +1264,10 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				receive_data=data;
 				gRobot.upperGun.targetZone = data;
-				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+				if(data != 0x00)
+				{
+					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+				}
 				state = 0;
 				break;
 			case HEADER_STATE3:
