@@ -806,11 +806,11 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
-			OSTimeDly(30);
+			OSTimeDly(20);
 		}
 		else
 		{
-			OSTimeDly(20);
+			OSTimeDly(10);
 		}
 //		if(gRobot.leftGun.shootTimes == 0)
 //		{
@@ -850,11 +850,11 @@ status_t ROBOT_RightGunReload(void)
 		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
-			OSTimeDly(30);
+			OSTimeDly(20);
 		}
 		else
 		{
-			OSTimeDly(20);
+			OSTimeDly(10);
 		}
 //		while(pushTimes--)
 //		{
@@ -1740,7 +1740,7 @@ status_t ROBOT_LeftGunShoot(void)
 				{
 					LeftPush();
 				}
-				OSTimeDly(8);
+				OSTimeDly(15);
 				LeftShootReset();
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
@@ -1786,7 +1786,7 @@ status_t ROBOT_RightGunShoot(void)
 				{
 					RightPush();
 				}
-				OSTimeDly(8);
+				OSTimeDly(15);
 				RightShootReset();
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				gRobot.rightGun.reloadState = GUN_NOT_RELOAD;

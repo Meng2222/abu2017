@@ -959,7 +959,9 @@ void LeftGunShootTask(void)
 					
 					//检查上弹是否到位
 //					ROBOT_LeftGunCheckReload();
-					
+					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
+																			[leftGunShootCommand.plantNum];
+					ROBOT_LeftGunAim();
 					//检测枪是否到位
 					ROBOT_LeftGunCheckAim();
 
@@ -1118,7 +1120,9 @@ void RightGunShootTask(void)
 
 					//检查上弹是否到位
 //					ROBOT_RightGunCheckReload();
-
+					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
+																	[rightGunShootCommand.plantNum];
+					ROBOT_RightGunAim();
 					//检查是否到位
 					ROBOT_RightGunCheckAim();
 
