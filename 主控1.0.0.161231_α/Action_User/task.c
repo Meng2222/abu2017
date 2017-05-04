@@ -697,6 +697,7 @@ void WalkTask(void)
 		//检查是否需要重启
 		if(RESET_SWITCH)
 		{
+			gRobot.isReset = ROBOT_RESET;
 			status = reset;
 		}
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
@@ -867,6 +868,7 @@ void WalkTask(void)
 				break;			
 			//发射飞盘
 			case launch:
+				gRobot.isReset = ROBOT_NOT_RESET;
 				break;
 			//失能电机，中断发射任务
 			case reset:
@@ -877,6 +879,8 @@ void WalkTask(void)
 				break;
 			case resetConfig:
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
+				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+				OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 				break;
 			case resetRunToLoad:
 				break;

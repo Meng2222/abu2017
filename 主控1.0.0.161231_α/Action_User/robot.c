@@ -62,8 +62,8 @@ static void LeftGunInit(void)
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 	//子弹数
 	gRobot.leftGun.bulletNumber = MAX_BULLET_NUMBER_LEFT;
-	//fix me
-	gRobot.leftGun.champerErrerState = 0;
+	//认为第一发上弹没有问题
+	gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	//枪停止射击
 	gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 	//左枪姿态数据库
@@ -140,8 +140,8 @@ static void RightGunInit(void)
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//最大子弹数
 	gRobot.rightGun.bulletNumber = MAX_BULLET_NUMBER_RIGHT;
-	//fix me
-	gRobot.rightGun.champerErrerState = 0;
+	//默认第一发初始上弹没有问题
+	gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
 	//枪停止射击
 	gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 	//右枪姿态数据库
@@ -1685,7 +1685,7 @@ status_t ROBOT_UpperGunCheckAim(void)
  status_t ROBOT_LeftGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if(gRobot.leftGun.shootTimes == 0)
+	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)|| gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 //		OSTimeDly(50);
@@ -1707,7 +1707,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 
-	if(gRobot.rightGun.shootTimes == 0)
+	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)|| gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
 //		OSTimeDly(50);
