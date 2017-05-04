@@ -51,10 +51,10 @@ typedef enum
 {
 	getReady,
 	goToLoadingArea,
-	stopRobot,
 	load,
 	beginToGo1,
 	goToLaunchingArea,
+	stopRobot,	
 	launch,
 	reset,
 	resetConfig,
@@ -792,16 +792,6 @@ void WalkTask(void)
 #endif
 
 				break;
-			
-			//停车
-			case stopRobot:
-				MoveX(-ENDSPEED);
-				if (GetPosX() <= -13026.96f)
-				{
-					BEEP_OFF;
-					status++;
-				}				
-				break;
 				
 			//装载飞盘
 			case load:
@@ -845,7 +835,7 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					status = launch;
+					status = stopRobot;
 				}
 #endif
 #ifdef BLUE_FIELD
@@ -856,13 +846,12 @@ void WalkTask(void)
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					status = launch;
+					status = stopRobot;
 				}
 #endif
 				break;
-			
-			//发射飞盘
-			case launch:
+			//停车
+			case stopRobot:
 				//靠墙一段时间后抱死
 				OSTimeDly(50);
 				LockWheel();
@@ -874,10 +863,16 @@ void WalkTask(void)
 				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
 //				MoveY(50.0f);
-				OSTaskSuspend(OS_PRIO_SELF);
+				status = launch;
+				break;			
+			//发射飞盘
+			case launch:
 				break;
 			case reset:
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
+				OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+				OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+				OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 				break;
 			case resetConfig:
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
@@ -885,6 +880,28 @@ void WalkTask(void)
 			case resetRunToLoad:
 				break;
 			case resetRunToLaunch:
+#ifdef RED_FIELD
+                MoveToCenter(-6459.14f, -3000.0f, 2000.0f);
+				//到位后给靠墙速度
+			    if (GetPosX() <= -6459.14f)
+				{
+					ClampReset();
+					MoveY(50.0f);
+					moveTimFlag = 0;
+					status = stopRobot;
+				}
+#endif
+#ifdef BLUE_FIELD
+                MoveToCenter(6459.14f, 3000.0f, 2000.0f);
+				//到位后给靠墙速度
+			    if (GetPosX() >= 6459.14f)
+				{
+					ClampReset();
+					MoveY(50.0f);
+					moveTimFlag = 0;
+					status = stopRobot;
+				}
+#endif
 				break;
 			default:
 				break;		

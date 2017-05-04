@@ -888,9 +888,7 @@ status_t ROBOT_LeftGunCheckReload(void)
 	}
 	else
 	{
-		gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
-		gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
-		OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
+		gRobot.leftGun.champerErrerState = GUN_RELOAD_ERROR;
 	}
 	return GUN_NO_ERROR;
 }
@@ -910,9 +908,7 @@ status_t ROBOT_RightGunCheckReload(void)
 	}
 	else
 	{
-		gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
-		gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
-		OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
+		gRobot.rightGun.champerErrerState = GUN_RELOAD_ERROR;
 	}
 	return GUN_NO_ERROR;
 }
@@ -1738,14 +1734,21 @@ status_t ROBOT_LeftGunShoot(void)
 				OSTimeDly(20);
 				if(gRobot.leftGun.targetPlant!= PLANT7)
 				{
-					LeftPush();
+					//如果上弹正常时上下一发弹，否则不上下一发弹
+					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+					{
+						LeftPush();
+					}
 				}
 				OSTimeDly(15);
 				LeftShootReset();
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
-				gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
-				gRobot.leftGun.shootTimes++;		
-				gRobot.leftGun.bulletNumber--;
+				if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+				{
+					gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
+					gRobot.leftGun.shootTimes++;		
+					gRobot.leftGun.bulletNumber--;
+				}		
 		}
 	}
 	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
@@ -1784,14 +1787,21 @@ status_t ROBOT_RightGunShoot(void)
 				OSTimeDly(20);
 				if(gRobot.rightGun.targetPlant != PLANT7)
 				{
-					RightPush();
+					//如果上弹正常时上下一发弹，否则不上下一发弹
+					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
+					{
+						RightPush();
+					}
 				}
 				OSTimeDly(15);
 				RightShootReset();
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
-				gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
-				gRobot.rightGun.shootTimes++;
-				gRobot.rightGun.bulletNumber--;
+				if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
+				{
+					gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
+					gRobot.rightGun.shootTimes++;
+					gRobot.rightGun.bulletNumber--;
+				}
 		}
 	}
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)

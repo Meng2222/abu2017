@@ -293,7 +293,7 @@ typedef struct
 	signed char bulletNumber;
 	
 	//枪膛是否卡弹:1卡弹，0正常
-	unsigned char champerErrerState;
+	signed char champerErrerState;
 	
 	//射击命令：1射击，0不射击
 	unsigned char shoot;
