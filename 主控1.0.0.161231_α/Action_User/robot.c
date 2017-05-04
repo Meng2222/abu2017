@@ -806,11 +806,11 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
-			OSTimeDly(20);
+			OSTimeDly(30);
 		}
 		else
 		{
-			OSTimeDly(10);
+			OSTimeDly(20);
 		}
 //		if(gRobot.leftGun.shootTimes == 0)
 //		{
@@ -850,11 +850,11 @@ status_t ROBOT_RightGunReload(void)
 		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
-			OSTimeDly(20);
+			OSTimeDly(30);
 		}
 		else
 		{
-			OSTimeDly(10);
+			OSTimeDly(20);
 		}
 //		while(pushTimes--)
 //		{
@@ -1740,7 +1740,7 @@ status_t ROBOT_LeftGunShoot(void)
 						LeftPush();
 					}
 				}
-				OSTimeDly(15);
+				OSTimeDly(8);
 				LeftShootReset();
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
@@ -1758,7 +1758,8 @@ status_t ROBOT_LeftGunShoot(void)
 		if(gRobot.leftGun.targetPlant!= PLANT7)
 		{
 			LeftPush();
-		}		OSTimeDly(8);
+		}		
+		OSTimeDly(8);
 		LeftShootReset();
 		gRobot.leftGun.shootTimes++;
 		gRobot.leftGun.bulletNumber--;
@@ -1793,7 +1794,7 @@ status_t ROBOT_RightGunShoot(void)
 						RightPush();
 					}
 				}
-				OSTimeDly(15);
+				OSTimeDly(8);
 				RightShootReset();
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)

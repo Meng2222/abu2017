@@ -326,8 +326,10 @@ void ConfigTask(void)
 	ROBOT_Init();
 
 	ClampClose();
-	LeftBack();
-	RightBack();
+//	LeftBack();
+//	RightBack();
+	LeftPush();
+	RightPush();
 	ClampReset();
 
 	BEEP_ON;
@@ -865,6 +867,7 @@ void WalkTask(void)
 //				CameraInit();
 //				MoveY(50.0f);
 				status = launch;
+			    OSSemSet(PeriodSem, 0, &os_err);
 				break;			
 			//发射飞盘
 			case launch:
@@ -873,14 +876,10 @@ void WalkTask(void)
 			//失能电机，中断发射任务
 			case reset:
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
-				OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-				OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 				OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 				break;
 			case resetConfig:
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
-				OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-				OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 				break;
 			case resetRunToLoad:
 				break;
@@ -923,8 +922,8 @@ void LeftGunShootTask(void)
 #ifndef NO_WALK_TASK
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
-//	LeftBack();
-//	OSTimeDly(50);
+	OSTimeDly(20);
+	LeftBack();
 //	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
@@ -971,9 +970,9 @@ void LeftGunShootTask(void)
 						ROBOT_LeftGunAim();
 					}
 					//第一发弹先调整姿态一段时间后再上弹
-					if(gRobot.leftGun.shootTimes == 0)
+					if(gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						OSTimeDly(30);
+						OSTimeDly(100);
 						LeftPush();
 					}
 					//上弹
@@ -990,7 +989,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckShootPoint();
 #endif
 					//检查上弹是否到位
-					ROBOT_LeftGunCheckReload();
+//					ROBOT_LeftGunCheckReload();
 					//发射
 					ROBOT_LeftGunShoot();
 					//记录发射命令
@@ -1081,8 +1080,8 @@ void RightGunShootTask(void)
 #ifndef NO_WALK_TASK
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
-//	RightBack();
-//	OSTimeDly(50);
+	OSTimeDly(20);
+	RightBack();
 //	RightPush();
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
@@ -1132,9 +1131,9 @@ void RightGunShootTask(void)
 						ROBOT_RightGunAim();
 					}
 					//第一发弹调整姿态一段时间后开始上弹
-					if(gRobot.rightGun.shootTimes == 0)
+					if(gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						OSTimeDly(30);
+						OSTimeDly(100);
 						RightPush();
 					}
 					//上弹
@@ -1151,7 +1150,7 @@ void RightGunShootTask(void)
 					ROBOT_RightGunCheckShootPoint();
 #endif
 					//检查上弹是否到位
-					ROBOT_RightGunCheckReload();
+//					ROBOT_RightGunCheckReload();
 					//发射
 					ROBOT_RightGunShoot();
 					//记录上一次发射命令
