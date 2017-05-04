@@ -43,8 +43,6 @@ OS_EVENT *RightGunNextPointMbox;
 
 //定义机器人全局变量
 extern robot_t gRobot;
-extern uint8_t LeftGunPriority[7];
-extern uint8_t RightGunPriority[7];
 
 //状态变量
 typedef enum
@@ -972,7 +970,7 @@ void LeftGunShootTask(void)
 					//第一发弹先调整姿态一段时间后再上弹
 					if(gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						OSTimeDly(100);
+						OSTimeDly(90);
 						LeftPush();
 					}
 					//上弹
@@ -1133,7 +1131,7 @@ void RightGunShootTask(void)
 					//第一发弹调整姿态一段时间后开始上弹
 					if(gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						OSTimeDly(100);
+						OSTimeDly(110);
 						RightPush();
 					}
 					//上弹
