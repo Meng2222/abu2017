@@ -1008,6 +1008,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					if(gRobot.rightGun.lastPlant != LeftGunPriority[i] ||\
 						gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
 					{
+						if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
 						continue;
 					}
 				}
@@ -1037,6 +1038,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 						if(gRobot.rightGun.lastPlant != LeftGunPriority[i] ||\
 							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
 						{
+							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
 							continue;
 						}
 					}
@@ -1162,6 +1164,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
 						gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
 					{
+						if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
 						continue;
 					}				
 				}
@@ -1191,6 +1194,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 						if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
 							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
 						{
+							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
 							continue;
 						}				
 					}

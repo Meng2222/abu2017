@@ -931,6 +931,8 @@ void LeftGunShootTask(void)
 		//手自动切换时上弹气缸推到头后收回
 		if(gRobot.leftGun.modeChangeFlag == 1)
 		{
+			gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
+			gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
 			LeftBack();
 			gRobot.leftGun.modeChangeFlag = 0;
 		}
@@ -1088,6 +1090,8 @@ void RightGunShootTask(void)
 		//手自动切换时上弹气缸推到头后收回
 		if(gRobot.rightGun.modeChangeFlag == 1)
 		{
+			gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
+			gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
 			RightBack();
 			gRobot.rightGun.modeChangeFlag = 0;
 		}
