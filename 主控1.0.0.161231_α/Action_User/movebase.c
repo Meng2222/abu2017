@@ -233,9 +233,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 {
 	float targetDist = 0.0f , actualDist = 0.0f;
 	float distAcc = 0.0f, timeAcc = 0.0f;
-	float distConst = 0.0f, timeConst = 0.0f;
 	float distDec = 0.0f, timeDec = 0.0f;
-	
+	float actualMaxVelX = 0.0f;
 	//计算理论距离和理论速度的绝对值
 	targetDist = fabs(targetPos - startPos);
 	actualDist = fabs(targetPos - GetPosX());
@@ -246,56 +245,74 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	/*梯形速度规划部分*/
 	if ((distAcc + distDec) < targetDist)
 	{
-		distConst = targetDist - distAcc - distDec;
-		timeConst = distConst / fabs(velX);
-		
-		if (moveTimer <= timeAcc)    /*加速段*/
+		if (actualDist > distDec)    
 		{
-			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
-			pExpData->speed = accX * (moveTimer + 0.01f);
+			//加速段
+			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (velX - accX/100.0f))
+			{
+				pExpData->dist = actualDist;
+				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX/100.0f;
+			}
+			//匀速段
+			else
+			{
+				pExpData->dist = actualDist;
+				pExpData->speed = fabs(velX);
+			}
 		}
-		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))    /*匀速段*/
+		else    
 		{
-			pExpData->dist = targetDist - distAcc - fabs(velX) * (moveTimer - timeAcc);
-			pExpData->speed = fabs(velX);
-		}
-		else if (moveTimer > (timeAcc + timeConst) && 
-			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
-		{
-			pExpData->dist = 0.5f * accX * (pow(timeAcc * 2.0f + timeConst - moveTimer, 2));
-			pExpData->speed = accX * (2.0f * timeAcc + timeConst - moveTimer - 0.01f);
-		}
-		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
-		{
-			pExpData->dist = 0;
-			pExpData->speed = 0;
+			moveTimFlag = 1;
+			if(moveTimer < timeDec)
+			{
+				pExpData->dist = 0.5f * decX * pow(timeDec - moveTimer, 2);
+				pExpData->speed = decX * (timeDec - moveTimer);
+			}
+			else
+			{
+				pExpData->dist = 0;
+				pExpData->speed = 0;			
+			}
 		}
 	}
 	/*三角形速度规划部分*/
 	else if ((distAcc + distDec) >= targetDist)
 	{
-		timeAcc = sqrtf(targetDist/accX);
-		distAcc = 0.5f * accX * pow(timeAcc, 2);
-		distDec = targetDist - distAcc;
-		timeDec = timeAcc ;
-		
-		if (moveTimer <= timeAcc)    /*加速段*/
+		timeAcc = sqrtf(2.0f * targetDist * (accX + decX))/accX;
+		distAcc = 0.5f * accX * pow(timeAcc , 2);
+		timeDec =sqrtf(2.0f * targetDist * (accX + decX))/decX;
+		distDec = 0.5f * decX * pow(timeDec , 2);
+		actualMaxVelX = sqrtf(2.0f * targetDist * (accX + decX));
+		if (actualDist > distDec)    /*加速段*/
 		{
-			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
-			pExpData->speed = accX * (moveTimer + 0.01f);
+			//加速段
+			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (actualMaxVelX - accX/100.0f))
+			{
+				pExpData->dist = actualDist;
+				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX/100.0f;
+			}
+			//匀速段
+			else
+			{
+				pExpData->dist = actualDist;
+				pExpData->speed = fabs(actualMaxVelX);
+			}
 		}
-		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
+		else   /*减速段*/
 		{
-			pExpData->dist = 0.5f * accX * pow(2.0f * timeAcc - moveTimer, 2);
-			pExpData->speed = accX * (2.0f * timeAcc - moveTimer - 0.01f);
-		}
-		else if (moveTimer > (timeAcc + timeDec))    
-		{
-			pExpData->dist = 0;
-			pExpData->speed = 0;
+			moveTimFlag = 1;
+			if(moveTimer < timeDec)
+			{
+				pExpData->dist = 0.5f * decX * pow(timeDec - moveTimer, 2);
+				pExpData->speed = decX * (timeDec - moveTimer);
+			}
+			else
+			{
+				pExpData->dist = 0;
+				pExpData->speed = 0;			
+			}
 		}
 	}
-	
 	
 	//计算理论位置并修正理论速度的符号
 	if(velX < 0.0f)
@@ -469,7 +486,7 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		formerTargetPos = targetPos;		
 		startPos = GetPosX();
 		moveTimer = 0.0f;
-		moveTimFlag = 1;
+		moveTimFlag = 0;
 	}
 
 	//轨迹计算
