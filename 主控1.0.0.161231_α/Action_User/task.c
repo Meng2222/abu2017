@@ -17,8 +17,7 @@
 #include "flash.h"
 #include "movebase2.h"
 #include "dma.h"
-//#define RED_FIELD
-#define BLUE_FIELD
+
 //#define NO_WALK_TASK
 #define NO_COMMAND_COUNTER 300
 /*
