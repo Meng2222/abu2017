@@ -962,7 +962,7 @@ void LeftGunShootTask(void)
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
 					}
-					else
+					else if(gRobot.leftGun.shootTimes == 0)
 					{
 						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
@@ -1125,7 +1125,7 @@ void RightGunShootTask(void)
 						ROBOT_RightGunAim();
 						ROBOT_RightGunCheckAim();
 					}
-					else
+					else if(gRobot.rightGun.shootTimes == 0)
 					{
 						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
