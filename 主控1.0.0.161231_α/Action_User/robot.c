@@ -882,20 +882,30 @@ status_t ROBOT_RightGunReload(void)
 */
 status_t ROBOT_LeftGunCheckReload(void)
 {
-	static uint8_t reloadErrorTimes = 0;
-	if(PHOTOSENSORLEFTGUN)
+	static int8_t reloadErrorTimes = 0;
+	uint8_t noPlateTimes = 0;
+	uint8_t checkTimes = 5;
+	while(checkTimes--)
 	{
-		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
+		if(!PHOTOSENSORLEFTGUN)
+		{
+			noPlateTimes ++;
+		}
+		OSTimeDly(2);
+	}
+	if(noPlateTimes>=5)
+	{
+		gRobot.leftGun.champerErrerState = GUN_RELOAD_ERROR;
+		reloadErrorTimes++;		
 	}
 	else
 	{
-		gRobot.leftGun.champerErrerState = GUN_RELOAD_ERROR;
-		reloadErrorTimes ++;
-		if(reloadErrorTimes >= 2)
-		{
-			reloadErrorTimes = 0;
-			gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;			
-		}
+		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;		
+	}
+	if(reloadErrorTimes >= 2)
+	{
+		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
+		reloadErrorTimes = 0;			
 	}
 	return GUN_NO_ERROR;
 }
@@ -909,20 +919,30 @@ status_t ROBOT_LeftGunCheckReload(void)
 */
 status_t ROBOT_RightGunCheckReload(void)
 {
-	static uint8_t reloadErrorTimes = 0;	
-	if(PHOTOSENSORRIGHTGUN)
+	static int8_t reloadErrorTimes = 0;
+	uint8_t noPlateTimes = 0;
+	uint8_t checkTimes = 5;
+	while(checkTimes--)
 	{
-		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
+		if(!PHOTOSENSORRIGHTGUN)
+		{
+			noPlateTimes ++;
+		}
+		OSTimeDly(2);
+	}
+	if(noPlateTimes>=5)
+	{
+		gRobot.rightGun.champerErrerState = GUN_RELOAD_ERROR;
+		reloadErrorTimes++;		
 	}
 	else
 	{
-		gRobot.rightGun.champerErrerState = GUN_RELOAD_ERROR;
-		reloadErrorTimes++;
-		if(reloadErrorTimes >= 2)
-		{
-			reloadErrorTimes = 0;
-			gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;			
-		}
+		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;		
+	}
+	if(reloadErrorTimes >= 2)
+	{
+		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
+		reloadErrorTimes = 0;			
 	}
 	return GUN_NO_ERROR;
 }
@@ -1744,6 +1764,7 @@ status_t ROBOT_LeftGunShoot(void)
 		{
 				ROBOT_LeftGunCheckConflict();
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
+
 				LeftShoot();
 				OSTimeDly(20);
 				if(gRobot.leftGun.targetPlant!= PLANT7)
@@ -1798,7 +1819,7 @@ status_t ROBOT_RightGunShoot(void)
 		{
 				ROBOT_RightGunCheckConflict();
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
-				RightShoot();	
+				RightShoot();				
 				OSTimeDly(20);
 				if(gRobot.rightGun.targetPlant != PLANT7)
 				{

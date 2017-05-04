@@ -944,7 +944,6 @@ void LeftGunShootTask(void)
 		{
 				//自获取命令
 				shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
-
 				if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 				{
 					gRobot.leftGun.noCommandTimer = 0;
@@ -1149,6 +1148,7 @@ void RightGunShootTask(void)
 #endif
 					//检查上弹是否到位
 					ROBOT_RightGunCheckReload();
+
 					//发射
 					ROBOT_RightGunShoot();
 					//记录上一次发射命令
