@@ -804,7 +804,7 @@ void WalkTask(void)
 				ClampClose();
 				timeCounter++;
 				//爪子关一段时间后翻并开始检测光电
-			    if (timeCounter >= 28)
+			    if (timeCounter >= 40)
 				{
 					timeCounter = 0;
 					ClampRotate();
@@ -989,7 +989,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckShootPoint();
 #endif
 					//检查上弹是否到位
-//					ROBOT_LeftGunCheckReload();
+					ROBOT_LeftGunCheckReload();
 					//发射
 					ROBOT_LeftGunShoot();
 					//记录发射命令
@@ -1150,7 +1150,7 @@ void RightGunShootTask(void)
 					ROBOT_RightGunCheckShootPoint();
 #endif
 					//检查上弹是否到位
-//					ROBOT_RightGunCheckReload();
+					ROBOT_RightGunCheckReload();
 					//发射
 					ROBOT_RightGunShoot();
 					//记录上一次发射命令

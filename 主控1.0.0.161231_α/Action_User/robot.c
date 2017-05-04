@@ -806,7 +806,7 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
-			OSTimeDly(30);
+			OSTimeDly(100);
 		}
 		else
 		{
@@ -850,7 +850,7 @@ status_t ROBOT_RightGunReload(void)
 		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
-			OSTimeDly(30);
+			OSTimeDly(100);
 		}
 		else
 		{
@@ -882,6 +882,7 @@ status_t ROBOT_RightGunReload(void)
 */
 status_t ROBOT_LeftGunCheckReload(void)
 {
+	static uint8_t reloadErrorTimes = 0;
 	if(PHOTOSENSORLEFTGUN)
 	{
 		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
@@ -889,6 +890,12 @@ status_t ROBOT_LeftGunCheckReload(void)
 	else
 	{
 		gRobot.leftGun.champerErrerState = GUN_RELOAD_ERROR;
+		reloadErrorTimes ++;
+		if(reloadErrorTimes >= 2)
+		{
+			reloadErrorTimes = 0;
+			gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;			
+		}
 	}
 	return GUN_NO_ERROR;
 }
@@ -902,6 +909,7 @@ status_t ROBOT_LeftGunCheckReload(void)
 */
 status_t ROBOT_RightGunCheckReload(void)
 {
+	static uint8_t reloadErrorTimes = 0;	
 	if(PHOTOSENSORRIGHTGUN)
 	{
 		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
@@ -909,6 +917,12 @@ status_t ROBOT_RightGunCheckReload(void)
 	else
 	{
 		gRobot.rightGun.champerErrerState = GUN_RELOAD_ERROR;
+		reloadErrorTimes++;
+		if(reloadErrorTimes >= 2)
+		{
+			reloadErrorTimes = 0;
+			gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;			
+		}
 	}
 	return GUN_NO_ERROR;
 }
@@ -1455,7 +1469,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 /*
 *名称：ROBOT_RightGunCheckAim
 *功能：检查瞄准是否已完成，不同枪分开检测为了防止重入，
-*因为此函数中需要设计超时
+*此函数中需要设计超时因为防止过长等待
 *参数：
 *none
 *status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
