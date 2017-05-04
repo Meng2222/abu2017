@@ -742,7 +742,7 @@ void WalkTask(void)
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
-				MoveToCenter(-13033.14f, -1500.0f, 2000.0f , 2000.0f);
+				MoveTo(-13033.14f, -1500.0f, 2000.0f , 2000.0f);
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -761,7 +761,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveToCenter(13033.14f, 1500.0f, 2000.0f, 2000.0f);		
+				MoveTo(13033.14f, 1500.0f, 2000.0f, 2000.0f);		
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -831,7 +831,7 @@ void WalkTask(void)
 					LeftBack();
 					RightBack();
 				}
-				MoveToCenter(-9459.14f, 2000.0f, 2000.0f,2000.0f);
+				MoveTo(-9459.14f, 2000.0f, 2000.0f,2000.0f);
 			    if (GetPosX() >= -9459.14f)
 				{
 					LockWheel();
@@ -854,7 +854,7 @@ void WalkTask(void)
 				}
 				break;
 			case goTo3QuarterArea:
-				MoveTo(-2925.14f, 1500.0f, 1200.0f);
+				MoveTo(-2925.14f, 1500.0f, 1200.0f,2000.0f);
 			    if (GetPosX() >= -2925.14f)
 				{
 					LockWheel();
@@ -873,7 +873,7 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveToCenter(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
+                MoveTo(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -883,7 +883,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, -1500.0f, 2000.0f , 2000.0f);
+                MoveTo(6459.14f, -1500.0f, 2000.0f , 2000.0f);
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();

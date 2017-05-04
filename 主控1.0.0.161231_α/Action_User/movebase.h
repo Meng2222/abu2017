@@ -378,8 +378,6 @@ float Vel2Pulse(float vel);
 ============================================================
 */
 
-//轨迹理论值计算函数
-void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
 
 //速度调节函数
 void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX);
@@ -397,10 +395,9 @@ void LockWheel(void);
 void MoveX(float velX);
 
 //运动函数
-void MoveTo(float targetPos, float velX, float accX);
 void MoveY(float velY);
-void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX , float decX);
-void MoveToCenter(float targetPos, float velX, float accX, float decX);
+void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX , float decX);
+void MoveTo(float targetPos, float velX, float accX, float decX);
 
 float GetPosX(void);
 float GetAngle(void);
