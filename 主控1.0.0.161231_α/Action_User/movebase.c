@@ -240,8 +240,10 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	targetDist = fabs(targetPos - startPos);
 	timeAcc = fabs(velX) / accX;
 	distAcc = 0.5f * accX * pow(timeAcc, 2);
+	timeDec = fabs(velX)/decX;
+	distDec = 0.5f * decX * pow(timeDec, 2);
 	/*梯形速度规划部分*/
-	if (2.0f * distAcc < targetDist)
+	if ((distAcc + distDec) < targetDist)
 	{
 		timeDec = timeAcc;
 		distDec = distAcc;
@@ -270,9 +272,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->speed = 0;
 		}
 	}
-	
 	/*三角形速度规划部分*/
-	else if (2.0f * distAcc >= targetDist)
+	else if ((distAcc + distDec) >= targetDist)
 	{
 		timeAcc = sqrtf(targetDist/accX);
 		distAcc = 0.5f * accX * pow(timeAcc, 2);

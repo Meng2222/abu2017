@@ -6,11 +6,6 @@
  宏定义
 **************************************************************************************/
 
-//红蓝场宏定义
-//#define RED_FIELD
-#define BLUE_FIELD
-
-
 //着陆台个数
 #define LAND_NUMBER 7
 //机器人枪的个数
@@ -22,7 +17,10 @@
 //上枪参数种类
 #define UPPER_SHOOT_METHOD_NUMBER  5
 
-
+//进入重启
+#define ROBOT_RESET 1
+//不进入重启
+#define ROBOT_NOT_RESET 0
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
@@ -298,7 +296,7 @@ typedef struct
 	signed char bulletNumber;
 	
 	//枪膛是否卡弹:1卡弹，0正常
-	unsigned char champerErrerState;
+	signed char champerErrerState;
 	
 	//射击命令：1射击，0不射击
 	unsigned char shoot;
@@ -360,16 +358,16 @@ typedef struct
 
 	//机器人总射击次数，为(leftGun.shootTimes+rightGun.shootTimes + upperGun.shootTimes)
 	int shootTimes;
-	
 	//机器人所处的阶段：未初始化，初始化，加速，匀速，减速，取弹，上战场，开枪
 	int stage;
 	//机器人状态，是否正常：低压、过流、过温、
 	int status;
 	//着陆台状态
 	plant_t plantState[7];
-	
+	//自动发射命令
 	plant_t autoCommand[7];
-	
+	//是否重启
+	unsigned char isReset;
 
 }robot_t;
 
