@@ -113,15 +113,15 @@ void ThreeWheelVelControlSelfCheck(int direction)
 {
 	if(direction==1)
 	{
-		VelCrl(CAN2, 1,30000);
-		VelCrl(CAN2, 2,30000);
-		VelCrl(CAN2, 3,30000);
+		VelCrl(CAN2, 1,200000);
+		VelCrl(CAN2, 2,200000);
+		VelCrl(CAN2, 3,200000);
 	}
 	else if(direction==2)
 	{
-		VelCrl(CAN2, 1,-30000);
-		VelCrl(CAN2, 2,-30000);
-		VelCrl(CAN2, 3,-30000);
+		VelCrl(CAN2, 1,-200000);
+		VelCrl(CAN2, 2,-200000);
+		VelCrl(CAN2, 3,-200000);
 	}
 	else
 	{

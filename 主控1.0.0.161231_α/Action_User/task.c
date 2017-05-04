@@ -402,22 +402,24 @@ void ConfigTask(void)
 */
 void SelfCheckTask(void)
 {
+	uint8_t checkTimes = 3;
 	while(1)
 	{
 	switch(status_check)
 	{
 		case wheelSpeedCheck:
-			
-		//正转1s
-			ThreeWheelVelControlSelfCheck(1);
-			TIM_Delayms(TIM5, 1000);
-		//反转1s
-			ThreeWheelVelControlSelfCheck(2);
-			TIM_Delayms(TIM5, 1000);
-		//停止1s
-			ThreeWheelVelControlSelfCheck(3);
-			TIM_Delayms(TIM5, 1000);
-		
+			while(checkTimes --)
+			{
+			//正转1s
+				ThreeWheelVelControlSelfCheck(1);
+				TIM_Delayms(TIM5, 1000);
+			//反转1s
+				ThreeWheelVelControlSelfCheck(2);
+				TIM_Delayms(TIM5, 1000);
+			//停止1s
+				ThreeWheelVelControlSelfCheck(3);
+				TIM_Delayms(TIM5, 1000);
+			}
 			status_check++;
 				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);

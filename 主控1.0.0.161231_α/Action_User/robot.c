@@ -965,10 +965,12 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				shootCommand.plantNum = LeftGunPriority[i];
 				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD3;
-				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+				else 
 					shootCommand.shootMethod = SHOOT_METHOD5;
-				else
-					shootCommand.shootMethod = SHOOT_METHOD1;					
+//				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD5;
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD1;					
 				//不连续打同一组参数
 				if(LeftGunPriority[i] == gRobot.leftGun.lastPlant &&\
 					gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
@@ -990,10 +992,12 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				shootCommand.plantNum = LeftGunPriority[i];
 				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
-				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
-					shootCommand.shootMethod = SHOOT_METHOD6;					
 				else
-					shootCommand.shootMethod = SHOOT_METHOD4;			
+					shootCommand.shootMethod = SHOOT_METHOD6;			
+//				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD6;					
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD4;			
 				//不连续打同一组参数
 				if(LeftGunPriority[i]!=PLANT6)
 				{
@@ -1115,10 +1119,12 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				shootCommand.plantNum = RightGunPriority[i];
 				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD3;
-				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
-					shootCommand.shootMethod = SHOOT_METHOD5;					
 				else
-					shootCommand.shootMethod = SHOOT_METHOD1;
+					shootCommand.shootMethod = SHOOT_METHOD5;				
+//				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD5;					
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD1;
 				//不连续同一组参数
 				if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
 					gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
@@ -1140,10 +1146,12 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				shootCommand.plantNum = RightGunPriority[i];
 				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
-				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
-					shootCommand.shootMethod = SHOOT_METHOD6;					
 				else
-					shootCommand.shootMethod = SHOOT_METHOD4;
+					shootCommand.shootMethod = SHOOT_METHOD6;
+//				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD6;					
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD4;
 				//不连续打同一组参数
 				if(RightGunPriority[i]!=PLANT6)
 				{
