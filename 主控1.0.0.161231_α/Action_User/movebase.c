@@ -113,15 +113,15 @@ void ThreeWheelVelControlSelfCheck(int direction)
 {
 	if(direction==1)
 	{
-		VelCrl(CAN2, 1,30000);
-		VelCrl(CAN2, 2,30000);
-		VelCrl(CAN2, 3,30000);
+		VelCrl(CAN2, 1,200000);
+		VelCrl(CAN2, 2,200000);
+		VelCrl(CAN2, 3,200000);
 	}
 	else if(direction==2)
 	{
-		VelCrl(CAN2, 1,-30000);
-		VelCrl(CAN2, 2,-30000);
-		VelCrl(CAN2, 3,-30000);
+		VelCrl(CAN2, 1,-200000);
+		VelCrl(CAN2, 2,-200000);
+		VelCrl(CAN2, 3,-200000);
 	}
 	else
 	{
@@ -585,14 +585,6 @@ void MoveToCenter(float targetPos, float velX, float accX , float decX)
 	{	
 		formerTargetPos = targetPos;		
 		startPos = GetPosX();
-//		if (velX >= 0)
-//		{
-//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
-//		}
-//		else
-//		{
-//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
-//		}
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
 	}
