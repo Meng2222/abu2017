@@ -868,6 +868,7 @@ void WalkTask(void)
 			//发射飞盘
 			case launch:
 				break;
+			//失能电机，中断发射任务
 			case reset:
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
@@ -974,8 +975,6 @@ void LeftGunShootTask(void)
 					//上弹
 					ROBOT_LeftGunReload();				
 					
-					//检查上弹是否到位
-//					ROBOT_LeftGunCheckReload();
 					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																			[leftGunShootCommand.plantNum];
 					ROBOT_LeftGunAim();
@@ -986,6 +985,8 @@ void LeftGunShootTask(void)
 					//第一发弹等待到位后发射，fix me 重试也需要检测
 					ROBOT_LeftGunCheckShootPoint();
 #endif
+					//检查上弹是否到位
+					ROBOT_LeftGunCheckReload();
 					//发射
 					ROBOT_LeftGunShoot();
 					//记录发射命令
@@ -1135,8 +1136,6 @@ void RightGunShootTask(void)
 					//上弹
 					ROBOT_RightGunReload();				
 
-					//检查上弹是否到位
-//					ROBOT_RightGunCheckReload();
 					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																	[rightGunShootCommand.plantNum];
 					ROBOT_RightGunAim();
@@ -1147,6 +1146,8 @@ void RightGunShootTask(void)
 					//第一发弹收到到位信息后发射，fix me 重试也需要检测
 					ROBOT_RightGunCheckShootPoint();
 #endif
+					//检查上弹是否到位
+					ROBOT_RightGunCheckReload();
 					//发射
 					ROBOT_RightGunShoot();
 					//记录上一次发射命令

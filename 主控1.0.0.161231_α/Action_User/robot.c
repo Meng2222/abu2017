@@ -902,7 +902,7 @@ status_t ROBOT_LeftGunCheckReload(void)
 */
 status_t ROBOT_RightGunCheckReload(void)
 {
-	if(!PHOTOSENSORRIGHTGUN)
+	if(PHOTOSENSORRIGHTGUN)
 	{
 		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
 	}
