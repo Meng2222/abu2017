@@ -438,12 +438,24 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}		
 	
 	velX = outputSpeed;
-//	velY = fabs(0.07f * velX) /*+ 100.0f*/;
+
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
 	if(velY <= 30.0f)
 	{
 		velY = 30.0f;
 	}
+#ifdef BLUE_FIELD
+	if(gRobot.moveBase.actualYPos > 40.0f)
+	{
+		velY = 0.0f;
+	}
+#endif
+#ifdef RED_FIELD
+	if(gRobot.moveBase.actualYPos < -40.0f)
+	{
+		velY = 0.0f;
+	}
+#endif
 #define MAXMOVEACC (Vel2Pulse(2000))
 #define PULSE_Y 100
 	speedDebug = velX;
