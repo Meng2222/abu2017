@@ -248,10 +248,10 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		if (actualDist > distDec)    
 		{
 			//加速段
-			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (fabs(velX) - accX/100.0f))
+			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (fabs(velX) - accX * 0.01f))
 			{
 				pExpData->dist = actualDist;
-				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX/100.0f;
+				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX * 0.01f;
 			}
 			//匀速段
 			else
@@ -286,10 +286,10 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		if (actualDist > distDec)    /*加速段*/
 		{
 			//加速段
-			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (actualMaxVelX - accX/100.0f))
+			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (actualMaxVelX - accX *0.01f))
 			{
 				pExpData->dist = actualDist;
-				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX/100.0f;
+				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX * 0.01f;
 			}
 			//匀速段
 			else
@@ -497,8 +497,8 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 //	USART_SendData(UART5,(uint8_t)moveTimer);
 //	USART_SendData(UART5,(int8_t)(expData.pos/100.0f));
 //	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
-	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug/100.0f));
-	UART5_OUT((uint8_t *)"%d\t",(int)(distDebug/10.0f));
+	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug*0.1f));
+	UART5_OUT((uint8_t *)"%d\t",(int)(distDebug*0.1f));
 	
 	
 	//速度给出至各轮
