@@ -431,13 +431,13 @@ void SelfCheckTask(void)
 		case gpsCheck:
 			GyroInit();
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
-			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-			(int)gRobot.moveBase.actualYPos);
-
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
+			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
 					(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 					(int)gRobot.moveBase.actualYPos);
+
+			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
+							(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+							(int)gRobot.moveBase.actualYPos);
 
 			
 		
@@ -614,7 +614,7 @@ for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			break;
 		case photoelectricCheck:
 	
-			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN)
+			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN||PHOTOSENSORLEFTGUN||PHOTOSENSORRIGHTGUN)
 			{
 				GPIOE->ODR^=0X80;
 				TIM_Delayms(TIM5, 20);
