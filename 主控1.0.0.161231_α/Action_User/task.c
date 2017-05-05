@@ -881,16 +881,16 @@ void WalkTask(void)
 				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
 				status = launch;
-			    OSSemSet(PeriodSem, 0, &os_err);
-				break;			
-			//发射飞盘
-			case launch:
 				if(gRobot.isReset == ROBOT_RESET)
 				{
 					OSTimeDly(2);
-					OSSemSet(PeriodSem, 0, &os_err);
 					gRobot.isReset = ROBOT_NOT_RESET;
-				}
+				}			   
+				OSSemSet(PeriodSem, 0, &os_err);
+				break;			
+			//发射飞盘
+			case launch:
+				gRobot.isReset = ROBOT_NOT_RESET;
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
 				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
 				if(gRobot.isBleOk.noBleTimer >= 7000)
