@@ -721,14 +721,14 @@ status_t ROBOT_Init(void)
 		gRobot.autoCommand[i].ball = 1;
 	}
     gRobot.autoCommand[PLANT6].ball = 2;
-    gRobot.plantState[PLANT6].ball = 2;
+//    gRobot.plantState[PLANT6].ball = 2;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
 		gRobot.autoCommand[i].plate = 1;
 	}
 	gRobot.autoCommand[PLANT6].plate = 2;
-	gRobot.plantState[PLANT6].plate = 2;
+//	gRobot.plantState[PLANT6].plate = 2;
 	gRobot.plantState[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
 

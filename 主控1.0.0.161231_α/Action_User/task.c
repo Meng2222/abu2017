@@ -715,6 +715,12 @@ void WalkTask(void)
 			UpdateKenimaticInfo();	
 			sendDebugInfo();
 		}
+		//不在发射时不检测蓝牙通信是否正常
+		if(status != launch)
+		{
+			gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_STOP;
+			gRobot.isBleOk.noBleTimer = 0;
+		}
 		switch (status)
 		{
 			//准备阶段
@@ -863,13 +869,18 @@ void WalkTask(void)
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);		
 				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
-//				MoveY(50.0f);
 				status = launch;
 			    OSSemSet(PeriodSem, 0, &os_err);
 				break;			
 			//发射飞盘
 			case launch:
 				gRobot.isReset = ROBOT_NOT_RESET;
+				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
+				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
+				if(gRobot.isBleOk.noBleTimer >= 7000)
+				{
+					gRobot.isBleOk.noBleFlag = BLE_LOST;
+				}
 				break;
 			//失能电机，中断发射任务
 			case reset:
@@ -973,7 +984,7 @@ void LeftGunShootTask(void)
 					{
 						OSTimeDly(90);
 						LeftPush();
-					}
+					}				
 					//上弹
 					ROBOT_LeftGunReload();				
 					

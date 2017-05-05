@@ -225,6 +225,16 @@
 //7#不需要落盘
 #define SELF_OK 0
 
+//蓝牙通信正常
+#define BLE_OK 0
+//蓝牙通信丢失
+#define BLE_LOST 1
+//停止蓝牙通信检测
+#define BLE_CHECK_STOP 0
+//开始检测蓝牙通信
+#define BLE_CHECK_START 1
+
+
 //枪自动射击时命令结构体
 typedef struct
 {
@@ -345,6 +355,18 @@ typedef struct
 	int size;
 }land_t;
 
+
+//蓝牙状态类型
+typedef struct
+{
+	//是否开始检查蓝牙通信正常标志位
+	uint8_t bleCheckStartFlag;
+	//蓝牙通信是否正常标志位
+	uint8_t noBleFlag;
+	//记录蓝牙命令时间间隔
+	int noBleTimer;
+}ble_t;
+
 //机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
 typedef struct 
 {	
@@ -366,6 +388,8 @@ typedef struct
 	plant_t plantState[7];
 	//自动发射命令
 	plant_t autoCommand[7];
+	//蓝牙通信状态
+	ble_t isBleOk;
 	//是否重启
 	unsigned char isReset;
 

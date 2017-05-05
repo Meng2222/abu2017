@@ -649,6 +649,10 @@ void TIM2_IRQHandler(void)
 		{
 			moveTimer+=0.001f;
 		}
+		if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+		{
+			gRobot.isBleOk.noBleTimer ++;
+		}
 		velTimerCounting();
 		
 		
@@ -758,7 +762,7 @@ void UART4_IRQHandler(void)
 		ch = USART_ReceiveData(UART4);
 		
 		USART_SendData(UART4, ch);
-		
+		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
 			case 0:                       
