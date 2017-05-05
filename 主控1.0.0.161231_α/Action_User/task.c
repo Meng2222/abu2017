@@ -695,9 +695,8 @@ void WalkTask(void)
 			ROBOT_CheckGunOpenSafety();
 		}
 		//检查是否需要重启
-		if(RESET_SWITCH)
+		if(gRobot.isReset == ROBOT_RESET)
 		{
-			gRobot.isReset = ROBOT_RESET;
 			status = reset;
 		}
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
@@ -727,30 +726,35 @@ void WalkTask(void)
 			case getReady:				
 				if(PHOTOSENSORUPGUN)
 				{
-					GyroInit();
-					//等待定位系统信号量
-					OSSemSet(GyroSem, 0, &os_err);
-					OSSemPend(GyroSem,200, &os_err);
-					if(os_err == OS_ERR_TIMEOUT)
+					static uint8_t photoElectricCounter = 0;
+					photoElectricCounter++;
+					if(photoElectricCounter >= 5)
 					{
-						//如果超时没有接收到定位系统数据则提示错误
-						while(1)
+						GyroInit();
+						//等待定位系统信号量
+						OSSemSet(GyroSem, 0, &os_err);
+						OSSemPend(GyroSem,200, &os_err);
+						if(os_err == OS_ERR_TIMEOUT)
 						{
-							UART5_OUT((uint8_t *)"GYRO NO DATA ERROR!!!\r\n");					
-							BEEP_ON;
-							TIM_Delayms(TIM5,500);
-							BEEP_OFF;
-							TIM_Delayms(TIM5,500);	
+							//如果超时没有接收到定位系统数据则提示错误
+							while(1)
+							{
+								UART5_OUT((uint8_t *)"GYRO NO DATA ERROR!!!\r\n");					
+								BEEP_ON;
+								TIM_Delayms(TIM5,500);
+								BEEP_OFF;
+								TIM_Delayms(TIM5,500);	
+							}
 						}
+						OSSemSet(PeriodSem, 0, &os_err);
+						//出发后爪子张开
+						ClampOpen();
+						TIM_Delayms(TIM5,20);
+						//出发时左右枪复位
+						ROBOT_LeftGunHome();
+						ROBOT_RightGunHome();
+						status = goToLoadingArea;
 					}
-					OSSemSet(PeriodSem, 0, &os_err);
-					//出发后爪子张开
-					ClampOpen();
-					TIM_Delayms(TIM5,20);
-					//出发时左右枪复位
-					ROBOT_LeftGunHome();
-					ROBOT_RightGunHome();
-					status = goToLoadingArea;
 				}
 				break;
 			//从出发区走向装载区
@@ -824,7 +828,7 @@ void WalkTask(void)
 //					OSTaskResume(DEBUG_TASK_PRIO);
 					upperPhotoSensorCounter++;
 					//触发六次后开始走向发射区
-					if(upperPhotoSensorCounter > 6)
+					if(upperPhotoSensorCounter >= 10)
 					{
 						ROBOT_UpperGunAim();	
 						status=goToLaunchingArea;
@@ -898,7 +902,6 @@ void WalkTask(void)
 				//到位后给靠墙速度
 			    if (GetPosX() <= -6459.14f)
 				{
-					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
@@ -909,7 +912,6 @@ void WalkTask(void)
 				//到位后给靠墙速度
 			    if (GetPosX() >= 6459.14f)
 				{
-					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
@@ -1267,12 +1269,23 @@ void UpperGunShootTask(void)
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
 				//等待0.4s避免已经发射弹盘没落上时重复发射
-				OSTimeDly(40);
-				//对7#落盘命令进行置位
-				if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+				uint8_t checkGap = 8;
+				while(checkGap--)
 				{
-					gRobot.upperGun.mode = GUN_ATTACK_MODE;
-					gRobot.plantState[PLANT7].plate = 1;
+					if(gRobot.upperGun.targetZone & 0xff)
+					{					
+						break;
+					}
+					OSTimeDly(5);
+				}
+				if((gRobot.upperGun.targetZone & 0xff )==0)
+				{
+					//对7#落盘命令进行置位
+					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+					{
+						gRobot.upperGun.mode = GUN_ATTACK_MODE;
+						gRobot.plantState[PLANT7].plate = 1;
+					}
 				}
 			}
 		}

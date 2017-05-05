@@ -121,7 +121,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //4#着陆台
 		 {16.9f, 23.2f, 2.0f, 18.0f,98.0f},
 		 //5#着陆台
-		 {32.2f,16.6f, 4.4f,19.0f,100.0f},
+		 {32.7f,16.6f, 4.4f,18.0f,98.0f},
 		 //6#着陆台
 		 {-3.1f,20.3f,2.0f,11.0f,129.0f},
 		 //{-3.6f,19.8f,2.0f,21.0f,124.0f}
@@ -223,7 +223,7 @@ gun_pose_t gLeftGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //4#着陆台
 		 {16.9f, 23.2f, 2.0f, 18.0f,98.0f},
 		 //5#着陆台
-		 {32.2f,16.6f, 4.4f,19.0f,100.0f},
+		 {32.7f,16.6f, 4.4f,18.0f,98.0f},
 		 //6#着陆台
 		 {-3.1f,20.3f,2.0f,11.0f,129.0f},
 		 //{-3.6f,19.8f,2.0f,21.0f,124.0f}
@@ -282,8 +282,8 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //5#着陆台
 		 {29.1f,8.3f, 17.0f,113.0f,9.0f},
 		 //6#着陆台
-//		 {1.9f,8.0f, -1.4f,130.0f,23.0f},
-		 {1.4f,10.0f,2.1f,118.0f,25.0f},
+		 {1.9f,9.5f,2.1f,118.0f,25.0f},
+//		 {1.4f,10.0f,2.1f,118.0f,25.0f},
 		 //7#着陆台
 		 {-5.0f,25.4f, 7.5f,11.0f,77.0f}},
 		//第四类参数，对应旧盘落盘参数
@@ -314,7 +314,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {29.1f,8.8f, 17.0f,114.0f,10.0f},
 		 //6#着陆台
 //		 {1.9f,8.0f, -1.4f,130.0f,23.0f},
-		 {1.4f,10.0f,2.1f,118.0f,25.0f},
+		 {1.9f,9.5f,2.1f,118.0f,25.0f},
 		 //7#着陆台
 		 {-5.0f,25.4f, 7.5f,11.0f,77.0f}},
 		//第六类参数，对应新盘补弹落盘参数
@@ -338,7 +338,6 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 //右侧枪上弹姿态数据库
 gun_pose_t gRightGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 {
-
 
 		//第一类参数，对应打球参数
 		{//1#着陆台
@@ -386,8 +385,8 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //5#着陆台
 		 {29.1f,8.3f, 17.0f,113.0f,9.0f},
 		 //6#着陆台
-//		 {1.9f,8.0f, -1.4f,130.0f,23.0f},
-		 {1.4f,10.0f,2.1f,118.0f,25.0f},
+		 {1.9f,9.5f,2.1f,118.0f,25.0f},
+//		 {1.4f,10.0f,2.1f,118.0f,25.0f},
 		 //7#着陆台
 		 {-5.0f,25.4f, 7.5f,11.0f,77.0f}},
 		//第四类参数，对应旧盘落盘参数
@@ -418,7 +417,7 @@ gun_pose_t gRightGunReloadPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {29.1f,8.8f, 17.0f,114.0f,10.0f},
 		 //6#着陆台
 //		 {1.9f,8.0f, -1.4f,130.0f,23.0f},
-		 {1.4f,10.0f,2.1f,118.0f,25.0f},
+		 {1.9f,9.5f,2.1f,118.0f,25.0f},
 		 //7#着陆台
 		 {-5.0f,25.4f, 7.5f,11.0f,77.0f}},
 		//第六类参数，对应新盘补弹落盘参数

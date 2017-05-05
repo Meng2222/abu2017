@@ -1006,7 +1006,7 @@ void UART4_IRQHandler(void)
 							break;
 					}
 				}
-				else
+				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
 					switch(id/10)
@@ -1033,6 +1033,11 @@ void UART4_IRQHandler(void)
 							}							
 							break;
 					}
+				}
+				else if(id == 30)
+				{
+					//重启
+					gRobot.isReset = ROBOT_RESET;
 				}
 				status=0;
 			break;
@@ -1267,10 +1272,13 @@ void USART3_IRQHandler(void)
 			case DATA_STATE: 
 				//更新7号着陆台飞盘位置, fix me
 				receive_data=data;
-				gRobot.upperGun.targetZone = data;
-				if(data != 0x00)
+				if(gRobot.isReset != ROBOT_RESET)
 				{
-					OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+					gRobot.upperGun.targetZone = data;
+					if(data != 0x00)
+					{
+						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+					}
 				}
 				state = 0;
 				break;
