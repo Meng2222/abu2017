@@ -248,7 +248,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		if (actualDist > distDec)    
 		{
 			//加速段
-			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (velX - accX/100.0f))
+			if(fabs(gRobot.moveBase.actualKenimaticInfo.vt) < (fabs(velX) - accX/100.0f))
 			{
 				pExpData->dist = actualDist;
 				pExpData->speed = fabs(gRobot.moveBase.actualKenimaticInfo.vt) + accX/100.0f;
