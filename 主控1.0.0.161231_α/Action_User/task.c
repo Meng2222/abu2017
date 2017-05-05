@@ -402,7 +402,11 @@ void ConfigTask(void)
 */
 void SelfCheckTask(void)
 {
-static int self_circle=0,self_circle_end=3;
+	static int self_circle=0,self_circle_end=3;
+	while(!PHOTOSENSORUPGUN)
+	{
+		//WAIT
+	}
 	while(1)
 	{
 	switch(status_check)
