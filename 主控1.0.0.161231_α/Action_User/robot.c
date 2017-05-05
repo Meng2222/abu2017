@@ -722,6 +722,7 @@ status_t ROBOT_Init(void)
 		gRobot.autoCommand[i].ball = 1;
 	}
     gRobot.plantState[PLANT6].ball = 2;
+	gRobot.autoCommand[PLANT7].ball = 0;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
@@ -809,7 +810,7 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		else
 		{
-			OSTimeDly(20);
+			OSTimeDly(10);
 		}
 //		if(gRobot.leftGun.shootTimes == 0)
 //		{
@@ -853,7 +854,7 @@ status_t ROBOT_RightGunReload(void)
 		}
 		else
 		{
-			OSTimeDly(20);
+			OSTimeDly(10);
 		}
 //		while(pushTimes--)
 //		{
@@ -1277,7 +1278,7 @@ status_t ROBOT_RightGunReloadAim(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 3u
+	#define UPPER_AUTO_NUM 2u
 	uint8_t i = 0u;
 	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
 	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
@@ -1722,7 +1723,7 @@ status_t ROBOT_UpperGunCheckAim(void)
  status_t ROBOT_LeftGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)|| gRobot.isReset == ROBOT_RESET)
+	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 //		OSTimeDly(50);
@@ -1744,7 +1745,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 
-	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)|| gRobot.isReset == ROBOT_RESET)
+	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
 //		OSTimeDly(50);

@@ -22,6 +22,7 @@
 #include "stm32f4xx_usart.h"
 #include "robot.h"
 #include "dma.h"
+#include "gpio.h"
 /* Exported functions ---------------------------------------------------------*/
 
 extern robot_t gRobot;
@@ -571,16 +572,15 @@ void MoveToCenter(float targetPos, float velX, float accX)
 	{	
 		formerTargetPos = targetPos;		
 		startPos = GetPosX();
-//		if (velX >= 0)
-//		{
-//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
-//		}
-//		else
-//		{
-//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
-//		}
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
+	}
+	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH)
+	{
+		formerTargetPos = targetPos;		
+		startPos = GetPosX();
+		moveTimer = 0.0f;
+		moveTimFlag = 1;	
 	}
 
 	//轨迹计算

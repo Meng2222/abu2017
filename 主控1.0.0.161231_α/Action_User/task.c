@@ -22,7 +22,7 @@
 #define BLUE_FIELD
 //#define NO_WALK_TASK
 //宏定义标记左右枪没有命令时收回气缸的时间
-#define NO_COMMAND_COUNTER 300
+#define NO_COMMAND_COUNTER 250
 /*
 ===============================================================
                         信号量定义
@@ -698,13 +698,16 @@ void WalkTask(void)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
-		//检查是否需要重启
-		if(gRobot.isReset == ROBOT_RESET)
+		//检查是否需要重启 fix me 需要更好的处理方式来避免一直进入重试
+		if(status == launch)
 		{
-			status = reset;
+			if(gRobot.isReset == ROBOT_RESET)
+			{
+				status = reset;
+			}
 		}
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
-		if(status != load && status != reset)
+		if((status != launch && status < reset)||status > resetConfig)
 		{
 			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
 			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
@@ -882,7 +885,12 @@ void WalkTask(void)
 				break;			
 			//发射飞盘
 			case launch:
-				gRobot.isReset = ROBOT_NOT_RESET;
+				if(gRobot.isReset == ROBOT_RESET)
+				{
+					OSTimeDly(2);
+					OSSemSet(PeriodSem, 0, &os_err);
+					gRobot.isReset = ROBOT_NOT_RESET;
+				}
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
 				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
 				if(gRobot.isBleOk.noBleTimer >= 7000)
@@ -894,9 +902,16 @@ void WalkTask(void)
 			case reset:
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+				if(RESET_SWITCH)
+				{
+					status = resetConfig;
+				}
 				break;
 			case resetConfig:
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
+				TIM_Delayms(TIM5,50);
+				status = resetRunToLaunch;
+				OSSemSet(PeriodSem, 0, &os_err);
 				break;
 			case resetRunToLoad:
 				break;
@@ -1003,7 +1018,7 @@ void LeftGunShootTask(void)
 #ifndef NO_WALK_TASK
 					//第一发弹等待到位后发射，fix me 重试也需要检测
 					ROBOT_LeftGunCheckShootPoint();
-#endif
+#endif				
 					//检查上弹是否到位
 					ROBOT_LeftGunCheckReload();
 					//发射

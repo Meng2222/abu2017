@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_gpio.h"
 
-#define RESET_SWITCH  0
+#define RESET_SWITCH  			(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2))
 #define KEYSWITCH		    	(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))
 #define PHOTOSENSORLEFT 		(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_0))
 #define PHOTOSENSORRIGHT 		(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_8))
