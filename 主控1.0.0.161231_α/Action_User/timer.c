@@ -637,6 +637,32 @@ void TIM7_Int_Init(u16 arr,u16 psc)
 	
 }
 
-
+uint32_t gunTimCnt = 0u;
+static uint32_t plantShootTime[7][7] = {0u};
+/**
+  * @brief	
+  * @note	
+  * @param	
+  *     @arg	
+  * @retval	
+  */
+void SetShootPlantTime(int plant, int shootMethod)
+{
+	plantShootTime[plant][shootMethod] = gunTimCnt;
+}
+/**
+  * @brief	
+  * @note	
+  * @param	
+  *     @arg	
+  * @retval	
+  */
+uint8_t CheckShootPlantTimeDelay(int plant, int shootMethod, uint32_t delayMs)
+{
+	if(gunTimCnt - plantShootTime[plant][shootMethod] > delayMs)
+		return 1;
+	else
+		return 0;
+}
 /*********************************WIFI*************************/
 /**************************************************************/

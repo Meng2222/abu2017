@@ -1026,6 +1026,7 @@ void LeftGunShootTask(void)
 					//记录发射命令
 					gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
 					gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
+					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
 					//对命令状态进行复位
 					if(gRobot.leftGun.shootParaMode%2)
 					{
@@ -1069,6 +1070,7 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunCheckAim();
 				//发射
 				ROBOT_LeftGunShoot();
+
 				//7#需要先到上弹角度再上弹
 				if(gRobot.leftGun.targetPlant == PLANT7)
 				{
@@ -1190,6 +1192,7 @@ void RightGunShootTask(void)
 					//记录上一次发射命令
 					gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
 					gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
+					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
 					//对命令状态进行复位
 					if(gRobot.rightGun.shootParaMode%2)
 					{
