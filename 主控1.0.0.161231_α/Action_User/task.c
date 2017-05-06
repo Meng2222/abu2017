@@ -338,7 +338,7 @@ void ConfigTask(void)
 进入自检任务
 */
 #ifndef NO_WALK_TASK
-	if(KEYSWITCH==1)
+	if(RESET_SWITCH==1)
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -441,7 +441,7 @@ void SelfCheckTask(void)
 
 			
 		
-			if(KEYSWITCH==1)
+			if(RESET_SWITCH==1)
 			{
 				status_check++;
 				BEEP_ON;TIM_Delayms(TIM5, 1000);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -602,7 +602,7 @@ for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.targetZone);
 		
 			Sendfloat(gRobot.moveBase.actualYPos);
-			if(KEYSWITCH==1)
+			if(RESET_SWITCH==1)
 			{
 				BEEP_ON;TIM_Delayms(TIM5, 1000);BEEP_OFF;TIM_Delayms(TIM5, 100);
 				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -619,7 +619,7 @@ for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				GPIOE->ODR^=0X80;
 				TIM_Delayms(TIM5, 20);
 			}
-			if(KEYSWITCH==1)
+			if(RESET_SWITCH==1)
 			{
 				status_check++;
 
@@ -753,7 +753,6 @@ void WalkTask(void)
 								TIM_Delayms(TIM5,500);	
 							}
 						}
-						OSSemSet(PeriodSem, 0, &os_err);
 						//出发后爪子张开
 						ClampOpen();
 						TIM_Delayms(TIM5,20);
@@ -761,6 +760,7 @@ void WalkTask(void)
 						ROBOT_LeftGunHome();
 						ROBOT_RightGunHome();
 						status = goToLoadingArea;
+						OSSemSet(PeriodSem, 0, &os_err);
 					}
 				}
 				break;
