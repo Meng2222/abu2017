@@ -1787,7 +1787,7 @@ status_t ROBOT_LeftGunShoot(void)
 				gRobot.leftGun.shoot = GUN_START_SHOOT;
 
 				LeftShoot();
-				OSTimeDly(20);
+				OSTimeDly(22);
 				if(gRobot.leftGun.targetPlant!= PLANT7)
 				{
 					//如果上弹正常时上下一发弹，否则不上下一发弹
@@ -1796,7 +1796,7 @@ status_t ROBOT_LeftGunShoot(void)
 						LeftPush();
 					}
 				}
-				OSTimeDly(8);
+				OSTimeDly(6);
 				LeftShootReset();
 				gRobot.leftGun.shoot = GUN_STOP_SHOOT;
 				if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
@@ -1804,18 +1804,23 @@ status_t ROBOT_LeftGunShoot(void)
 					gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 					gRobot.leftGun.shootTimes++;		
 					gRobot.leftGun.bulletNumber--;
-				}		
+				}
+				else
+				{
+					//给一定延时让发射装置收回，因为上弹失败时没有上弹的时间让装置收回
+					OSTimeDly(10);
+				}
 		}
 	}
 	if(gRobot.leftGun.mode == GUN_MANUAL_MODE)
 	{
 		LeftShoot();
-		OSTimeDly(20);
+		OSTimeDly(22);
 		if(gRobot.leftGun.targetPlant!= PLANT7)
 		{
 			LeftPush();
 		}		
-		OSTimeDly(8);
+		OSTimeDly(6);
 		LeftShootReset();
 		gRobot.leftGun.shootTimes++;
 		gRobot.leftGun.bulletNumber--;
@@ -1841,7 +1846,7 @@ status_t ROBOT_RightGunShoot(void)
 				ROBOT_RightGunCheckConflict();
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
 				RightShoot();				
-				OSTimeDly(20);
+				OSTimeDly(22);
 				if(gRobot.rightGun.targetPlant != PLANT7)
 				{
 					//如果上弹正常时上下一发弹，否则不上下一发弹
@@ -1850,7 +1855,7 @@ status_t ROBOT_RightGunShoot(void)
 						RightPush();
 					}
 				}
-				OSTimeDly(8);
+				OSTimeDly(6);
 				RightShootReset();
 				gRobot.rightGun.shoot = GUN_STOP_SHOOT;
 				if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
@@ -1858,6 +1863,11 @@ status_t ROBOT_RightGunShoot(void)
 					gRobot.rightGun.reloadState = GUN_NOT_RELOAD;
 					gRobot.rightGun.shootTimes++;
 					gRobot.rightGun.bulletNumber--;
+				}
+				else
+				{
+					//给一定延时让发射装置收回，因为上弹失败时没有上弹的时间让装置收回
+					OSTimeDly(10);
 				}
 		}
 	}
