@@ -810,7 +810,7 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		else
 		{
-			OSTimeDly(10);
+			OSTimeDly(15);
 		}
 //		if(gRobot.leftGun.shootTimes == 0)
 //		{
@@ -854,7 +854,7 @@ status_t ROBOT_RightGunReload(void)
 		}
 		else
 		{
-			OSTimeDly(10);
+			OSTimeDly(15);
 		}
 //		while(pushTimes--)
 //		{
@@ -962,7 +962,7 @@ status_t ROBOT_RightGunCheckReload(void)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-	#define LEFT_AUTO_NUMBER 4u
+
 	#define LEFT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
@@ -1126,7 +1126,6 @@ status_t ROBOT_LeftGunReloadAim(void)
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
-	#define RIGHT_AUTO_NUMBER 4u
 	#define RIGHT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;

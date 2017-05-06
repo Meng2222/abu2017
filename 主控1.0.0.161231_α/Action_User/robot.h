@@ -6,6 +6,9 @@
  宏定义
 **************************************************************************************/
 
+#define LEFT_AUTO_NUMBER 4u
+#define RIGHT_AUTO_NUMBER 4u
+
 //着陆台个数
 #define LAND_NUMBER 7
 //机器人枪的个数

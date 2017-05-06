@@ -65,7 +65,6 @@ extern robot_t gRobot;
 
 void CAN1_RX0_IRQHandler(void)
 {
-	
 	OS_CPU_SR  cpu_sr;
 	uint8_t buffer[8];
 	uint32_t StdId=0;
@@ -607,6 +606,7 @@ extern  OS_EVENT 		*DebugPeriodSem;
 extern float moveTimer;
 extern uint8_t moveTimFlag;
 extern uint8_t canErrCode;
+uint32_t gunTimCnt = 0u;
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
@@ -655,6 +655,7 @@ void TIM2_IRQHandler(void)
 		}
 		velTimerCounting();
 		
+		gunTimCnt ++;
 		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
@@ -1197,6 +1198,10 @@ void USART3_IRQHandler(void)
 #define POS_HEADER2 0x88	
 
 #define READY_HEADER 0x8A
+
+#define PLAT_HEADER1 0x8B
+#define PLAT_HEADER2 0x8B
+
 	
 #define HEADER_STATE1 0
 #define HEADER_STATE2 1
@@ -1205,9 +1210,11 @@ void USART3_IRQHandler(void)
 #define POS_DATA_STATE1  4
 #define POS_DATA_STATE2 5
 #define SELF_DATA_STATE 6
-	
+#define PLAT_DATA_STATE 7
+
 #define SELF_NEED_PLATE 0x90
 #define SELF_ALREADY_HAVE 0x91	
+
 	static uint8_t data = 0;
  	static int state = 0;
 	static union
@@ -1245,6 +1252,10 @@ void USART3_IRQHandler(void)
 				{
 					state ++;
 				}
+				else if(data == PLAT_HEADER1)
+				{
+					state ++;
+				}
 				else
 				{
 					state = 0;
@@ -1263,6 +1274,10 @@ void USART3_IRQHandler(void)
 				else if(data == SELF_HEADER2)
 				{
 					state = SELF_DATA_STATE;
+				}
+				else if(data == PLAT_HEADER2)
+				{
+					state = PLAT_DATA_STATE;
 				}
 				else
 				{						
@@ -1310,6 +1325,31 @@ void USART3_IRQHandler(void)
 					gRobot.upperGun.isSelfEmpty = SELF_OK;				
 				}
 				state = 0;
+				break;
+			case PLAT_DATA_STATE:
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+				{
+					if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE)
+						gRobot.plantState[PLANT1].ball = 1;
+					if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE)
+						gRobot.plantState[PLANT1].plate = 1;
+					if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE)
+						gRobot.plantState[PLANT2].ball = 1;
+					if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE)
+						gRobot.plantState[PLANT2].plate = 1;
+				}
+				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+				{
+					if((data&0x08)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE)
+						gRobot.plantState[PLANT4].ball = 1;
+					if((data&0x08)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE)
+						gRobot.plantState[PLANT4].plate = 1;
+					if((data&0x08)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE)
+						gRobot.plantState[PLANT5].ball = 1;
+					if((data&0x08)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE)
+						gRobot.plantState[PLANT5].plate = 1;
+				}
+				state = HEADER_STATE1;
 				break;
 			default:
 				break;
