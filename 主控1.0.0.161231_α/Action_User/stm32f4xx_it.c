@@ -1344,16 +1344,16 @@ void USART3_IRQHandler(void)
 				}
 				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
-					if((data&0x08)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
+					if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
 						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1500))
 						gRobot.plantState[PLANT4].ball = 1;
-					if((data&0x08)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
+					if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
 						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1500))
 						gRobot.plantState[PLANT4].plate = 1;
-					if((data&0x08)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
+					if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
 						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1500))
 						gRobot.plantState[PLANT5].ball = 1;
-					if((data&0x08)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
+					if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
 						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1500))
 						gRobot.plantState[PLANT5].plate = 1;
 				}
