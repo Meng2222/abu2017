@@ -1024,8 +1024,22 @@ void LeftGunShootTask(void)
 					//发射
 					ROBOT_LeftGunShoot();
 					//记录发射命令
-					gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
-					gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
+					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+					{
+						gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
+						gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
+					}
+					else
+					{
+						if(gRobot.leftGun.shootParaMode%2)
+						{
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate = 1;
+						}
+						else
+						{
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball = 1;						
+						}						
+					}
 					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
 					//对命令状态进行复位
 					if(gRobot.leftGun.shootParaMode%2)
@@ -1189,9 +1203,23 @@ void RightGunShootTask(void)
 
 					//发射
 					ROBOT_RightGunShoot();
-					//记录上一次发射命令
-					gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
-					gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
+					//记录发射命令
+					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
+					{
+						gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
+						gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
+					}
+					else
+					{
+						if(gRobot.rightGun.shootParaMode%2)
+						{
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate = 1;
+						}
+						else
+						{
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball = 1;						
+						}						
+					}
 					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
 					//对命令状态进行复位
 					if(gRobot.rightGun.shootParaMode%2)
