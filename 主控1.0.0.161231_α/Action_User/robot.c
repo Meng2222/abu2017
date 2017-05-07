@@ -731,7 +731,7 @@ status_t ROBOT_Init(void)
 	}
     gRobot.plantState[PLANT6].ball = 2;
 	gRobot.autoCommand[PLANT6].ball = 2;
-	gRobot.autoCommand[PLANT7].ball = 0;
+	gRobot.autoCommand[PLANT7].ball = 1;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
@@ -1316,7 +1316,7 @@ status_t ROBOT_RightGunReloadAim(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 2u
+	#define UPPER_AUTO_NUM 3u
 	uint8_t i = 0u;
 	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
 	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
