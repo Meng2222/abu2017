@@ -34,10 +34,14 @@ static void LeftGunInit(void)
 	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD5][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD6][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;	
+	gLeftGunReloadPosDatabase[SHOOT_METHOD5][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;	
 	
 	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
 	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
@@ -113,10 +117,14 @@ static void RightGunInit(void)
 	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD3][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD5][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD6][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD5][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;
 	
 	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
 	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
