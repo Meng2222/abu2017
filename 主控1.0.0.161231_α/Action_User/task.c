@@ -337,7 +337,6 @@ void ConfigTask(void)
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
 */
-#ifndef NO_WALK_TASK
 	if(RESET_SWITCH==1)
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -355,10 +354,7 @@ void ConfigTask(void)
 	{
 		OSTaskDel(SELFCHECK_TASK_PRIO);
 	}
-#endif
-#ifdef NO_WALK_TASK
-	OSTaskDel(SELFCHECK_TASK_PRIO);
-#endif
+
 //	LeftHold();
 //	RightHold();
 //////测试使用！！！！！！！！！！！！！！！！
