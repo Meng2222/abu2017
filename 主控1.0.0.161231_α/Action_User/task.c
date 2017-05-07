@@ -17,9 +17,16 @@
 #include "flash.h"
 #include "movebase2.h"
 #include "dma.h"
+<<<<<<< HEAD
 
 //#define NO_WALK_TASK
 
+=======
+//宏定义用来标志红蓝场以及是否需要走行
+//#define RED_FIELD
+#define BLUE_FIELD
+//#define NO_WALK_TASK
+>>>>>>> refs/remotes/origin/master
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
 
