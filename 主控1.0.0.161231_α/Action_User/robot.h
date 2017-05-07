@@ -5,16 +5,14 @@
 /**************************************************************************************
  宏定义
 **************************************************************************************/
-<<<<<<< HEAD
+
 //红蓝场宏定义
 //#define RED_FIELD
 #define BLUE_FIELD
-=======
 
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
 
->>>>>>> refs/remotes/origin/master
 //着陆台个数
 #define LAND_NUMBER 7
 //机器人枪的个数
@@ -397,11 +395,10 @@ typedef struct
 	plant_t plantState[7];
 	//自动发射命令
 	plant_t autoCommand[7];
-<<<<<<< HEAD
-=======
+
 	//蓝牙通信状态
 	ble_t isBleOk;
->>>>>>> refs/remotes/origin/master
+
 	//是否重启
 	unsigned char isReset;
 

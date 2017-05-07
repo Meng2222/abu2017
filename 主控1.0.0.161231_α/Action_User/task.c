@@ -17,18 +17,12 @@
 #include "flash.h"
 #include "movebase2.h"
 #include "dma.h"
-<<<<<<< HEAD
 
 //#define NO_WALK_TASK
-#define NO_COMMAND_COUNTER 300
-=======
-//宏定义用来标志红蓝场以及是否需要走行
-//#define RED_FIELD
-#define BLUE_FIELD
-#define NO_WALK_TASK
+
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
->>>>>>> refs/remotes/origin/master
+
 /*
 ===============================================================
                         信号量定义
@@ -343,12 +337,8 @@ void ConfigTask(void)
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
 */
-<<<<<<< HEAD
-#ifndef NO_WALK_TASK
-	if(KEYSWITCH==1&&(!PHOTOSENSORLEFT)&&(!PHOTOSENSORRIGHT))
-=======
+
 	if(RESET_SWITCH==1)
->>>>>>> refs/remotes/origin/master
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -411,13 +401,11 @@ void ConfigTask(void)
 void SelfCheckTask(void)
 {
 	static int self_circle=0,self_circle_end=3;
-<<<<<<< HEAD
-=======
+
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
 	}
->>>>>>> refs/remotes/origin/master
 	while(1)
 	{
 	switch(status_check)
@@ -777,14 +765,10 @@ void WalkTask(void)
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
-//				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
-<<<<<<< HEAD
 				MoveTo(-13033.14f, -1500.0f, 2000.0f , 2000.0f);
-=======
-				MoveToCenter(-13033.14f, -3500.0f, 2000.0f);
+
 				//接近装载区时通过光电校正坐标
->>>>>>> refs/remotes/origin/master
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -804,12 +788,8 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-<<<<<<< HEAD
 				MoveTo(13033.14f, 1500.0f, 2000.0f, 2000.0f);		
-=======
-				MoveToCenter(13033.14f, 3500.0f, 2000.0f);
 				//接近装载区时通过光电校正坐标				
->>>>>>> refs/remotes/origin/master
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -861,71 +841,10 @@ void WalkTask(void)
 					}
 				}
 				break;
-				
-<<<<<<< HEAD
-			//四分之三位置停车
-			case goToHalfLaunchingArea:
-			{
-				int backCnt = 0u;
-				if(backCnt < 50u)
-				{
-					backCnt ++;
-				}
-				else if(backCnt == 50u)
-				{
-					LeftBack();
-					RightBack();
-				}
-				MoveTo(-9459.14f, 2000.0f, 2000.0f,2000.0f);
-			    if (GetPosX() >= -9459.14f)
-				{
-					LockWheel();
-					MoveY(50.0f);
-					moveTimFlag = 0;
-					status++;
-					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				}
-				break;
-			}
-			case beginToGo2:
-				if (PHOTOSENSORUPGUN)
-				{
-					OSMboxPend(LeftGunNextPointMbox, 0, &os_err);
-					OSMboxPend(RightGunNextPointMbox, 0, &os_err);
-					OSSemSet(PeriodSem, 0, &os_err);
-//					status++;
-					status+=3;
-				}
-				break;
-			case goTo3QuarterArea:
-				MoveTo(-2925.14f, 1500.0f, 1200.0f,2000.0f);
-			    if (GetPosX() >= -2925.14f)
-				{
-					LockWheel();
-					moveTimFlag = 0;
-					status++;
-					OSTaskSuspend(OS_PRIO_SELF);
-				}
-				break;
-			
-			case beginToGo3:
-				if (PHOTOSENSORUPGUN)
-				{
-					status++;
-				}
-				break;	
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
                 MoveTo(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
-=======
-            //从装载区走向发射区				
-			case goToLaunchingArea:
-#ifdef RED_FIELD
-                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
-				//到位后给靠墙速度
->>>>>>> refs/remotes/origin/master
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -935,12 +854,9 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-<<<<<<< HEAD
                 MoveTo(6459.14f, -1500.0f, 2000.0f , 2000.0f);
-=======
-                MoveToCenter(6459.14f, -3000.0f, 2000.0f);
 				//到位后给靠墙速度
->>>>>>> refs/remotes/origin/master
+
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();
@@ -999,7 +915,7 @@ void WalkTask(void)
 				break;
 			case resetRunToLaunch:
 #ifdef RED_FIELD
-                MoveToCenter(-6459.14f, -3000.0f, 2000.0f);
+                MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 			    if (GetPosX() <= -6459.14f)
 				{
@@ -1009,7 +925,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, 3000.0f, 2000.0f);
+                MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 			    if (GetPosX() >= 6459.14f)
 				{
