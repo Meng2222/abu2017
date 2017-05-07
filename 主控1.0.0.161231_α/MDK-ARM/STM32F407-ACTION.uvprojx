@@ -410,49 +410,14 @@
               <FilePath>..\Action_User\usart.c</FilePath>
             </File>
             <File>
-              <FileName>elmo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\elmo.c</FilePath>
-            </File>
-            <File>
               <FileName>can.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Action_User\can.c</FilePath>
             </File>
             <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gasvalvecontrol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\gasvalvecontrol.c</FilePath>
-            </File>
-            <File>
-              <FileName>movebase.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\movebase.c</FilePath>
-            </File>
-            <File>
               <FileName>robot.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Action_User\robot.c</FilePath>
-            </File>
-            <File>
-              <FileName>database.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\database.c</FilePath>
-            </File>
-            <File>
-              <FileName>flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>movebase2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Action_User\movebase2.c</FilePath>
             </File>
           </Files>
         </Group>

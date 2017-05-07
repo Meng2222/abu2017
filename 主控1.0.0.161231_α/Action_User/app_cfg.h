@@ -38,12 +38,8 @@ extern  void  App_Task(void);
 
 static  void  App_TaskStart(void);
 static 	void  ConfigTask(void);
-static 	void  WalkTask(void);
-static 	void  LeftGunShootTask(void);
-static 	void  RightGunShootTask(void);
-static 	void  UpperGunShootTask(void);
-static  void  DebugTask(void);
-static void   SelfCheckTask(void);
+static 	void  CANSendTask(void);
+
 
 /*
 *********************************************************************************************************
@@ -53,12 +49,8 @@ static void   SelfCheckTask(void);
 
 #define  APP_TASK_START_PRIO						10u
 #define  Config_TASK_START_PRIO						11u
-#define  Walk_TASK_PRIO								12u
-#define  LEFT_GUN_SHOOT_TASK_PRIO			    	15u
-#define  RIGHT_GUN_SHOOT_TASK_PRIO					14u
-#define  UPPER_GUN_SHOOT_TASK_PRIO					13u
-#define  DEBUG_TASK_PRIO                            16u
-#define  SELFCHECK_TASK_PRIO                        18u
+#define  CAN_SEND_TASK_PRIO						12u
+
 
 
 
@@ -70,12 +62,8 @@ static void   SelfCheckTask(void);
 */
 #define  APP_TASK_START_STK_SIZE					256u
 #define  Config_TASK_START_STK_SIZE					1024u
-#define  Walk_TASK_STK_SIZE							8192u
-#define  LEFT_GUN_AUTO_SHOOT_STK_SIZE				1024u
-#define  RIGHT_GUN_SHOOT_STK_SIZE					1024u
-#define  UPPER_GUN_SHOOT_STK_SIZE					1024u
-#define  DEBUG_TASK_STK_SIZE                        1024u
-#define  SELFCHECK_TASK_STK_SIZE                    1024u
+#define  CAN_SEND_TASK_STK_SIZE						1024u
+
 /*
 *********************************************************************************************************
 *                                            TASK STACK

@@ -539,69 +539,6 @@ void TIM4_Pwm_Init(u32 arr,u32 psc)
 	TIM_SetCompare3(TIM4,0.05*2000);
 }
 
-static float Percent[3];
-
-/**
-  * @brief  设置电机占空比
-	* @param  Num:电机号
-	* @param  Percent:给出速度控制信号的百分比 0-100
-  * @retval None
-  */
-void SetCompare(uint8_t Num, float Percent)
-{
-	float Compare = 0;
-	Compare = 0.05 + Percent/100.0f*0.05f;
-	
-	if(Compare > 130.0f) Compare = 130.0f;
-	if(Compare < 0.0f) 	 Compare = 0.0f;
-	
-	if(Num == 1)
-		TIM_SetCompare1(TIM4,Compare*2000);
-	if(Num ==2)
-		TIM_SetCompare3(TIM4,Compare*2000);
-}
-/**
-  * @brief  设置电机占空比
-	* @param  Num:电机号
-  * @retval None
-  */
-void SetSpeed(uint8_t Num,float percent)
-{
-	Percent[Num] = percent;	
-	SetCompare(Num,Percent[Num]);
-}
-/**
-  * @brief  获得电机占空比
-	* @param  Num:电机号
-  * @retval None
-  */
-float GetSpeed(uint8_t Num)
-{
-	return Percent[Num];	
-}
-/**
-  * @brief  增加电机占空比
-	* @param  Num:电机号
-  * @retval None
-  */
-void IncSpeed(uint8_t Num)
-{
-	Percent[Num] += 3.0f;	
-	SetCompare(Num,Percent[Num]);
-}
-/**
-  * @brief  减小电机占空比
-	* @param  Num:电机号
-  * @retval None
-  */
-void DecSpeed(uint8_t Num)
-{
-	Percent[Num] -= 3.0f;	
-	SetCompare(Num,Percent[Num]);
-}
-
-
-
 
 /*********************************WIFI*************************/
 /**************************************************************/

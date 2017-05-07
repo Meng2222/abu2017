@@ -4,7 +4,7 @@
 #define INVALID_CANSEND_MAILBOX  10
 #define CAN_SEND_OK 1
 #define CAN_SEND_ERR -1
-
+#define SDO_RESPONSE_COB_ID_BASE 0x280
 void CAN_Config(CAN_TypeDef* CANx, 
 				uint32_t CAN_BaudRate,
 				GPIO_TypeDef * GPIOx,
