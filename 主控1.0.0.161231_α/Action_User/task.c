@@ -786,7 +786,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveTo(11033.14f, 4250.0f, 3000.0f, 2000.0f);		
+				MoveTo(13033.14f, 4250.0f, 3000.0f, 2000.0f);		
 				//接近装载区时通过光电校正坐标				
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
@@ -852,7 +852,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveTo(6459.14f, -1500.0f, 2000.0f , 2000.0f);
+                MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
 				//到位后给靠墙速度
 
 			    if (GetPosX() <= 6459.14f)
