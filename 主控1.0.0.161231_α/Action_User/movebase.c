@@ -332,13 +332,13 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
-	if (posErr > 150.0f)
+	if (posErr > 50.0f)
 	{
-		posErr = 150.0f;
+		posErr = 50.0f;
 	}
-	else if(posErr < -150.0f)
+	else if(posErr < -50.0f)
 	{
-		posErr = -150.0f;
+		posErr = -50.0f;
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
