@@ -17,9 +17,18 @@
 #include "flash.h"
 #include "movebase2.h"
 #include "dma.h"
+<<<<<<< HEAD
 
 //#define NO_WALK_TASK
 #define NO_COMMAND_COUNTER 300
+=======
+//宏定义用来标志红蓝场以及是否需要走行
+//#define RED_FIELD
+#define BLUE_FIELD
+#define NO_WALK_TASK
+//宏定义标记左右枪没有命令时收回气缸的时间
+#define NO_COMMAND_COUNTER 250
+>>>>>>> refs/remotes/origin/master
 /*
 ===============================================================
                         信号量定义
@@ -40,23 +49,21 @@ OS_EVENT *RightGunNextPointMbox;
 
 //定义机器人全局变量
 extern robot_t gRobot;
-extern uint8_t LeftGunPriority[7];
-extern uint8_t RightGunPriority[7];
 
 //状态变量
 typedef enum
 {
 	getReady,
 	goToLoadingArea,
-	stopRobot,
 	load,
 	beginToGo1,
-	goToHalfLaunchingArea,
-	beginToGo2,
-	goTo3QuarterArea,
-	beginToGo3,
 	goToLaunchingArea,
-	launch
+	stopRobot,	
+	launch,
+	reset,
+	resetConfig,
+	resetRunToLoad,
+	resetRunToLaunch
 }Status_t;
 
 Status_t status = getReady;
@@ -183,8 +190,9 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
-		(int)gRobot.upperGun.targetPlant,(int) gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.targetZone,(int) gRobot.upperGun.shootParaMode,\
+		(int)gRobot.upperGun.commandState);
 	
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
@@ -322,8 +330,10 @@ void ConfigTask(void)
 	ROBOT_Init();
 
 	ClampClose();
-	LeftBack();
-	RightBack();
+//	LeftBack();
+//	RightBack();
+	LeftPush();
+	RightPush();
 	ClampReset();
 
 	BEEP_ON;
@@ -333,8 +343,12 @@ void ConfigTask(void)
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
 */
+<<<<<<< HEAD
 #ifndef NO_WALK_TASK
 	if(KEYSWITCH==1&&(!PHOTOSENSORLEFT)&&(!PHOTOSENSORRIGHT))
+=======
+	if(RESET_SWITCH==1)
+>>>>>>> refs/remotes/origin/master
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -351,10 +365,7 @@ void ConfigTask(void)
 	{
 		OSTaskDel(SELFCHECK_TASK_PRIO);
 	}
-#endif
-#ifdef NO_WALK_TASK
-	OSTaskDel(SELFCHECK_TASK_PRIO);
-#endif
+
 //	LeftHold();
 //	RightHold();
 //////测试使用！！！！！！！！！！！！！！！！
@@ -400,6 +411,13 @@ void ConfigTask(void)
 void SelfCheckTask(void)
 {
 	static int self_circle=0,self_circle_end=3;
+<<<<<<< HEAD
+=======
+	while(!PHOTOSENSORUPGUN)
+	{
+		//WAIT
+	}
+>>>>>>> refs/remotes/origin/master
 	while(1)
 	{
 	switch(status_check)
@@ -424,17 +442,17 @@ void SelfCheckTask(void)
 		case gpsCheck:
 			GyroInit();
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
-			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-			(int)gRobot.moveBase.actualYPos);
-
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
+			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
 					(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 					(int)gRobot.moveBase.actualYPos);
 
+			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
+							(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+							(int)gRobot.moveBase.actualYPos);
+
 			
 		
-			if(KEYSWITCH==1)
+			if(RESET_SWITCH==1)
 			{
 				status_check++;
 				BEEP_ON;TIM_Delayms(TIM5, 1000);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -595,7 +613,7 @@ for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.targetZone);
 		
 			Sendfloat(gRobot.moveBase.actualYPos);
-			if(KEYSWITCH==1)
+			if(RESET_SWITCH==1)
 			{
 				BEEP_ON;TIM_Delayms(TIM5, 1000);BEEP_OFF;TIM_Delayms(TIM5, 100);
 				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -607,12 +625,12 @@ for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			break;
 		case photoelectricCheck:
 	
-			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN)
+			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN||PHOTOSENSORLEFTGUN||PHOTOSENSORRIGHTGUN)
 			{
 				GPIOE->ODR^=0X80;
 				TIM_Delayms(TIM5, 20);
 			}
-			if(KEYSWITCH==1)
+			if(RESET_SWITCH==1)
 			{
 				status_check++;
 
@@ -662,7 +680,6 @@ for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			break;
 	}
 }
-
 }
 
 
@@ -687,62 +704,87 @@ void WalkTask(void)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
+		//装弹后检查行程开关是否触发
 		if(status >= load)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
-		ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-		ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+		//检查是否需要重启 fix me 需要更好的处理方式来避免一直进入重试
+		if(status == launch)
+		{
+			if(gRobot.isReset == ROBOT_RESET)
+			{
+				status = reset;
+			}
+		}
+		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
+		if((status != launch && status < reset)||status > resetConfig)
+		{
+			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+	//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
 
-		UpdateKenimaticInfo();	
-		sendDebugInfo();
+			UpdateKenimaticInfo();	
+			sendDebugInfo();
+		}
+		//不在发射时不检测蓝牙通信是否正常
+		if(status != launch)
+		{
+			gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_STOP;
+			gRobot.isBleOk.noBleTimer = 0;
+		}
 		switch (status)
 		{
 			//准备阶段
 			case getReady:				
 				if(PHOTOSENSORUPGUN)
 				{
-					GyroInit();
-					//等待定位系统信号量
-					OSSemSet(GyroSem, 0, &os_err);
-					OSSemPend(GyroSem,200, &os_err);
-					if(os_err == OS_ERR_TIMEOUT)
+					static uint8_t photoElectricCounter = 0;
+					photoElectricCounter++;
+					if(photoElectricCounter >= 5)
 					{
-						while(1)
+						GyroInit();
+						//等待定位系统信号量
+						OSSemSet(GyroSem, 0, &os_err);
+						OSSemPend(GyroSem,200, &os_err);
+						if(os_err == OS_ERR_TIMEOUT)
 						{
-							USART_SendData(UART5 ,(uint8_t)99);
-							USART_SendData(UART5 ,(uint8_t)66);
-							USART_SendData(UART5 ,(uint8_t)99);
-							USART_SendData(UART5 ,(uint8_t)66);
-							USART_SendData(UART5 ,(uint8_t)-100);
-							USART_SendData(UART5 ,(uint8_t)-100);
-							USART_SendData(UART5 ,(uint8_t)-100);
-							USART_SendData(UART5 ,(uint8_t)-100);							
-							BEEP_ON;
-							TIM_Delayms(TIM5,500);
-							BEEP_OFF;
-							TIM_Delayms(TIM5,500);	
+							//如果超时没有接收到定位系统数据则提示错误
+							while(1)
+							{
+								UART5_OUT((uint8_t *)"GYRO NO DATA ERROR!!!\r\n");					
+								BEEP_ON;
+								TIM_Delayms(TIM5,500);
+								BEEP_OFF;
+								TIM_Delayms(TIM5,500);	
+							}
 						}
+						//出发后爪子张开
+						ClampOpen();
+						TIM_Delayms(TIM5,20);
+						//出发时左右枪复位
+						ROBOT_LeftGunHome();
+						ROBOT_RightGunHome();
+						status = goToLoadingArea;
+						OSSemSet(PeriodSem, 0, &os_err);
 					}
-					OSSemSet(PeriodSem, 0, &os_err);
-					ClampOpen();
-					TIM_Delayms(TIM5,20);
-					ROBOT_LeftGunHome();
-					ROBOT_RightGunHome();
-					status ++;
 				}
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
 //				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
+<<<<<<< HEAD
 				MoveTo(-13033.14f, -1500.0f, 2000.0f , 2000.0f);
+=======
+				MoveToCenter(-13033.14f, -3500.0f, 2000.0f);
+				//接近装载区时通过光电校正坐标
+>>>>>>> refs/remotes/origin/master
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					if (amendXFlag == 0)
@@ -753,6 +795,7 @@ void WalkTask(void)
 					BEEP_ON;
 //					status++;					
 				}
+				//到达装弹位置
 				if(GetPosX()<=-13033.14f)
 				{
 					moveTimFlag = 0;
@@ -761,7 +804,12 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
+<<<<<<< HEAD
 				MoveTo(13033.14f, 1500.0f, 2000.0f, 2000.0f);		
+=======
+				MoveToCenter(13033.14f, 3500.0f, 2000.0f);
+				//接近装载区时通过光电校正坐标				
+>>>>>>> refs/remotes/origin/master
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -771,6 +819,7 @@ void WalkTask(void)
 					}
 					BEEP_ON;
 				}
+				//到达装弹位置
 				if(GetPosX()>=13033.14f)
 				{
 					moveTimFlag = 0;
@@ -780,37 +829,32 @@ void WalkTask(void)
 #endif
 
 				break;
-			
-			//停车
-			case stopRobot:
-				MoveX(-ENDSPEED);
-				if (GetPosX() <= -13026.96f)
-				{
-					BEEP_OFF;
-					status++;
-				}				
-				break;
 				
 			//装载飞盘
 			case load:
+				//停车
 				LockWheel();
+				//爪子关
 				ClampClose();
-				timeCounter++;	
-			    if (timeCounter >= 28)
+				timeCounter++;
+				//爪子关一段时间后翻并开始检测光电
+			    if (timeCounter >= 40)
 				{
 					timeCounter = 0;
 					ClampRotate();
-					status ++;
+					status = beginToGo1;
 				}
 				break;
 			
 			case beginToGo1:
+				//检测上枪光电
 				if (PHOTOSENSORUPGUN)
 				{
 //					status++;
 //					OSTaskResume(DEBUG_TASK_PRIO);
 					upperPhotoSensorCounter++;
-					if(upperPhotoSensorCounter > 6)
+					//触发六次后开始走向发射区
+					if(upperPhotoSensorCounter >= 10)
 					{
 						ROBOT_UpperGunAim();	
 						status=goToLaunchingArea;
@@ -818,6 +862,7 @@ void WalkTask(void)
 				}
 				break;
 				
+<<<<<<< HEAD
 			//四分之三位置停车
 			case goToHalfLaunchingArea:
 			{
@@ -874,40 +919,106 @@ void WalkTask(void)
 			case goToLaunchingArea:
 #ifdef RED_FIELD
                 MoveTo(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
+=======
+            //从装载区走向发射区				
+			case goToLaunchingArea:
+#ifdef RED_FIELD
+                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
+				//到位后给靠墙速度
+>>>>>>> refs/remotes/origin/master
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					status++;
+					status = stopRobot;
 				}
 #endif
 #ifdef BLUE_FIELD
+<<<<<<< HEAD
                 MoveTo(6459.14f, -1500.0f, 2000.0f , 2000.0f);
+=======
+                MoveToCenter(6459.14f, -3000.0f, 2000.0f);
+				//到位后给靠墙速度
+>>>>>>> refs/remotes/origin/master
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
 					moveTimFlag = 0;
-					status++;
+					status = stopRobot;
 				}
 #endif
 				break;
-			
-			//发射飞盘
-			case launch:
+			//停车
+			case stopRobot:
+				//靠墙一段时间后抱死
 				OSTimeDly(50);
 				LockWheel();
+				//通知摄像头开始工作
+				SendStop2Camera();
+				//开始执行发射任务
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);		
 				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 //				CameraInit();
-//				MoveY(50.0f);
-				SendStop2Camera();
-				
-				OSTaskSuspend(OS_PRIO_SELF);
+				status = launch;
+				if(gRobot.isReset == ROBOT_RESET)
+				{
+					OSTimeDly(2);
+					gRobot.isReset = ROBOT_NOT_RESET;
+				}			   
+				OSSemSet(PeriodSem, 0, &os_err);
+				break;			
+			//发射飞盘
+			case launch:
+				gRobot.isReset = ROBOT_NOT_RESET;
+				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
+				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
+				if(gRobot.isBleOk.noBleTimer >= 7000)
+				{
+					gRobot.isBleOk.noBleFlag = BLE_LOST;
+				}
 				break;
-			
+			//失能电机，中断发射任务
+			case reset:
+				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
+				OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+				if(RESET_SWITCH)
+				{
+					status = resetConfig;
+				}
+				break;
+			case resetConfig:
+				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
+				TIM_Delayms(TIM5,50);
+				status = resetRunToLaunch;
+				OSSemSet(PeriodSem, 0, &os_err);
+				break;
+			case resetRunToLoad:
+				break;
+			case resetRunToLaunch:
+#ifdef RED_FIELD
+                MoveToCenter(-6459.14f, -3000.0f, 2000.0f);
+				//到位后给靠墙速度
+			    if (GetPosX() <= -6459.14f)
+				{
+					MoveY(50.0f);
+					moveTimFlag = 0;
+					status = stopRobot;
+				}
+#endif
+#ifdef BLUE_FIELD
+                MoveToCenter(6459.14f, 3000.0f, 2000.0f);
+				//到位后给靠墙速度
+			    if (GetPosX() >= 6459.14f)
+				{
+					MoveY(50.0f);
+					moveTimFlag = 0;
+					status = stopRobot;
+				}
+#endif
+				break;
 			default:
 				break;		
 		}
@@ -923,8 +1034,8 @@ void LeftGunShootTask(void)
 #ifndef NO_WALK_TASK
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
-//	LeftBack();
-//	OSTimeDly(50);
+	OSTimeDly(20);
+	LeftBack();
 //	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
@@ -934,6 +1045,8 @@ void LeftGunShootTask(void)
 		//手自动切换时上弹气缸推到头后收回
 		if(gRobot.leftGun.modeChangeFlag == 1)
 		{
+			gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
+			gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
 			LeftBack();
 			gRobot.leftGun.modeChangeFlag = 0;
 		}
@@ -945,73 +1058,72 @@ void LeftGunShootTask(void)
 		//自动模式
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
 		{
-			//自动调度
+				//自获取命令
 				shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
-
 				if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 				{
 					gRobot.leftGun.noCommandTimer = 0;
 					gRobot.leftGun.targetPlant = leftGunShootCommand.plantNum;
 					gRobot.leftGun.nextStep = 2;
 					gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
-					
+					//对于7#柱子先到位后再上弹，其它柱子直接瞄准
 					if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT3 )
 					{
-						//获取并更新枪目标姿态  上弹姿态
+						//获取并更新枪上弹姿态
 						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootMethod]\
 																			[leftGunShootCommand.plantNum];
 
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
 					}
-					else
+					else if(gRobot.leftGun.shootTimes == 0)
 					{
 						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
 						ROBOT_LeftGunAim();
 					}
-					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
-																		[leftGunShootCommand.plantNum];
-
-					ROBOT_LeftGunAim();	
-					if(gRobot.leftGun.shootTimes == 0)
+					//第一发弹先调整姿态一段时间后再上弹
+					if(gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						OSTimeDly(30);
+						OSTimeDly(90);
 						LeftPush();
-					}
-				
+					}				
+					//上弹
 					ROBOT_LeftGunReload();				
 					
-					//检查上弹是否到位
-//					ROBOT_LeftGunCheckReload();
-					//获取并更新枪目标姿态  发射姿态
+					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
+																			[leftGunShootCommand.plantNum];
+					ROBOT_LeftGunAim();
+					//检测枪是否到位
+					ROBOT_LeftGunCheckAim();
 
-					if(leftGunShootCommand.plantNum == PLANT6)		//PLANT6不检查姿态
+#ifndef NO_WALK_TASK
+					//第一发弹等待到位后发射，fix me 重试也需要检测
+					ROBOT_LeftGunCheckShootPoint();
+#endif				
+					//检查上弹是否到位
+					ROBOT_LeftGunCheckReload();
+					//发射
+					ROBOT_LeftGunShoot();
+					//记录发射命令
+					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						ROBOT_LeftGunCheckAim();
-//						OSTimeDly(200);
-//						gRobot.leftGun.ready = GUN_AIM_DONE;
+						gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
+						gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
 					}
 					else
 					{
-							ROBOT_LeftGunCheckAim();
-//							OSTimeDly(200);
-//							gRobot.leftGun.ready = GUN_AIM_DONE;					
+						if(gRobot.leftGun.shootParaMode%2)
+						{
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate = 1;
+						}
+						else
+						{
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball = 1;						
+						}						
 					}
-								
-//				//再次检查该柱子的状态，确定是否发射				
-//				if((leftGunShootCommand.shootMethod == SHOOT_METHOD1)&&(gRobot.plantState[leftGunShootCommand.plantNum].ball == 1))
-//					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-//				if((leftGunShootCommand.shootMethod == SHOOT_METHOD2)&&(gRobot.plantState[leftGunShootCommand.plantNum].plate == 1))
-//					gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
-				
-				//fix me 此处应当再次检查命令
-#ifndef NO_WALK_TASK
-					ROBOT_LeftGunCheckShootPoint();
-#endif
-					ROBOT_LeftGunShoot();
-					gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
-					gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
+					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
+					//对命令状态进行复位
 					if(gRobot.leftGun.shootParaMode%2)
 					{
 						gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
@@ -1023,6 +1135,7 @@ void LeftGunShootTask(void)
 				}
 				else
 				{
+					//没有命令时回到6#落盘姿态
 					OSTimeDly(6);
 					ROBOT_LeftGunReturn();
 				}
@@ -1035,9 +1148,7 @@ void LeftGunShootTask(void)
 			gRobot.leftGun.nextStep = 3;
 			if(gRobot.leftGun.aim == GUN_START_AIM)
 			{
-				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
+				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿				
 				ROBOT_LeftGunAim();
 				//更新数据库中参数并写入FLASH
 //				UpdateLeftGunPosDatabaseManualMode();
@@ -1046,21 +1157,28 @@ void LeftGunShootTask(void)
 			}
 			else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
 			{
+				//7#柱子需要瞄准，因为需要特殊角度上弹
 				if(gRobot.leftGun.targetPlant == PLANT7)
 				{
 						ROBOT_LeftGunAim();
 				}
+				//检测左枪是否到位
 				ROBOT_LeftGunCheckAim();
+				//发射
 				ROBOT_LeftGunShoot();
+
+				//7#需要先到上弹角度再上弹
 				if(gRobot.leftGun.targetPlant == PLANT7)
 				{
 					gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[gRobot.leftGun.shootParaMode]\
 																		[gRobot.leftGun.targetPlant];
 
 					ROBOT_LeftGunReloadAim();
+					//检测是否到位
 					ROBOT_LeftGunCheckReloadAim();
 					LeftPush();
 				}
+				//上弹
 				ROBOT_LeftGunReload();
 //				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
@@ -1091,8 +1209,8 @@ void RightGunShootTask(void)
 #ifndef NO_WALK_TASK
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
-//	RightBack();
-//	OSTimeDly(50);
+	OSTimeDly(20);
+	RightBack();
 //	RightPush();
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
@@ -1102,6 +1220,8 @@ void RightGunShootTask(void)
 		//手自动切换时上弹气缸推到头后收回
 		if(gRobot.rightGun.modeChangeFlag == 1)
 		{
+			gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
+			gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
 			RightBack();
 			gRobot.rightGun.modeChangeFlag = 0;
 		}
@@ -1114,7 +1234,7 @@ void RightGunShootTask(void)
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
 		if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_AUTO_MODE)
 		{
-
+				//获取命令
 				shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
 
 				if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
@@ -1124,6 +1244,7 @@ void RightGunShootTask(void)
 					gRobot.rightGun.targetPlant = rightGunShootCommand.plantNum;
 					gRobot.rightGun.shootParaMode = rightGunShootCommand.shootMethod;
 
+					//7#柱子需要到上弹姿态后再上弹，其它直接瞄准
 					if(gRobot.rightGun.lastPlant == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
 					{
 						//获取并更新枪目标姿态  上弹姿态
@@ -1134,61 +1255,55 @@ void RightGunShootTask(void)
 						ROBOT_RightGunAim();
 						ROBOT_RightGunCheckAim();
 					}
-					else
+					else if(gRobot.rightGun.shootTimes == 0)
 					{
 						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
 						ROBOT_RightGunAim();
 					}
-					if(gRobot.rightGun.shootTimes == 0)
+					//第一发弹调整姿态一段时间后开始上弹
+					if(gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						OSTimeDly(30);
+						OSTimeDly(110);
 						RightPush();
 					}
-					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
-																		[rightGunShootCommand.plantNum];
-
-					//调整枪姿为发射姿态 need some time
-					ROBOT_RightGunAim();
+					//上弹
 					ROBOT_RightGunReload();				
 
+					gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
+																	[rightGunShootCommand.plantNum];
+					ROBOT_RightGunAim();
+					//检查是否到位
+					ROBOT_RightGunCheckAim();
+
+#ifndef NO_WALK_TASK
+					//第一发弹收到到位信息后发射，fix me 重试也需要检测
+					ROBOT_RightGunCheckShootPoint();
+#endif
 					//检查上弹是否到位
-//					ROBOT_RightGunCheckReload();
-					//瞄准，此函数最好瞄准完成后再返回
+					ROBOT_RightGunCheckReload();
 
-					//获取并更新枪目标姿态  发射姿态
-
-					if(rightGunShootCommand.plantNum == PLANT6)
+					//发射
+					ROBOT_RightGunShoot();
+					//记录发射命令
+					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
-						ROBOT_RightGunCheckAim();
-//						OSTimeDly(200);
-//						gRobot.rightGun.ready = GUN_AIM_DONE;
+						gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
+						gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
 					}
 					else
 					{
-						ROBOT_RightGunCheckAim();
-//						OSTimeDly(200);					
-//						gRobot.rightGun.ready = GUN_AIM_DONE;
+						if(gRobot.rightGun.shootParaMode%2)
+						{
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate = 1;
+						}
+						else
+						{
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball = 1;						
+						}						
 					}
-					
-//				//再次检查该柱子的状态，确定是否发射
-//				if((rightGunShootCommand.shootMethod == SHOOT_METHOD1)\
-//					&&(gRobot.plantState[rightGunShootCommand.plantNum].ball == 1))
-//				{
-//					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-//				}
-//				if((rightGunShootCommand.shootMethod == SHOOT_METHOD2)\
-//					&&(gRobot.plantState[rightGunShootCommand.plantNum].plate == 1))
-//				{
-//					gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
-//				}
-
-#ifndef NO_WALK_TASK
-					ROBOT_RightGunCheckShootPoint();
-#endif
-					ROBOT_RightGunShoot();
-					gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
-					gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
+					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
+					//对命令状态进行复位
 					if(gRobot.rightGun.shootParaMode%2)
 					{
 						gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
@@ -1200,6 +1315,7 @@ void RightGunShootTask(void)
 				}
 				else
 				{
+					//没有命令时回到6#落盘姿态
 					OSTimeDly(6);
 					ROBOT_RightGunReturn();
 				}
@@ -1212,33 +1328,36 @@ void RightGunShootTask(void)
 			gRobot.rightGun.nextStep = 3;
 			if(gRobot.rightGun.aim == GUN_START_AIM)
 			{
-				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-				//瞄准，此函数最好瞄准完成后再返回
-				//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!					
+				//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.rightGun中的目标位姿				
 				ROBOT_RightGunAim();
 				//更新数据库中参数并写入FLASH
 //				UpdateRightGunPosDatabaseManualMode();
 //				FlashWriteGunPosData();
-				ROBOT_RightGunCheckAim();
 				gRobot.rightGun.aim = GUN_STOP_AIM;
 			}
 			else if(gRobot.rightGun.shoot==GUN_START_SHOOT)
 			{
+				//7#柱子需要瞄准，因为会到上弹角度上弹
 				if(gRobot.rightGun.targetPlant == PLANT7)
 				{
 					ROBOT_RightGunAim();
 				}
+				//检查是否到位
 				ROBOT_RightGunCheckAim();
+				//发射
 				ROBOT_RightGunShoot();
+				//7#柱子到上弹姿态
 				if(gRobot.rightGun.targetPlant == PLANT7)
 				{
 					gRobot.rightGun.reloadPose = gRightGunReloadPosDatabase[gRobot.rightGun.shootParaMode]\
 																[gRobot.rightGun.targetPlant];
 
 					ROBOT_RightGunReloadAim();
+					//检查是否到位
 					ROBOT_RightGunCheckReloadAim();
 					RightPush();
 				}
+				//上弹
 				ROBOT_RightGunReload();
 //				OSTimeDly(50);
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
@@ -1270,21 +1389,35 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
-	OSTimeDly(150);
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
 #ifndef NO_WALK_TASK
+		//如果接收到防守命令进入防守模式
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+		//不需要防守时如果7#需要落盘则对7#落盘命令置位
 		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
-				OSTimeDly(40);
-				if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+				//等待0.4s避免已经发射弹盘没落上时重复发射
+				uint8_t checkGap = 8;
+				while(checkGap--)
 				{
-					gRobot.upperGun.mode = GUN_ATTACK_MODE;
-					gRobot.plantState[PLANT7].plate = 1;
+					if(gRobot.upperGun.targetZone & 0xff)
+					{					
+						break;
+					}
+					OSTimeDly(5);
+				}
+				if((gRobot.upperGun.targetZone & 0xff )==0)
+				{
+					//对7#落盘命令进行置位
+					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+					{
+						gRobot.upperGun.mode = GUN_ATTACK_MODE;
+						gRobot.plantState[PLANT7].plate = 1;
+					}
 				}
 			}
 		}
@@ -1325,12 +1458,15 @@ void UpperGunShootTask(void)
 				ROBOT_UpperGunCheckAim();
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
+					//发射
 					ROBOT_UpperGunShoot();
+					//对标志为进行复位
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
 					OSTimeDly(40);
 				}
+				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)
 				{
 					upperGunShootFlag = 0;
@@ -1345,6 +1481,7 @@ void UpperGunShootTask(void)
 		}
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
 		{
+			//获取命令
 			shoot_command_t shootCommand = ROBOT_UpperGunGetShootCommand();
 			gRobot.upperGun.targetPlant = shootCommand.plantNum;
 			gRobot.upperGun.shootParaMode = shootCommand.shootMethod;
@@ -1361,14 +1498,27 @@ void UpperGunShootTask(void)
 				gRobot.upperGun.targetPose.speed1 = pose.speed1;
 				
 				ROBOT_UpperGunAim();
+				//检查是否到位
 				ROBOT_UpperGunCheckAim();
 				if(gRobot.upperGun.targetZone & 0xff)
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+					//执行命令过程中若切到防守模式将命令状态复位
+					if(gRobot.upperGun.shootParaMode%3)
+					{
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plate = 1;
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
+					}
+					else
+					{
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ball = 1;						
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;						
+					}
 				}
 				else
 				{
 					ROBOT_UpperGunShoot();
+					//发射完成后标志任务执行完成
 					if(gRobot.upperGun.shootParaMode%3)
 					{
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;

@@ -65,7 +65,6 @@ extern robot_t gRobot;
 
 void CAN1_RX0_IRQHandler(void)
 {
-	
 	OS_CPU_SR  cpu_sr;
 	uint8_t buffer[8];
 	uint32_t StdId=0;
@@ -607,6 +606,7 @@ extern  OS_EVENT 		*DebugPeriodSem;
 extern float moveTimer;
 extern uint8_t moveTimFlag;
 extern uint8_t canErrCode;
+
 void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
@@ -649,8 +649,13 @@ void TIM2_IRQHandler(void)
 		{
 			moveTimer+=0.001f;
 		}
+		if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+		{
+			gRobot.isBleOk.noBleTimer ++;
+		}
 		velTimerCounting();
 		
+		gunTimCnt ++;
 		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
@@ -758,7 +763,7 @@ void UART4_IRQHandler(void)
 		ch = USART_ReceiveData(UART4);
 		
 		USART_SendData(UART4, ch);
-		
+		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
 			case 0:                       
@@ -1002,7 +1007,7 @@ void UART4_IRQHandler(void)
 							break;
 					}
 				}
-				else
+				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
 					switch(id/10)
@@ -1029,6 +1034,11 @@ void UART4_IRQHandler(void)
 							}							
 							break;
 					}
+				}
+				else if(id == 30)
+				{
+					//重启
+					gRobot.isReset = ROBOT_RESET;
 				}
 				status=0;
 			break;
@@ -1193,6 +1203,10 @@ void USART3_IRQHandler(void)
 #define POS_HEADER2 0x88	
 
 #define READY_HEADER 0x8A
+
+#define PLAT_HEADER1 0x8B
+#define PLAT_HEADER2 0x8B
+
 	
 #define HEADER_STATE1 0
 #define HEADER_STATE2 1
@@ -1201,9 +1215,11 @@ void USART3_IRQHandler(void)
 #define POS_DATA_STATE1  4
 #define POS_DATA_STATE2 5
 #define SELF_DATA_STATE 6
-	
+#define PLAT_DATA_STATE 7
+
 #define SELF_NEED_PLATE 0x90
 #define SELF_ALREADY_HAVE 0x91	
+
 	static uint8_t data = 0;
  	static int state = 0;
 	static union
@@ -1241,6 +1257,10 @@ void USART3_IRQHandler(void)
 				{
 					state ++;
 				}
+				else if(data == PLAT_HEADER1)
+				{
+					state ++;
+				}
 				else
 				{
 					state = 0;
@@ -1260,6 +1280,10 @@ void USART3_IRQHandler(void)
 				{
 					state = SELF_DATA_STATE;
 				}
+				else if(data == PLAT_HEADER2)
+				{
+					state = PLAT_DATA_STATE;
+				}
 				else
 				{						
 					state=0;
@@ -1268,8 +1292,14 @@ void USART3_IRQHandler(void)
 			case DATA_STATE: 
 				//更新7号着陆台飞盘位置, fix me
 				receive_data=data;
-				gRobot.upperGun.targetZone = data;
-				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+				if(gRobot.isReset != ROBOT_RESET)
+				{
+					gRobot.upperGun.targetZone = data;
+					if(data != 0x00)
+					{
+						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+					}
+				}
 				state = 0;
 				break;
 			case HEADER_STATE3:
@@ -1300,6 +1330,61 @@ void USART3_IRQHandler(void)
 					gRobot.upperGun.isSelfEmpty = SELF_OK;				
 				}
 				state = 0;
+				break;
+			case PLAT_DATA_STATE:
+				if(!((data&0x01)==0x01))
+					gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
+				if(!((data&0x02)==0x02))
+					gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
+				if(!((data&0x04)==0x04))
+					gRobot.autoCommand[PLANT2].ball = (data&0x04)==0x04;
+				if(!((data&0x08)==0x08))
+					gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
+				if(!((data&0x10)==0x10))
+					gRobot.autoCommand[PLANT4].ball = (data&0x10)==0x10;
+				if(!((data&0x20)==0x20))
+					gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
+				if(!((data&0x40)==0x40))
+					gRobot.autoCommand[PLANT5].ball = (data&0x40)==0x40;
+				if(!((data&0x80)==0x80))
+					gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
+				
+				if(data == 0)
+				{
+					gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+					gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
+				}
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+				{
+					if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
+						gRobot.plantState[PLANT1].ball = 1;
+					if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
+						gRobot.plantState[PLANT1].plate = 1;
+					if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD5, 1100))
+						gRobot.plantState[PLANT2].ball = 1;
+					if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD6, 1100))
+						gRobot.plantState[PLANT2].plate = 1;
+				}
+				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+				{
+					if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1100))
+						gRobot.plantState[PLANT4].ball = 1;
+					if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1100))
+						gRobot.plantState[PLANT4].plate = 1;
+					if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1100))
+						gRobot.plantState[PLANT5].ball = 1;
+					if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
+						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1100))
+						gRobot.plantState[PLANT5].plate = 1;
+				}
+				state = HEADER_STATE1;
 				break;
 			default:
 				break;

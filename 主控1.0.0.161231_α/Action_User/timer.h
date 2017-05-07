@@ -26,6 +26,56 @@ void IncSpeed(uint8_t Num);
 void DecSpeed(uint8_t Num);
 
 void TIM7_Int_Init(u16 arr,u16 psc);
+
+extern uint32_t gunTimCnt;
+/**
+  * @brief	记录下最近一次射击的时间
+  * @note	
+  * @param	plant:
+  *     @arg	PLANT1
+  *     @arg	PLANT2
+  *     @arg	PLANT3
+  *     @arg	PLANT4
+  *     @arg	PLANT5
+  *     @arg	PLANT6
+  *     @arg	PLANT7
+  * @param	shootMethod:
+  *     @arg	SHOOT_METHOD1
+  *     @arg	SHOOT_METHOD2
+  *     @arg	SHOOT_METHOD3
+  *     @arg	SHOOT_METHOD4
+  *     @arg	SHOOT_METHOD5
+  *     @arg	SHOOT_METHOD6
+  *     @arg	SHOOT_METHOD7
+  * @retval	
+  */
+void SetShootPlantTime(int plant, int shootMethod);
+
+/**
+  * @brief	检查最近一次射击的时间与现在射击的时间
+  * @note	
+  * @param	plant:
+  *     @arg	PLANT1
+  *     @arg	PLANT2
+  *     @arg	PLANT3
+  *     @arg	PLANT4
+  *     @arg	PLANT5
+  *     @arg	PLANT6
+  *     @arg	PLANT7
+  * @param	shootMethod:
+  *     @arg	SHOOT_METHOD1
+  *     @arg	SHOOT_METHOD2
+  *     @arg	SHOOT_METHOD3
+  *     @arg	SHOOT_METHOD4
+  *     @arg	SHOOT_METHOD5
+  *     @arg	SHOOT_METHOD6
+  *     @arg	SHOOT_METHOD7
+  * @param	delayMs: 间隔的时间 Unit: ms
+  * @retval	
+  */
+uint8_t CheckShootPlantTimeDelay(int plant, int shootMethod, uint32_t delayMs);
+
+
 #endif
 
 

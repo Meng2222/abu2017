@@ -22,6 +22,7 @@
 #include "stm32f4xx_usart.h"
 #include "robot.h"
 #include "dma.h"
+#include "gpio.h"
 /* Exported functions ---------------------------------------------------------*/
 
 extern robot_t gRobot;
@@ -470,6 +471,13 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		startPos = GetPosX();
 		moveTimer = 0.0f;
 		moveTimFlag = 0;
+	}
+	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH)
+	{
+		formerTargetPos = targetPos;		
+		startPos = GetPosX();
+		moveTimer = 0.0f;
+		moveTimFlag = 1;	
 	}
 
 	//轨迹计算
