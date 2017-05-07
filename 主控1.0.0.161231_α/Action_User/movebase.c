@@ -470,7 +470,7 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		formerTargetPos = targetPos;		
 		startPos = GetPosX();
 		moveTimer = 0.0f;
-		moveTimFlag = 0;
+		moveTimFlag = 1;
 	}
 	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH)
 	{
