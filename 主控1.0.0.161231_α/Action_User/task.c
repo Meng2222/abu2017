@@ -122,9 +122,8 @@ void sendDebugInfo(void)
 //	UART5_OUT((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
 //			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
-			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
-
+	UART5_OUT((uint8_t *)"%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity );/*\
+			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);*/			
 
 //	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
 //			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
@@ -708,17 +707,16 @@ void WalkTask(void)
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
 		if((status != launch && status < reset)||status > resetConfig)
 		{
-			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-			ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
-
-			UpdateKenimaticInfo();	
-			sendDebugInfo();
+				ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+				ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+				ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+	//			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+				UpdateKenimaticInfo();	
+				sendDebugInfo();
 		}
 		//不在发射时不检测蓝牙通信是否正常
 		if(status != launch)
@@ -788,7 +786,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveTo(11033.14f, 4000.0f, 2250.0f, 2000.0f);		
+				MoveTo(11033.14f, 4250.0f, 3000.0f, 2000.0f);		
 				//接近装载区时通过光电校正坐标				
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{

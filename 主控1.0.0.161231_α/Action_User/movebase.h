@@ -153,6 +153,13 @@ typedef struct
 	motorFailureUnion_t backwardMotorFailure;
 }motorFailure_t;
 
+typedef struct
+{
+	int leftVoltage;
+	int forwardVoltage;
+	int backwardVoltage;
+}motorVoltage_t;
+
 /** 
   * @brief  位姿结构体 此结构体暂时只在databse中使用，但是建议在robot_t中替换对应部分
   */
@@ -210,6 +217,8 @@ typedef struct
 	driverCommandVelocity_t driverCommandVelocity;
 	//驱动器接收的速度命令
 	driverJoggingVelocity_t driverJoggingVelocity;
+	//电机电压
+	motorVoltage_t motorVoltage;
 	
 	motorFailure_t motorFailure;
 
@@ -292,7 +301,7 @@ void ThreeWheelVelControlSelfCheck(int direction);
 //速度闭环PID
 #define PVEL (5.0f)
 
-#define PVELY (1.0f)
+#define PVELY (2.5f)
 /*
 ============================================================
                         其他宏定义           

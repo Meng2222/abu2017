@@ -513,7 +513,6 @@ void CAN2_RX0_IRQHandler(void)
 				gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity = (msg.data32[1])/100.0f;
 			}
 		}
-
 	}
 	//fix me,对于0x28x，可以统一处理，并不需要这么多复杂的判断
 	if(canNodeId == LEFT_GUN_PITCH_ID || canNodeId == LEFT_GUN_ROLL_ID || canNodeId == LEFT_GUN_YAW_ID || \
