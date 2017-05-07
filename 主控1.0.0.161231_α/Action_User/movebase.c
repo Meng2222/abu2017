@@ -359,9 +359,13 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	velX = outputSpeed;
 
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
-	if(velY <= 30.0f)
+	if(velY <= 80.0f)
 	{
 		velY = 30.0f;
+	}
+	else if(velY > 250.0f)
+	{
+		velY = 250.0f;
 	}
 #ifdef BLUE_FIELD
 	if(gRobot.moveBase.actualYPos > 40.0f)
@@ -381,9 +385,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	distDebug = posErr;
 	if(velX <= 0.0f)
 	{
-		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , 90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
-		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , 90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
-		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , 90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
+		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
+		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
+		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
 	}
 	else if(velX > 0.0f)
 	{

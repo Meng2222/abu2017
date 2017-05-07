@@ -98,9 +98,9 @@ void GyroInit(void)
 void sendDebugInfo(void)
 {
 	
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t%d\t%d\t",KEYSWITCH,status,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-			(int)gRobot.moveBase.actualYPos,(int)(gRobot.moveBase.posYSecondDerivative*100.0f));
+			(int)gRobot.moveBase.actualYPos);
 
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\
 			(int)gRobot.moveBase.targetSpeed.forwardWheelSpeed,(int)gRobot.moveBase.targetSpeed.backwardWheelSpeed);			
@@ -126,8 +126,8 @@ void sendDebugInfo(void)
 			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
 
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
-			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
+//	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
+//			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
 		
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
@@ -788,7 +788,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveTo(13033.14f, 1500.0f, 2000.0f, 2000.0f);		
+				MoveTo(11033.14f, 4000.0f, 2250.0f, 2000.0f);		
 				//接近装载区时通过光电校正坐标				
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
