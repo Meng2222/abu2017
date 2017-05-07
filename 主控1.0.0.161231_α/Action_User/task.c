@@ -17,12 +17,12 @@
 #include "flash.h"
 #include "movebase2.h"
 #include "dma.h"
-//宏定义用来标志红蓝场以及是否需要走行
-//#define RED_FIELD
-#define BLUE_FIELD
+
 //#define NO_WALK_TASK
+
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
+
 /*
 ===============================================================
                         信号量定义
@@ -98,7 +98,7 @@ void GyroInit(void)
 void sendDebugInfo(void)
 {
 	
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t%d\t",KEYSWITCH,status,\
+	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
 			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
@@ -122,12 +122,11 @@ void sendDebugInfo(void)
 //	UART5_OUT((char *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCurrentLimitFlag.leftWheelDriverFlag,\
 //			(int)gRobot.moveBase.driverCurrentLimitFlag.forwardWheelDriverFlag,(int)gRobot.moveBase.driverCurrentLimitFlag.backwardWheelDriverFlag);			
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity,\
-			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);			
+	UART5_OUT((uint8_t *)"%d\t",(int)gRobot.moveBase.driverCommandVelocity.leftDriverCommandVelocity );/*\
+			(int)gRobot.moveBase.driverCommandVelocity.forwardDriverCommandVelocity,(int)gRobot.moveBase.driverCommandVelocity.backwardDriverCommandVelocity);*/			
 
-
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
-			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
+//	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.driverJoggingVelocity.leftDriverJoggingVelocity,\
+//			(int)gRobot.moveBase.driverJoggingVelocity.forwardDriverJoggingVelocity,(int)gRobot.moveBase.driverJoggingVelocity.backwardDriverJoggingVelocity);			
 		
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
@@ -337,6 +336,7 @@ void ConfigTask(void)
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
 */
+
 	if(RESET_SWITCH==1)
 	{
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -396,9 +396,11 @@ void ConfigTask(void)
 （触发蜂鸣器状态取反）
 ===============================================================
 */
+
 void SelfCheckTask(void)
 {
 	static int self_circle=0,self_circle_end=3;
+
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
@@ -705,17 +707,16 @@ void WalkTask(void)
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
 		if((status != launch && status < reset)||status > resetConfig)
 		{
-			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-			ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-	//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
-
-			UpdateKenimaticInfo();	
-			sendDebugInfo();
+				ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+				ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+				ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+	//			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+		//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+				UpdateKenimaticInfo();	
+				sendDebugInfo();
 		}
 		//不在发射时不检测蓝牙通信是否正常
 		if(status != launch)
@@ -762,9 +763,9 @@ void WalkTask(void)
 				break;
 			//从出发区走向装载区
 			case goToLoadingArea:
-//				MoveToCenter(-13023.14f, -3200.0f, 2000.0f);
 #ifdef RED_FIELD
-				MoveToCenter(-13033.14f, -3500.0f, 2000.0f);
+				MoveTo(-13033.14f, -1500.0f, 2000.0f , 2000.0f);
+
 				//接近装载区时通过光电校正坐标
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
@@ -785,7 +786,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveToCenter(13033.14f, 3500.0f, 2000.0f);
+				MoveTo(13033.14f, 4250.0f, 3000.0f, 2000.0f);		
 				//接近装载区时通过光电校正坐标				
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
@@ -838,12 +839,10 @@ void WalkTask(void)
 					}
 				}
 				break;
-				
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveToCenter(-6459.14f, 3000.0f, 2000.0f);
-				//到位后给靠墙速度
+                MoveTo(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -853,8 +852,9 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, -3000.0f, 2000.0f);
+                MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
 				//到位后给靠墙速度
+
 			    if (GetPosX() <= 6459.14f)
 				{
 					ClampReset();
@@ -913,7 +913,7 @@ void WalkTask(void)
 				break;
 			case resetRunToLaunch:
 #ifdef RED_FIELD
-                MoveToCenter(-6459.14f, -3000.0f, 2000.0f);
+                MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 			    if (GetPosX() <= -6459.14f)
 				{
@@ -923,7 +923,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveToCenter(6459.14f, 3000.0f, 2000.0f);
+                MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 			    if (GetPosX() >= 6459.14f)
 				{

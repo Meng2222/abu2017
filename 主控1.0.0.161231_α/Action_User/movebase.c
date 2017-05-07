@@ -182,16 +182,31 @@ void SetMotorAcc(motorAcc_t motorAcc)
 
 void ThreeWheelVelControl(wheelSpeed_t speed)
 {
-	gRobot.moveBase.targetSpeed.leftWheelSpeed = -speed.leftWheelSpeed/100.0f;
-	gRobot.moveBase.targetSpeed.backwardWheelSpeed = -speed.backwardWheelSpeed/100.0f;
-	gRobot.moveBase.targetSpeed.forwardWheelSpeed = -speed.forwardWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.leftWheelSpeed = speed.leftWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.backwardWheelSpeed = speed.backwardWheelSpeed/100.0f;
+	gRobot.moveBase.targetSpeed.forwardWheelSpeed = speed.forwardWheelSpeed/100.0f;
 	
-	VelCrl(CAN2, 1, -speed.backwardWheelSpeed);
-	VelCrl(CAN2, 2, -speed.forwardWheelSpeed);
-	VelCrl(CAN2, 3, -speed.leftWheelSpeed);
+	VelCrl(CAN2, BACKWARD_WHEEL_ID, speed.backwardWheelSpeed);
+	VelCrl(CAN2, FORWARD_WHEEL_ID, speed.forwardWheelSpeed);
+	VelCrl(CAN2, LEFT_WHEEL_ID, speed.leftWheelSpeed);
 }
-
-
+/**
+* @brief 将车的平动速度分解到三个轮上
+* @param  carVel : 车速  
+*		velAngle ：速度方向（以面向场地方向为0度，顺时针为负，逆时针为正，范围-180-180）
+  * @retval 分解到三个轮的速度
+  */
+wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
+{
+	#define BACK_WHEEL_VEL_ANG (30.0f)
+	#define LEFT_WHEEL_VEL_ANG (-90.0f)
+	#define FORWARD_WHEEL_VEL_ANG (150.0f)
+	wheelSpeed_t wheelSpeed = {0.0f};
+	wheelSpeed.backwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - BACK_WHEEL_VEL_ANG));
+	wheelSpeed.leftWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - LEFT_WHEEL_VEL_ANG));
+	wheelSpeed.forwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - FORWARD_WHEEL_VEL_ANG));
+	return wheelSpeed;
+}
 
 /*
 ============================================================
@@ -213,91 +228,9 @@ extern float moveTimer;
 extern uint8_t moveTimFlag;
 
 
-void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
-{
-	float targetDist = 0.0f;
-	float distAcc = 0.0f, timeAcc = 0.0f;
-	float distConst = 0.0f, timeConst = 0.0f;
-	float distDec = 0.0f, timeDec = 0.0f;
-	
-	//计算理论距离和理论速度的绝对值
-	targetDist = fabs(targetPos - startPos);
-	timeAcc = fabs(velX) / accX;
-	distAcc = 0.5f * accX * pow(timeAcc, 2);
-	/*梯形速度规划部分*/
-	if (2.0f * distAcc < targetDist)
-	{
-		timeDec = timeAcc - ENDSPEED / accX;
-		distDec = distAcc - pow(ENDSPEED, 2) / (2 * accX);
-		distConst = targetDist - distAcc - distDec;
-		timeConst = distConst / fabs(velX);
-		
-		if (moveTimer <= timeAcc)    /*加速段*/
-		{
-			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
-			pExpData->speed = accX * (moveTimer + 0.01f);
-		}
-		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))    /*匀速段*/
-		{
-			pExpData->dist = targetDist - distAcc - fabs(velX) * (moveTimer - timeAcc);
-			pExpData->speed = fabs(velX);
-		}
-		else if (moveTimer > (timeAcc + timeConst) && 
-			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
-		{
-			pExpData->dist = 0.5f * accX * (pow(timeAcc * 2.0f + timeConst - moveTimer, 2)
-                               			  - pow(timeAcc - timeDec, 2));
-			pExpData->speed = accX * (2.0f * timeAcc + timeConst - moveTimer - 0.01f);
-		}
-		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
-		{
-			pExpData->dist = ENDSPEED * ((timeAcc + timeConst + timeDec)-moveTimer);
-			pExpData->speed = ENDSPEED;
-		}
-	}
-	
-	/*三角形速度规划部分*/
-	else if (2.0f * distAcc >= targetDist)
-	{
-		timeAcc = sqrt((targetDist + pow(ENDSPEED, 2) / (2 * accX)) / accX);
-		distAcc = 0.5f * accX * pow(timeAcc, 2);
-		distDec = targetDist - distAcc;
-		timeDec = timeAcc - ENDSPEED / accX;
-		
-		if (moveTimer <= timeAcc)    /*加速段*/
-		{
-			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
-			pExpData->speed = accX * (moveTimer + 0.01f);
-		}
-		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
-		{
-			pExpData->dist = 0.5f * accX * pow(2.0f * timeAcc - moveTimer, 2)
-			                             - pow(timeAcc - timeDec, 2);
-			pExpData->speed = accX * (2.0f * timeAcc - moveTimer - 0.01f);
-		}
-		else if (moveTimer > (timeAcc + timeDec))    /*低速匀速准备停车*/
-		{
-			pExpData->dist = ENDSPEED * ((timeAcc + timeDec) - moveTimer);
-			pExpData->speed = ENDSPEED;
-		}
-	}
-	
-	
-	//计算理论位置并修正理论速度的符号
-	if(velX < 0.0f)
-	{
-		pExpData->pos = startPos - targetDist + pExpData->dist;
-		pExpData->speed = -pExpData->speed;
-	}
-	else 
-	{
-		pExpData->pos = startPos + targetDist - pExpData->dist;
-	}
-	
-}
 float distDebug = 0.0f;
 float speedDebug = 0.0f;
-void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX)
+void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX ,float decX)
 {
 	float targetDist = 0.0f;
 	float distAcc = 0.0f, timeAcc = 0.0f;
@@ -308,11 +241,11 @@ void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float tar
 	targetDist = fabs(targetPos - startPos);
 	timeAcc = fabs(velX) / accX;
 	distAcc = 0.5f * accX * pow(timeAcc, 2);
+	timeDec = fabs(velX) / decX;
+	distDec = 0.5f * decX * pow(timeDec, 2);
 	/*梯形速度规划部分*/
-	if (2.0f * distAcc < targetDist)
+	if ((distAcc + distDec) < targetDist)
 	{
-		timeDec = timeAcc;
-		distDec = distAcc;
 		distConst = targetDist - distAcc - distDec;
 		timeConst = distConst / fabs(velX);
 		
@@ -329,8 +262,8 @@ void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float tar
 		else if (moveTimer > (timeAcc + timeConst) && 
 			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
 		{
-			pExpData->dist = 0.5f * accX * (pow(timeAcc * 2.0f + timeConst - moveTimer, 2));
-			pExpData->speed = accX * (2.0f * timeAcc + timeConst - moveTimer - 0.01f);
+			pExpData->dist = 0.5f * decX * (pow(timeAcc + timeDec + timeConst - moveTimer, 2));
+			pExpData->speed = decX * (timeAcc + timeDec + timeConst - moveTimer - 0.01f);
 		}
 		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
 		{
@@ -340,12 +273,12 @@ void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float tar
 	}
 	
 	/*三角形速度规划部分*/
-	else if (2.0f * distAcc >= targetDist)
+	else if ((distAcc + distDec) >= targetDist)
 	{
-		timeAcc = sqrtf(targetDist/accX);
+		timeAcc = sqrtf(2.0f * targetDist * (accX + decX)) / accX;
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
-		distDec = targetDist - distAcc;
-		timeDec = timeAcc ;
+		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) / decX;
+		distDec = 0.5f * decX * pow(timeDec, 2);
 		
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
@@ -354,8 +287,8 @@ void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float tar
 		}
 		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
 		{
-			pExpData->dist = 0.5f * accX * pow(2.0f * timeAcc - moveTimer, 2);
-			pExpData->speed = accX * (2.0f * timeAcc - moveTimer - 0.01f);
+			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec - moveTimer, 2);
+			pExpData->speed = decX * (timeAcc + timeDec - moveTimer - 0.01f);
 		}
 		else if (moveTimer > (timeAcc + timeDec))    
 		{
@@ -399,13 +332,13 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
-	if (posErr > 150.0f)
+	if (posErr > 75.0f)
 	{
-		posErr = 150.0f;
+		posErr = 75.0f;
 	}
-	else if(posErr < -150.0f)
+	else if(posErr < -75.0f)
 	{
-		posErr = -150.0f;
+		posErr = -75.0f;
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
@@ -424,33 +357,48 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	}		
 	
 	velX = outputSpeed;
-//	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	velY = fabs(0.07f * velX) /*+ 100.0f*/;
-	if(velY <= 50)
+
+	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
+	if(velY <= 80.0f)
 	{
-		velY = 50;
+		velY = 30.0f;
 	}
+	else if(velY > 250.0f)
+	{
+		velY = 250.0f;
+	}
+#ifdef BLUE_FIELD
+	if(gRobot.moveBase.actualYPos > 40.0f)
+	{
+		velY = 0.0f;
+	}
+#endif
+#ifdef RED_FIELD
+	if(gRobot.moveBase.actualYPos < -40.0f)
+	{
+		velY = 0.0f;
+	}
+#endif
 #define MAXMOVEACC (Vel2Pulse(2000))
 #define PULSE_Y 100
 	speedDebug = velX;
 	distDebug = posErr;
-	pSpeedOut->backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
-	pSpeedOut->forwardWheelSpeed = Vel2Pulse(-velX                                             );
-	pSpeedOut->leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
-
+	if(velX <= 0.0f)
+	{
+		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
+		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
+		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
+	}
+	else if(velX > 0.0f)
+	{
+		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
+		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
+		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);	
+	}
 	//姿态修正
-	if(GetAngle() >= 0.0f)
-	{
-		pSpeedOut->backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
-	}
-	else if(GetAngle() < 0.0f)
-	{
-		pSpeedOut->backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		pSpeedOut->leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
-	}
+	pSpeedOut->backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	pSpeedOut->forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	pSpeedOut->leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 
 	//防止电机速度超过极限速度
 	if(fabs(pSpeedOut->backwardWheelSpeed) > INSANEVEL || fabs(pSpeedOut->forwardWheelSpeed) > INSANEVEL || fabs(pSpeedOut->leftWheelSpeed) > INSANEVEL)
@@ -512,54 +460,7 @@ void MoveX(float velX)
 	ThreeWheelVelControl(speedOut);
 }
 
-/**
-  * @brief  匀加减速运动控制函数
-  * @param  targetPos:目标位置 mm
-  * @param  velX:x方向速度     mm/s
-  * @param  accX:x方向加速度   mm/s^2
-  * @retval None
-  * @attention
-  *         此函数没有停车语句
-  */
-
-void MoveTo(float targetPos, float velX, float accX)
-{
-	//速度控制需要的过程变量
-	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
-	static float startPos = 0.0f;
-	expData_t expData = {0.0f, 0.0f, 0.0f};
-	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
-	
-	//新运动过程初始化
-	if(formerTargetPos != targetPos)
-	{	
-		formerTargetPos = targetPos;
-		
-		startPos = GetPosX();
-		if (velX >= 0)
-		{
-//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f(-1000.0f, 70.0f)/* velY 约等于  0.07*velX */));
-		}
-		else
-		{
-//			SetMotorAcc(CalcMotorAcc(MAXACC, atan2f( 1000.0f, 70.0f)/* velY 约等于 -0.07*velX */));
-		}
-		moveTimer = 0.0f;
-		moveTimFlag = 1;
-	}
-
-	//轨迹计算
-	CalcPath(&expData, velX, startPos, targetPos, accX);
-
-	//速度调节部分
-	SpeedAmend(&speedOut, &expData, velX);
-	
-
-	
-	//速度给出至各轮
-	ThreeWheelVelControl(speedOut);
-}
-void MoveToCenter(float targetPos, float velX, float accX)
+void MoveTo(float targetPos, float velX, float accX , float decX)
 {
 	//速度控制需要的过程变量
 	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
@@ -584,15 +485,15 @@ void MoveToCenter(float targetPos, float velX, float accX)
 	}
 
 	//轨迹计算
-	CalcPathToCenter(&expData, velX, startPos, targetPos, accX);
+	CalcPath(&expData, velX, startPos, targetPos, accX , decX);
 
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
-//	USART_SendData(UART5,(uint8_t)moveTimer);
+	USART_SendData(UART5,(uint8_t)moveTimer);
 //	USART_SendData(UART5,(int8_t)(expData.pos/100.0f));
 //	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
-	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug/100.0f));
-	UART5_OUT((uint8_t *)"%d\t",(int)(distDebug/10.0f));
+//	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug*0.1f));
+	UART5_OUT((uint8_t *)"%d\t",(int)(distDebug*0.1f));
 	
 	
 	//速度给出至各轮

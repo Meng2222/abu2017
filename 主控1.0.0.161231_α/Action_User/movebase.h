@@ -14,8 +14,8 @@
 #define __MOVEBASE_H
 
 /* Exported define ------------------------------------------------------------*/
-#define LEFT_WHEEL_ID 3
-#define FORWARD_WHEEL_ID 2
+#define LEFT_WHEEL_ID 2
+#define FORWARD_WHEEL_ID 3
 #define BACKWARD_WHEEL_ID 1
 #define MOVEBASE_BROADCAST_ID 0
 
@@ -153,6 +153,13 @@ typedef struct
 	motorFailureUnion_t backwardMotorFailure;
 }motorFailure_t;
 
+typedef struct
+{
+	int leftVoltage;
+	int forwardVoltage;
+	int backwardVoltage;
+}motorVoltage_t;
+
 /** 
   * @brief  位姿结构体 此结构体暂时只在databse中使用，但是建议在robot_t中替换对应部分
   */
@@ -210,6 +217,8 @@ typedef struct
 	driverCommandVelocity_t driverCommandVelocity;
 	//驱动器接收的速度命令
 	driverJoggingVelocity_t driverJoggingVelocity;
+	//电机电压
+	motorVoltage_t motorVoltage;
 	
 	motorFailure_t motorFailure;
 
@@ -229,6 +238,10 @@ typedef struct
 	float targetYPos;
 	//机器人Y方向实际位置，出发前进右侧方向位Y正方向，单位毫米
 	float actualYPos;
+	//Y方向坐标变化率
+	float posYDerivative;
+	//Y方向坐标二次导数
+	float posYSecondDerivative;
 	//摄像头返回相对场地中央位置，靠近出发区为0 范围【0，512】，场地正中间为256，单位毫米
 	unsigned short relativePos;
 		//期望位姿
@@ -284,11 +297,11 @@ void ThreeWheelVelControlSelfCheck(int direction);
 */
 
 //姿态修正PID
-#define PPOSE 7.0f
+#define PPOSE (7.0f)
 //速度闭环PID
-#define PVEL 6.0f
+#define PVEL (5.0f)
 
-
+#define PVELY (2.5f)
 /*
 ============================================================
                         其他宏定义           
@@ -353,6 +366,9 @@ void SetMotorAcc(motorAcc_t motorAcc);
 //在三个轮子上输出电机速度
 void ThreeWheelVelControl(wheelSpeed_t speed);
 
+wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle);
+
+
 /*
 ============================================================
          车速（mm/s）与电机转速（脉冲/s）的转换             
@@ -371,8 +387,6 @@ float Vel2Pulse(float vel);
 ============================================================
 */
 
-//轨迹理论值计算函数
-void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
 
 //速度调节函数
 void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX);
@@ -390,10 +404,9 @@ void LockWheel(void);
 void MoveX(float velX);
 
 //运动函数
-void MoveTo(float targetPos, float velX, float accX);
 void MoveY(float velY);
-void CalcPathToCenter(expData_t *pExpData, float velX, float startPos, float targetPos, float accX);
-void MoveToCenter(float targetPos, float velX, float accX);
+void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX , float decX);
+void MoveTo(float targetPos, float velX, float accX, float decX);
 
 float GetPosX(void);
 float GetAngle(void);
