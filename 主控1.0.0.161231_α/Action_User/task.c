@@ -23,7 +23,7 @@ OS_EVENT *CANSendPeriodSem;
 //定义互斥型信号量用于管理CAN发送资源
 OS_EVENT *CANSendMutex;
 
-#define MAX_CAN_CAPACITY 50
+#define MAX_CAN_CAPACITY 250
 canMsg_t CAN1Message[MAX_CAN_CAPACITY] = {0};
 canMsg_t CAN2Message[MAX_CAN_CAPACITY] = {0};
 int CAN1MsgCapacity = 0;
