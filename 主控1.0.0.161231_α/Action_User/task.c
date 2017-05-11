@@ -23,9 +23,13 @@ OS_EVENT *CANSendPeriodSem;
 //定义互斥型信号量用于管理CAN发送资源
 OS_EVENT *CANSendMutex;
 
-#define MAX_CAN_CAPACITY 250
 canMsg_t CAN1Message[MAX_CAN_CAPACITY] = {0};
 canMsg_t CAN2Message[MAX_CAN_CAPACITY] = {0};
+int CAN1BuffFront = 0;
+int CAN1BuffRear = 0;
+int CAN2BuffFront = 0;
+int CAN2BuffRear = 0;
+
 int CAN1MsgCapacity = 0;
 int CAN2MsgCapacity = 0;
 
@@ -84,40 +88,36 @@ void CANSendTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-    OSSemSet(CANSendPeriodSem, 0, &os_err);
+//    OSSemSet(CANSendPeriodSem, 0, &os_err);
 	while(1)
 	{
-		OSSemPend(CANSendPeriodSem, 0, &os_err);
-		if(CAN1MsgCapacity > 0)
+//		OSSemPend(CANSendPeriodSem, 0, &os_err);
+		if(CAN1BuffFront!=CAN1BuffRear)
 		{
-			CAN_TxMsg(CAN2,CAN1Message[0].canSendId, CAN1Message[0].message,8);
-			uint8_t i = 0;
-			for(i = 0; i < MAX_CAN_CAPACITY - 1; i++)
+			if(CAN1BuffFront + 1 == MAX_CAN_CAPACITY)
 			{
-				CAN1Message[i] = CAN1Message[i + 1];
+				CAN1BuffFront = (CAN1BuffFront + 1)%MAX_CAN_CAPACITY;
+				CAN_TxMsg(CAN2,CAN1Message[MAX_CAN_CAPACITY-1].canSendId, CAN1Message[MAX_CAN_CAPACITY-1].message,8);
 			}
-			CAN1Message[MAX_CAN_CAPACITY-1].canSendId = 0;
-			for(i = 0; i < 8;i++)
+			else
 			{
-				CAN1Message[MAX_CAN_CAPACITY-1].message[i] = 0;
+				CAN1BuffFront++;
+				CAN_TxMsg(CAN2,CAN1Message[CAN1BuffFront-1].canSendId, CAN1Message[CAN1BuffFront-1].message,8);
 			}
-			CAN1MsgCapacity--;
 		}
-		if(CAN2MsgCapacity > 0)
+		if(CAN2BuffFront!=CAN2BuffRear)
 		{
-			CAN_TxMsg(CAN1,CAN2Message[0].canSendId, CAN2Message[0].message,8);
-			uint8_t i = 0;
-			for(i = 0; i < MAX_CAN_CAPACITY - 1; i++)
+			if(CAN2BuffFront + 1 == MAX_CAN_CAPACITY)
 			{
-				CAN2Message[i] = CAN2Message[i + 1];
+				CAN2BuffFront = (CAN2BuffFront + 1)%MAX_CAN_CAPACITY;
+				CAN_TxMsg(CAN1,CAN2Message[MAX_CAN_CAPACITY-1].canSendId, CAN2Message[MAX_CAN_CAPACITY-1].message,8);
 			}
-			CAN2Message[MAX_CAN_CAPACITY-1].canSendId = 0;
-			for(i = 0; i < 8;i++)
+			else
 			{
-				CAN2Message[MAX_CAN_CAPACITY-1].message[i] = 0;
+				CAN2BuffFront++;
+				CAN_TxMsg(CAN1,CAN2Message[CAN2BuffFront-1].canSendId, CAN2Message[CAN2BuffFront-1].message,8);
 			}
-			CAN2MsgCapacity--;
-		}
+		}	
 	}
 }
 

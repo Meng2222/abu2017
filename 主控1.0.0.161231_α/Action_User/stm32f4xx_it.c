@@ -45,8 +45,8 @@
 #include "gpio.h"
 #include "stm32f4xx_exti.h"
 #include "robot.h"
-extern canMsg_t CAN1Message[50];
-extern canMsg_t CAN2Message[50];
+extern canMsg_t CAN1Message[MAX_CAN_CAPACITY];
+extern canMsg_t CAN2Message[MAX_CAN_CAPACITY];
 extern int CAN1MsgCapacity;
 extern int CAN2MsgCapacity;
 
@@ -60,7 +60,10 @@ union MSG
 
 //声明外部变量
 extern robot_t gRobot;
-
+extern int CAN1BuffFront;
+extern int CAN1BuffRear;
+extern int CAN2BuffFront;
+extern int CAN2BuffRear;
 void CAN1_RX0_IRQHandler(void)
 {
 	
@@ -73,13 +76,12 @@ void CAN1_RX0_IRQHandler(void)
 	OS_EXIT_CRITICAL();
 	CAN_RxMsg(CAN1, &StdId, buffer, 8);
 	
-	CAN1Message[CAN1MsgCapacity].canSendId = StdId;
+	CAN1Message[CAN1BuffRear].canSendId = StdId;
 	for(i = 0 ;i < 8 ;i++)
 	{
-		CAN1Message[CAN1MsgCapacity].message[i] = buffer[i];
+		CAN1Message[CAN1BuffRear].message[i] = buffer[i];
 	}
-	CAN1MsgCapacity++;
-	
+	CAN1BuffRear = (CAN1BuffRear + 1)%MAX_CAN_CAPACITY;
 	CAN_ClearFlag(CAN1, CAN_FLAG_EWG);
 	CAN_ClearFlag(CAN1, CAN_FLAG_EPV);
 	CAN_ClearFlag(CAN1, CAN_FLAG_BOF);
@@ -156,12 +158,13 @@ void CAN2_RX0_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 	CAN_RxMsg(CAN2, &StdId, buffer, 8);
-	CAN2Message[CAN2MsgCapacity].canSendId = StdId;
+	
+	CAN2Message[CAN2BuffRear].canSendId = StdId;
 	for(i = 0 ;i < 8 ;i++)
 	{
-		CAN2Message[CAN2MsgCapacity].message[i] = buffer[i];
+		CAN2Message[CAN2BuffRear].message[i] = buffer[i];
 	}
-	CAN2MsgCapacity++;
+	CAN2BuffRear = (CAN2BuffRear + 1)%MAX_CAN_CAPACITY;
 	
 	CAN_ClearFlag(CAN2, CAN_FLAG_EWG);
 	CAN_ClearFlag(CAN2, CAN_FLAG_EPV);
