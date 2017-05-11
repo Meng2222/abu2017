@@ -410,6 +410,11 @@ void MoveTo(float targetPos, float velX, float accX, float decX);
 
 float GetPosX(void);
 float GetAngle(void);
-
+/**
+* @brief 停到位置后做位置闭环
+* @param  posX : 停车点的X坐标
+*		  posY ：停车点的Y坐标
+  */
+void StickPos(float posX,float posY);
 #endif
 

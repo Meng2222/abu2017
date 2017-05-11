@@ -504,9 +504,54 @@ void MoveY(float velY)
 {
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
 
-	speedOut.backwardWheelSpeed = Vel2Pulse( - velY * 0.8660254f/*cos30*/);
-	speedOut.forwardWheelSpeed = Vel2Pulse(0);
-	speedOut.leftWheelSpeed = Vel2Pulse(velY * 0.8660254f/*cos30*/);
+	speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velY) , 0.0f).backwardWheelSpeed);
+	speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velY) , 0.0f).forwardWheelSpeed);
+	speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velY) , 0.0f).leftWheelSpeed);
 	
+	ThreeWheelVelControl(speedOut);
+}
+/**
+* @brief 停到位置后做位置闭环
+* @param  posX : 停车点的X坐标
+*		  posY ：停车点的Y坐标
+  */
+void StickPos(float posX,float posY)
+{
+	//位置闭环的P参数
+	#define PSTOP (1.0f)
+	//计算出来的角度与车的实际角度的偏移量
+	#define ANGLE_OFFSET (90.0f)
+	//输出速度上限
+	#define VEL_UPPER_LIMIT (200.0f)
+	float angle = 0.0f;
+	float posErr = 0.0f;
+	float vel = 0.0f;
+	wheelSpeed_t speedOut = {0};
+	//计算位置误差
+	posErr = sqrtf((float)pow(posY - gRobot.moveBase.actualYPos, 2) + (float)pow(posX - gRobot.moveBase.actualXPos, 2));
+	//位置误差过小时不输出，避免在目标点附近振荡
+	if(posErr <= 5.0f)
+	{
+		posErr = 0.0f;
+	}
+	//计算速度大小
+	vel = sqrtf(fabs(posErr)*PSTOP);
+	//计算速度方向
+	angle = RADTOANG(atan2f(posY - gRobot.moveBase.actualYPos,posX - gRobot.moveBase.actualXPos)) + ANGLE_OFFSET;
+	//对超出角度范围的角度进行限制
+	if(angle > 180.0f)
+	{
+		angle-=360.0f;
+	}
+	//对输出速度大小进行限制
+	if(vel > VEL_UPPER_LIMIT)
+	{
+		vel = VEL_UPPER_LIMIT;
+	}
+	//计算分解到三个轮的速度大小
+	speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).backwardWheelSpeed);
+	speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).forwardWheelSpeed);
+	speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).leftWheelSpeed);
+	//将速度输出到三个轮
 	ThreeWheelVelControl(speedOut);
 }
