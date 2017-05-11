@@ -688,6 +688,7 @@ void WalkTask(void)
 	float launchPosX = 0.0f;
 	float launchPosY = 0.0f;
 	uint8_t setLaunchPosFlag = 1;
+	uint8_t sendSignal = 1;
 	uint8_t upperPhotoSensorCounter = 0;
     OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
@@ -789,7 +790,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveTo(13033.14f, 4250.0f, 3000.0f, 2000.0f);		
+				MoveTo(13033.14f, 3500.0f, 2500.0f, 2000.0f);		
 				//接近装载区时通过光电校正坐标				
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
@@ -901,6 +902,14 @@ void WalkTask(void)
 				if(gRobot.isBleOk.noBleTimer >= 7000)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_LOST;
+				}
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+				{
+					if(sendSignal == 1)
+					{
+						SendAutoOver2Camera();
+						sendSignal=0;
+					}
 				}
 				break;
 			//失能电机，中断发射任务
