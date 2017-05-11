@@ -1236,7 +1236,6 @@ void USART3_IRQHandler(void)
 	{
 		USART_ClearITPendingBit( USART3,USART_IT_RXNE);
 		data = USART_ReceiveData(USART3);	
-
 		switch(state)
 		{
 			case HEADER_STATE1:
@@ -1290,7 +1289,6 @@ void USART3_IRQHandler(void)
 				break;
 			case DATA_STATE: 
 				//更新7号着陆台飞盘位置, fix me
-				receive_data=data;
 				if(gRobot.isReset != ROBOT_RESET)
 				{
 					gRobot.upperGun.targetZone = data;
@@ -1320,6 +1318,7 @@ void USART3_IRQHandler(void)
 				state = 0;
 			break;
 			case SELF_DATA_STATE:
+				
 				if(data == SELF_NEED_PLATE)
 				{
 					gRobot.upperGun.isSelfEmpty = SELF_EMPTY;
@@ -1331,6 +1330,7 @@ void USART3_IRQHandler(void)
 				state = 0;
 				break;
 			case PLAT_DATA_STATE:
+				receive_data=data;
 				if(!((data&0x01)==0x01))
 					gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
 				if(!((data&0x02)==0x02))
