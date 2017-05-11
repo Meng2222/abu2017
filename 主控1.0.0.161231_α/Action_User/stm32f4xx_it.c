@@ -1348,10 +1348,13 @@ void USART3_IRQHandler(void)
 				if(!((data&0x80)==0x80))
 					gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
 				
-				if(data == 0)
+				if((data&0x0f)==0)
 				{
 					gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
-					gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
+				}
+				if((data&0xf0)==0)
+				{
+					gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;				
 				}
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 				{

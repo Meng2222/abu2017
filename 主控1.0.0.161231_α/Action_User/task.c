@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -419,21 +419,47 @@ void SelfCheckTask(void)
 	switch(status_check)
 	{
 		case wheelSpeedCheck:
-			
-		//正转1s
+			//正转1s
 			ThreeWheelVelControlSelfCheck(1);
-			TIM_Delayms(TIM5, 1000);
-		//反转1s
-			ThreeWheelVelControlSelfCheck(2);
-			TIM_Delayms(TIM5, 1000);
-		//停止1s
+			TIM_Delayms(TIM5, 3000);
+
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
-		
+			//反转1s
+			ThreeWheelVelControlSelfCheck(2);
+			TIM_Delayms(TIM5, 3000);		
+			ThreeWheelVelControlSelfCheck(3);
+			TIM_Delayms(TIM5, 1000);
+			//正转1s
+			ThreeWheelVelControlSelfCheck(1);
+			TIM_Delayms(TIM5, 3000);
+			ThreeWheelVelControlSelfCheck(3);
+			TIM_Delayms(TIM5, 1000);
+			//反转1s
+			ThreeWheelVelControlSelfCheck(2);
+			TIM_Delayms(TIM5, 3000);
+			ThreeWheelVelControlSelfCheck(3);
+			TIM_Delayms(TIM5, 1000);
+
+
+			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(50.0f));
+			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(50.0f));
+			TIM_Delayms(TIM5, 8000);
+			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
+			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
+			TIM_Delayms(TIM5, 1000);
+
+			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(50.0f));
+			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(50.0f));
+			TIM_Delayms(TIM5, 8000);
+			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
+			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
+
 			status_check++;
-				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
-				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
-				BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);	
+			
+			BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
+			BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
+			BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);	
 			break;
 		case gpsCheck:
 			GyroInit();
