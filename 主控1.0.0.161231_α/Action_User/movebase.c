@@ -232,23 +232,28 @@ float distDebug = 0.0f;
 float speedDebug = 0.0f;
 void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX ,float decX)
 {
-	float targetDist = 0.0f;
+	float targetDist = 0.0f , actualDist = 0.0f;
 	float distAcc = 0.0f, timeAcc = 0.0f;
 	float distConst = 0.0f, timeConst = 0.0f;
 	float distDec = 0.0f, timeDec = 0.0f;
 	
 	//计算理论距离和理论速度的绝对值
 	targetDist = fabs(targetPos - startPos);
+	actualDist = fabs(targetPos - GetPosX());
 	timeAcc = fabs(velX) / accX;
 	distAcc = 0.5f * accX * pow(timeAcc, 2);
 	timeDec = fabs(velX) / decX;
 	distDec = 0.5f * decX * pow(timeDec, 2);
+
 	/*梯形速度规划部分*/
 	if ((distAcc + distDec) < targetDist)
 	{
 		distConst = targetDist - distAcc - distDec;
 		timeConst = distConst / fabs(velX);
-		
+		if(fabs(actualDist - distDec)<=(fabs(velX)/100.0f))
+		{
+			moveTimer = timeAcc + timeConst;
+		}	
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
@@ -283,7 +288,10 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
 		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) / decX;
 		distDec = 0.5f * decX * pow(timeDec, 2);
-		
+		if(fabs(actualDist - distDec)<=(sqrtf(2.0f * targetDist * (accX + decX))/100.0f))
+		{
+			moveTimer = timeAcc;
+		}
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
