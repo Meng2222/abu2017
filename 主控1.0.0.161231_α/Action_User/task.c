@@ -337,10 +337,21 @@ void ConfigTask(void)
 	LeftPush();
 	RightPush();
 	ClampReset();
-
+#ifdef BLUE_FIELD
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
+#endif
+#ifdef RED_FIELD
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);	
+#endif
 /*
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
