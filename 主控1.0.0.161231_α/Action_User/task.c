@@ -809,7 +809,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 #ifdef RED_FIELD
-				MoveTo(-13033.14f, -1500.0f, 2000.0f , 2000.0f);
+				MoveTo(-13033.14f, -4000.0f, 2000.0f , 2000.0f);
 
 				//接近装载区时通过光电校正坐标
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
@@ -831,7 +831,7 @@ void WalkTask(void)
 				}
 #endif				
 #ifdef BLUE_FIELD
-				MoveTo(13033.14f, 3500.0f, 2500.0f, 2000.0f);		
+				MoveTo(13033.14f, 4200.0f, 2500.0f, 2000.0f);		
 				//接近装载区时通过光电校正坐标				
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
@@ -911,11 +911,11 @@ void WalkTask(void)
 				break;
 			//停车
 			case stopRobot:
+				//通知摄像头开始工作
+				SendStop2Camera();
 				//靠墙一段时间后抱死
 				OSTimeDly(50);
 				LockWheel();
-				//通知摄像头开始工作
-				SendStop2Camera();
 				//开始执行发射任务
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);		
