@@ -1156,6 +1156,8 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	#define RIGHT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 3;
+	//使同一个枪不连续获得命令
+	OSTimeDly(2);
 	gRobot.rightGun.commandState = GUN_NO_COMMAND;
 	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 	{
