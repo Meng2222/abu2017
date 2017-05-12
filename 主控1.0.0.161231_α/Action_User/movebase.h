@@ -346,6 +346,7 @@ typedef struct
 	float dist;
 	float speed;
 	float pos;
+	unsigned char stage;
 }expData_t;
 
 
