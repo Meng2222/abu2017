@@ -253,22 +253,26 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
 			pExpData->speed = accX * (moveTimer + 0.01f);
+			pExpData->stage = MOVEBASE_ACC_STAGE;
 		}
 		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))    /*匀速段*/
 		{
 			pExpData->dist = targetDist - distAcc - fabs(velX) * (moveTimer - timeAcc);
 			pExpData->speed = fabs(velX);
+			pExpData->stage = MOVEBASE_EVER_STAGE;
 		}
 		else if (moveTimer > (timeAcc + timeConst) && 
 			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
 		{
 			pExpData->dist = 0.5f * decX * (pow(timeAcc + timeDec + timeConst - moveTimer, 2));
 			pExpData->speed = decX * (timeAcc + timeDec + timeConst - moveTimer - 0.01f);
+			pExpData->stage = MOVEBASE_DEC_STAGE;
 		}
 		else if (moveTimer > (timeAcc + timeConst + timeDec))    /*低速匀速准备停车*/
 		{
 			pExpData->dist = 0;
 			pExpData->speed = 0;
+			pExpData->stage = MOVEBASE_STOP_STAGE;
 		}
 	}
 	
@@ -284,16 +288,19 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
 			pExpData->speed = accX * (moveTimer + 0.01f);
+			pExpData->stage = MOVEBASE_ACC_STAGE;
 		}
 		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
 		{
 			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec - moveTimer, 2);
 			pExpData->speed = decX * (timeAcc + timeDec - moveTimer - 0.01f);
+			pExpData->stage = MOVEBASE_DEC_STAGE;
 		}
 		else if (moveTimer > (timeAcc + timeDec))    
 		{
 			pExpData->dist = 0;
 			pExpData->speed = 0;
+			pExpData->stage = MOVEBASE_STOP_STAGE;
 		}
 	}
 	
@@ -332,13 +339,27 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
-	if (posErr > 75.0f)
+	if(pExpData->stage != MOVEBASE_DEC_STAGE)
 	{
-		posErr = 75.0f;
+		if (posErr > 75.0f)
+		{
+			posErr = 75.0f;
+		}
+		else if(posErr < -75.0f)
+		{
+			posErr = -75.0f;
+		}
 	}
-	else if(posErr < -75.0f)
+	else
 	{
-		posErr = -75.0f;
+		if (posErr > 150.0f)
+		{
+			posErr = 150.0f;
+		}
+		else if(posErr < -150.0f)
+		{
+			posErr = -150.0f;
+		}	
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	

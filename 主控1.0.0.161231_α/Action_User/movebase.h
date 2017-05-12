@@ -24,7 +24,10 @@
 #define FORWARD_WHEEL_TEMPERATURE_ID   53
 #define BACKWARD_WHEEL_TEMPERATURE_ID   51
 
-
+#define MOVEBASE_ACC_STAGE 0
+#define MOVEBASE_EVER_STAGE 1
+#define MOVEBASE_DEC_STAGE 2
+#define MOVEBASE_STOP_STAGE 3
 
 /*
 ============================================================
@@ -346,6 +349,7 @@ typedef struct
 	float dist;
 	float speed;
 	float pos;
+	unsigned char stage;
 }expData_t;
 
 
