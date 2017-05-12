@@ -727,7 +727,7 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].ball = 1;
+		gRobot.autoCommand[i].ball = 2;
 	}
     gRobot.plantState[PLANT6].ball = 2;
 	gRobot.autoCommand[PLANT6].ball = 2;
@@ -735,7 +735,7 @@ status_t ROBOT_Init(void)
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].plate = 1;
+		gRobot.autoCommand[i].plate = 2;
 	}
 	gRobot.plantState[PLANT6].plate = 2;
 	gRobot.plantState[PLANT7].plate = 0;
@@ -992,7 +992,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-	if(gRobot.leftGun.shootTimes >= 18u)
+	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM)
 	{
 		gRobot.leftGun.commandState = GUN_NO_COMMAND;
 	}
@@ -1162,7 +1162,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-	if(gRobot.rightGun.shootTimes >= 18u)
+	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM)
 	{
 		gRobot.rightGun.commandState = GUN_NO_COMMAND;
 	}
