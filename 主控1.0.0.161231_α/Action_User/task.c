@@ -1374,8 +1374,8 @@ void UpperGunShootTask(void)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
-				//等待0.4s避免已经发射弹盘没落上时重复发射
-				uint8_t checkGap = 8;
+				//等待0.8s避免已经发射弹盘没落上时重复发射
+				uint8_t checkGap = 16;
 				while(checkGap--)
 				{
 					if(gRobot.upperGun.targetZone & 0xff)
@@ -1456,13 +1456,13 @@ void UpperGunShootTask(void)
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
 		{
 			//获取命令
-			shoot_command_t shootCommand = ROBOT_UpperGunGetShootCommand();
-			gRobot.upperGun.targetPlant = shootCommand.plantNum;
-			gRobot.upperGun.shootParaMode = shootCommand.shootMethod;
+			shoot_command_t uppershootCommand = ROBOT_UpperGunGetShootCommand();
+			gRobot.upperGun.targetPlant = uppershootCommand.plantNum;
+			gRobot.upperGun.shootParaMode = uppershootCommand.shootMethod;
 			if(gRobot.upperGun.commandState == GUN_HAVE_COMMAND)
 			{
-				uint8_t targetPlant = shootCommand.plantNum;
-				uint8_t shootMethod = shootCommand.shootMethod;
+				uint8_t targetPlant = uppershootCommand.plantNum;
+				uint8_t shootMethod = uppershootCommand.shootMethod;
 				uint8_t shootZone = ZONE1;
 				//获取目标位姿
 				gun_pose_t pose = gUpperGunPosDatabase[targetPlant][shootMethod][shootZone];
@@ -1492,6 +1492,7 @@ void UpperGunShootTask(void)
 				else
 				{
 					ROBOT_UpperGunShoot();
+					SetShootPlantTime(uppershootCommand.plantNum, uppershootCommand.shootMethod);
 					//发射完成后标志任务执行完成
 					if(gRobot.upperGun.shootParaMode%3)
 					{
