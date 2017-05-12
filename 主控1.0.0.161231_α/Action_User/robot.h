@@ -13,6 +13,8 @@
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
 
+#define LEFT_BULLET_NUM 20u
+#define RIGHT_BULLET_NUM 20u
 //着陆台个数
 #define LAND_NUMBER 7
 //机器人枪的个数
