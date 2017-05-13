@@ -250,7 +250,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	{
 		distConst = targetDist - distAcc - distDec;
 		timeConst = distConst / fabs(velX);
-		if(fabs(actualDist - distDec)<=(fabs(velX)/100.0f))
+		if(fabs(actualDist - distDec)<=(fabs(velX)/200.0f))
 		{
 			moveTimer = timeAcc + timeConst;
 		}	
@@ -288,7 +288,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
 		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) / decX;
 		distDec = 0.5f * decX * pow(timeDec, 2);
-		if(fabs(actualDist - distDec)<=(sqrtf(2.0f * targetDist * (accX + decX))/100.0f))
+		if(fabs(actualDist - distDec)<=(sqrtf(2.0f * targetDist * (accX + decX))/200.0f))
 		{
 			moveTimer = timeAcc;
 		}
