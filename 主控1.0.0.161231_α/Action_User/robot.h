@@ -401,6 +401,9 @@ typedef struct
 	//蓝牙通信状态
 	ble_t isBleOk;
 
+	//每个柱子已经发射的次数
+	uint8_t plateShootTimes[LAND_NUMBER];
+	
 	//是否重启
 	unsigned char isReset;
 

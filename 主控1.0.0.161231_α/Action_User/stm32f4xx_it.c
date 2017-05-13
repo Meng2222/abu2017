@@ -1214,11 +1214,14 @@ void USART3_IRQHandler(void)
 #define POS_DATA_STATE1  4
 #define POS_DATA_STATE2 5
 #define SELF_DATA_STATE 6
-#define PLAT_DATA_STATE 7
+#define PLAT_DATA_STATE1 7
+#define PLAT_DATA_STATE2 8
 
 #define SELF_NEED_PLATE 0x90
 #define SELF_ALREADY_HAVE 0x91	
 
+#define PLAT_DATA_STABLE 1
+#define PLAT_DATA_UNSTABLE 0
 	static uint8_t data = 0;
  	static int state = 0;
 	static union
@@ -1226,7 +1229,7 @@ void USART3_IRQHandler(void)
 		uint8_t data[2];
 		uint16_t ActPos;
     }posInfo;
-	
+	plant_t isPlateDataOk[LAND_NUMBER]={PLAT_DATA_UNSTABLE};
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -1280,7 +1283,7 @@ void USART3_IRQHandler(void)
 				}
 				else if(data == PLAT_HEADER2)
 				{
-					state = PLAT_DATA_STATE;
+					state = PLAT_DATA_STATE1;
 				}
 				else
 				{						
@@ -1329,25 +1332,63 @@ void USART3_IRQHandler(void)
 				}
 				state = 0;
 				break;
-			case PLAT_DATA_STATE:
+			case PLAT_DATA_STATE1:
+				isPlateDataOk[PLANT1].ball = (data&0x01)==0x01;
+				isPlateDataOk[PLANT1].plate = (data&0x02)==0x02;
+				isPlateDataOk[PLANT2].ball = (data&0x04)==0x04;
+				isPlateDataOk[PLANT2].plate = (data&0x08)==0x08;								
+				isPlateDataOk[PLANT4].ball = (data&0x10)==0x10;
+				isPlateDataOk[PLANT4].plate = (data&0x20)==0x20;				
+				isPlateDataOk[PLANT5].ball = (data&0x40)==0x40;
+				isPlateDataOk[PLANT5].plate = (data&0x80)==0x80;
+				state = PLAT_DATA_STATE2;
+				break;
+			case PLAT_DATA_STATE2:
 				receive_data=data;
-				if(!((data&0x01)==0x01))
+				if(!((data&0x01)==0x01)&&\
+					(isPlateDataOk[PLANT1].ball==PLAT_DATA_STABLE))
+				{
 					gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
-				if(!((data&0x02)==0x02))
+				}
+				if(!((data&0x02)==0x02)&&\
+					(isPlateDataOk[PLANT1].plate==PLAT_DATA_STABLE))
+				{
+					if(gRobot.plateShootTimes[PLANT1]!=0)
 					gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
-				if(!((data&0x04)==0x04))
+				}
+				if(!((data&0x04)==0x04)&&\
+					(isPlateDataOk[PLANT2].ball==PLAT_DATA_STABLE))
+				{
 					gRobot.autoCommand[PLANT2].ball = (data&0x04)==0x04;
-				if(!((data&0x08)==0x08))
+				}
+				if(!((data&0x08)==0x08)&&\
+					(isPlateDataOk[PLANT2].plate==PLAT_DATA_STABLE))
+				{
+					if(gRobot.plateShootTimes[PLANT2]!=0)
 					gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
-				if(!((data&0x10)==0x10))
+				}
+				if(!((data&0x10)==0x10)&&\
+					(isPlateDataOk[PLANT4].ball==PLAT_DATA_STABLE))
+				{
 					gRobot.autoCommand[PLANT4].ball = (data&0x10)==0x10;
-				if(!((data&0x20)==0x20))
-					gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
-				if(!((data&0x40)==0x40))
+				}
+				if(!((data&0x20)==0x20)&&\
+					(isPlateDataOk[PLANT4].plate==PLAT_DATA_STABLE))
+				{
+					if(gRobot.plateShootTimes[PLANT4]!=0)
+						gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
+				}
+				if(!((data&0x40)==0x40)&&\
+					(isPlateDataOk[PLANT5].ball==PLAT_DATA_STABLE))
+				{
 					gRobot.autoCommand[PLANT5].ball = (data&0x40)==0x40;
-				if(!((data&0x80)==0x80))
-					gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
-				
+				}
+				if(!((data&0x80)==0x80)&&\
+					(isPlateDataOk[PLANT5].plate==PLAT_DATA_STABLE))
+				{
+					if(gRobot.plateShootTimes[PLANT5]!=0)
+						gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
+				}
 				if((data&0x0f)==0)
 				{
 					gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
@@ -1356,36 +1397,36 @@ void USART3_IRQHandler(void)
 				{
 					gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;				
 				}
-				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
-				{
-					if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
-						gRobot.plantState[PLANT1].ball = 1;
-					if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
-						gRobot.plantState[PLANT1].plate = 1;
-					if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD5, 1100))
-						gRobot.plantState[PLANT2].ball = 1;
-					if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD6, 1100))
-						gRobot.plantState[PLANT2].plate = 1;
-				}
-				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
-				{
-					if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1100))
-						gRobot.plantState[PLANT4].ball = 1;
-					if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1100))
-						gRobot.plantState[PLANT4].plate = 1;
-					if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1100))
-						gRobot.plantState[PLANT5].ball = 1;
-					if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
-						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1100))
-						gRobot.plantState[PLANT5].plate = 1;
-				}
+//				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+//				{
+//					if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
+//						gRobot.plantState[PLANT1].ball = 1;
+//					if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
+//						gRobot.plantState[PLANT1].plate = 1;
+//					if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD5, 1100))
+//						gRobot.plantState[PLANT2].ball = 1;
+//					if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD6, 1100))
+//						gRobot.plantState[PLANT2].plate = 1;
+//				}
+//				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+//				{
+//					if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1100))
+//						gRobot.plantState[PLANT4].ball = 1;
+//					if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1100))
+//						gRobot.plantState[PLANT4].plate = 1;
+//					if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1100))
+//						gRobot.plantState[PLANT5].ball = 1;
+//					if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
+//						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1100))
+//						gRobot.plantState[PLANT5].plate = 1;
+//				}
 				state = HEADER_STATE1;
 				break;
 			default:

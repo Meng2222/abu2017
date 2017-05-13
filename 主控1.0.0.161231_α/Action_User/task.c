@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -1052,7 +1052,7 @@ void LeftGunShootTask(void)
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
 					}
-					else if(gRobot.leftGun.shootTimes == 0)
+					else/* if(gRobot.leftGun.shootTimes == 0)*/
 					{
 						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
@@ -1081,9 +1081,12 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckReload();
 					//发射
 					ROBOT_LeftGunShoot();
-					//记录发射命令
+
 					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
+						//记录每个柱子的发射命令
+						gRobot.plateShootTimes[gRobot.leftGun.targetPlant]+=1;
+						//记录发射命令		
 						gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
 						gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
 					}
@@ -1231,7 +1234,7 @@ void RightGunShootTask(void)
 						ROBOT_RightGunAim();
 						ROBOT_RightGunCheckAim();
 					}
-					else if(gRobot.rightGun.shootTimes == 0)
+					else/*if(gRobot.rightGun.shootTimes == 0)*/
 					{
 						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
@@ -1261,9 +1264,12 @@ void RightGunShootTask(void)
 
 					//发射
 					ROBOT_RightGunShoot();
-					//记录发射命令
+					
 					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
+						//记录每个柱子的发射命令
+						gRobot.plateShootTimes[gRobot.rightGun.targetPlant]+=1;
+						//记录发射命令		
 						gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
 						gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
 					}
