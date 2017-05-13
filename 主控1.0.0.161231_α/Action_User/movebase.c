@@ -519,7 +519,9 @@ void MoveY(float velY)
 void StickPos(float posX,float posY)
 {
 	//位置闭环的P参数
-	#define PSTOP (1.0f)
+	#define PSTOP (1.5f)
+	//姿态闭环P参数
+	#define PANGLE (1.0f)
 	//计算出来的角度与车的实际角度的偏移量
 	#define ANGLE_OFFSET (90.0f)
 	//输出速度上限
@@ -559,9 +561,9 @@ void StickPos(float posX,float posY)
 		//姿态闭环
 		if(fabs(GetAngle())>2.5f)
 		{
-			speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-			speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-			speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+			speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PANGLE * GetAngle()));
+			speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PANGLE * GetAngle()));
+			speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PANGLE * GetAngle()));
 		}		
 		//将速度输出到三个轮
 		ThreeWheelVelControl(speedOut);
