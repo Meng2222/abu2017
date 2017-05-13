@@ -1229,7 +1229,7 @@ void USART3_IRQHandler(void)
 		uint8_t data[2];
 		uint16_t ActPos;
     }posInfo;
-	plant_t isPlateDataOk[LAND_NUMBER]={PLAT_DATA_UNSTABLE};
+	static plant_t isPlateDataOk[LAND_NUMBER]={PLAT_DATA_UNSTABLE};
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
