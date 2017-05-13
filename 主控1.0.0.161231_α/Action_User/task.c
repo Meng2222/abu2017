@@ -937,6 +937,7 @@ void WalkTask(void)
 				break;			
 			//发射飞盘
 			case launch:
+				StickPos(launchPosX,launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
 				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
