@@ -23,6 +23,7 @@
 #include "robot.h"
 #include "dma.h"
 #include "gpio.h"
+#include "ucos_ii.h"
 /* Exported functions ---------------------------------------------------------*/
 
 extern robot_t gRobot;
@@ -523,42 +524,57 @@ void StickPos(float posX,float posY)
 	#define ANGLE_OFFSET (90.0f)
 	//输出速度上限
 	#define VEL_UPPER_LIMIT (500.0f)
+	//是否超出规定的范围
+	#define MOVEBASE_OUT_OF_RANGE 1
+	#define MOVEBASE_IN_RANGE 0
 	float angle = 0.0f;
 	float posErr = 0.0f;
 	float vel = 0.0f;
+	static uint8_t isOutOfRange = MOVEBASE_IN_RANGE;
 	wheelSpeed_t speedOut = {0};
 	//计算位置误差
 	posErr = sqrtf((float)pow(posY - gRobot.moveBase.actualYPos, 2) + (float)pow(posX - gRobot.moveBase.actualXPos, 2));
 	//位置误差过小时不输出，避免在目标点附近振荡
-	if(posErr <= 5.0f)
+	if(posErr > 5.0f)
 	{
-		posErr = 0.0f;
+		isOutOfRange = MOVEBASE_OUT_OF_RANGE;
+		//计算速度大小
+		vel = fabs(posErr)*PSTOP;
+		//计算速度方向
+		angle = RADTOANG(atan2f(posY - gRobot.moveBase.actualYPos,posX - gRobot.moveBase.actualXPos)) + ANGLE_OFFSET;
+		//对超出角度范围的角度进行限制
+		if(angle > 180.0f)
+		{
+			angle-=360.0f;
+		}
+		//对输出速度大小进行限制
+		if(vel > VEL_UPPER_LIMIT)
+		{
+			vel = VEL_UPPER_LIMIT;
+		}
+		//计算分解到三个轮的速度大小
+		speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).backwardWheelSpeed);
+		speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).forwardWheelSpeed);
+		speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).leftWheelSpeed);
+		//姿态闭环
+		if(fabs(GetAngle())>2.5f)
+		{
+			speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+			speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+			speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		}		
+		//将速度输出到三个轮
+		ThreeWheelVelControl(speedOut);
 	}
-	//计算速度大小
-	vel = fabs(posErr)*PSTOP;
-	//计算速度方向
-	angle = RADTOANG(atan2f(posY - gRobot.moveBase.actualYPos,posX - gRobot.moveBase.actualXPos)) + ANGLE_OFFSET;
-	//对超出角度范围的角度进行限制
-	if(angle > 180.0f)
+	else
 	{
-		angle-=360.0f;
+		if(isOutOfRange == MOVEBASE_OUT_OF_RANGE)
+		{
+			MoveY(50.0f);
+			OSTimeDly(50);
+			LockWheel();
+			isOutOfRange = MOVEBASE_IN_RANGE;
+		}
 	}
-	//对输出速度大小进行限制
-	if(vel > VEL_UPPER_LIMIT)
-	{
-		vel = VEL_UPPER_LIMIT;
-	}
-	//计算分解到三个轮的速度大小
-	speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).backwardWheelSpeed);
-	speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).forwardWheelSpeed);
-	speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).leftWheelSpeed);
-	//姿态闭环
-	if(fabs(GetAngle())>2.5f)
-	{
-		speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	}		
-	//将速度输出到三个轮
-	ThreeWheelVelControl(speedOut);
+
 }
