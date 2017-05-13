@@ -522,7 +522,7 @@ void StickPos(float posX,float posY)
 	//计算出来的角度与车的实际角度的偏移量
 	#define ANGLE_OFFSET (90.0f)
 	//输出速度上限
-	#define VEL_UPPER_LIMIT (200.0f)
+	#define VEL_UPPER_LIMIT (500.0f)
 	float angle = 0.0f;
 	float posErr = 0.0f;
 	float vel = 0.0f;
@@ -535,7 +535,7 @@ void StickPos(float posX,float posY)
 		posErr = 0.0f;
 	}
 	//计算速度大小
-	vel = sqrtf(fabs(posErr)*PSTOP);
+	vel = fabs(posErr)*PSTOP;
 	//计算速度方向
 	angle = RADTOANG(atan2f(posY - gRobot.moveBase.actualYPos,posX - gRobot.moveBase.actualXPos)) + ANGLE_OFFSET;
 	//对超出角度范围的角度进行限制
@@ -553,9 +553,12 @@ void StickPos(float posX,float posY)
 	speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).forwardWheelSpeed);
 	speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).leftWheelSpeed);
 	//姿态闭环
-	speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
+	if(fabs(GetAngle())>2.5f)
+	{
+		speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+		speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	}		
 	//将速度输出到三个轮
 	ThreeWheelVelControl(speedOut);
 }
