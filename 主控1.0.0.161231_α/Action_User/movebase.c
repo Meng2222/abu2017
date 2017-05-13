@@ -581,6 +581,10 @@ void StickPos(float posX,float posY)
 	speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).backwardWheelSpeed);
 	speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).forwardWheelSpeed);
 	speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).leftWheelSpeed);
+	//姿态闭环
+	speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+	speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
 	//将速度输出到三个轮
 	ThreeWheelVelControl(speedOut);
 }
