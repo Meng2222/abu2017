@@ -304,7 +304,6 @@ void ConfigTask(void)
 	
 	//定时器初始化
 	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
-	TIM_Delayms(TIM5, 1500);
 	
 	KeyInit();
 	PhotoelectricityInit();
@@ -432,32 +431,34 @@ void SelfCheckTask(void)
 		case wheelSpeedCheck:
 			//正转1s
 			ThreeWheelVelControlSelfCheck(1);
-			TIM_Delayms(TIM5, 3000);
+			TIM_Delayms(TIM5, 4000);
 
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 			//反转1s
 			ThreeWheelVelControlSelfCheck(2);
-			TIM_Delayms(TIM5, 3000);		
+			TIM_Delayms(TIM5, 4000);		
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 			//正转1s
 			ThreeWheelVelControlSelfCheck(1);
-			TIM_Delayms(TIM5, 3000);
+			TIM_Delayms(TIM5, 4000);
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 			//反转1s
 			ThreeWheelVelControlSelfCheck(2);
-			TIM_Delayms(TIM5, 3000);
+			TIM_Delayms(TIM5, 4000);
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 
 
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(50.0f));
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(50.0f));
+			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(50.0f));
 			TIM_Delayms(TIM5, 8000);
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
+			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 			TIM_Delayms(TIM5, 1000);
 
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(50.0f));
@@ -653,7 +654,7 @@ void SelfCheckTask(void)
 			break;
 		case photoelectricCheck:
 	
-			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN||PHOTOSENSORLEFTGUN||PHOTOSENSORRIGHTGUN)
+			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN||PHOTOSENSORLEFTGUN||PHOTOSENSORRIGHTGUN||KEYSWITCH)
 			{
 				GPIOE->ODR^=0X80;
 				TIM_Delayms(TIM5, 20);
