@@ -518,7 +518,7 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 
 	//速度调节部分
 	SpeedAmend(&speedOut, &expData, velX);
-	USART_SendData(UART5,(uint8_t)moveTimer);
+	UART5_OUT((uint8_t *)"%d\t",(uint8_t)moveTimer);
 //	USART_SendData(UART5,(int8_t)(expData.pos/100.0f));
 //	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
 //	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug*0.1f));
