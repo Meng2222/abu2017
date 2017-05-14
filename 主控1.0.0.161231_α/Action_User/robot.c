@@ -1795,7 +1795,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
-		OSTimeDly(20);
+		OSTimeDly(100);
 		return MOVEBASE_POS_READY;
 	}
 
@@ -1817,7 +1817,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
-		OSTimeDly(20);
+		OSTimeDly(100);
 		return MOVEBASE_POS_READY;
 	}
 	return GUN_NO_ERROR;

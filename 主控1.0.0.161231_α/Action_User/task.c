@@ -1399,6 +1399,10 @@ void UpperGunShootTask(void)
 						gRobot.plantState[PLANT7].plate = 1;
 					}
 				}
+				else
+				{
+					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+				}
 			}
 		}
 #endif
