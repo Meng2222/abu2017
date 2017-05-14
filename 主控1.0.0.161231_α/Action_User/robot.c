@@ -239,6 +239,10 @@ static void UpperGunInit(void)
 	gRobot.upperGun.shootTimes = 0;
 	//初始化时命令指向自动命令
 	gRobot.upperGun.gunCommand = (plant_t *)gRobot.autoCommand;
+	
+	gRobot.upperGun.lastPlant = INVALID_PLANT_NUMBER;
+	gRobot.upperGun.lastParaMode = INVALID_SHOOT_METHOD;
+
 	elmo_Enable(CAN1, UPPER_GUN_LEFT_ID);
 	elmo_Enable(CAN1, UPPER_GUN_YAW_ID);
 	elmo_Enable(CAN1, UPPER_GUN_PITCH_ID);
@@ -1323,8 +1327,6 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
 	#define UPPER_AUTO_NUM 3u
 	uint8_t i = 0u;
-	static uint8_t lastPlant = INVALID_PLANT_NUMBER;
-	static uint8_t lastParaMode = INVALID_SHOOT_METHOD;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	//为使上枪接收命令更难
 	OSTimeDly(5);
@@ -1369,22 +1371,20 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			gRobot.upperGun.commandState = GUN_NO_COMMAND;
 		}
 	}
-	if(lastPlant == shootCommand.plantNum && lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+	if(gRobot.upperGun.lastPlant == shootCommand.plantNum && gRobot.upperGun.lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
 	{
-		if(shootCommand.shootMethod%3)
+		if(gRobot.leftGun.bulletNumber > 0 || gRobot.rightGun.bulletNumber > 0)
 		{
-			gRobot.upperGun.gunCommand[shootCommand.plantNum].plate += 1;
-		}
-		else
-		{
-			gRobot.upperGun.gunCommand[shootCommand.plantNum].ball += 1;
-		}
-		gRobot.upperGun.commandState = GUN_NO_COMMAND;		
-	}
-	else
-	{
-		lastPlant = shootCommand.plantNum;
-		lastParaMode = shootCommand.shootMethod;
+			if(shootCommand.shootMethod%3)
+			{
+				gRobot.upperGun.gunCommand[shootCommand.plantNum].plate += 1;
+			}
+			else
+			{
+				gRobot.upperGun.gunCommand[shootCommand.plantNum].ball += 1;
+			}
+			gRobot.upperGun.commandState = GUN_NO_COMMAND;
+		}		
 	}
 	
 	return shootCommand;

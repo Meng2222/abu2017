@@ -1505,6 +1505,8 @@ void UpperGunShootTask(void)
 				else
 				{
 					ROBOT_UpperGunShoot();
+					gRobot.upperGun.lastPlant = gRobot.upperGun.targetPlant;
+					gRobot.upperGun.lastParaMode = gRobot.upperGun.shootParaMode;
 					SetShootPlantTime(uppershootCommand.plantNum, uppershootCommand.shootMethod);
 					//发射完成后标志任务执行完成
 					if(gRobot.upperGun.shootParaMode%3)
