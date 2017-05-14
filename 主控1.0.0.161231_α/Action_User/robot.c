@@ -1952,7 +1952,7 @@ status_t ROBOT_UpperGunShoot(void)
 	{
 			UpperShoot();
 			USART_SendData(USART3,'b');
-			OSTimeDly(40);
+			OSTimeDly(20);
 			UpperShootReset();
 			gRobot.upperGun.shootTimes++;		
 			//fix me, 应该检查子弹是否用完

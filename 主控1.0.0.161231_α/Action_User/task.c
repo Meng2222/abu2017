@@ -811,7 +811,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 #ifdef RED_FIELD
-				MoveTo(-13033.14f, -4000.0f, 2000.0f , 2000.0f);
+				MoveTo(-13033.14f, -4200.0f, 2500.0f , 2000.0f);
 
 				//接近装载区时通过光电校正坐标
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
@@ -889,7 +889,7 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveTo(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
+                MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -1454,7 +1454,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(40);
+					OSTimeDly(20);
 				}
 				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)

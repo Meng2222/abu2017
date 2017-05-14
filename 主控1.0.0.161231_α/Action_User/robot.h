@@ -7,8 +7,8 @@
 **************************************************************************************/
 
 //红蓝场宏定义
-//#define RED_FIELD
-#define BLUE_FIELD
+#define RED_FIELD
+//#define BLUE_FIELD
 
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
