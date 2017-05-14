@@ -1391,11 +1391,13 @@ void USART3_IRQHandler(void)
 				}
 				if((data&0x0f)==0)
 				{
-					gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+					if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
+						gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 				}
 				if((data&0xf0)==0)
 				{
-					gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;				
+					if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
+						gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;				
 				}
 //				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 //				{

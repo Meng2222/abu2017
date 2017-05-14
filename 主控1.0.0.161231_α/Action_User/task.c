@@ -501,6 +501,9 @@ void SelfCheckTask(void)
 			//夹子关
 			 ClampClose();TIM_Delayms(TIM5, 1000);
 		
+			PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
+		
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
 				LeftPush();TIM_Delayms(TIM5, 500);LeftBack();TIM_Delayms(TIM5, 500);
@@ -525,7 +528,7 @@ void SelfCheckTask(void)
 			{
 				UpperShoot();TIM_Delayms(TIM5, 500);  UpperShootReset();TIM_Delayms(TIM5, 500);
 			}
-		
+			
 			/************下枪左*********/
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(140.0f));
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(140.0f));
