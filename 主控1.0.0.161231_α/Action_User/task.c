@@ -423,12 +423,16 @@ void SelfCheckTask(void)
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
+		UART5_OUT((uint8_t *)"wait for self check\r\n");
+		TIM_Delayms(TIM5, 400);
 	}
 	while(1)
 	{
 	switch(status_check)
 	{
 		case wheelSpeedCheck:
+			UART5_OUT((uint8_t *)"motor check\r\n");
+
 			//正转1s
 			ThreeWheelVelControlSelfCheck(1);
 			TIM_Delayms(TIM5, 4000);
@@ -476,14 +480,11 @@ void SelfCheckTask(void)
 		case gpsCheck:
 			GyroInit();
 
-			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
-					(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-					(int)gRobot.moveBase.actualYPos);
+			UART5_OUT((uint8_t *)"angle:%d\tX:%d\tY:%d\r\n",\
+						(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+						(int)gRobot.moveBase.actualYPos);
 
-			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
-							(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-							(int)gRobot.moveBase.actualYPos);
-
+			TIM_Delayms(TIM5, 200);
 			
 		
 			if(RESET_SWITCH==1)
@@ -495,6 +496,8 @@ void SelfCheckTask(void)
 			}
 			break;
 		case gunCheck:
+			UART5_OUT((uint8_t *)"gun check\r\n");
+
 			//夹子开			
 			 ClampOpen();TIM_Delayms(TIM5, 1000);
 
