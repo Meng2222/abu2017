@@ -20,6 +20,7 @@ extern OS_EVENT *RightGunShootPointMbox;
 ============================================================
 */
 
+
 static void LeftGunInit(void)
 {
 	gRobot.leftGun.actualPose.pitch = 0.0f;
@@ -251,6 +252,54 @@ static void UpperGunInit(void)
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
 
+/*
+*名称：ROBOT_Init
+*功能：机器人初始化，初始化底盘，初始化枪，初始化
+*参数：none
+*注意：上面的枪不需要上子弹，因为是手动上弹
+*/
+status_t ROBOT_Init(void)
+{
+	gRobot.stage = ROBOT_STAGE_POWER_ON;
+	gRobot.shootTimes = 0;
+	gRobot.status = ROBOT_STATUS_OK;
+	gRobot.moveBase.targetPoint = 2;
+	gRobot.isReset = ROBOT_NOT_RESET;
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.plantState[i].ballState = COMMAND_DONE;
+	}
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.plantState[i].plateState = COMMAND_DONE;
+	}
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.autoCommand[i].ball = 1;
+	}
+    gRobot.plantState[PLANT6].ball = 2;
+	gRobot.autoCommand[PLANT6].ball = 2;
+	gRobot.autoCommand[PLANT7].ball = 1;
+	
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.autoCommand[i].plate = 1;
+	}
+	gRobot.plantState[PLANT6].plate = 2;
+	gRobot.plantState[PLANT7].plate = 0;
+	gRobot.autoCommand[PLANT7].plate = 0;
+	gRobot.autoCommand[PLANT6].plate = 2;
+
+	LeftGunInit();
+	RightGunInit();
+	UpperGunInit();
+
+	MOVEBASE_Init();
+	
+	gRobot.stage = ROBOT_STAGE_INIT;
+
+	return GUN_NO_ERROR;
+}
 /*
 ============================================================
 				   枪参数变换与逆变换			
@@ -706,54 +755,7 @@ float UpperGunLeftSpeedInverseTransform(int32_t speed)
 ============================================================
 */
 
-/*
-*名称：ROBOT_Init
-*功能：机器人初始化，初始化底盘，初始化枪，初始化
-*参数：none
-*注意：上面的枪不需要上子弹，因为是手动上弹
-*/
-status_t ROBOT_Init(void)
-{
-	gRobot.stage = ROBOT_STAGE_POWER_ON;
-	gRobot.shootTimes = 0;
-	gRobot.status = ROBOT_STATUS_OK;
-	gRobot.moveBase.targetPoint = 2;
-	gRobot.isReset = ROBOT_NOT_RESET;
-	for(uint8_t i = 0; i < 7;i++)
-	{
-		gRobot.plantState[i].ballState = COMMAND_DONE;
-	}
-	for(uint8_t i = 0; i < 7;i++)
-	{
-		gRobot.plantState[i].plateState = COMMAND_DONE;
-	}
-	for(uint8_t i = 0; i < 7;i++)
-	{
-		gRobot.autoCommand[i].ball = 1;
-	}
-    gRobot.plantState[PLANT6].ball = 2;
-	gRobot.autoCommand[PLANT6].ball = 2;
-	gRobot.autoCommand[PLANT7].ball = 1;
-	
-	for(uint8_t i = 0; i < 7;i++)
-	{
-		gRobot.autoCommand[i].plate = 1;
-	}
-	gRobot.plantState[PLANT6].plate = 2;
-	gRobot.plantState[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 2;
 
-	LeftGunInit();
-	RightGunInit();
-	UpperGunInit();
-
-	MOVEBASE_Init();
-	
-	gRobot.stage = ROBOT_STAGE_INIT;
-
-	return GUN_NO_ERROR;
-}
 
 /*
 *名称：ROBOT_GunLoad
@@ -1000,7 +1002,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	}
 	else
 	{
-
 		for(uint8_t i = 0;i < searchRange;i++)
 		{
 			//有球
@@ -1420,52 +1421,65 @@ status_t ROBOT_UpperGunAim(void)
 */
 status_t ROBOT_LeftGunCheckAim(void)
 {
-	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 2;
+	//左枪到位标准
+	#define LEFT_READY_STANDARD (5u)
+	//左枪超时时间 单位为LEFT_SAMPLING_PERIOD
+	#define LEFT_TIME_OUT (50u)
+	//左枪位置检测采样周期 单位为系统tick
+	#define LEFT_SAMPLIING_PERIOD (4u)
 	int checkTime = 0;
-	while(checkTimes--)
-	{
-		int timeout = 20;
-		while(timeout--)
+	//超时时间为50*4*10ms，2秒
+	int timeout = LEFT_TIME_OUT;
+	uint8_t leftGunReadyTimes = 0;
+	while(timeout--)
+	{	
+		//每次检测前对之前的数据复位
+		gRobot.leftGun.actualPose.pitch = 0.0f;
+		gRobot.leftGun.actualPose.roll = 0.0f;
+		gRobot.leftGun.actualPose.yaw = 0.0f;
+		gRobot.leftGun.actualPose.speed1 = 0.0f;
+		gRobot.leftGun.actualPose.speed2 = 0.0f;		
+		ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
+		ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
+		OSTimeDly(LEFT_SAMPLIING_PERIOD);
+		LeftGunSendDebugInfo();
+		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
+		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f ||\
+			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
 		{
-			ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
-			ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
-			OSTimeDly(5);
-			LeftGunSendDebugInfo();
-			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f ||\
-				gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
-			{
-				continue;
-			}
-			
-			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f ||\
-				gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
-			{
-				continue;
-			}
-			
-			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f ||\
-				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5f)
-			{
-				continue;
-			}
-			if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f||\
-				gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
-			{
-				continue;
-			}
-			if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f ||\
-				gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
-			{
-				continue;
-			}
-			//运行到这里，表示都满足指标，跳出循环
+			continue;
+		}
+		
+		if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f ||\
+			gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
+		{
+			continue;
+		}
+		
+		if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f ||\
+			gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5f)
+		{
+			continue;
+		}
+		if(gRobot.leftGun.actualPose.speed1 > gRobot.leftGun.targetPose.speed1 + 1.0f||\
+			gRobot.leftGun.actualPose.speed1 < gRobot.leftGun.targetPose.speed1 - 1.0f)
+		{
+			continue;
+		}
+		if(gRobot.leftGun.actualPose.speed2 > gRobot.leftGun.targetPose.speed2 + 1.0f ||\
+			gRobot.leftGun.actualPose.speed2 < gRobot.leftGun.targetPose.speed2 - 1.0f)
+		{
+			continue;
+		}
+		//运行到这里，表示都满足指标，跳出循环
+		leftGunReadyTimes++;
+		if(leftGunReadyTimes > LEFT_READY_STANDARD)
+		{
 			break;
 		}
-		checkTime += (20-timeout)*5;	
 	}
-	if(checkTime > 200)
+	checkTime = (LEFT_TIME_OUT-timeout)*LEFT_SAMPLIING_PERIOD;	
+	if(checkTime > (LEFT_TIME_OUT * LEFT_SAMPLIING_PERIOD))
 	{
 		UART5_OUT((uint8_t *)"Left Gun Check Time Out !!!\r\n");
 	}
@@ -1543,53 +1557,66 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 */
 status_t ROBOT_RightGunCheckAim(void)
 {
-	//超时时间为20*5*10ms，1秒
-	uint8_t checkTimes = 2;
+	//右枪到位标准
+	#define RIGHT_READY_STANDARD (5u)
+	//右枪超时时间 单位为RIGHT_SAMPLING_PERIOD
+	#define RIGHT_TIME_OUT (50u)
+	//右枪位置检测采样周期 单位为系统tick
+	#define RIGHT_SAMPLIING_PERIOD (4u)
 	int checkTime = 0;
-	while(checkTimes--)
-	{
-		int timeout = 20;
-		while(timeout--)
+	//超时时间为50*4*10ms，2秒
+	int timeout = RIGHT_TIME_OUT;
+	uint8_t rightGunReadyTimes = 0;
+
+	while(timeout--)
+	{	
+		//每次检测前对之前的数据复位
+		gRobot.rightGun.actualPose.pitch = 0.0f;
+		gRobot.rightGun.actualPose.roll = 0.0f;
+		gRobot.rightGun.actualPose.yaw = 0.0f;
+		gRobot.rightGun.actualPose.speed1 = 0.0f;
+		gRobot.rightGun.actualPose.speed2 = 0.0f;			
+		ReadActualPos(CAN1, RIGHT_GUN_GROUP_ID);		
+		ReadActualVel(CAN1, RIGHT_GUN_VEL_GROUP_ID);
+		OSTimeDly(RIGHT_SAMPLIING_PERIOD);
+		RightGunSendDebugInfo();
+		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
+		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f ||\
+			gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
 		{
-			//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
-			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
-			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
-			OSTimeDly(5);
-			RightGunSendDebugInfo();
-			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
-			if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f ||\
-				gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
-			{
-				continue;
-			}
-			
-			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f ||\
-				gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
-			{
-				continue;
-			}
-			
-			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f ||\
-				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.5f)
-			{
-				continue;
-			}			
-			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f ||\
-				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
-			{
-				continue;
-			}
-			if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f ||\
-				gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
-			{
-				continue;
-			}
-			//运行到这里，表示都满足指标，跳出循环
+			continue;
+		}
+		
+		if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f ||\
+			gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
+		{
+			continue;
+		}
+		
+		if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f ||\
+			gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.5f)
+		{
+			continue;
+		}
+		if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.targetPose.speed1 + 1.0f||\
+			gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.targetPose.speed1 - 1.0f)
+		{
+			continue;
+		}
+		if(gRobot.rightGun.actualPose.speed2 > gRobot.rightGun.targetPose.speed2 + 1.0f ||\
+			gRobot.rightGun.actualPose.speed2 < gRobot.rightGun.targetPose.speed2 - 1.0f)
+		{
+			continue;
+		}
+		//运行到这里，表示都满足指标，跳出循环
+		rightGunReadyTimes++;
+		if(rightGunReadyTimes > RIGHT_READY_STANDARD)
+		{
 			break;
 		}
-		checkTime+=(20-timeout)*5;	
 	}
-	if(checkTime > 200)
+	checkTime = (RIGHT_TIME_OUT-timeout)*RIGHT_SAMPLIING_PERIOD;	
+	if(checkTime > (RIGHT_TIME_OUT * RIGHT_SAMPLIING_PERIOD))
 	{
 		UART5_OUT((uint8_t *)"Right Gun Check Time Out !!!\r\n");
 	}

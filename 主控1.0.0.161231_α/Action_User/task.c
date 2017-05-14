@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -1074,6 +1074,8 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckAim();
 					//检查上弹是否到位
 					ROBOT_LeftGunCheckReload();
+					
+//					OSTimeDly(100);
 					//发射
 					ROBOT_LeftGunShoot();
 
@@ -1089,11 +1091,11 @@ void LeftGunShootTask(void)
 					{
 						if(gRobot.leftGun.shootParaMode%2)
 						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate = 1;
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
 						}
 						else
 						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball = 1;						
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;						
 						}						
 					}
 					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
@@ -1257,6 +1259,7 @@ void RightGunShootTask(void)
 					//检查上弹是否到位
 					ROBOT_RightGunCheckReload();
 
+//					OSTimeDly(100);
 					//发射
 					ROBOT_RightGunShoot();
 					
@@ -1272,11 +1275,11 @@ void RightGunShootTask(void)
 					{
 						if(gRobot.rightGun.shootParaMode%2)
 						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate = 1;
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate += 1;
 						}
 						else
 						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball = 1;						
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball += 1;						
 						}						
 					}
 					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
