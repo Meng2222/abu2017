@@ -99,6 +99,7 @@ static void LeftGunInit(void)
 	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
 	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,50000,50000,80000);//航向
 	
+	ROBOT_LeftGunHome();
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(5.0f));
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
 	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
@@ -181,6 +182,7 @@ static void RightGunInit(void)
 	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
 	Pos_cfg(CAN1, RIGHT_GUN_YAW_ID,50000,50000,80000);//航向
 
+	ROBOT_RightGunHome();
 	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-5.0f));
 	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
 	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
@@ -1766,7 +1768,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
-//		OSTimeDly(50);
+		OSTimeDly(20);
 		return MOVEBASE_POS_READY;
 	}
 
@@ -1788,7 +1790,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
-//		OSTimeDly(50);
+		OSTimeDly(20);
 		return MOVEBASE_POS_READY;
 	}
 	return GUN_NO_ERROR;
