@@ -1418,7 +1418,6 @@ void UpperGunShootTask(void)
 		{
 			//fix me,此处应该检查目标区域是否合法
 			if(gRobot.upperGun.targetZone & 0xff) upperGunShootFlag = 1;
-
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;

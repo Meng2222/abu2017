@@ -1693,13 +1693,14 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 */
 status_t ROBOT_UpperGunCheckAim(void)
 {
-	//超时时间为100*5*10ms，5秒
+
 	uint8_t checkTimes = 2;
 	int checkTime = 0;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	while(checkTimes--)
 	{
+		//超时时间为20*5*10ms，1秒	
 		int timeout = 20;
 		while(timeout--)
 		{
@@ -1744,7 +1745,6 @@ status_t ROBOT_UpperGunCheckAim(void)
 				continue;
 			}
 			
-			//这里检查传送带的速度，暂时没有加
 			break;
 		}
 		checkTime+=(20 - timeout) *5;
@@ -1753,7 +1753,6 @@ status_t ROBOT_UpperGunCheckAim(void)
 	{
 		if(checkTime > 100)
 		{
-			OSTaskResume(DEBUG_TASK_PRIO);
 			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
 		}
 	}
@@ -1761,7 +1760,6 @@ status_t ROBOT_UpperGunCheckAim(void)
 	{
 		if(checkTime >= 200)
 		{
-			OSTaskResume(DEBUG_TASK_PRIO);
 			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
 		}		
 	}

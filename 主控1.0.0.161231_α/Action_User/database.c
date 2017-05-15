@@ -276,7 +276,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //3#着陆台
 		 {-5.5f, 23.5f, 12.7f, 111.0f, 5.0f},
 		 //4#着陆台
-		 {13.8f,17.9f,15.0f,110.0f,0.0f},
+		 {11.3f,19.4f,17.0f,108.0f,0.0f},
 		 //5#着陆台
 		 {30.1f,9.0f,17.0f,103.0f,10.0f},//yhy
 		 //6#着陆台
@@ -782,13 +782,13 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
   * @brief
   * @{
   */
-uint8_t LeftGunPriority[7] = {PLANT2,PLANT1,PLANT6,PLANT3,PLANT7,PLANT4,PLANT5};
+uint8_t LeftGunPriority[7] = {PLANT2,PLANT1,PLANT6,PLANT3,PLANT4,PLANT5,PLANT7};
 
 /** @defgroup LeftGunPriority
   * @brief
   * @{
   */
-uint8_t RightGunPriority[7] = {PLANT4,PLANT5,PLANT6,PLANT3,PLANT7,PLANT2,PLANT1};
+uint8_t RightGunPriority[7] = {PLANT4,PLANT5,PLANT6,PLANT3,PLANT2,PLANT1,PLANT7};
 
 
 uint8_t UpperGunPriority[7] = {PLANT7,PLANT3,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
