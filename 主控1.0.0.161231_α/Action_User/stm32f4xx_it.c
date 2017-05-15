@@ -610,10 +610,11 @@ void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
 	#define DEBUG_PERIOD_COUNTER 200
-	
+	#define BLE_CHECK_COUNTER 600
 	//用来计数10次，产生10ms的定时器
 	static uint8_t periodCounter = PERIOD_COUNTER;
 	static uint8_t debugPeriodCounter = DEBUG_PERIOD_COUNTER;
+	static uint16_t bleCheckCounter = BLE_CHECK_COUNTER;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
@@ -649,8 +650,25 @@ void TIM2_IRQHandler(void)
 			moveTimer+=0.001f;
 		}
 		if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+		{		
+			bleCheckCounter--;
+			if(bleCheckCounter == 0)
+			{
+				gRobot.isBleOk.bleHeartBeat--;
+				if(gRobot.isBleOk.bleHeartBeat < 0)
+				{
+					gRobot.isBleOk.noBleFlag = BLE_LOST;
+				}
+				else
+				{
+					gRobot.isBleOk.noBleFlag = BLE_OK;						
+				}
+			}
+			bleCheckCounter = BLE_CHECK_COUNTER;
+		}
+		else
 		{
-			gRobot.isBleOk.noBleTimer ++;
+			bleCheckCounter = BLE_CHECK_COUNTER;			
 		}
 		velTimerCounting();
 		
@@ -780,7 +798,7 @@ void UART4_IRQHandler(void)
 					status++;                  //ACPC + [id1] + [id2] + data[4]
 				else if (ch == 'C')
 					status += 10;              //ACCT + [id]
-				else if(ch == 'S')
+				else if(ch == 'H')
 				{
 					status +=12;
 				}
@@ -1039,36 +1057,35 @@ void UART4_IRQHandler(void)
 					//重启
 					gRobot.isReset = ROBOT_RESET;
 				}
+				else if(id < 50)
+				{
+					//40~45对应6个防守分区
+					if(id >= 40)
+					{
+						gRobot.upperGun.targetZone = id - 40;
+					}
+				}
+				else if(id < 60)
+				{
+					if(id == 51)
+					{
+						gRobot.leftGun.shootTimes = LEFT_BULLET_NUM;
+					}
+					if(id == 53)
+					{
+						gRobot.rightGun.shootTimes = RIGHT_BULLET_NUM;
+					}
+				}
 				status=0;
 			break;
 			case 14:
-				if(ch == 'T')
+				if(ch == 'B')
 				{
-					status ++;
+					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+					{
+						gRobot.isBleOk.bleHeartBeat++;
+					}					
 				}
-				else
-				{
-					status = 0;
-				}
-				break;
-			case 15:
-				gRobot.plantState[PLANT1].ball = (ch&0x01)==0x01;
-				gRobot.plantState[PLANT2].ball = (ch&0x02)==0x02;
-				gRobot.plantState[PLANT3].ball = (ch&0x04)==0x04;
-				gRobot.plantState[PLANT4].ball = (ch&0x08)==0x08;
-				gRobot.plantState[PLANT5].ball = (ch&0x10)==0x10;
-				gRobot.plantState[PLANT6].ball = (ch&0x20)==0x20;
-				gRobot.plantState[PLANT7].ball = (ch&0x40)==0x40;
-				status++;
-				break;
-			case 16:
-				gRobot.plantState[PLANT1].plate = (ch&0x01)==0x01;
-				gRobot.plantState[PLANT2].plate = (ch&0x02)==0x02;
-				gRobot.plantState[PLANT3].plate = (ch&0x04)==0x04;
-				gRobot.plantState[PLANT4].plate = (ch&0x08)==0x08;
-				gRobot.plantState[PLANT5].plate = (ch&0x10)==0x10;
-				gRobot.plantState[PLANT6].plate = (ch&0x20)==0x20;
-				gRobot.plantState[PLANT7].plate = (ch&0x40)==0x40;
 				status = 0;
 				break;
 			default:
@@ -1399,36 +1416,39 @@ void USART3_IRQHandler(void)
 					if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
 						gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;				
 				}
-//				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
-//				{
-//					if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
-//						gRobot.plantState[PLANT1].ball = 1;
-//					if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
-//						gRobot.plantState[PLANT1].plate = 1;
-//					if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD5, 1100))
-//						gRobot.plantState[PLANT2].ball = 1;
-//					if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD6, 1100))
-//						gRobot.plantState[PLANT2].plate = 1;
-//				}
-//				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
-//				{
-//					if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1100))
-//						gRobot.plantState[PLANT4].ball = 1;
-//					if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1100))
-//						gRobot.plantState[PLANT4].plate = 1;
-//					if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1100))
-//						gRobot.plantState[PLANT5].ball = 1;
-//					if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
-//						&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1100))
-//						gRobot.plantState[PLANT5].plate = 1;
-//				}
+				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
+				{
+					if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+					{
+						if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
+							gRobot.plantState[PLANT1].ball = 1;
+						if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
+							gRobot.plantState[PLANT1].plate = 1;
+						if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD5, 1100))
+							gRobot.plantState[PLANT2].ball = 1;
+						if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD6, 1100))
+							gRobot.plantState[PLANT2].plate = 1;
+					}
+					if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+					{
+						if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1100))
+							gRobot.plantState[PLANT4].ball = 1;
+						if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1100))
+							gRobot.plantState[PLANT4].plate = 1;
+						if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1100))
+							gRobot.plantState[PLANT5].ball = 1;
+						if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
+							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1100))
+							gRobot.plantState[PLANT5].plate = 1;
+					}
+				}
 				state = HEADER_STATE1;
 				break;
 			default:

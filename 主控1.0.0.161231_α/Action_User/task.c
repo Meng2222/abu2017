@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -229,7 +229,17 @@ void SendStartWork2Camera(void)
 //通知摄像头自动射击完成
 void SendAutoOver2Camera(void)
 {
+	USART_SendData(USART3, 'e');
+	USART_SendData(USART3, 'e');	
 	USART_SendData(USART3, 's');
+}
+
+//通知摄像头看1245#柱子
+void SendWatchWholeArena2Camera(void)
+{
+	USART_SendData(USART3, 'e');
+	USART_SendData(USART3, 'e');
+	USART_SendData(USART3, 'p');
 }
 void App_Task()
 {
@@ -769,7 +779,6 @@ void WalkTask(void)
 		if(status != launch)
 		{
 			gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_STOP;
-			gRobot.isBleOk.noBleTimer = 0;
 		}
 		switch (status)
 		{
@@ -942,10 +951,9 @@ void WalkTask(void)
 				StickPos(launchPosX,launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
-				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
-				if(gRobot.isBleOk.noBleTimer >= 7000)
+				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
-					gRobot.isBleOk.noBleFlag = BLE_LOST;
+					SendWatchWholeArena2Camera();
 				}
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
@@ -1453,7 +1461,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(20);
+					OSTimeDly(40);
 				}
 				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)
