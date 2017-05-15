@@ -1062,7 +1062,9 @@ void UART4_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.targetZone = id - 40;
+						gRobot.upperGun.targetZone = 0x01<<(id - 40);
+						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
+						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
 				}
 				else if(id < 60)
@@ -1311,9 +1313,12 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				if(gRobot.isReset != ROBOT_RESET)
 				{
-					gRobot.upperGun.targetZone = data;
-					if(data != 0x00)
+					if(data != 0x00 || gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
 					{
+						gRobot.upperGun.targetZone = data;
+					}
+					if(data != 0x00)
+					{					
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
 				}

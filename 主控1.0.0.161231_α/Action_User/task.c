@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -1406,9 +1406,9 @@ void UpperGunShootTask(void)
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
-#ifndef NO_WALK_TASK
 		//如果接收到防守命令进入防守模式
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+#ifndef NO_WALK_TASK
 		//不需要防守时如果7#需要落盘则对7#落盘命令置位
 		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
 		{
@@ -1481,6 +1481,10 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
+					if(gRobot.upperGun.isManualDefend == UPPER_MANUAL_DEFEND)
+					{
+						gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
+					}
 					OSTimeDly(50);
 				}
 				//对标志位进行置位

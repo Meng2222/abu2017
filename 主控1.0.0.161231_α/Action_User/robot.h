@@ -30,6 +30,10 @@
 #define ROBOT_RESET 1
 //不进入重启
 #define ROBOT_NOT_RESET 0
+//上枪自动防御
+#define UPPER_AUTO_DEFEND 0
+//上枪手动防御
+#define UPPER_MANUAL_DEFEND 1
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
@@ -349,8 +353,10 @@ typedef struct
 	unsigned char lastPlant;
 	//记录上一次射击参数模式
 	unsigned char lastParaMode;
-	//上枪记录7#是否需要落盘
+	//上枪记录7#是否需要落盘	
 	unsigned char isSelfEmpty;
+	//上枪是否需要手动防守
+	unsigned char isManualDefend;
 	//等待命令计时
 	int noCommandTimer;
 
