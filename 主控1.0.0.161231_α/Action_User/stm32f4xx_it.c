@@ -1408,13 +1408,21 @@ void USART3_IRQHandler(void)
 				}
 				if((data&0x0f)==0)
 				{
-					if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
-						gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+					if(isPlateDataOk[PLANT1].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT1].plate == PLAT_DATA_STABLE &&\
+						isPlateDataOk[PLANT2].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT2].plate == PLAT_DATA_STABLE)
+					{
+						if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
+							gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+					}
 				}
 				if((data&0xf0)==0)
 				{
-					if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
-						gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;				
+					if(isPlateDataOk[PLANT4].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT4].plate == PLAT_DATA_STABLE &&\
+						isPlateDataOk[PLANT5].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT5].plate == PLAT_DATA_STABLE)
+					{
+						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
+							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;	
+					}					
 				}
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{

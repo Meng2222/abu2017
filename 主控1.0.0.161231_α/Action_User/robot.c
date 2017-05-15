@@ -279,7 +279,7 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].ball = 2;
+		gRobot.autoCommand[i].ball = 0;
 	}
     gRobot.plantState[PLANT6].ball = 2;
 	gRobot.autoCommand[PLANT6].ball = 2;
@@ -1024,21 +1024,24 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 //					shootCommand.shootMethod = SHOOT_METHOD1;	
 
 				//不连续打同一组参数
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
-					gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 				{
-					if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
-						gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+					if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
+						gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
 					{
-						if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
-							continue;
+						if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
+							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+						{
+							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
+								continue;
+						}
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-				{
-					continue;
-				}		
+//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+//				{
+//					continue;
+//				}		
 				break;
 			}
 			//没盘
@@ -1055,24 +1058,27 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 //					shootCommand.shootMethod = SHOOT_METHOD4;		
 			
 				//不连续打同一组参数
-				if(shootCommand.plantNum!=PLANT6)
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 				{
-					if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
-						gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
+					if(shootCommand.plantNum!=PLANT6)
 					{
-						if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
-							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+						if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
+							gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
 						{
-							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
-							continue;
+							if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
+								gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+							{
+								if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
+								continue;
+							}
 						}
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-				{
-					continue;
-				}					
+//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+//				{
+//					continue;
+//				}					
 				break;		
 			}
 		}
@@ -1195,21 +1201,24 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 //					shootCommand.shootMethod = SHOOT_METHOD1;
 
 				//不连续同一组参数
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant &&\
-					gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
+				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
-					if(gRobot.leftGun.lastPlant != shootCommand.plantNum ||\
-						gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+					if(shootCommand.plantNum == gRobot.rightGun.lastPlant &&\
+						gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
 					{
-						if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
-						continue;
-					}				
+						if(gRobot.leftGun.lastPlant != shootCommand.plantNum ||\
+							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+						{
+							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
+							continue;
+						}				
+					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-				{
-					continue;
-				}				
+//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+//				{
+//					continue;
+//				}				
 				break;
 			}
 			//没盘
@@ -1225,25 +1234,27 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 //				else
 //					shootCommand.shootMethod = SHOOT_METHOD4;
 				//不连续打同一组参数
-
-				if(RightGunPriority[i]!=PLANT6)
+				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
-					if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
-						gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
+					if(RightGunPriority[i]!=PLANT6)
 					{
-						if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
-							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+						if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
+							gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
 						{
-							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
-							continue;
-						}				
+							if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
+								gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+							{
+								if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
+								continue;
+							}				
+						}
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-				{
-					continue;
-				}	
+//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+//				{
+//					continue;
+//				}	
 				break;	
 			}
 		}
@@ -1795,7 +1806,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
-		OSTimeDly(100);
+//		OSTimeDly(100);
 		return MOVEBASE_POS_READY;
 	}
 
@@ -1817,7 +1828,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
-		OSTimeDly(100);
+//		OSTimeDly(100);
 		return MOVEBASE_POS_READY;
 	}
 	return GUN_NO_ERROR;
@@ -2001,8 +2012,8 @@ status_t ROBOT_RightGunHome(void)
 */
 status_t ROBOT_UpperGunHome(void)
 {
-	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
-	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-0.4f));	
+	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.4f));
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-3.4f));	
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(131.0f));	
 	return GUN_NO_ERROR;
 }

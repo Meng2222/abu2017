@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -346,12 +346,32 @@ void ConfigTask(void)
 	LeftPush();
 	RightPush();
 	ClampReset();
+#ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 #endif
 #ifdef RED_FIELD
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);	
+#endif
+#endif
+#ifdef NO_WALK_TASK
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);	
 	BEEP_ON;
 	TIM_Delayms(TIM5, 300);
 	BEEP_OFF;
@@ -472,7 +492,7 @@ void SelfCheckTask(void)
 			TIM_Delayms(TIM5, 8000);
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
-			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
+
 			TIM_Delayms(TIM5, 1000);
 
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(50.0f));
@@ -480,7 +500,7 @@ void SelfCheckTask(void)
 			TIM_Delayms(TIM5, 8000);
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
 			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
-
+			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 			status_check++;
 			
 			BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -764,16 +784,16 @@ void WalkTask(void)
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
 		if((status != launch && status < reset)||status > resetConfig)
 		{
-				ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-				ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-				ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-	//			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
-				UpdateKenimaticInfo();	
-				sendDebugInfo();
+			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+			UpdateKenimaticInfo();	
+			sendDebugInfo();
 		}
 		//不在发射时不检测蓝牙通信是否正常
 		if(status != launch)
@@ -1461,7 +1481,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(40);
+					OSTimeDly(50);
 				}
 				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)
