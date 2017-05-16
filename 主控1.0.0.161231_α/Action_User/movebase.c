@@ -388,13 +388,27 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	velX = outputSpeed;
 
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
-	if(velY <= 80.0f)
+	if(pExpData->stage != MOVEBASE_DEC_STAGE)
 	{
-		velY = 30.0f;
+		if(velY <= 80.0f)
+		{
+			velY = 30.0f;
+		}
+		else if(velY > 500.0f)
+		{
+			velY = 500.0f;
+		}
 	}
-	else if(velY > 250.0f)
+	else
 	{
-		velY = 250.0f;
+		if(velY <= 80.0f)
+		{
+			velY = 80.0f;
+		}
+		else if(velY > 500.0f)
+		{
+			velY = 500.0f;
+		}
 	}
 #ifdef BLUE_FIELD
 	if(gRobot.moveBase.actualYPos > 40.0f)
