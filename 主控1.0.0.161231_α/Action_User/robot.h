@@ -81,11 +81,11 @@
 #define LEFT_GUN_RIGHT_ID 13
 
 //上面枪支架pitch轴CAN ID
-#define UPPER_GUN_PITCH_ID 18
+#define UPPER_GUN_PITCH_ID 11
 //上面枪支架yaw轴CAN ID
-#define UPPER_GUN_YAW_ID 17
+#define UPPER_GUN_YAW_ID 10
 //上面枪左侧传送带轴CAN ID
-#define UPPER_GUN_LEFT_ID 19
+#define UPPER_GUN_LEFT_ID 9
 
 //上弹成功
 #define GUN_RELOAD_OK 1
