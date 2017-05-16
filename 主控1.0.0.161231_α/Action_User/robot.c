@@ -706,7 +706,7 @@ int32_t UpperGunPitchTransform(float pitch)
 		gRobot.upperGun.targetPose.pitch = gRobot.upperGun.minPoseLimit.pitch;		
 		pitch = gRobot.upperGun.minPoseLimit.pitch;
 	}
-	return (int32_t)((10.0f + pitch) * 141.0844f);	
+	return (int32_t)(-(10.0f + pitch) * 141.0844f);	
 }
 
 /*
@@ -718,7 +718,7 @@ int32_t UpperGunPitchTransform(float pitch)
 */
 float UpperGunPitchInverseTransform(int32_t position)
 {
-	return (float)position/141.0844f - 10.0f;
+	return (float)-position/141.0844f - 10.0f;
 }
 
 /*
