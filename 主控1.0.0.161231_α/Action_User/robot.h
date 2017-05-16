@@ -83,7 +83,7 @@
 //上面枪支架pitch轴CAN ID
 #define UPPER_GUN_PITCH_ID 11
 //上面枪支架yaw轴CAN ID
-#define UPPER_GUN_YAW_ID 10
+#define UPPER_GUN_YAW_ID 17
 //上面枪左侧传送带轴CAN ID
 #define UPPER_GUN_LEFT_ID 9
 
