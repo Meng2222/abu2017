@@ -30,6 +30,10 @@
 #define ROBOT_RESET 1
 //不进入重启
 #define ROBOT_NOT_RESET 0
+//上枪自动防御
+#define UPPER_AUTO_DEFEND 0
+//上枪手动防御
+#define UPPER_MANUAL_DEFEND 1
 
 #define LEFT_GUN				1
 #define RIGHT_GUN				2
@@ -92,11 +96,11 @@
 #define LEFT_GUN_RIGHT_ID 13
 
 //上面枪支架pitch轴CAN ID
-#define UPPER_GUN_PITCH_ID 11
+#define UPPER_GUN_PITCH_ID 18
 //上面枪支架yaw轴CAN ID
 #define UPPER_GUN_YAW_ID 10
 //上面枪左侧传送带轴CAN ID
-#define UPPER_GUN_LEFT_ID 9
+#define UPPER_GUN_LEFT_ID 19
 
 //上弹成功
 #define GUN_RELOAD_OK 1
@@ -349,8 +353,10 @@ typedef struct
 	unsigned char lastPlant;
 	//记录上一次射击参数模式
 	unsigned char lastParaMode;
-	//上枪记录7#是否需要落盘
+	//上枪记录7#是否需要落盘	
 	unsigned char isSelfEmpty;
+	//上枪是否需要手动防守
+	unsigned char isManualDefend;
 	//等待命令计时
 	int noCommandTimer;
 
@@ -372,6 +378,8 @@ typedef struct
 	uint8_t bleCheckStartFlag;
 	//蓝牙通信是否正常标志位
 	uint8_t noBleFlag;
+	//心跳包
+	int16_t bleHeartBeat;
 	//记录蓝牙命令时间间隔
 	int noBleTimer;
 }ble_t;
@@ -401,6 +409,9 @@ typedef struct
 	//蓝牙通信状态
 	ble_t isBleOk;
 
+	//每个柱子已经发射的次数
+	uint8_t plateShootTimes[LAND_NUMBER];
+	
 	//是否重启
 	unsigned char isReset;
 

@@ -229,7 +229,17 @@ void SendStartWork2Camera(void)
 //通知摄像头自动射击完成
 void SendAutoOver2Camera(void)
 {
+	USART_SendData(USART3, 'e');
+	USART_SendData(USART3, 'e');	
 	USART_SendData(USART3, 's');
+}
+
+//通知摄像头看1245#柱子
+void SendWatchWholeArena2Camera(void)
+{
+	USART_SendData(USART3, 'e');
+	USART_SendData(USART3, 'e');
+	USART_SendData(USART3, 'p');
 }
 void App_Task()
 {
@@ -296,17 +306,20 @@ void ConfigTask(void)
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	
+	//定时器初始化
+	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	
+	KeyInit();	
+	while(!KEYSWITCH)
+	{
+		//wait
+	}
 	//************************
 	USART3_Init(115200);    //摄像头
 	CameraInit();
 	//***********************
 	
-	//定时器初始化
-	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
-	TIM_Delayms(TIM5, 1500);
-	
-	KeyInit();
+
 	PhotoelectricityInit();
 	BeepInit();
 	
@@ -337,12 +350,32 @@ void ConfigTask(void)
 	LeftPush();
 	RightPush();
 	ClampReset();
+#ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
 #endif
 #ifdef RED_FIELD
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);	
+#endif
+#endif
+#ifdef NO_WALK_TASK
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);
+	BEEP_ON;
+	TIM_Delayms(TIM5, 300);
+	BEEP_OFF;
+	TIM_Delayms(TIM5, 200);	
 	BEEP_ON;
 	TIM_Delayms(TIM5, 300);
 	BEEP_OFF;
@@ -424,40 +457,46 @@ void SelfCheckTask(void)
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
+		UART5_OUT((uint8_t *)"wait for self check\r\n");
+		TIM_Delayms(TIM5, 400);
 	}
 	while(1)
 	{
 	switch(status_check)
 	{
 		case wheelSpeedCheck:
+			UART5_OUT((uint8_t *)"motor check\r\n");
+
 			//正转1s
 			ThreeWheelVelControlSelfCheck(1);
-			TIM_Delayms(TIM5, 3000);
+			TIM_Delayms(TIM5, 4000);
 
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 			//反转1s
 			ThreeWheelVelControlSelfCheck(2);
-			TIM_Delayms(TIM5, 3000);		
+			TIM_Delayms(TIM5, 4000);		
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 			//正转1s
 			ThreeWheelVelControlSelfCheck(1);
-			TIM_Delayms(TIM5, 3000);
+			TIM_Delayms(TIM5, 4000);
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 			//反转1s
 			ThreeWheelVelControlSelfCheck(2);
-			TIM_Delayms(TIM5, 3000);
+			TIM_Delayms(TIM5, 4000);
 			ThreeWheelVelControlSelfCheck(3);
 			TIM_Delayms(TIM5, 1000);
 
 
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(50.0f));
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(50.0f));
+			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(50.0f));
 			TIM_Delayms(TIM5, 8000);
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
+
 			TIM_Delayms(TIM5, 1000);
 
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(50.0f));
@@ -465,7 +504,7 @@ void SelfCheckTask(void)
 			TIM_Delayms(TIM5, 8000);
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
 			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
-
+			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 			status_check++;
 			
 			BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
@@ -475,14 +514,11 @@ void SelfCheckTask(void)
 		case gpsCheck:
 			GyroInit();
 
-			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
-					(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-					(int)gRobot.moveBase.actualYPos);
+			UART5_OUT((uint8_t *)"angle:%d\tX:%d\tY:%d\r\n",\
+						(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+						(int)gRobot.moveBase.actualYPos);
 
-			UART5_OUT((uint8_t *)"%d\t%d\t%d\r\n",\
-							(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
-							(int)gRobot.moveBase.actualYPos);
-
+			TIM_Delayms(TIM5, 200);
 			
 		
 			if(RESET_SWITCH==1)
@@ -494,74 +530,74 @@ void SelfCheckTask(void)
 			}
 			break;
 		case gunCheck:
+			UART5_OUT((uint8_t *)"gun check\r\n");
+
 			//夹子开			
 			 ClampOpen();TIM_Delayms(TIM5, 1000);
 
 			//夹子关
 			 ClampClose();TIM_Delayms(TIM5, 1000);
 		
+			PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
 		
-		
-//			//夹子翻
-//			 ClampRotate();TIM_Delayms(TIM5, 100);
-
-//			//夹子翻转复位
-//			 ClampReset();TIM_Delayms(TIM5, 100);
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-					LeftPush();TIM_Delayms(TIM5, 500);LeftBack();TIM_Delayms(TIM5, 500);
+				LeftPush();TIM_Delayms(TIM5, 500);LeftBack();TIM_Delayms(TIM5, 500);
 			}
 					
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-						RightPush();TIM_Delayms(TIM5, 500);RightBack();TIM_Delayms(TIM5, 500);		
-
+				RightPush();TIM_Delayms(TIM5, 500);RightBack();TIM_Delayms(TIM5, 500);		
 			}
+			
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-						LeftShoot();TIM_Delayms(TIM5, 500);LeftShootReset();TIM_Delayms(TIM5, 500);
-
+				LeftShoot();TIM_Delayms(TIM5, 500);LeftShootReset();TIM_Delayms(TIM5, 500);
 			}
+			
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-						RightShoot();TIM_Delayms(TIM5, 500); RightShootReset();TIM_Delayms(TIM5, 500);
-
+				RightShoot();TIM_Delayms(TIM5, 500); RightShootReset();TIM_Delayms(TIM5, 500);
 			}
+			
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-						UpperShoot();TIM_Delayms(TIM5, 500);  UpperShootReset();TIM_Delayms(TIM5, 500);
+				UpperShoot();TIM_Delayms(TIM5, 500);  UpperShootReset();TIM_Delayms(TIM5, 500);
 			}
-		
+			
 			/************下枪左*********/
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(140.0f));
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(140.0f));
 
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-						//横滚向一侧一定角度
-			PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(20.0f));TIM_Delayms(TIM5, 1000);	
-			//横滚向另一侧一定角度
-			PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);
+				//横滚向一侧一定角度
+				PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(40.0f));TIM_Delayms(TIM5, 1000);	
+				//横滚向另一侧一定角度
+				PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);
 
 			}
 
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//左转一定角度
-			PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-			//右转一定角度
-			PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
+				//左转一定角度
+				PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
+				//右转一定角度
+				PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
 			}
-					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));			
+			
+			PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));			
 
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//俯仰向上一定角度
-			PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);			
-			//俯仰向下一定角度
-			PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);	
+				//俯仰向上一定角度
+				PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);			
+				//俯仰向下一定角度
+				PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);	
 			}
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));			
+			
+			PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));			
 			
 			VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
 			VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
@@ -572,30 +608,30 @@ void SelfCheckTask(void)
 
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//横滚向一侧一定角度
-			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(20.0f));TIM_Delayms(TIM5, 1000);	
-			
-			//横滚向另一侧一定角度
-			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);				
+				//横滚向一侧一定角度
+				PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));TIM_Delayms(TIM5, 1000);	
+				
+				//横滚向另一侧一定角度
+				PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);				
 			}
 		
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//左转一定角度
-			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-			//右转一定角度
-			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);			
+				//左转一定角度
+				PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
+				//右转一定角度
+				PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);			
 			}		
 
 			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
 			
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//俯仰向上一定角度
-			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);			
+				//俯仰向上一定角度
+				PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);			
 
-			//俯仰向下一定角度
-			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);				
+				//俯仰向下一定角度
+				PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);				
 			}
 		
 			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));				
@@ -606,12 +642,12 @@ void SelfCheckTask(void)
 			/************上枪*********/
 			VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(140.0f));
 
-					for(self_circle=0;self_circle<self_circle_end;self_circle++)
+			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//左转一定角度
-			PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-			//右转一定角度
-			PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);			
+				//左转一定角度
+				PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
+				//右转一定角度
+				PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);			
 			}
 			
 
@@ -619,10 +655,10 @@ void SelfCheckTask(void)
 			
 			for(self_circle=0;self_circle<self_circle_end;self_circle++)
 			{
-			//俯仰向上一定角度 起始角度
-			PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(20.0f));TIM_Delayms(TIM5, 1000);				
-			//俯仰向下一定角度	
-			PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));TIM_Delayms(TIM5, 1000);			
+				//俯仰向上一定角度 起始角度
+				PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(20.0f));TIM_Delayms(TIM5, 1000);				
+				//俯仰向下一定角度	
+				PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));TIM_Delayms(TIM5, 1000);			
 			}
 
 			PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(0.0f));
@@ -653,7 +689,7 @@ void SelfCheckTask(void)
 			break;
 		case photoelectricCheck:
 	
-			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN||PHOTOSENSORLEFTGUN||PHOTOSENSORRIGHTGUN)
+			if(PHOTOSENSORLEFT ||PHOTOSENSORRIGHT||PHOTOSENSORUPGUN||PHOTOSENSORLEFTGUN||PHOTOSENSORRIGHTGUN||KEYSWITCH)
 			{
 				GPIOE->ODR^=0X80;
 				TIM_Delayms(TIM5, 20);
@@ -730,6 +766,7 @@ void WalkTask(void)
 	float launchPosY = 0.0f;
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
+	uint8_t sendSignal2Camera = 1;
 	uint8_t upperPhotoSensorCounter = 0;
     OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
@@ -752,22 +789,21 @@ void WalkTask(void)
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
 		if((status != launch && status < reset)||status > resetConfig)
 		{
-				ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
-				ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
-				ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-	//			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
-		//		ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
-				UpdateKenimaticInfo();	
-				sendDebugInfo();
+			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadActualTemperature(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadCurrentLimitFlag(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadVelocityError(CAN2, MOVEBASE_BROADCAST_ID);
+			ReadCommandVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadJoggingVelocity(CAN2, MOVEBASE_BROADCAST_ID);
+//			ReadMotorFailure(CAN2,MOVEBASE_BROADCAST_ID);
+			UpdateKenimaticInfo();	
+			sendDebugInfo();
 		}
 		//不在发射时不检测蓝牙通信是否正常
 		if(status != launch)
 		{
 			gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_STOP;
-			gRobot.isBleOk.noBleTimer = 0;
 		}
 		switch (status)
 		{
@@ -809,7 +845,7 @@ void WalkTask(void)
 			//从出发区走向装载区
 			case goToLoadingArea:
 #ifdef RED_FIELD
-				MoveTo(-13033.14f, -4000.0f, 2000.0f , 2000.0f);
+				MoveTo(-13033.14f, -4200.0f, 2500.0f , 2000.0f);
 
 				//接近装载区时通过光电校正坐标
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
@@ -887,7 +923,7 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveTo(-6459.14f, 1500.0f, 2000.0f , 2000.0f);
+                MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 			    if (GetPosX() >= -6459.14f)
 				{
 					ClampReset();
@@ -937,12 +973,20 @@ void WalkTask(void)
 				break;			
 			//发射飞盘
 			case launch:
+				StickPos(launchPosX,launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
-				//7S没有接收到蓝牙命令时标记蓝牙通信丢失
-				if(gRobot.isBleOk.noBleTimer >= 7000)
+				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
-					gRobot.isBleOk.noBleFlag = BLE_LOST;
+					if(sendSignal2Camera == 1)
+					{
+						SendWatchWholeArena2Camera();
+						sendSignal2Camera = 0;
+					}
+					if(gRobot.plantState[PLANT6].plate == 0)
+					{
+						gRobot.plantState[PLANT6].plate = 1;
+					}
 				}
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
@@ -966,6 +1010,8 @@ void WalkTask(void)
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 				TIM_Delayms(TIM5,50);
 				setLaunchPosFlag = 1;
+				sendSignal2Camera = 1;
+				sendSignal = 1;
 				status = resetRunToLaunch;
 				OSSemSet(PeriodSem, 0, &os_err);
 				break;
@@ -1050,7 +1096,7 @@ void LeftGunShootTask(void)
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
 					}
-					else if(gRobot.leftGun.shootTimes == 0)
+					else/* if(gRobot.leftGun.shootTimes == 0)*/
 					{
 						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
 																				[leftGunShootCommand.plantNum];
@@ -1077,11 +1123,16 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunCheckAim();
 					//检查上弹是否到位
 					ROBOT_LeftGunCheckReload();
+					
+//					OSTimeDly(100);
 					//发射
 					ROBOT_LeftGunShoot();
-					//记录发射命令
+
 					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
+						//记录每个柱子的发射命令
+						gRobot.plateShootTimes[gRobot.leftGun.targetPlant]+=1;
+						//记录发射命令		
 						gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
 						gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
 					}
@@ -1089,11 +1140,11 @@ void LeftGunShootTask(void)
 					{
 						if(gRobot.leftGun.shootParaMode%2)
 						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate = 1;
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
 						}
 						else
 						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball = 1;						
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;						
 						}						
 					}
 					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
@@ -1229,7 +1280,7 @@ void RightGunShootTask(void)
 						ROBOT_RightGunAim();
 						ROBOT_RightGunCheckAim();
 					}
-					else if(gRobot.rightGun.shootTimes == 0)
+					else/*if(gRobot.rightGun.shootTimes == 0)*/
 					{
 						gRobot.rightGun.targetPose = gRightGunPosDatabase[rightGunShootCommand.shootMethod]\
 																		[rightGunShootCommand.plantNum];
@@ -1257,11 +1308,15 @@ void RightGunShootTask(void)
 					//检查上弹是否到位
 					ROBOT_RightGunCheckReload();
 
+//					OSTimeDly(100);
 					//发射
 					ROBOT_RightGunShoot();
-					//记录发射命令
+					
 					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
+						//记录每个柱子的发射命令
+						gRobot.plateShootTimes[gRobot.rightGun.targetPlant]+=1;
+						//记录发射命令		
 						gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
 						gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
 					}
@@ -1269,11 +1324,11 @@ void RightGunShootTask(void)
 					{
 						if(gRobot.rightGun.shootParaMode%2)
 						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate = 1;
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate += 1;
 						}
 						else
 						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball = 1;						
+							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball += 1;						
 						}						
 					}
 					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
@@ -1366,9 +1421,9 @@ void UpperGunShootTask(void)
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 	while(1)
 	{
-#ifndef NO_WALK_TASK
 		//如果接收到防守命令进入防守模式
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+#ifndef NO_WALK_TASK
 		//不需要防守时如果7#需要落盘则对7#落盘命令置位
 		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
 		{
@@ -1393,6 +1448,10 @@ void UpperGunShootTask(void)
 						gRobot.plantState[PLANT7].plate = 1;
 					}
 				}
+				else
+				{
+					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+				}
 			}
 		}
 #endif
@@ -1402,7 +1461,6 @@ void UpperGunShootTask(void)
 		{
 			//fix me,此处应该检查目标区域是否合法
 			if(gRobot.upperGun.targetZone & 0xff) upperGunShootFlag = 1;
-
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;
@@ -1438,7 +1496,11 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(40);
+					if(gRobot.upperGun.isManualDefend == UPPER_MANUAL_DEFEND)
+					{
+						gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
+					}
+					OSTimeDly(50);
 				}
 				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)
@@ -1492,6 +1554,8 @@ void UpperGunShootTask(void)
 				else
 				{
 					ROBOT_UpperGunShoot();
+					gRobot.upperGun.lastPlant = gRobot.upperGun.targetPlant;
+					gRobot.upperGun.lastParaMode = gRobot.upperGun.shootParaMode;
 					SetShootPlantTime(uppershootCommand.plantNum, uppershootCommand.shootMethod);
 					//发射完成后标志任务执行完成
 					if(gRobot.upperGun.shootParaMode%3)
