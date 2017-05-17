@@ -306,16 +306,20 @@ void ConfigTask(void)
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	
+	//定时器初始化
+	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	
+	KeyInit();	
+	while(!KEYSWITCH)
+	{
+		//wait
+	}
 	//************************
 	USART3_Init(115200);    //摄像头
 	CameraInit();
 	//***********************
 	
-	//定时器初始化
-	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
-	
-	KeyInit();
+
 	PhotoelectricityInit();
 	BeepInit();
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
@@ -770,6 +774,7 @@ void WalkTask(void)
 	float launchPosY = 0.0f;
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
+	uint8_t sendSignal2Camera = 1;
 	uint8_t upperPhotoSensorCounter = 0;
     OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
@@ -981,7 +986,15 @@ void WalkTask(void)
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
-					SendWatchWholeArena2Camera();
+					if(sendSignal2Camera == 1)
+					{
+						SendWatchWholeArena2Camera();
+						sendSignal2Camera = 0;
+					}
+					if(gRobot.plantState[PLANT6].plate == 0)
+					{
+						gRobot.plantState[PLANT6].plate = 1;
+					}
 				}
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
@@ -1005,6 +1018,8 @@ void WalkTask(void)
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 				TIM_Delayms(TIM5,50);
 				setLaunchPosFlag = 1;
+				sendSignal2Camera = 1;
+				sendSignal = 1;
 				status = resetRunToLaunch;
 				OSSemSet(PeriodSem, 0, &os_err);
 				break;
