@@ -817,7 +817,7 @@ status_t ROBOT_CheckGunOpenSafety(void)
 */
 status_t ROBOT_LeftGunReload(void)
 {
-	uint8_t pushTimes = 10;
+//	uint8_t pushTimes = 10;
 	if(gRobot.leftGun.reloadState == GUN_NOT_RELOAD)
 	{
 		if(gRobot.leftGun.lastPlant == PLANT7)
@@ -826,14 +826,14 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
-			while(pushTimes--)
-			{
-				LeftPush();
-				OSTimeDly(2);
-				LeftHold();
-				OSTimeDly(8);
-			}
-//			OSTimeDly(100);
+//			while(pushTimes--)
+//			{
+//				LeftPush();
+//				OSTimeDly(2);
+//				LeftHold();
+//				OSTimeDly(8);
+//			}
+			OSTimeDly(100);
 		}
 		else
 		{
@@ -862,7 +862,7 @@ status_t ROBOT_LeftGunReload(void)
 */
 status_t ROBOT_RightGunReload(void)
 {
-	uint8_t pushTimes = 10;
+//	uint8_t pushTimes = 10;
 	if(gRobot.rightGun.reloadState == GUN_NOT_RELOAD)
 	{
 		if(gRobot.rightGun.lastPlant ==PLANT7)
@@ -871,14 +871,14 @@ status_t ROBOT_RightGunReload(void)
 		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
-			while(pushTimes--)
-			{
-				RightPush();
-				OSTimeDly(2);
-				RightHold();
-				OSTimeDly(8);
-			}			
-//			OSTimeDly(100);
+//			while(pushTimes--)
+//			{
+//				RightPush();
+//				OSTimeDly(2);
+//				RightHold();
+//				OSTimeDly(8);
+//			}			
+			OSTimeDly(100);
 		}
 		else
 		{
