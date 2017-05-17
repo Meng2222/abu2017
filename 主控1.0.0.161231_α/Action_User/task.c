@@ -306,16 +306,20 @@ void ConfigTask(void)
 	os_err = os_err;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	
+	//定时器初始化
+	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	
+	KeyInit();	
+	while(!KEYSWITCH)
+	{
+		//wait
+	}
 	//************************
 	USART3_Init(115200);    //摄像头
 	CameraInit();
 	//***********************
 	
-	//定时器初始化
-	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
-	
-	KeyInit();
+
 	PhotoelectricityInit();
 	BeepInit();
 	
