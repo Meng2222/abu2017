@@ -308,8 +308,13 @@ void ConfigTask(void)
 	
 	//定时器初始化
 	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
+	//行程开关初始化
+	KeyInit();
+	//光电初始化
+	PhotoelectricityInit();
+	//蜂鸣器初始化
+	BeepInit();
 	
-	KeyInit();	
 	while(!KEYSWITCH)
 	{
 		//wait
@@ -318,10 +323,14 @@ void ConfigTask(void)
 	USART3_Init(115200);    //摄像头
 	CameraInit();
 	//***********************
+	BEEP_ON;
+	TIM_Delayms(TIM5, 2000);
+	BEEP_OFF;
 	
-
-	PhotoelectricityInit();
-	BeepInit();
+	while(!KEYSWITCH)
+	{
+		//wait
+	}
 	
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
@@ -337,10 +346,11 @@ void ConfigTask(void)
 
 	TIM_Delayms(TIM5, 17000);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
+	//初始化左右枪自动完成标志LED
 	GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
 	GPIO_SetBits(GPIOE, GPIO_Pin_2);
-
-	TIM_Delayms(TIM5, 50);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 
 	ROBOT_Init();
 
@@ -1615,9 +1625,9 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
-			OSTimeDly(10);
-			GPIO_SetBits(GPIOE, GPIO_Pin_2);
+//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+//			OSTimeDly(10);
+//			GPIO_SetBits(GPIOE, GPIO_Pin_2);
 //			if(gRobot.autoCommand[PLANT1].ball == 0&&\
 //				gRobot.autoCommand[PLANT2].ball == 0 &&\
 //				gRobot.autoCommand[PLANT1].plate == 0 &&\
