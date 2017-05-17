@@ -1346,7 +1346,10 @@ void USART3_IRQHandler(void)
 				
 				if(data == SELF_NEED_PLATE)
 				{
-					gRobot.upperGun.isSelfEmpty = SELF_EMPTY;
+					if(gRobot.plateShootTimes[PLANT6] > 6)
+					{
+						gRobot.upperGun.isSelfEmpty = SELF_EMPTY;
+					}
 				}
 				else if(data == SELF_ALREADY_HAVE)
 				{
@@ -1417,10 +1420,7 @@ void USART3_IRQHandler(void)
 						isPlateDataOk[PLANT2].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT2].plate == PLAT_DATA_STABLE)
 					{
 						if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
-						{
 							gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
-							GPIO_ResetBits(GPIOC, GPIO_Pin_0);
-						}
 					}
 				}
 				if((data&0xf0)==0)
@@ -1429,10 +1429,7 @@ void USART3_IRQHandler(void)
 						isPlateDataOk[PLANT5].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT5].plate == PLAT_DATA_STABLE)
 					{
 						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
-						{
-							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
-							GPIO_ResetBits(GPIOE, GPIO_Pin_2);
-						}							
+							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;	
 					}					
 				}
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)

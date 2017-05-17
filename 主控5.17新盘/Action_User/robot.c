@@ -1000,7 +1000,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 	{
 		searchRange = 7;
-		GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM)
@@ -1039,10 +1038,10 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-				{
-					continue;
-				}		
+//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+//				{
+//					continue;
+//				}		
 				break;
 			}
 			//没盘
@@ -1076,10 +1075,10 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-				{
-					continue;
-				}					
+//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+//				{
+//					continue;
+//				}					
 				break;		
 			}
 		}
@@ -1178,7 +1177,6 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 	{
 		searchRange = 7;
-		GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM)
@@ -1217,10 +1215,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-				{
-					continue;
-				}				
+//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+//				{
+//					continue;
+//				}				
 				break;
 			}
 			//没盘
@@ -1253,10 +1251,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-				{
-					continue;
-				}	
+//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+//				{
+//					continue;
+//				}	
 				break;	
 			}
 		}
