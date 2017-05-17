@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -318,6 +318,13 @@ void ConfigTask(void)
 	KeyInit();
 	PhotoelectricityInit();
 	BeepInit();
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
+	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+	GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 	
 	//串口初始化
 	UART4_Init(115200);     //蓝牙手柄
@@ -332,9 +339,7 @@ void ConfigTask(void)
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
 	TIM_Delayms(TIM5, 17000);
-	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
-	GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
-	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+
 
 	TIM_Delayms(TIM5, 50);
 
@@ -346,6 +351,7 @@ void ConfigTask(void)
 	LeftPush();
 	RightPush();
 	ClampReset();
+
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	BEEP_ON;
@@ -381,6 +387,8 @@ void ConfigTask(void)
 	BEEP_OFF;
 	TIM_Delayms(TIM5, 200);	
 #endif
+GPIO_SetBits(GPIOE, GPIO_Pin_2);
+GPIO_SetBits(GPIOC, GPIO_Pin_0);
 /*
 如果行程开关触发  挂起所有枪 走形任务 
 进入自检任务
@@ -1600,9 +1608,9 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
-			OSTimeDly(10);
-			GPIO_SetBits(GPIOE, GPIO_Pin_2);
+//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+//			OSTimeDly(10);
+//			GPIO_SetBits(GPIOE, GPIO_Pin_2);
 //			if(gRobot.autoCommand[PLANT1].ball == 0&&\
 //				gRobot.autoCommand[PLANT2].ball == 0 &&\
 //				gRobot.autoCommand[PLANT1].plate == 0 &&\
