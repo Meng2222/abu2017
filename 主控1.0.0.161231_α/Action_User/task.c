@@ -310,10 +310,10 @@ void ConfigTask(void)
 	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 	
 	KeyInit();	
-	while(!KEYSWITCH)
-	{
-		//wait
-	}
+//	while(!KEYSWITCH)
+//	{
+//		//wait
+//	}
 	//************************
 	USART3_Init(115200);    //摄像头
 	CameraInit();
