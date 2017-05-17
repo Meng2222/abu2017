@@ -566,6 +566,8 @@ void StickPos(float posX,float posY)
 	#define ANGLE_OFFSET (90.0f)
 	//输出速度上限
 	#define VEL_UPPER_LIMIT (200.0f)
+	//输出速度下限
+	#define VEL_LEAST_LIMIT (50.0f)
 	float angle = 0.0f;
 	float posErr = 0.0f;
 	float vel = 0.0f;
@@ -590,6 +592,10 @@ void StickPos(float posX,float posY)
 	if(vel > VEL_UPPER_LIMIT)
 	{
 		vel = VEL_UPPER_LIMIT;
+	}
+	if(vel < VEL_LEAST_LIMIT)
+	{
+		vel = VEL_LEAST_LIMIT;
 	}
 	//计算分解到三个轮的速度大小
 	speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(vel) , angle).backwardWheelSpeed);
