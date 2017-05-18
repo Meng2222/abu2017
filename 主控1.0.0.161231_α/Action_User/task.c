@@ -896,7 +896,7 @@ void WalkTask(void)
 				}				
 #endif
 				//光电检测是否下错程序
-				if(fabs(gRobot.moveBase.actualXPos)>230.0f && fabs(gRobot.moveBase.actualXPos)<300.0f)
+				if(fabs(gRobot.moveBase.actualXPos)>200.0f && fabs(gRobot.moveBase.actualXPos)<300.0f)
 				{
 					if(PHOTOSENSORLEFT&&PHOTOSENSORRIGHT)
 					{
