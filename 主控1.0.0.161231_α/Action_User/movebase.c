@@ -623,7 +623,7 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 	//速度控制需要的过程变量
 	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
 	static float startPos = 0.0f;
-	expData_t expData = {0.0f, 0.0f, 0.0f};
+	expData_t expData = {0.0f, 0.0f, 0.0f , 0.0f};
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
 	
 	//新运动过程初始化
