@@ -260,22 +260,25 @@ void CalcSlopeOfLine(float posX , float posY)
 		//计算该点和直线上点的X坐标差和Y坐标差
 		diffX = posX - gRobot.moveBase.lineInfo.posXOnLine;
 		diffY = posY - gRobot.moveBase.lineInfo.posYOnLine;
-		//根据该点计算斜率
-		tempSlope[samplingCounter] = diffY / diffX;
-		//采样计数增加
-		samplingCounter++;
-		//达到采样数目后停止采样
-		if(samplingCounter == SAMPLING_NUM)
+		if(sqrtf(diffX * diffX + diffY * diffY)>10.0f)
 		{
-			gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_STOP;
+			//根据该点计算斜率
+			tempSlope[samplingCounter] = diffY / diffX;
+			//采样计数增加
+			samplingCounter++;
+			//达到采样数目后停止采样
+			if(samplingCounter == SAMPLING_NUM)
+			{
+				gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_STOP;
+			}
+			//计算已经采样到斜率的和
+			for(uint8_t i = 0;i < samplingCounter;i++)
+			{
+				sumOfSlope+=tempSlope[i];
+			}
+			//计算已经采样到斜率的平均值
+			gRobot.moveBase.lineInfo.slopeOfLine = sumOfSlope / samplingCounter;
 		}
-		//计算已经采样到斜率的和
-		for(uint8_t i = 0;i < samplingCounter;i++)
-		{
-			sumOfSlope+=tempSlope[i];
-		}
-		//计算已经采样到斜率的平均值
-		gRobot.moveBase.lineInfo.slopeOfLine = sumOfSlope / samplingCounter;
 	}
 }
 /**
