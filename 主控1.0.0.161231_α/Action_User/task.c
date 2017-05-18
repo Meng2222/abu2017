@@ -882,7 +882,19 @@ void WalkTask(void)
 					BEEP_OFF;
 				}				
 #endif
-
+				//光电检测是否下错程序
+				if(fabs(gRobot.moveBase.actualXPos)>200.0f && fabs(gRobot.moveBase.actualXPos)<300.0f)
+				{
+					if(PHOTOSENSORLEFT&&PHOTOSENSORRIGHT)
+					{
+						while(1)
+						{
+							LockWheel();
+							UART5_OUT((uint8_t *)"WRONG PROGRAM IN FIELD DEFINE!!!\r\n");
+							TIM_Delayms(TIM5,200);							
+						}
+					}
+				}
 				break;
 				
 			//装载飞盘
