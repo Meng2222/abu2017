@@ -210,7 +210,7 @@ void CameraInit(void)
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
 #ifdef BLUE_FIELD
-	USART_SendData(USART3, 'r');
+	USART_SendData(USART3, 'b');
 #endif
 #ifdef RED_FIELD
 	USART_SendData(USART3, 'r');
