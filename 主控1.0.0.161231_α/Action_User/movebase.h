@@ -438,5 +438,36 @@ float GetAngle(void);
 *		  posY ：停车点的Y坐标
   */
 void StickPos(float posX,float posY);
+/**
+* @brief  设定直线上一点
+  * @param  posX ：直线上一点的X坐标
+  * @param  posY ：直线上一点的Y坐标
+  * @retval None
+  * @attention
+  *         None
+  */
+
+void SetPointOnLine(float posX , float posY);
+/**
+* @brief 根据实际坐标计算直线的斜率
+  * @param  posX ：实际的X坐标
+  * @param  posY ：实际的Y坐标
+  * @retval None
+  * @attention
+  *         None
+  */
+void CalcSlopeOfLine(float posX , float posY);
+/**
+* @brief  计算点到直线距离
+* @param  slope:直线斜率
+* @param  pointPosX ：直线上任意一点的X坐标
+* @param  pointPosY ：直线上任意一点的Y坐标
+* @param  curPosX ：当前所在的X坐标
+* @param  curPosY ：当前所在的Y坐标
+* @retval disPointToLine ：当前点到给定直线的距离
+* @author ACTION
+*/
+float CalcDisPointToLine(float slope, float pointPosX, float pointPosY,
+	                     float curPosX, float curPosY);
 #endif
 
