@@ -215,6 +215,112 @@ wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
 ============================================================
 */
 /**
+* @brief  设定直线上一点
+  * @param  posX ：直线上一点的X坐标
+  * @param  posY ：直线上一点的Y坐标
+  * @retval None
+  * @attention
+  *         None
+  */
+
+void SetPointOnLine(float posX , float posY)
+{
+	gRobot.moveBase.lineInfo.posXOnLine = posX;
+	gRobot.moveBase.lineInfo.posYOnLine = posY;
+}
+/**
+* @brief 根据实际坐标计算直线的斜率
+  * @param  posX ：实际的X坐标
+  * @param  posY ：实际的Y坐标
+  * @retval None
+  * @attention
+  *         None
+  */
+void CalcSlopeOfLine(float posX , float posY)
+{
+	#define SAMPLING_NUM 50u
+	static float tempSlope[SAMPLING_NUM]={0.0f};
+	static uint8_t samplingCounter = 0;
+	float diffX = 0.0f;
+	float diffY = 0.0f;
+	float sumOfSlope = 0.0f;
+	
+	if(samplingCounter >= SAMPLING_NUM)
+	{
+		//开始下一次采样时对计数量清零
+		if(gRobot.moveBase.lineInfo.samplingFlag == LINE_SAMPLING_START)
+		{
+			samplingCounter = 0;
+		}
+	}
+	
+	//当采样数没有达到给定值时进行采样计算
+	if(samplingCounter < SAMPLING_NUM)
+	{
+		//计算该点和直线上点的X坐标差和Y坐标差
+		diffX = posX - gRobot.moveBase.lineInfo.posXOnLine;
+		diffY = posY - gRobot.moveBase.lineInfo.posYOnLine;
+		//根据该点计算斜率
+		tempSlope[samplingCounter] = diffY / diffX;
+		//采样计数增加
+		samplingCounter++;
+		//达到采样数目后停止采样
+		if(samplingCounter == SAMPLING_NUM)
+		{
+			gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_STOP;
+		}
+		//计算已经采样到斜率的和
+		for(uint8_t i = 0;i < samplingCounter;i++)
+		{
+			sumOfSlope+=tempSlope[i];
+		}
+		//计算已经采样到斜率的平均值
+		gRobot.moveBase.lineInfo.slopeOfLine = sumOfSlope / samplingCounter;
+	}
+}
+/**
+* @brief  计算点到直线距离
+* @param  slope:直线斜率
+* @param  pointPosX ：直线上任意一点的X坐标
+* @param  pointPosY ：直线上任意一点的Y坐标
+* @param  curPosX ：当前所在的X坐标
+* @param  curPosY ：当前所在的Y坐标
+* @retval disPointToLine ：当前点到给定直线的距离
+* @author ACTION
+*/
+float CalcDisPointToLine(float slope, float pointPosX, float pointPosY,
+	                     float curPosX, float curPosY)
+{
+	float disPointToLine = 0.0f;
+	float dirX = 0.0f, dirY = 0.0f;
+	float actX = 0.0f, actY = 0.0f;
+	float verticalWard = 0.0f;
+	float ward = 0.0f;
+	
+	//将直线斜率转换为角度
+	ward = RADTOANG(atanf(slope));
+	
+	//计算直线垂线方向
+	verticalWard = ward + 90.0f;
+
+	if (verticalWard > 180.0f)
+		verticalWard = verticalWard - 360.0f;
+	if (verticalWard < -180.0f)
+		verticalWard = verticalWard + 360.0f;
+
+	verticalWard = (float)ANGTORAD(verticalWard);
+
+	//计算点到直线距离
+
+	dirX = (float)cos(verticalWard);  
+	dirY = (float)sin(verticalWard);
+	actX = pointPosX - curPosX;
+	actY = pointPosY - curPosY;
+
+	disPointToLine = dirX*actX + dirY*actY;
+	return disPointToLine;
+}
+/**
   * @brief  轨迹理论值计算函数
   * @param  pExpData:运动理论值结构体指针
   * @param  velX:x方向速度     mm/s
@@ -345,9 +451,11 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	float posErr = 0.0f;                                    //posErr:位置误差
 	float outputSpeed = 0.0f;                               //outputSpeed:输出速度
 	float velY = 0.0f;
-	
+	float dist2Line = 0.0f;
+	float velXAngle = 0.0f , velYAngle = 0.0f;
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
+	//根据运动所处的阶段对调节量进行改变
 	if(pExpData->stage != MOVEBASE_DEC_STAGE)
 	{
 		if (posErr > 75.0f)
@@ -370,6 +478,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			posErr = -150.0f;
 		}	
 	}
+	//计算X方向速度
 	outputSpeed = pExpData->speed + posErr * PVEL;
 	
 	/*特殊情况导致速度极不安全时紧急制动*/
@@ -381,14 +490,34 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			LockWheel();
 		}
 	}
+	//速度过大时发数
 	if((outputSpeed > 5000.0f) ||(outputSpeed < -5000.0f))
 	{
 		UART5BufPut((uint8_t)(outputSpeed/100.0f));
 	}		
-	
+	//得出最终的X方向速度大小与方向
 	velX = outputSpeed;
-
-	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
+	velXAngle = (velX<=0.0f)?90.0f:-90.0f;
+	//计算实际坐标与采样计算得到直线的距离
+	dist2Line = CalcDisPointToLine(gRobot.moveBase.lineInfo.slopeOfLine , gRobot.moveBase.lineInfo.posXOnLine , gRobot.moveBase.lineInfo.posYOnLine,\
+									gRobot.moveBase.actualXPos , gRobot.moveBase.actualYPos);
+	//由于采样得到的直线可能存在误差，对计算出来的距离进行限制
+	if(fabs(dist2Line) < 30.0f)
+	{
+		dist2Line = 0.0f;
+	}
+	//根据到直线的距离计算Y方向速度大小及方向
+	if(dist2Line < 50.0f)
+	{
+		velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY + fabs(dist2Line - 50.0f) * PDISTY;
+		velYAngle = 0.0f;
+	}
+	else
+	{
+		velY = fabs(dist2Line - 50.0f)*PDISTY;
+		velYAngle = (((dist2Line - 50.0f) <= 0.0f)?0.0f:180.0f);
+	}
+	//根据运动的阶段对Y方向速度大小进行限制
 	if(pExpData->stage != MOVEBASE_DEC_STAGE)
 	{
 		if(velY <= 80.0f)
@@ -411,34 +540,16 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			velY = 500.0f;
 		}
 	}
-#ifdef BLUE_FIELD
-	if(gRobot.moveBase.actualYPos > 40.0f)
-	{
-		velY = 0.0f;
-	}
-#endif
-#ifdef RED_FIELD
-	if(gRobot.moveBase.actualYPos < -40.0f)
-	{
-		velY = 0.0f;
-	}
-#endif
 #define MAXMOVEACC (Vel2Pulse(2000))
 #define PULSE_Y 100
 	speedDebug = velX;
 	distDebug = posErr;
-	if(velX <= 0.0f)
-	{
-		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
-		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
-		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(-velX , 90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
-	}
-	else if(velX > 0.0f)
-	{
-		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
-		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
-		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);	
-	}
+
+	//将X、Y方向平移速度分解到各轮
+	pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velX) , velXAngle).backwardWheelSpeed + SeperateVelToThreeMotor(velY ,velYAngle).backwardWheelSpeed);
+	pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velX) , velXAngle).forwardWheelSpeed + SeperateVelToThreeMotor(velY ,velYAngle).forwardWheelSpeed);
+	pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velX) , velXAngle).leftWheelSpeed + SeperateVelToThreeMotor(velY , velYAngle).leftWheelSpeed);
+
 	//姿态修正
 	pSpeedOut->backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 	pSpeedOut->forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
@@ -519,15 +630,20 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		startPos = GetPosX();
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
+		SetPointOnLine(gRobot.moveBase.actualXPos, gRobot.moveBase.actualYPos);
+		gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_START;
 	}
 	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH)
 	{
 		formerTargetPos = targetPos;		
 		startPos = GetPosX();
 		moveTimer = 0.0f;
-		moveTimFlag = 1;	
+		moveTimFlag = 1;
+		SetPointOnLine(gRobot.moveBase.actualXPos, gRobot.moveBase.actualYPos);
+		gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_START;		
 	}
-
+	//采集坐标点计算直线斜率
+	CalcSlopeOfLine(gRobot.moveBase.actualXPos, gRobot.moveBase.actualYPos);
 	//轨迹计算
 	CalcPath(&expData, velX, startPos, targetPos, accX , decX);
 
@@ -630,3 +746,4 @@ void StickPos(float posX,float posY)
 	}
 
 }
+

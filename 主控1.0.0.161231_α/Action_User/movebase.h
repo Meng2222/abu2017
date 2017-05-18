@@ -29,6 +29,10 @@
 #define MOVEBASE_DEC_STAGE 2
 #define MOVEBASE_STOP_STAGE 3
 
+//直线采样开始
+#define LINE_SAMPLING_START 1
+//直线采样停止
+#define LINE_SAMPLING_STOP 0
 /*
 ============================================================
                 三全向轮底盘相关参数宏定义           
@@ -174,12 +178,14 @@ typedef struct
     float angle;
     
 }posture_t;
+
 typedef struct
 {
     float x;
     float y;
     float angle;
 }position_t;
+
 typedef struct
 {
 	//abbr. translational velocity  即平移速度
@@ -193,6 +199,14 @@ typedef struct
 	//姿态  以角度衡量
 	float poseAngle;
 }kenimaticInfo_t;
+
+typedef struct
+{
+	float posXOnLine;
+	float posYOnLine;
+	float slopeOfLine;
+	unsigned char samplingFlag;
+}line_t;
 
 typedef struct
 {
@@ -251,7 +265,9 @@ typedef struct
 	position_t targetPosition;
 	//实际位姿
 	position_t actualPosition;
-
+	//走行直线信息
+	line_t lineInfo;
+	
 	kenimaticInfo_t targetKenimaticInfo;
 	kenimaticInfo_t actualKenimaticInfo;
 }movebase_t;
@@ -305,6 +321,8 @@ void ThreeWheelVelControlSelfCheck(int direction);
 #define PVEL (5.0f)
 
 #define PVELY (2.5f)
+
+#define PDISTY (1.0f)
 /*
 ============================================================
                         其他宏定义           
