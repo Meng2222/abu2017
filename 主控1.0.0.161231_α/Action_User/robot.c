@@ -1004,7 +1004,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM)
+	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM || gRobot.leftGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.leftGun.commandState = GUN_NO_COMMAND;
 	}
@@ -1181,7 +1181,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 		searchRange = 7;
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM)
+	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.rightGun.commandState = GUN_NO_COMMAND;
 	}

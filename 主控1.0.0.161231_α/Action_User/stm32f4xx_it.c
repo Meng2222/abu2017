@@ -1071,11 +1071,19 @@ void UART4_IRQHandler(void)
 				{
 					if(id == 51)
 					{
-						gRobot.leftGun.shootTimes = LEFT_BULLET_NUM;
+						gRobot.leftGun.bulletNumber = gRobot.leftGun.shootTimes;
+					}
+					if(id == 51)
+					{
+						gRobot.leftGun.bulletNumber = GUN_NO_BULLET_ERROR;
+					}
+					if(id == 52)
+					{
+						gRobot.rightGun.bulletNumber = gRobot.rightGun.shootTimes;						
 					}
 					if(id == 53)
 					{
-						gRobot.rightGun.shootTimes = RIGHT_BULLET_NUM;
+						gRobot.rightGun.bulletNumber = GUN_NO_BULLET_ERROR;
 					}
 				}
 				status=0;
