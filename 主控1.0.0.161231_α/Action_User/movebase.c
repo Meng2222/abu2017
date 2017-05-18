@@ -502,20 +502,20 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	dist2Line = CalcDisPointToLine(gRobot.moveBase.lineInfo.slopeOfLine , gRobot.moveBase.lineInfo.posXOnLine , gRobot.moveBase.lineInfo.posYOnLine,\
 									gRobot.moveBase.actualXPos , gRobot.moveBase.actualYPos);
 	//由于采样得到的直线可能存在误差，对计算出来的距离进行限制
-	if(fabs(dist2Line) < 30.0f)
+	if(fabs(dist2Line) < 20.0f)
 	{
 		dist2Line = 0.0f;
 	}
 	//根据到直线的距离计算Y方向速度大小及方向
-	if(dist2Line < 50.0f)
+	if(dist2Line < 40.0f)
 	{
-		velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY + fabs(dist2Line - 50.0f) * PDISTY;
+		velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY + fabs(dist2Line - 40.0f) * PDISTY;
 		velYAngle = 0.0f;
 	}
 	else
 	{
-		velY = fabs(dist2Line - 50.0f)*PDISTY;
-		velYAngle = (((dist2Line - 50.0f) <= 0.0f)?0.0f:180.0f);
+		velY = fabs(dist2Line - 40.0f)*PDISTY;
+		velYAngle = (((dist2Line - 40.0f) <= 0.0f)?0.0f:180.0f);
 	}
 	//根据运动的阶段对Y方向速度大小进行限制
 	if(pExpData->stage != MOVEBASE_DEC_STAGE)
