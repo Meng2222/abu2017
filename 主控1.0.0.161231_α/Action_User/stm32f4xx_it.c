@@ -663,8 +663,8 @@ void TIM2_IRQHandler(void)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_OK;						
 				}
+				bleCheckCounter = BLE_CHECK_COUNTER;
 			}
-			bleCheckCounter = BLE_CHECK_COUNTER;
 		}
 		else
 		{
