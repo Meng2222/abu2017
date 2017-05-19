@@ -109,7 +109,7 @@
 //枪膛卡弹
 #define GUN_CHAMPER_ERROR -1
 //弹夹空
-#define GUN_NO_BULLET_ERROR -2
+#define GUN_NO_BULLET_ERROR -50
 //枪架未就位， fix me
 #define GUN_NO_READY_ERROR -3
 //上弹失败
@@ -118,8 +118,8 @@
 #define GUN_OPEN_SAFETY_ERROR -5
 
 //枪最大子弹数
-#define MAX_BULLET_NUMBER_LEFT 20
-#define MAX_BULLET_NUMBER_RIGHT 20
+#define MAX_BULLET_NUMBER_LEFT 25
+#define MAX_BULLET_NUMBER_RIGHT 25
 #define MAX_BULLET_NUMBER_UPPER 14
 //枪最大自动发射子弹发数
 #define MAX_AUTO_BULLET_NUMBER 12
