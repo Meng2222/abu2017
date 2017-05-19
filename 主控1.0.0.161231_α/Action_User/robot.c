@@ -1964,7 +1964,6 @@ status_t ROBOT_UpperGunShoot(void)
 	if(gRobot.upperGun.ready == GUN_AIM_DONE)
 	{
 			UpperShoot();
-			USART_SendData(USART3,'b');
 			OSTimeDly(20);
 			UpperShootReset();
 			gRobot.upperGun.shootTimes++;		
