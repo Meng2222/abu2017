@@ -279,7 +279,7 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].ball = 1;
+		gRobot.autoCommand[i].ball = 2;
 	}
     gRobot.plantState[PLANT6].ball = 2;
 	gRobot.autoCommand[PLANT6].ball = 2;
@@ -288,7 +288,7 @@ status_t ROBOT_Init(void)
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].plate = 1;
+		gRobot.autoCommand[i].plate = 2;
 	}
 	gRobot.plantState[PLANT6].plate = 2;
 	gRobot.plantState[PLANT7].plate = 0;
@@ -1040,10 +1040,10 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-//				{
-//					continue;
-//				}		
+				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+				{
+					continue;
+				}		
 				break;
 			}
 			//没盘
@@ -1077,10 +1077,10 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-//				{
-//					continue;
-//				}					
+				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+				{
+					continue;
+				}					
 				break;		
 			}
 		}
@@ -1217,10 +1217,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-//				{
-//					continue;
-//				}				
+				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+				{
+					continue;
+				}				
 				break;
 			}
 			//没盘
@@ -1253,10 +1253,10 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-//				{
-//					continue;
-//				}	
+				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+				{
+					continue;
+				}	
 				break;	
 			}
 		}
