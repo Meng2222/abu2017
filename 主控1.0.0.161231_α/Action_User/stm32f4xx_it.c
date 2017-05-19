@@ -654,7 +654,7 @@ void TIM2_IRQHandler(void)
 			bleCheckCounter--;
 			if(bleCheckCounter == 0)
 			{
-				gRobot.isBleOk.bleHeartBeat--;
+				gRobot.isBleOk.bleHeartBeat--;	
 				if(gRobot.isBleOk.bleHeartBeat < 0)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_LOST;
@@ -663,8 +663,8 @@ void TIM2_IRQHandler(void)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_OK;						
 				}
+				bleCheckCounter = BLE_CHECK_COUNTER;
 			}
-			bleCheckCounter = BLE_CHECK_COUNTER;
 		}
 		else
 		{
