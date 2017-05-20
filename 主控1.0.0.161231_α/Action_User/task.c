@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -334,7 +334,9 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 17000);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);	
 	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 
 	TIM_Delayms(TIM5, 50);
 
@@ -348,11 +350,14 @@ void ConfigTask(void)
 	ClampReset();
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
+	GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
+	GPIO_SetBits(GPIOE, GPIO_Pin_2);
 #endif
 #ifdef RED_FIELD
+	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 	BEEP_ON;
 	TIM_Delayms(TIM5, 300);
 	BEEP_OFF;
@@ -360,7 +365,8 @@ void ConfigTask(void)
 	BEEP_ON;
 	TIM_Delayms(TIM5, 300);
 	BEEP_OFF;
-	TIM_Delayms(TIM5, 200);	
+	TIM_Delayms(TIM5, 200);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);	
 #endif
 #endif
 #ifdef NO_WALK_TASK
@@ -1136,26 +1142,29 @@ void LeftGunShootTask(void)
 					//发射
 					ROBOT_LeftGunShoot();
 
-					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+					if(gRobot.leftGun.ready == GUN_AIM_DONE)
 					{
-						//记录每个柱子的发射命令
-						gRobot.plateShootTimes[gRobot.leftGun.targetPlant]+=1;
-						//记录发射命令		
-						gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
-						gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
-					}
-					else
-					{
-						if(gRobot.leftGun.shootParaMode%2)
+						if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
+							//记录每个柱子的发射命令
+							gRobot.plateShootTimes[gRobot.leftGun.targetPlant]+=1;
+							//记录发射命令		
+							gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
+							gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
 						}
 						else
 						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;						
-						}						
-					}
-					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
+							if(gRobot.leftGun.shootParaMode%2)
+							{
+								gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
+							}
+							else
+							{
+								gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;						
+							}						
+						}
+						SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
+					}					
 					//对命令状态进行复位
 					if(gRobot.leftGun.shootParaMode%2)
 					{
@@ -1320,26 +1329,29 @@ void RightGunShootTask(void)
 					//发射
 					ROBOT_RightGunShoot();
 					
-					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
+					if(gRobot.rightGun.ready == GUN_AIM_DONE)
 					{
-						//记录每个柱子的发射命令
-						gRobot.plateShootTimes[gRobot.rightGun.targetPlant]+=1;
-						//记录发射命令		
-						gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
-						gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
-					}
-					else
-					{
-						if(gRobot.rightGun.shootParaMode%2)
+						if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate += 1;
+							//记录每个柱子的发射命令
+							gRobot.plateShootTimes[gRobot.rightGun.targetPlant]+=1;
+							//记录发射命令		
+							gRobot.rightGun.lastPlant = rightGunShootCommand.plantNum;
+							gRobot.rightGun.lastParaMode = rightGunShootCommand.shootMethod;
 						}
 						else
 						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball += 1;						
-						}						
+							if(gRobot.rightGun.shootParaMode%2)
+							{
+								gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate += 1;
+							}
+							else
+							{
+								gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball += 1;						
+							}						
+						}
+						SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
 					}
-					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
 					//对命令状态进行复位
 					if(gRobot.rightGun.shootParaMode%2)
 					{
@@ -1623,9 +1635,9 @@ void DebugTask(void)
 	while(1)
 	{
 			OSSemPend(DebugPeriodSem, 0, &os_err);
-			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
-			OSTimeDly(10);
-			GPIO_SetBits(GPIOE, GPIO_Pin_2);
+//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+//			OSTimeDly(10);
+//			GPIO_SetBits(GPIOE, GPIO_Pin_2);
 //			if(gRobot.autoCommand[PLANT1].ball == 0&&\
 //				gRobot.autoCommand[PLANT2].ball == 0 &&\
 //				gRobot.autoCommand[PLANT1].plate == 0 &&\

@@ -13,8 +13,8 @@
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
 
-#define LEFT_BULLET_NUM 25u
-#define RIGHT_BULLET_NUM 25u
+#define LEFT_BULLET_NUM 200u
+#define RIGHT_BULLET_NUM 200u
 //着陆台个数
 #define LAND_NUMBER 7
 //机器人枪的个数
@@ -118,8 +118,8 @@
 #define GUN_OPEN_SAFETY_ERROR -5
 
 //枪最大子弹数
-#define MAX_BULLET_NUMBER_LEFT 25
-#define MAX_BULLET_NUMBER_RIGHT 25
+#define MAX_BULLET_NUMBER_LEFT 120
+#define MAX_BULLET_NUMBER_RIGHT 120
 #define MAX_BULLET_NUMBER_UPPER 14
 //枪最大自动发射子弹发数
 #define MAX_AUTO_BULLET_NUMBER 12
@@ -402,9 +402,11 @@ typedef struct
 	//机器人状态，是否正常：低压、过流、过温、
 	int status;
 	//着陆台状态
-	plant_t plantState[7];
+	plant_t plantState[LAND_NUMBER];
 	//自动发射命令
-	plant_t autoCommand[7];
+	plant_t autoCommand[LAND_NUMBER];
+	//摄像头反馈着陆台状态
+	plant_t cameraInfo[LAND_NUMBER];
 
 	//蓝牙通信状态
 	ble_t isBleOk;

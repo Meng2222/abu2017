@@ -1378,49 +1378,109 @@ void USART3_IRQHandler(void)
 				break;
 			case PLAT_DATA_STATE2:
 				receive_data=data;
-				if(!((data&0x01)==0x01)&&\
-					(isPlateDataOk[PLANT1].ball==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT1].ball==PLAT_DATA_STABLE)
 				{
-					gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
+					gRobot.cameraInfo[PLANT1].ball = (data&0x01)==0x01;
+					if(!((data&0x01)==0x01))
+					{
+						gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
+					}
 				}
-				if(!((data&0x02)==0x02)&&\
-					(isPlateDataOk[PLANT1].plate==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT1].plate==PLAT_DATA_STABLE)
 				{
-					if(gRobot.plateShootTimes[PLANT1]!=0)
-					gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
+					if(!((data&0x02)==0x02))
+					{
+						if(gRobot.plateShootTimes[PLANT1]!=0)
+						{
+							gRobot.cameraInfo[PLANT1].plate = (data&0x02)==0x02;
+						}
+					}
+					else
+					{
+						gRobot.cameraInfo[PLANT1].plate = (data&0x02)==0x02;					
+					}
+					if(gRobot.plateShootTimes[PLANT1]!=0 && !((data&0x02)==0x02))
+					{
+						gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
+					}
 				}
-				if(!((data&0x04)==0x04)&&\
-					(isPlateDataOk[PLANT2].ball==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT2].ball==PLAT_DATA_STABLE)
 				{
-					gRobot.autoCommand[PLANT2].ball = (data&0x04)==0x04;
+					gRobot.cameraInfo[PLANT2].ball = (data&0x04)==0x04;
+					if(!((data&0x04)==0x04))
+					{
+						gRobot.autoCommand[PLANT2].ball = (data&0x04)==0x04;
+					}
 				}
-				if(!((data&0x08)==0x08)&&\
-					(isPlateDataOk[PLANT2].plate==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT2].plate==PLAT_DATA_STABLE)
 				{
-					if(gRobot.plateShootTimes[PLANT2]!=0)
-					gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
+					if(!((data&0x08)==0x08))
+					{
+						if(gRobot.plateShootTimes[PLANT2]!=0)
+						{
+							gRobot.cameraInfo[PLANT2].plate = (data&0x08)==0x08;
+						}
+					}
+					else
+					{
+						gRobot.cameraInfo[PLANT2].plate = (data&0x08)==0x08;					
+					}
+					if(gRobot.plateShootTimes[PLANT2]!=0 && !((data&0x08)==0x08))
+					{
+						gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
+					}
 				}
-				if(!((data&0x10)==0x10)&&\
-					(isPlateDataOk[PLANT4].ball==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT4].ball==PLAT_DATA_STABLE)
 				{
-					gRobot.autoCommand[PLANT4].ball = (data&0x10)==0x10;
+					gRobot.cameraInfo[PLANT4].ball = (data&0x10)==0x10;
+					if(!((data&0x10)==0x10))
+					{
+						gRobot.autoCommand[PLANT4].ball = (data&0x10)==0x10;
+					}
 				}
-				if(!((data&0x20)==0x20)&&\
-					(isPlateDataOk[PLANT4].plate==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT4].plate==PLAT_DATA_STABLE)
 				{
-					if(gRobot.plateShootTimes[PLANT4]!=0)
+					if(!((data&0x20)==0x20))
+					{
+						if(gRobot.plateShootTimes[PLANT4]!=0)
+						{
+							gRobot.cameraInfo[PLANT4].plate = (data&0x20)==0x20;
+						}
+					}
+					else
+					{
+						gRobot.cameraInfo[PLANT4].plate = (data&0x20)==0x20;					
+					}
+					if(gRobot.plateShootTimes[PLANT4]!=0 && !((data&0x20)==0x20))
+					{
 						gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
+					}
 				}
-				if(!((data&0x40)==0x40)&&\
-					(isPlateDataOk[PLANT5].ball==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT5].ball==PLAT_DATA_STABLE)
 				{
-					gRobot.autoCommand[PLANT5].ball = (data&0x40)==0x40;
+					gRobot.cameraInfo[PLANT5].ball = (data&0x40)==0x40;
+					if(!((data&0x40)==0x40))
+					{
+						gRobot.autoCommand[PLANT5].ball = (data&0x40)==0x40;
+					}
 				}
-				if(!((data&0x80)==0x80)&&\
-					(isPlateDataOk[PLANT5].plate==PLAT_DATA_STABLE))
+				if(isPlateDataOk[PLANT5].plate==PLAT_DATA_STABLE)
 				{
-					if(gRobot.plateShootTimes[PLANT5]!=0)
+					if(!((data&0x80)==0x80))
+					{
+						if(gRobot.plateShootTimes[PLANT5]!=0)
+						{
+							gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;
+						}
+					}
+					else
+					{
+						gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;					
+					}
+					if(gRobot.plateShootTimes[PLANT5]!=0 && !((data&0x80)==0x80))
+					{
 						gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
+					}
 				}
 				if((data&0x0f)==0)
 				{
@@ -1428,7 +1488,10 @@ void USART3_IRQHandler(void)
 						isPlateDataOk[PLANT2].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT2].plate == PLAT_DATA_STABLE)
 					{
 						if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
+						{
+							GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 							gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+						}
 					}
 				}
 				if((data&0xf0)==0)
@@ -1437,7 +1500,10 @@ void USART3_IRQHandler(void)
 						isPlateDataOk[PLANT5].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT5].plate == PLAT_DATA_STABLE)
 					{
 						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
-							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;	
+						{
+							GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
+						}							
 					}					
 				}
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
