@@ -635,6 +635,7 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		moveTimFlag = 1;
 		SetPointOnLine(gRobot.moveBase.actualXPos, gRobot.moveBase.actualYPos);
 		gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_START;
+		gRobot.moveBase.lineInfo.slopeOfLine = 0;
 	}
 	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH)
 	{
@@ -643,7 +644,8 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
 		SetPointOnLine(gRobot.moveBase.actualXPos, gRobot.moveBase.actualYPos);
-		gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_START;		
+		gRobot.moveBase.lineInfo.samplingFlag = LINE_SAMPLING_START;
+		gRobot.moveBase.lineInfo.slopeOfLine = 0;
 	}
 	//采集坐标点计算直线斜率
 	CalcSlopeOfLine(gRobot.moveBase.actualXPos, gRobot.moveBase.actualYPos);
