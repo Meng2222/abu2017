@@ -306,6 +306,351 @@ status_t ROBOT_Init(void)
 
 	return GUN_NO_ERROR;
 }
+
+/**
+  * @brief	Get left gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	`
+  * @retval	
+  */
+shoot_command_t ROBOT_LeftGunGetShootCommand(void)
+{
+
+	#define LEFT_NEW_PLATE_NUM 10u
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	uint8_t searchRange = 3;
+	//防止同一个枪连续执行命令
+	OSTimeDly(1);
+	gRobot.leftGun.commandState = GUN_NO_COMMAND;
+//	if(gRobot.leftGun.shootTimes%2==0)
+//	{
+//		gRobot.plantState[PLANT1].plate = 1;	
+//	}
+//	else
+//	{
+//		gRobot.plantState[PLANT2].plate = 1;		
+//	}
+	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+	{
+		searchRange = 7;
+		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+	}
+	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM || gRobot.leftGun.bulletNumber == GUN_NO_BULLET_ERROR)
+	{
+		gRobot.leftGun.commandState = GUN_NO_COMMAND;
+	}
+	else
+	{
+		for(uint8_t i = 0;i < searchRange;i++)
+		{
+			//有球
+			if(gRobot.leftGun.gunCommand[LeftGunPriority[i]].ball >= 1)
+			{
+				shootCommand.plantNum = LeftGunPriority[i];
+				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
+					shootCommand.shootMethod = SHOOT_METHOD3;
+				else 
+					shootCommand.shootMethod = SHOOT_METHOD5;
+//				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD5;
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD1;	
+
+				//不连续打同一组参数
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+				{
+					if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
+						gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
+					{
+						if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
+							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+						{
+							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
+								continue;
+						}
+					}
+				}
+				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+				{
+					continue;
+				}		
+				break;
+			}
+			//没盘
+			if(gRobot.leftGun.gunCommand[LeftGunPriority[i]].plate >= 1)
+			{
+				shootCommand.plantNum = LeftGunPriority[i];
+				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
+					shootCommand.shootMethod = SHOOT_METHOD2;
+				else
+					shootCommand.shootMethod = SHOOT_METHOD6;			
+//				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD6;					
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD4;		
+			
+				//不连续打同一组参数
+				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
+				{
+					if(shootCommand.plantNum!=PLANT6)
+					{
+						if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
+							gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
+						{
+							if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
+								gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
+							{
+								if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
+								continue;
+							}
+						}
+					}
+				}
+				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+				{
+					continue;
+				}					
+				break;		
+			}
+		}
+		if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
+		{
+			if(shootCommand.shootMethod%2)
+			{
+				gRobot.leftGun.gunCommand[shootCommand.plantNum].plate -= 1;
+				gRobot.leftGun.gunCommand[shootCommand.plantNum].plateState = COMMAND_IN_PROCESS;
+			}
+			else
+			{
+				gRobot.leftGun.gunCommand[shootCommand.plantNum].ball -= 1;
+				gRobot.leftGun.gunCommand[shootCommand.plantNum].ballState = COMMAND_IN_PROCESS;
+			}
+		}
+		//左右枪交叉打1#和5#柱子时机械上会有干涉
+		if(gRobot.rightGun.targetPlant == PLANT1 && gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
+		{
+			if(shootCommand.plantNum == PLANT5)
+			{
+				gRobot.leftGun.commandState = GUN_NO_COMMAND;
+				if(shootCommand.shootMethod%2)
+					gRobot.leftGun.gunCommand[shootCommand.plantNum].plate += 1;
+				else
+					gRobot.leftGun.gunCommand[shootCommand.plantNum].ball += 1;
+			}
+		}
+	}
+	return shootCommand;
+}
+
+/**
+  * @brief	Get right gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	
+  * @retval	
+  */
+
+shoot_command_t ROBOT_RightGunGetShootCommand(void)
+{
+	#define RIGHT_NEW_PLATE_NUM 10u
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	uint8_t searchRange = 3;
+	//使同一个枪不连续获得命令
+	OSTimeDly(2);
+	gRobot.rightGun.commandState = GUN_NO_COMMAND;
+	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+	{
+		searchRange = 7;
+		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
+	}
+	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
+	{
+		gRobot.rightGun.commandState = GUN_NO_COMMAND;
+	}
+	else
+	{
+		for(uint8_t i = 0;i < searchRange;i++)
+		{
+			//有球
+			if(gRobot.rightGun.gunCommand[RightGunPriority[i]].ball >= 1)
+			{
+				shootCommand.plantNum = RightGunPriority[i];
+				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
+					shootCommand.shootMethod = SHOOT_METHOD3;
+				else
+					shootCommand.shootMethod = SHOOT_METHOD5;				
+//				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD5;					
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD1;
+
+				//不连续同一组参数
+				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+				{
+					if(shootCommand.plantNum == gRobot.rightGun.lastPlant &&\
+						gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
+					{
+						if(gRobot.leftGun.lastPlant != shootCommand.plantNum ||\
+							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+						{
+							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
+							continue;
+						}				
+					}
+				}
+				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+				{
+					continue;
+				}				
+				break;
+			}
+			//没盘
+			if(gRobot.rightGun.gunCommand[RightGunPriority[i]].plate >= 1)
+			{
+				shootCommand.plantNum = RightGunPriority[i];
+				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
+					shootCommand.shootMethod = SHOOT_METHOD2;
+				else
+					shootCommand.shootMethod = SHOOT_METHOD6;
+//				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
+//					shootCommand.shootMethod = SHOOT_METHOD6;					
+//				else
+//					shootCommand.shootMethod = SHOOT_METHOD4;
+				//不连续打同一组参数
+				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
+				{
+					if(RightGunPriority[i]!=PLANT6)
+					{
+						if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
+							gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
+						{
+							if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
+								gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
+							{
+								if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
+								continue;
+							}				
+						}
+					}
+				}
+				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+				{
+					continue;
+				}	
+				break;	
+			}
+		}
+		if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
+		{
+			if(shootCommand.shootMethod%2)
+			{
+				gRobot.rightGun.gunCommand[shootCommand.plantNum].plate -= 1;
+				gRobot.rightGun.gunCommand[shootCommand.plantNum].plateState = COMMAND_IN_PROCESS;
+			}
+			else
+			{
+				gRobot.rightGun.gunCommand[shootCommand.plantNum].ball -= 1;
+				gRobot.rightGun.gunCommand[shootCommand.plantNum].ballState = COMMAND_IN_PROCESS;
+			}
+		}
+		//左右枪交叉打1#和5#柱子时机械上会有干涉
+		if(gRobot.leftGun.targetPlant == PLANT5 && gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
+		{
+			if(shootCommand.plantNum == PLANT1)
+			{
+				gRobot.rightGun.commandState = GUN_NO_COMMAND;
+				if(shootCommand.shootMethod%2)
+					gRobot.rightGun.gunCommand[shootCommand.plantNum].plate += 1;
+				else
+					gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;					
+			}
+		}
+	}
+	return shootCommand;
+}
+
+/**
+  * @brief	Get upper gun shoot command
+  * @note	
+  * @param	
+  *     @arg	
+  * @param	
+  * @retval	
+  */
+
+shoot_command_t ROBOT_UpperGunGetShootCommand(void)
+{
+	#define UPPER_AUTO_NUM 3u
+	uint8_t i = 0u;
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	//为使上枪接收命令更难
+	OSTimeDly(5);
+	if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
+	{
+		gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
+	}
+	for( i = 0;i < 2;i++)
+	{
+		//有球
+		if(gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball >= 1 && UpperGunPriority[i]!=PLANT6)
+		{
+			shootCommand.plantNum = UpperGunPriority[i];
+			shootCommand.shootMethod = SHOOT_METHOD1;
+			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
+			{
+				shootCommand.shootMethod = SHOOT_METHOD4;
+			}	
+			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball -= 1;
+			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
+			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ballState = COMMAND_IN_PROCESS;
+			break;
+		}
+		//没盘
+		if(gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate >= 1)
+		{
+			shootCommand.plantNum = UpperGunPriority[i];
+			shootCommand.shootMethod = SHOOT_METHOD2;
+			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
+			{
+				shootCommand.shootMethod = SHOOT_METHOD5;
+			}	
+			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate -= 1;
+			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
+			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plateState = COMMAND_IN_PROCESS;
+			break;
+		
+		}
+		if(i==1)
+		{
+			gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
+			gRobot.upperGun.commandState = GUN_NO_COMMAND;
+		}
+	}
+	if(gRobot.upperGun.lastPlant == shootCommand.plantNum && gRobot.upperGun.lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
+	{
+		if(gRobot.leftGun.bulletNumber > 0 || gRobot.rightGun.bulletNumber > 0)
+		{
+			if(shootCommand.shootMethod%3)
+			{
+				gRobot.upperGun.gunCommand[shootCommand.plantNum].plate += 1;
+			}
+			else
+			{
+				gRobot.upperGun.gunCommand[shootCommand.plantNum].ball += 1;
+			}
+			gRobot.upperGun.commandState = GUN_NO_COMMAND;
+		}		
+	}
+	
+	return shootCommand;
+}
 /*
 ============================================================
 				   枪参数变换与逆变换			
@@ -974,144 +1319,6 @@ status_t ROBOT_RightGunCheckReload(void)
   * @{
   */
 
-/**
-  * @brief	Get left gun shoot command
-  * @note	
-  * @param	
-  *     @arg	
-  * @param	`
-  * @retval	
-  */
-shoot_command_t ROBOT_LeftGunGetShootCommand(void)
-{
-
-	#define LEFT_NEW_PLATE_NUM 10u
-	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 3;
-	//防止同一个枪连续执行命令
-	OSTimeDly(1);
-	gRobot.leftGun.commandState = GUN_NO_COMMAND;
-//	if(gRobot.leftGun.shootTimes%2==0)
-//	{
-//		gRobot.plantState[PLANT1].plate = 1;	
-//	}
-//	else
-//	{
-//		gRobot.plantState[PLANT2].plate = 1;		
-//	}
-	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
-	{
-		searchRange = 7;
-		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
-	}
-	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM || gRobot.leftGun.bulletNumber == GUN_NO_BULLET_ERROR)
-	{
-		gRobot.leftGun.commandState = GUN_NO_COMMAND;
-	}
-	else
-	{
-		for(uint8_t i = 0;i < searchRange;i++)
-		{
-			//有球
-			if(gRobot.leftGun.gunCommand[LeftGunPriority[i]].ball >= 1)
-			{
-				shootCommand.plantNum = LeftGunPriority[i];
-				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
-					shootCommand.shootMethod = SHOOT_METHOD3;
-				else 
-					shootCommand.shootMethod = SHOOT_METHOD5;
-//				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD5;
-//				else
-//					shootCommand.shootMethod = SHOOT_METHOD1;	
-
-				//不连续打同一组参数
-				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
-				{
-					if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
-						gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
-					{
-						if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
-							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
-						{
-							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
-								continue;
-						}
-					}
-				}
-				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-				{
-					continue;
-				}		
-				break;
-			}
-			//没盘
-			if(gRobot.leftGun.gunCommand[LeftGunPriority[i]].plate >= 1)
-			{
-				shootCommand.plantNum = LeftGunPriority[i];
-				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
-					shootCommand.shootMethod = SHOOT_METHOD2;
-				else
-					shootCommand.shootMethod = SHOOT_METHOD6;			
-//				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD6;					
-//				else
-//					shootCommand.shootMethod = SHOOT_METHOD4;		
-			
-				//不连续打同一组参数
-				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
-				{
-					if(shootCommand.plantNum!=PLANT6)
-					{
-						if(shootCommand.plantNum == gRobot.leftGun.lastPlant &&\
-							gRobot.leftGun.lastParaMode == shootCommand.shootMethod)
-						{
-							if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
-								gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
-							{
-								if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
-								continue;
-							}
-						}
-					}
-				}
-				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-				{
-					continue;
-				}					
-				break;		
-			}
-		}
-		if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
-		{
-			if(shootCommand.shootMethod%2)
-			{
-				gRobot.leftGun.gunCommand[shootCommand.plantNum].plate -= 1;
-				gRobot.leftGun.gunCommand[shootCommand.plantNum].plateState = COMMAND_IN_PROCESS;
-			}
-			else
-			{
-				gRobot.leftGun.gunCommand[shootCommand.plantNum].ball -= 1;
-				gRobot.leftGun.gunCommand[shootCommand.plantNum].ballState = COMMAND_IN_PROCESS;
-			}
-		}
-		//左右枪交叉打1#和5#柱子时机械上会有干涉
-		if(gRobot.rightGun.targetPlant == PLANT1 && gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
-		{
-			if(shootCommand.plantNum == PLANT5)
-			{
-				gRobot.leftGun.commandState = GUN_NO_COMMAND;
-				if(shootCommand.shootMethod%2)
-					gRobot.leftGun.gunCommand[shootCommand.plantNum].plate += 1;
-				else
-					gRobot.leftGun.gunCommand[shootCommand.plantNum].ball += 1;
-			}
-		}
-	}
-	return shootCommand;
-}
 
 
 /**
@@ -1159,135 +1366,7 @@ status_t ROBOT_LeftGunReloadAim(void)
   * @{
   */
 
-/**
-  * @brief	Get right gun shoot command
-  * @note	
-  * @param	
-  *     @arg	
-  * @param	
-  * @retval	
-  */
 
-shoot_command_t ROBOT_RightGunGetShootCommand(void)
-{
-	#define RIGHT_NEW_PLATE_NUM 10u
-	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 3;
-	//使同一个枪不连续获得命令
-	OSTimeDly(2);
-	gRobot.rightGun.commandState = GUN_NO_COMMAND;
-	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
-	{
-		searchRange = 7;
-		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
-	}
-	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
-	{
-		gRobot.rightGun.commandState = GUN_NO_COMMAND;
-	}
-	else
-	{
-		for(uint8_t i = 0;i < searchRange;i++)
-		{
-			//有球
-			if(gRobot.rightGun.gunCommand[RightGunPriority[i]].ball >= 1)
-			{
-				shootCommand.plantNum = RightGunPriority[i];
-				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
-					shootCommand.shootMethod = SHOOT_METHOD3;
-				else
-					shootCommand.shootMethod = SHOOT_METHOD5;				
-//				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD5;					
-//				else
-//					shootCommand.shootMethod = SHOOT_METHOD1;
-
-				//不连续同一组参数
-				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
-				{
-					if(shootCommand.plantNum == gRobot.rightGun.lastPlant &&\
-						gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
-					{
-						if(gRobot.leftGun.lastPlant != shootCommand.plantNum ||\
-							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
-						{
-							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
-							continue;
-						}				
-					}
-				}
-				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-				{
-					continue;
-				}				
-				break;
-			}
-			//没盘
-			if(gRobot.rightGun.gunCommand[RightGunPriority[i]].plate >= 1)
-			{
-				shootCommand.plantNum = RightGunPriority[i];
-				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
-					shootCommand.shootMethod = SHOOT_METHOD2;
-				else
-					shootCommand.shootMethod = SHOOT_METHOD6;
-//				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD6;					
-//				else
-//					shootCommand.shootMethod = SHOOT_METHOD4;
-				//不连续打同一组参数
-				if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
-				{
-					if(RightGunPriority[i]!=PLANT6)
-					{
-						if(RightGunPriority[i] == gRobot.rightGun.lastPlant &&\
-							gRobot.rightGun.lastParaMode == shootCommand.shootMethod)
-						{
-							if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
-								gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
-							{
-								if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
-								continue;
-							}				
-						}
-					}
-				}
-				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-				{
-					continue;
-				}	
-				break;	
-			}
-		}
-		if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
-		{
-			if(shootCommand.shootMethod%2)
-			{
-				gRobot.rightGun.gunCommand[shootCommand.plantNum].plate -= 1;
-				gRobot.rightGun.gunCommand[shootCommand.plantNum].plateState = COMMAND_IN_PROCESS;
-			}
-			else
-			{
-				gRobot.rightGun.gunCommand[shootCommand.plantNum].ball -= 1;
-				gRobot.rightGun.gunCommand[shootCommand.plantNum].ballState = COMMAND_IN_PROCESS;
-			}
-		}
-		//左右枪交叉打1#和5#柱子时机械上会有干涉
-		if(gRobot.leftGun.targetPlant == PLANT5 && gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
-		{
-			if(shootCommand.plantNum == PLANT1)
-			{
-				gRobot.rightGun.commandState = GUN_NO_COMMAND;
-				if(shootCommand.shootMethod%2)
-					gRobot.rightGun.gunCommand[shootCommand.plantNum].plate += 1;
-				else
-					gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;					
-			}
-		}
-	}
-	return shootCommand;
-}
 
 
 /**
@@ -1329,81 +1408,7 @@ status_t ROBOT_RightGunReloadAim(void)
 
 	return GUN_NO_ERROR;
 }
-/**
-  * @brief	Get upper gun shoot command
-  * @note	
-  * @param	
-  *     @arg	
-  * @param	
-  * @retval	
-  */
 
-shoot_command_t ROBOT_UpperGunGetShootCommand(void)
-{
-	#define UPPER_AUTO_NUM 3u
-	uint8_t i = 0u;
-	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	//为使上枪接收命令更难
-	OSTimeDly(5);
-	if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
-	{
-		gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
-	}
-	for( i = 0;i < 2;i++)
-	{
-		//有球
-		if(gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball >= 1 && UpperGunPriority[i]!=PLANT6)
-		{
-			shootCommand.plantNum = UpperGunPriority[i];
-			shootCommand.shootMethod = SHOOT_METHOD1;
-			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
-			{
-				shootCommand.shootMethod = SHOOT_METHOD4;
-			}	
-			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball -= 1;
-			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
-			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ballState = COMMAND_IN_PROCESS;
-			break;
-		}
-		//没盘
-		if(gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate >= 1)
-		{
-			shootCommand.plantNum = UpperGunPriority[i];
-			shootCommand.shootMethod = SHOOT_METHOD2;
-			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
-			{
-				shootCommand.shootMethod = SHOOT_METHOD5;
-			}	
-			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate -= 1;
-			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
-			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plateState = COMMAND_IN_PROCESS;
-			break;
-		
-		}
-		if(i==1)
-		{
-			gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
-			gRobot.upperGun.commandState = GUN_NO_COMMAND;
-		}
-	}
-	if(gRobot.upperGun.lastPlant == shootCommand.plantNum && gRobot.upperGun.lastParaMode == shootCommand.shootMethod &&shootCommand.plantNum != PLANT6)
-	{
-		if(gRobot.leftGun.bulletNumber > 0 || gRobot.rightGun.bulletNumber > 0)
-		{
-			if(shootCommand.shootMethod%3)
-			{
-				gRobot.upperGun.gunCommand[shootCommand.plantNum].plate += 1;
-			}
-			else
-			{
-				gRobot.upperGun.gunCommand[shootCommand.plantNum].ball += 1;
-			}
-			gRobot.upperGun.commandState = GUN_NO_COMMAND;
-		}		
-	}
-	
-	return shootCommand;
-}
 /**
 *名称： ROBOT_UpperGunAim
 *功能： 瞄准，目标改变后需要先调用此接口来重新瞄准,此函数将发送CAN命令
