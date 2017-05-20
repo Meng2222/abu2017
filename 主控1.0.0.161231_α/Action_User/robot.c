@@ -369,16 +369,16 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 						if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
 							gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
 						{
-//							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
-//								continue;
+							if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
+								continue;
 						}
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-//				{
-//					continue;
-//				}		
+				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+				{
+					continue;
+				}		
 				break;
 			}
 			//没盘
@@ -405,17 +405,17 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 							if(gRobot.rightGun.lastPlant != shootCommand.plantNum ||\
 								gRobot.rightGun.lastParaMode != shootCommand.shootMethod)
 							{
-//								if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
-//								continue;
+								if(gRobot.rightGun.mode != GUN_MANUAL_MODE)
+								continue;
 							}
 						}
 					}
 				}
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
-//				{
-//					continue;
-//				}					
+				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
+				{
+					continue;
+				}					
 				break;		
 			}
 		}
@@ -502,16 +502,16 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 						if(gRobot.leftGun.lastPlant != shootCommand.plantNum ||\
 							gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
 						{
-//							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
-//							continue;
+							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
+							continue;
 						}				
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-//				{
-//					continue;
-//				}				
+				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+				{
+					continue;
+				}				
 				break;
 			}
 			//没盘
@@ -537,17 +537,17 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 							if(gRobot.leftGun.lastPlant != RightGunPriority[i] ||\
 								gRobot.leftGun.lastParaMode != shootCommand.shootMethod)
 							{
-//								if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
-//								continue;
+								if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
+								continue;
 							}				
 						}
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
-//				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
-//				{
-//					continue;
-//				}	
+				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
+				{
+					continue;
+				}	
 				break;	
 			}
 		}
