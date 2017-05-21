@@ -1002,6 +1002,10 @@ void WalkTask(void)
 					{
 						gRobot.plantState[PLANT6].plate = 1;
 					}
+					if(gRobot.plantState[PLANT3].plate==0)
+					{
+						gRobot.plantState[PLANT3].plate = 1;					
+					}
 				}
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{

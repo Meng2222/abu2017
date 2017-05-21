@@ -86,7 +86,7 @@ static void LeftGunInit(void)
 	//射击次数为0
 	gRobot.leftGun.shootTimes = 0;
 	//初始化时命令指向自动命令
-	gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+	gRobot.leftGun.gunCommand = (plant_t *)gRobot.autoCommand;
 	gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
 	
@@ -169,7 +169,7 @@ static void RightGunInit(void)
 	//射击次数为0
 	gRobot.rightGun.shootTimes = 0;
 	//初始化时命令指向自动命令
-	gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
+	gRobot.rightGun.gunCommand = (plant_t *)gRobot.autoCommand;
 	gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
 	
@@ -349,24 +349,24 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.cameraInfo[i].plate = 1;
 	}
-//	for(uint8_t i = 0; i < 7;i++)
-//	{
-//		gRobot.autoCommand[i].ball = 2;
-//	}
-//    gRobot.plantState[PLANT6].ball = 2;
-//	gRobot.autoCommand[PLANT6].ball = 2;
-//	gRobot.autoCommand[PLANT7].ball = 1;
-//	gRobot.autoCommand[PLANT3].ball = 1;
-//	
-//	for(uint8_t i = 0; i < 7;i++)
-//	{
-//		gRobot.autoCommand[i].plate = 2;
-//	}
-//	gRobot.plantState[PLANT6].plate = 2;
-//	gRobot.plantState[PLANT7].plate = 0;
-//	gRobot.autoCommand[PLANT7].plate = 0;
-//	gRobot.autoCommand[PLANT6].plate = 2;
-//	gRobot.autoCommand[PLANT3].plate = 1;
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.autoCommand[i].ball = 2;
+	}
+    gRobot.plantState[PLANT6].ball = 2;
+	gRobot.autoCommand[PLANT6].ball = 2;
+	gRobot.autoCommand[PLANT7].ball = 1;
+	gRobot.autoCommand[PLANT3].ball = 1;
+	
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.autoCommand[i].plate = 2;
+	}
+	gRobot.plantState[PLANT6].plate = 2;
+	gRobot.plantState[PLANT7].plate = 0;
+	gRobot.autoCommand[PLANT7].plate = 0;
+	gRobot.autoCommand[PLANT6].plate = 2;
+	gRobot.autoCommand[PLANT3].plate = 1;
 
 	LeftGunInit();
 	RightGunInit();
