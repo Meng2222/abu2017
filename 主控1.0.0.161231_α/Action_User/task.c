@@ -348,6 +348,7 @@ void ConfigTask(void)
 	LeftPush();
 	RightPush();
 	ClampReset();
+
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	GPIO_ResetBits(GPIOE, GPIO_Pin_2);

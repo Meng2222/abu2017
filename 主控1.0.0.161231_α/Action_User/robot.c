@@ -11,6 +11,8 @@
 #include "app_cfg.h"
 #include "stdlib.h"
 #include "time.h"
+#include "stm32f4xx_rng.h"
+#include "stm32f4xx_rcc.h"
 robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
 extern OS_EVENT *LeftGunShootPointMbox;
@@ -84,7 +86,7 @@ static void LeftGunInit(void)
 	//射击次数为0
 	gRobot.leftGun.shootTimes = 0;
 	//初始化时命令指向自动命令
-	gRobot.leftGun.gunCommand = (plant_t *)gRobot.autoCommand;
+	gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
 	
@@ -167,7 +169,7 @@ static void RightGunInit(void)
 	//射击次数为0
 	gRobot.rightGun.shootTimes = 0;
 	//初始化时命令指向自动命令
-	gRobot.rightGun.gunCommand = (plant_t *)gRobot.autoCommand;
+	gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
 	
@@ -257,7 +259,40 @@ static void UpperGunInit(void)
 	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));	
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
-
+/*
+*名称：RNG_Config
+*功能：初始化随机数发生器
+*参数：none
+*注意：
+*
+*/
+static void RNG_Config(void)
+{
+	uint16_t retry=0;
+	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE); //开启 RNG 时钟
+	RNG_Cmd(ENABLE); //使能 RNG
+	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET&&retry<10000)//等待就绪
+	{ 
+		retry++; 
+		delay_us(100);
+	}
+	if(retry>=10000)
+	{
+		UART5_OUT((uint8_t *)"RNG Config ERROR!!\r\n");
+	}
+}
+/*
+*名称：RNG_Get_RandonNum
+*功能：获取随机数
+*参数：void
+*注意：
+*
+*/
+static uint32_t RNG_Get_RandomNum(void)
+{
+	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET); //等待随机数就绪
+	return RNG_GetRandomNumber(); 
+}
 /*
 *名称：ROBOT_Init
 *功能：机器人初始化，初始化底盘，初始化枪，初始化
@@ -266,38 +301,37 @@ static void UpperGunInit(void)
 */
 status_t ROBOT_Init(void)
 {
-	float dummyRand = 0.0f , leftRand = 0.0f , rightRand = 0.0f;
+	float leftRand = 0.0f , rightRand = 0.0f;
 	gRobot.stage = ROBOT_STAGE_POWER_ON;
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
 	gRobot.moveBase.targetPoint = 2;
 	gRobot.isReset = ROBOT_NOT_RESET;
 	//产生两个随机数
-	srand((unsigned)time(NULL));
-	dummyRand = rand()/RAND_MAX;
-	dummyRand = dummyRand;
-	leftRand = rand()/RAND_MAX;
-	rightRand = rand()/RAND_MAX;
+	RNG_Config();
+	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
+	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
+	RNG_Cmd(DISABLE);
 	//根据随机数给出左右枪的优先级顺序
 	if(leftRand <= 0.5f)
 	{
-		LeftGunPriority[1]=PLANT1;
-		LeftGunPriority[2]=PLANT2;
+		LeftGunPriority[0]=PLANT1;
+		LeftGunPriority[1]=PLANT2;
 	}
 	else
 	{
-		LeftGunPriority[1]=PLANT2;
-		LeftGunPriority[2]=PLANT1;		
+		LeftGunPriority[0]=PLANT2;
+		LeftGunPriority[1]=PLANT1;		
 	}
 	if(rightRand <= 0.5f)
 	{
-		RightGunPriority[1]=PLANT5;
-		RightGunPriority[2]=PLANT4;
+		RightGunPriority[0]=PLANT5;
+		RightGunPriority[1]=PLANT4;
 	}
 	else
 	{
-		RightGunPriority[1]=PLANT4;
-		RightGunPriority[2]=PLANT5;		
+		RightGunPriority[0]=PLANT4;
+		RightGunPriority[1]=PLANT5;		
 	}
 	for(uint8_t i = 0; i < 7;i++)
 	{
@@ -306,6 +340,14 @@ status_t ROBOT_Init(void)
 	for(uint8_t i = 0; i < 7;i++)
 	{
 		gRobot.plantState[i].plateState = COMMAND_DONE;
+	}
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.cameraInfo[i].ball = 1;
+	}
+	for(uint8_t i = 0; i < 7;i++)
+	{
+		gRobot.cameraInfo[i].plate = 1;
 	}
 //	for(uint8_t i = 0; i < 7;i++)
 //	{
@@ -368,7 +410,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 		GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-	gRobot.leftGun.gunCommand[PLANT6].plate = 1;
 	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM || gRobot.leftGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.leftGun.commandState = GUN_NO_COMMAND;
@@ -501,7 +542,6 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 		GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
-	gRobot.rightGun.gunCommand[PLANT6].plate = 1;
 	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.rightGun.commandState = GUN_NO_COMMAND;
@@ -2005,7 +2045,7 @@ status_t ROBOT_RightGunShoot(void)
 		{
 				ROBOT_RightGunCheckConflict();
 				gRobot.rightGun.shoot=GUN_START_SHOOT;
-				RightShoot();				
+				RightShoot();
 				OSTimeDly(22);
 				if(gRobot.rightGun.targetPlant != PLANT7)
 				{
