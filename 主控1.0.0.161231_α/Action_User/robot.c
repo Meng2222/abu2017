@@ -9,6 +9,8 @@
 #include "cpu.h"
 #include "usart.h"
 #include "app_cfg.h"
+#include "stdlib.h"
+#include "time.h"
 robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
 extern OS_EVENT *LeftGunShootPointMbox;
@@ -264,11 +266,39 @@ static void UpperGunInit(void)
 */
 status_t ROBOT_Init(void)
 {
+	float dummyRand = 0.0f , leftRand = 0.0f , rightRand = 0.0f;
 	gRobot.stage = ROBOT_STAGE_POWER_ON;
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
 	gRobot.moveBase.targetPoint = 2;
 	gRobot.isReset = ROBOT_NOT_RESET;
+	//产生两个随机数
+	srand((unsigned)time(NULL));
+	dummyRand = rand()/RAND_MAX;
+	dummyRand = dummyRand;
+	leftRand = rand()/RAND_MAX;
+	rightRand = rand()/RAND_MAX;
+	//根据随机数给出左右枪的优先级顺序
+	if(leftRand <= 0.5f)
+	{
+		LeftGunPriority[1]=PLANT1;
+		LeftGunPriority[2]=PLANT2;
+	}
+	else
+	{
+		LeftGunPriority[1]=PLANT2;
+		LeftGunPriority[2]=PLANT1;		
+	}
+	if(rightRand <= 0.5f)
+	{
+		RightGunPriority[1]=PLANT5;
+		RightGunPriority[2]=PLANT4;
+	}
+	else
+	{
+		RightGunPriority[1]=PLANT4;
+		RightGunPriority[2]=PLANT5;		
+	}
 	for(uint8_t i = 0; i < 7;i++)
 	{
 		gRobot.plantState[i].ballState = COMMAND_DONE;
