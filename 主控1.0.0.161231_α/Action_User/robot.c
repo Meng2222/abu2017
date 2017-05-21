@@ -1538,7 +1538,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 		ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
 		ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
 		//检查命令状态是否发生改变
-		if(gRobot.leftGun.shootTimes <= LEFT_AUTO_NUMBER || gRobot.isBleOk.noBleFlag == BLE_LOST)
+		if(gRobot.leftGun.gunCommand == gRobot.autoCommand || gRobot.isBleOk.noBleFlag == BLE_LOST)
 		{
 			if(gRobot.leftGun.targetPlant==PLANT1 ||gRobot.leftGun.targetPlant==PLANT2||\
 				gRobot.leftGun.targetPlant==PLANT4 ||gRobot.leftGun.targetPlant==PLANT5)
@@ -1678,7 +1678,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 *status:GUN_AIM_IN_PROCESS， GUN_AIM_DONE
 *注意：
 */
-status_t ROBOT_RightGunCheckAim(void)
+ status_t ROBOT_RightGunCheckAim(void)
 {
 	//右枪到位标准
 	#define RIGHT_READY_STANDARD (5u)
@@ -1702,7 +1702,7 @@ status_t ROBOT_RightGunCheckAim(void)
 		ReadActualPos(CAN1, RIGHT_GUN_GROUP_ID);		
 		ReadActualVel(CAN1, RIGHT_GUN_VEL_GROUP_ID);
 		//检查命令状态是否发生改变
-		if(gRobot.rightGun.shootTimes <= RIGHT_AUTO_NUMBER||gRobot.isBleOk.noBleFlag == BLE_LOST)
+		if(gRobot.rightGun.gunCommand == gRobot.autoCommand||gRobot.isBleOk.noBleFlag == BLE_LOST)
 		{
 			if(gRobot.rightGun.targetPlant==PLANT1 ||gRobot.rightGun.targetPlant==PLANT2||\
 				gRobot.rightGun.targetPlant==PLANT4 ||gRobot.rightGun.targetPlant==PLANT5)
