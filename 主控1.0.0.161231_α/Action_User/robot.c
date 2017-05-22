@@ -362,10 +362,10 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.autoCommand[i].plate = 1;
 	}
-	gRobot.plantState[PLANT6].plate = 0;
+	gRobot.plantState[PLANT6].plate = 1;
 	gRobot.plantState[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 0;
+	gRobot.autoCommand[PLANT6].plate = 2;
 	gRobot.autoCommand[PLANT3].plate = 1;
 
 	LeftGunInit();
@@ -1528,7 +1528,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 	int timeout = LEFT_TIME_OUT;
 	uint8_t leftGunReadyTimes = 0;
 	while(timeout--)
-	{	
+	{
 		//每次检测前对之前的数据复位
 		gRobot.leftGun.actualPose.pitch = 0.0f;
 		gRobot.leftGun.actualPose.roll = 0.0f;
@@ -1692,7 +1692,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 	uint8_t rightGunReadyTimes = 0;
 
 	while(timeout--)
-	{	
+	{
 		//每次检测前对之前的数据复位
 		gRobot.rightGun.actualPose.pitch = 0.0f;
 		gRobot.rightGun.actualPose.roll = 0.0f;
@@ -1940,7 +1940,8 @@ status_t ROBOT_UpperGunCheckAim(void)
  status_t ROBOT_LeftGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
+	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+		||gRobot.isReset == ROBOT_RESET)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);
@@ -1994,6 +1995,7 @@ status_t ROBOT_LeftGunShoot(void)
 					if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 					{
 						LeftPush();
+						USART_SendData(USART3, 'x');
 					}
 				}
 				OSTimeDly(6);
@@ -2053,6 +2055,8 @@ status_t ROBOT_RightGunShoot(void)
 					if(gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
 					{
 						RightPush();
+						USART_SendData(USART3, 'y');
+
 					}
 				}
 				OSTimeDly(6);
