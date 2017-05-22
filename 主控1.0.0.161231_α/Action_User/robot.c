@@ -272,7 +272,7 @@ static void RNG_Config(void)
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE); //开启 RNG 时钟
 	RNG_Cmd(ENABLE); //使能 RNG
 	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET&&retry<10000)//等待就绪
-	{ 
+	{
 		retry++; 
 		delay_us(100);
 	}
@@ -351,21 +351,21 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].ball = 2;
+		gRobot.autoCommand[i].ball = 1;
 	}
-    gRobot.plantState[PLANT6].ball = 2;
-	gRobot.autoCommand[PLANT6].ball = 2;
+    gRobot.plantState[PLANT6].ball = 0;
+	gRobot.autoCommand[PLANT6].ball = 0;
 	gRobot.autoCommand[PLANT7].ball = 1;
 	gRobot.autoCommand[PLANT3].ball = 1;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].plate = 2;
+		gRobot.autoCommand[i].plate = 1;
 	}
-	gRobot.plantState[PLANT6].plate = 2;
+	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.plantState[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 2;
+	gRobot.autoCommand[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT3].plate = 1;
 
 	LeftGunInit();

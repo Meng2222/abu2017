@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -1118,7 +1118,7 @@ void LeftGunShootTask(void)
 					else/* if(gRobot.leftGun.shootTimes == 0)*/
 					{
 						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
-																				[leftGunShootCommand.plantNum];
+																		[leftGunShootCommand.plantNum];
 						ROBOT_LeftGunAim();
 					}
 					//第一发弹先调整姿态一段时间后再上弹
@@ -1131,7 +1131,7 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunReload();				
 					
 					gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
-																			[leftGunShootCommand.plantNum];
+																	[leftGunShootCommand.plantNum];
 					ROBOT_LeftGunAim();
 
 #ifndef NO_WALK_TASK

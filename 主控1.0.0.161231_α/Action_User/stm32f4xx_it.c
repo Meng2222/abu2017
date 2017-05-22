@@ -1041,14 +1041,14 @@ void UART4_IRQHandler(void)
 							if(gRobot.plantState[id - 20].plateState == COMMAND_DONE)
 							{
 								gRobot.plantState[id - 20].plate = 1;
-							}								
+							}
 							else
 							{
 								if(id-20==PLANT6)
 								{
 									gRobot.plantState[id - 20].plate = 1;									
 								}
-							}							
+							}
 							break;
 					}
 				}
