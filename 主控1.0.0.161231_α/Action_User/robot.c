@@ -20,7 +20,7 @@ extern OS_EVENT *RightGunShootPointMbox;
 
 /*
 ============================================================
-						  枪初始化 
+						  枪初始化
 ============================================================
 */
 
@@ -44,27 +44,27 @@ static void LeftGunInit(void)
 	gLeftGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;	
+	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD5][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;	
-	
+	gLeftGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;
+
 	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
 	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
 	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].roll;
-	
+
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.leftGun.maxPoseLimit.yaw = 50.0f;
 	gRobot.leftGun.maxPoseLimit.roll = 46.54f;
 	gRobot.leftGun.maxPoseLimit.speed1=200.0f;
 	gRobot.leftGun.maxPoseLimit.speed2=200.0f;
 
-	
+
 	gRobot.leftGun.minPoseLimit.pitch = 7.0f;
 	gRobot.leftGun.minPoseLimit.yaw = -50.0f;
 	gRobot.leftGun.minPoseLimit.roll = -43.46f;
 	gRobot.leftGun.minPoseLimit.speed1=0.0f;
-	gRobot.leftGun.minPoseLimit.speed2=0.0f;	
-	
+	gRobot.leftGun.minPoseLimit.speed2=0.0f;
+
 	//枪未进行瞄准
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 	//自动模式
@@ -89,7 +89,7 @@ static void LeftGunInit(void)
 	gRobot.leftGun.gunCommand = (plant_t *)gRobot.autoCommand;
 	gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
-	
+
 	elmo_Enable(CAN1, LEFT_GUN_LEFT_ID);
 	elmo_Enable(CAN1, LEFT_GUN_RIGHT_ID);
 	elmo_Enable(CAN1, LEFT_GUN_PITCH_ID);
@@ -97,13 +97,13 @@ static void LeftGunInit(void)
 	elmo_Enable(CAN1, LEFT_GUN_YAW_ID);
 
 
-	Vel_cfg(CAN1, LEFT_GUN_LEFT_ID, 300000,300000);	
-	Vel_cfg(CAN1, LEFT_GUN_RIGHT_ID, 300000,300000);	
+	Vel_cfg(CAN1, LEFT_GUN_LEFT_ID, 300000,300000);
+	Vel_cfg(CAN1, LEFT_GUN_RIGHT_ID, 300000,300000);
 
 	Pos_cfg(CAN1, LEFT_GUN_PITCH_ID, 50000,50000,80000);//俯仰
 	Pos_cfg(CAN1, LEFT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
 	Pos_cfg(CAN1, LEFT_GUN_YAW_ID,50000,50000,80000);//航向
-	
+
 	ROBOT_LeftGunHome();
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(5.0f));
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
@@ -117,7 +117,7 @@ static void RightGunInit(void)
 	gRobot.rightGun.actualPose.pitch = 0.0f;
 	gRobot.rightGun.actualPose.yaw = 0.0f;
 	gRobot.rightGun.actualPose.roll = 0.0f;
-	
+
 
 	gRightGunReloadPosDatabase[SHOOT_METHOD1][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
@@ -131,23 +131,23 @@ static void RightGunInit(void)
 	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD5][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;
-	
+
 	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
 	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
 	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].roll;
-	
+
 	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
 	gRobot.rightGun.maxPoseLimit.roll = 46.54f;
 	gRobot.rightGun.maxPoseLimit.speed1=200.0f;
 	gRobot.rightGun.maxPoseLimit.speed2=200.0f;
-	
+
 	gRobot.rightGun.minPoseLimit.pitch = 7.0f;
 	gRobot.rightGun.minPoseLimit.yaw = -50.0f;
 	gRobot.rightGun.minPoseLimit.roll = -43.46f;
 	gRobot.rightGun.minPoseLimit.speed1=0.0f;
 	gRobot.rightGun.minPoseLimit.speed2=0.0f;
-	
+
 	//枪未进行瞄准
 	gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 	//自动模式
@@ -172,7 +172,7 @@ static void RightGunInit(void)
 	gRobot.rightGun.gunCommand = (plant_t *)gRobot.autoCommand;
 	gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
-	
+
 	elmo_Enable(CAN1, RIGHT_GUN_LEFT_ID);
 	elmo_Enable(CAN1, RIGHT_GUN_RIGHT_ID);
 	elmo_Enable(CAN1, RIGHT_GUN_PITCH_ID);
@@ -180,8 +180,8 @@ static void RightGunInit(void)
 	elmo_Enable(CAN1, RIGHT_GUN_YAW_ID);
 
 
-	Vel_cfg(CAN1, RIGHT_GUN_LEFT_ID, 300000,300000);	
-	Vel_cfg(CAN1, RIGHT_GUN_RIGHT_ID, 300000,300000);	
+	Vel_cfg(CAN1, RIGHT_GUN_LEFT_ID, 300000,300000);
+	Vel_cfg(CAN1, RIGHT_GUN_RIGHT_ID, 300000,300000);
 
 	Pos_cfg(CAN1, RIGHT_GUN_PITCH_ID, 50000,50000,80000);//俯仰
 	Pos_cfg(CAN1, RIGHT_GUN_ROLL_ID, 50000,50000,80000);//翻滚
@@ -203,24 +203,24 @@ static void UpperGunInit(void)
 	gRobot.upperGun.targetPose.pitch = 0.0f;
 	gRobot.upperGun.targetPose.yaw = 0.0f;
 	gRobot.upperGun.targetPose.roll = 0.0f;
-	
+
 	gRobot.upperGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.upperGun.maxPoseLimit.yaw = 20.0f;
 	gRobot.upperGun.maxPoseLimit.roll = 0.0f;
 	gRobot.upperGun.maxPoseLimit.speed1=200.0f;
 	gRobot.upperGun.maxPoseLimit.speed2=0.0f;
-	
+
 	gRobot.upperGun.minPoseLimit.pitch = -10.0f;
 	gRobot.upperGun.minPoseLimit.yaw = -20.0f;
 	gRobot.upperGun.minPoseLimit.roll = 0.0f;
 	gRobot.upperGun.minPoseLimit.speed1=0.0f;
 	gRobot.upperGun.minPoseLimit.speed2=0.0f;
-	
+
 	gRobot.upperGun.targetPose.pitch = gUpperGunPosDatabase[gUpperGunShootCmds[0].plantNum][gUpperGunShootCmds[0].shootMethod][ZONE1].pitch;
 	gRobot.upperGun.targetPose.yaw = gUpperGunPosDatabase[gUpperGunShootCmds[0].plantNum][gUpperGunShootCmds[0].shootMethod][ZONE1].yaw;
 	gRobot.upperGun.targetPose.speed1 = gUpperGunPosDatabase[gUpperGunShootCmds[0].plantNum][gUpperGunShootCmds[0].shootMethod][ZONE1].speed1;
 
-	
+
 	//枪未进行瞄准
 	gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
 	//自动模式
@@ -243,20 +243,20 @@ static void UpperGunInit(void)
 	gRobot.upperGun.shootTimes = 0;
 	//初始化时命令指向自动命令
 	gRobot.upperGun.gunCommand = (plant_t *)gRobot.autoCommand;
-	
+
 	gRobot.upperGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.upperGun.lastParaMode = INVALID_SHOOT_METHOD;
 
 	elmo_Enable(CAN1, UPPER_GUN_LEFT_ID);
 	elmo_Enable(CAN1, UPPER_GUN_YAW_ID);
 	elmo_Enable(CAN1, UPPER_GUN_PITCH_ID);
-	
+
 	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,350000,350000);
 	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,50000,50000,80000);//航向
 	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,50000,50000,80000);//俯仰
-	
+
 	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
-	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));	
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
 /*
@@ -273,7 +273,7 @@ static void RNG_Config(void)
 	RNG_Cmd(ENABLE); //使能 RNG
 	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET&&retry<10000)//等待就绪
 	{
-		retry++; 
+		retry++;
 		delay_us(100);
 	}
 	if(retry>=10000)
@@ -291,7 +291,7 @@ static void RNG_Config(void)
 static uint32_t RNG_Get_RandomNum(void)
 {
 	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET); //等待随机数就绪
-	return RNG_GetRandomNumber(); 
+	return RNG_GetRandomNumber();
 }
 /*
 *名称：ROBOT_Init
@@ -321,7 +321,7 @@ status_t ROBOT_Init(void)
 	else
 	{
 		LeftGunPriority[0]=PLANT2;
-		LeftGunPriority[1]=PLANT1;		
+		LeftGunPriority[1]=PLANT1;
 	}
 	if(rightRand <= 0.5f)
 	{
@@ -331,7 +331,7 @@ status_t ROBOT_Init(void)
 	else
 	{
 		RightGunPriority[0]=PLANT4;
-		RightGunPriority[1]=PLANT5;		
+		RightGunPriority[1]=PLANT5;
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
@@ -357,7 +357,7 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT6].ball = 0;
 	gRobot.autoCommand[PLANT7].ball = 1;
 	gRobot.autoCommand[PLANT3].ball = 1;
-	
+
 	for(uint8_t i = 0; i < 7;i++)
 	{
 		gRobot.autoCommand[i].plate = 1;
@@ -372,7 +372,7 @@ status_t ROBOT_Init(void)
 	UpperGunInit();
 
 	MOVEBASE_Init();
-	
+
 	gRobot.stage = ROBOT_STAGE_INIT;
 
 	return GUN_NO_ERROR;
@@ -380,11 +380,11 @@ status_t ROBOT_Init(void)
 
 /**
   * @brief	Get left gun shoot command
-  * @note	
-  * @param	
-  *     @arg	
+  * @note
+  * @param
+  *     @arg
   * @param	`
-  * @retval	
+  * @retval
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
@@ -397,11 +397,11 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	gRobot.leftGun.commandState = GUN_NO_COMMAND;
 //	if(gRobot.leftGun.shootTimes%2==0)
 //	{
-//		gRobot.plantState[PLANT1].plate = 1;	
+//		gRobot.plantState[PLANT1].plate = 1;
 //	}
 //	else
 //	{
-//		gRobot.plantState[PLANT2].plate = 1;		
+//		gRobot.plantState[PLANT2].plate = 1;
 //	}
 	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 	{
@@ -423,12 +423,12 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				shootCommand.plantNum = LeftGunPriority[i];
 				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD3;
-				else 
+				else
 					shootCommand.shootMethod = SHOOT_METHOD5;
 //				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
 //					shootCommand.shootMethod = SHOOT_METHOD5;
 //				else
-//					shootCommand.shootMethod = SHOOT_METHOD1;	
+//					shootCommand.shootMethod = SHOOT_METHOD1;
 
 				//不连续打同一组参数
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
@@ -448,7 +448,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
 				{
 					continue;
-				}		
+				}
 				break;
 			}
 			//没盘
@@ -458,12 +458,12 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD6;			
+					shootCommand.shootMethod = SHOOT_METHOD6;
 //				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD6;					
+//					shootCommand.shootMethod = SHOOT_METHOD6;
 //				else
-//					shootCommand.shootMethod = SHOOT_METHOD4;		
-			
+//					shootCommand.shootMethod = SHOOT_METHOD4;
+
 				//不连续打同一组参数
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 				{
@@ -485,8 +485,8 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
 				{
 					continue;
-				}					
-				break;		
+				}
+				break;
 			}
 		}
 		if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
@@ -520,11 +520,11 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 
 /**
   * @brief	Get right gun shoot command
-  * @note	
-  * @param	
-  *     @arg	
-  * @param	
-  * @retval	
+  * @note
+  * @param
+  *     @arg
+  * @param
+  * @retval
   */
 
 shoot_command_t ROBOT_RightGunGetShootCommand(void)
@@ -556,9 +556,9 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD3;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD5;				
+					shootCommand.shootMethod = SHOOT_METHOD5;
 //				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD5;					
+//					shootCommand.shootMethod = SHOOT_METHOD5;
 //				else
 //					shootCommand.shootMethod = SHOOT_METHOD1;
 
@@ -573,14 +573,14 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 						{
 							if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
 							continue;
-						}				
+						}
 					}
 				}
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
 				{
 					continue;
-				}				
+				}
 				break;
 			}
 			//没盘
@@ -592,7 +592,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				else
 					shootCommand.shootMethod = SHOOT_METHOD6;
 //				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
-//					shootCommand.shootMethod = SHOOT_METHOD6;					
+//					shootCommand.shootMethod = SHOOT_METHOD6;
 //				else
 //					shootCommand.shootMethod = SHOOT_METHOD4;
 				//不连续打同一组参数
@@ -608,7 +608,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 							{
 								if(gRobot.leftGun.mode != GUN_MANUAL_MODE)
 								continue;
-							}				
+							}
 						}
 					}
 				}
@@ -616,8 +616,8 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
 				{
 					continue;
-				}	
-				break;	
+				}
+				break;
 			}
 		}
 		if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
@@ -642,7 +642,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				if(shootCommand.shootMethod%2)
 					gRobot.rightGun.gunCommand[shootCommand.plantNum].plate += 1;
 				else
-					gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;					
+					gRobot.rightGun.gunCommand[shootCommand.plantNum].ball += 1;
 			}
 		}
 	}
@@ -651,11 +651,11 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 
 /**
   * @brief	Get upper gun shoot command
-  * @note	
-  * @param	
-  *     @arg	
-  * @param	
-  * @retval	
+  * @note
+  * @param
+  *     @arg
+  * @param
+  * @retval
   */
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
@@ -681,7 +681,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
 			{
 				shootCommand.shootMethod = SHOOT_METHOD4;
-			}	
+			}
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ballState = COMMAND_IN_PROCESS;
@@ -695,12 +695,12 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
 			{
 				shootCommand.shootMethod = SHOOT_METHOD5;
-			}	
+			}
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plateState = COMMAND_IN_PROCESS;
 			break;
-		
+
 		}
 		if(i==searchRange-1)
 		{
@@ -721,14 +721,14 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 				gRobot.upperGun.gunCommand[shootCommand.plantNum].ball += 1;
 			}
 			gRobot.upperGun.commandState = GUN_NO_COMMAND;
-		}		
+		}
 	}
-	
+
 	return shootCommand;
 }
 /*
 ============================================================
-				   枪参数变换与逆变换			
+				   枪参数变换与逆变换
 ============================================================
 */
 
@@ -742,12 +742,12 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 int32_t LeftGunYawTransform(float yaw)
 {
 	if(yaw > gRobot.leftGun.maxPoseLimit.yaw)
-	{	
+	{
 		gRobot.leftGun.targetPose.yaw = gRobot.leftGun.maxPoseLimit.yaw;
-		yaw = gRobot.leftGun.maxPoseLimit.yaw;	
+		yaw = gRobot.leftGun.maxPoseLimit.yaw;
 	}
 	if(yaw < gRobot.leftGun.minPoseLimit.yaw)
-	{		
+	{
 		gRobot.leftGun.targetPose.yaw = gRobot.leftGun.minPoseLimit.yaw;
 		yaw = gRobot.leftGun.minPoseLimit.yaw;
 	}
@@ -776,15 +776,15 @@ float LeftGunYawInverseTransform(int32_t position)
 int32_t RightGunPitchTransform(float pitch)
 {
 	if(pitch > gRobot.rightGun.maxPoseLimit.pitch)
-	{	
+	{
 		gRobot.rightGun.targetPose.pitch = gRobot.rightGun.maxPoseLimit.pitch;
-		pitch = gRobot.rightGun.maxPoseLimit.pitch;	
+		pitch = gRobot.rightGun.maxPoseLimit.pitch;
 	}
 	if(pitch < gRobot.rightGun.minPoseLimit.pitch)
-	{		
+	{
 		gRobot.rightGun.targetPose.pitch = gRobot.rightGun.minPoseLimit.pitch;
 		pitch = gRobot.rightGun.minPoseLimit.pitch;
-	}	
+	}
 	return (int32_t)((pitch - 7.0f) * 141.0844f);
 }
 
@@ -809,10 +809,10 @@ float RightGunPitchInverseTransform(int32_t position)
 */
 int32_t RightGunRollTransform(float roll)
 {
-	if(roll > gRobot.rightGun.maxPoseLimit.roll) 
+	if(roll > gRobot.rightGun.maxPoseLimit.roll)
 	{
 		gRobot.rightGun.targetPose.roll = gRobot.rightGun.maxPoseLimit.roll;
-		roll = gRobot.rightGun.maxPoseLimit.roll;	
+		roll = gRobot.rightGun.maxPoseLimit.roll;
 	}
 	if(roll < gRobot.rightGun.minPoseLimit.roll)
 	{
@@ -843,15 +843,15 @@ float RightGunRollInverseTransform(int32_t position)
 */
 int32_t RightGunLeftSpeedTransform(float speed)
 {
-	
+
 	if(speed > gRobot.rightGun.maxPoseLimit.speed1)
-	{		
-		gRobot.rightGun.targetPose.speed1 = gRobot.rightGun.maxPoseLimit.speed1; 
-		speed = gRobot.rightGun.maxPoseLimit.speed1;
-	}		
-	if(speed < gRobot.rightGun.minPoseLimit.speed1) 
 	{
-		gRobot.rightGun.targetPose.speed1 = gRobot.rightGun.minPoseLimit.speed1; 		
+		gRobot.rightGun.targetPose.speed1 = gRobot.rightGun.maxPoseLimit.speed1;
+		speed = gRobot.rightGun.maxPoseLimit.speed1;
+	}
+	if(speed < gRobot.rightGun.minPoseLimit.speed1)
+	{
+		gRobot.rightGun.targetPose.speed1 = gRobot.rightGun.minPoseLimit.speed1;
 		speed = gRobot.rightGun.minPoseLimit.speed1;
 	}
 	return -4096*(int32_t)speed;
@@ -859,7 +859,7 @@ int32_t RightGunLeftSpeedTransform(float speed)
 
 /*
 *名称：LeftGunLeftSpeedInverseTransform
-*功能：左枪左传送带速度逆变换，pulse/s到m/s 
+*功能：左枪左传送带速度逆变换，pulse/s到m/s
 *参数：
 *
 *注意：
@@ -881,12 +881,12 @@ int32_t RightGunRightSpeedTransform(float speed)
 {
 	if(speed > gRobot.rightGun.maxPoseLimit.speed2)
 	{
-		gRobot.rightGun.targetPose.speed2 = gRobot.rightGun.maxPoseLimit.speed2;	 
-		speed = gRobot.rightGun.maxPoseLimit.speed2;	
+		gRobot.rightGun.targetPose.speed2 = gRobot.rightGun.maxPoseLimit.speed2;
+		speed = gRobot.rightGun.maxPoseLimit.speed2;
 	}
 	if(speed < gRobot.rightGun.minPoseLimit.speed2)
 	{
-		gRobot.rightGun.targetPose.speed2 = gRobot.rightGun.minPoseLimit.speed2;	 		
+		gRobot.rightGun.targetPose.speed2 = gRobot.rightGun.minPoseLimit.speed2;
 		speed = gRobot.rightGun.minPoseLimit.speed2;
 	}
 	return 4096*(int32_t)speed;
@@ -894,7 +894,7 @@ int32_t RightGunRightSpeedTransform(float speed)
 
 /*
 *名称：LeftGunRightSpeedInverseTransform
-*功能：左枪右传送带速度逆变换，pulse/s到m/s 
+*功能：左枪右传送带速度逆变换，pulse/s到m/s
 *参数：
 *
 *注意：
@@ -915,11 +915,11 @@ float RightGunRightSpeedInverseTransform(int32_t speed)
 int32_t RightGunYawTransform(float yaw)
 {
 	if(yaw > gRobot.rightGun.maxPoseLimit.yaw)
-	{		
+	{
 		gRobot.rightGun.targetPose.yaw = gRobot.rightGun.maxPoseLimit.yaw;
 		yaw = gRobot.rightGun.maxPoseLimit.yaw;
-	}		
-	if(yaw < gRobot.rightGun.minPoseLimit.yaw) 
+	}
+	if(yaw < gRobot.rightGun.minPoseLimit.yaw)
 	{
 		gRobot.rightGun.targetPose.yaw = gRobot.rightGun.minPoseLimit.yaw;
 		yaw = gRobot.rightGun.minPoseLimit.yaw;
@@ -950,15 +950,15 @@ int32_t LeftGunPitchTransform(float pitch)
 {
 	if(pitch > gRobot.leftGun.maxPoseLimit.pitch)
 	{
-		gRobot.leftGun.targetPose.pitch = gRobot.leftGun.maxPoseLimit.pitch;	
-		pitch = gRobot.leftGun.maxPoseLimit.pitch;	
+		gRobot.leftGun.targetPose.pitch = gRobot.leftGun.maxPoseLimit.pitch;
+		pitch = gRobot.leftGun.maxPoseLimit.pitch;
 	}
 	if(pitch < gRobot.leftGun.minPoseLimit.pitch)
 	{
-		gRobot.leftGun.targetPose.pitch = gRobot.leftGun.minPoseLimit.pitch;	
+		gRobot.leftGun.targetPose.pitch = gRobot.leftGun.minPoseLimit.pitch;
 		pitch = gRobot.leftGun.minPoseLimit.pitch;
 	}
-	return -(int32_t)((pitch - 7.0f) * 141.0844f);	
+	return -(int32_t)((pitch - 7.0f) * 141.0844f);
 }
 
 /*
@@ -985,11 +985,11 @@ int32_t LeftGunRollTransform(float roll)
 	if(roll > gRobot.leftGun.maxPoseLimit.roll)
 	{
 		gRobot.leftGun.targetPose.roll = gRobot.leftGun.maxPoseLimit.roll;
-		roll = gRobot.leftGun.maxPoseLimit.roll;	
+		roll = gRobot.leftGun.maxPoseLimit.roll;
 	}
 	if(roll < gRobot.leftGun.minPoseLimit.roll)
 	{
-		gRobot.leftGun.targetPose.roll = gRobot.leftGun.minPoseLimit.roll;		
+		gRobot.leftGun.targetPose.roll = gRobot.leftGun.minPoseLimit.roll;
 		roll = gRobot.leftGun.minPoseLimit.roll;
 	}
 	return -(int32_t)((roll - 46.54f) * 141.0844f);
@@ -1020,7 +1020,7 @@ int32_t LeftGunLeftSpeedTransform(float speed)
 	{
 		gRobot.leftGun.targetPose.speed1 = gRobot.leftGun.maxPoseLimit.speed1;
 		speed = gRobot.leftGun.maxPoseLimit.speed1;
-	}		
+	}
 	if(speed < gRobot.leftGun.minPoseLimit.speed1)
 	{
 		gRobot.leftGun.targetPose.speed1 = gRobot.leftGun.minPoseLimit.speed1;
@@ -1053,7 +1053,7 @@ int32_t LeftGunRightSpeedTransform(float speed)
 	{
 		gRobot.leftGun.targetPose.speed2 = gRobot.leftGun.maxPoseLimit.speed2;
 		speed = gRobot.leftGun.maxPoseLimit.speed2;
-	}		
+	}
 	if(speed < gRobot.leftGun.minPoseLimit.speed2)
 	{
 		gRobot.leftGun.targetPose.speed2 = gRobot.leftGun.minPoseLimit.speed2;
@@ -1081,15 +1081,15 @@ float LeftGunRightSpeedInverseTransform(int32_t speed)
 *注意：
 */
 int32_t UpperGunYawTransform(float yaw)
-{ 
+{
 	if(yaw > gRobot.upperGun.maxPoseLimit.yaw)
 	{
-		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.maxPoseLimit.yaw;	
-		yaw = gRobot.upperGun.maxPoseLimit.yaw;	
+		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.maxPoseLimit.yaw;
+		yaw = gRobot.upperGun.maxPoseLimit.yaw;
 	}
 	if(yaw < gRobot.upperGun.minPoseLimit.yaw)
 	{
-		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.minPoseLimit.yaw;	
+		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.minPoseLimit.yaw;
 		yaw = gRobot.upperGun.minPoseLimit.yaw;
 	}
 	return (int32_t)((20.0f + yaw) * 102.4f);
@@ -1119,14 +1119,14 @@ int32_t UpperGunPitchTransform(float pitch)
 	if(pitch > gRobot.upperGun.maxPoseLimit.pitch)
 	{
 		gRobot.upperGun.targetPose.pitch = gRobot.upperGun.maxPoseLimit.pitch;
-		pitch = gRobot.upperGun.maxPoseLimit.pitch;	
+		pitch = gRobot.upperGun.maxPoseLimit.pitch;
 	}
 	if(pitch < gRobot.upperGun.minPoseLimit.pitch)
 	{
-		gRobot.upperGun.targetPose.pitch = gRobot.upperGun.minPoseLimit.pitch;		
+		gRobot.upperGun.targetPose.pitch = gRobot.upperGun.minPoseLimit.pitch;
 		pitch = gRobot.upperGun.minPoseLimit.pitch;
 	}
-	return (int32_t)(-(10.0f + pitch) * 141.0844f);	
+	return (int32_t)(-(10.0f + pitch) * 141.0844f);
 }
 
 /*
@@ -1154,7 +1154,7 @@ int32_t UpperGunLeftSpeedTransform(float speed)
 	{
 		gRobot.upperGun.targetPose.speed1 = gRobot.upperGun.maxPoseLimit.speed1;
 		speed = gRobot.upperGun.maxPoseLimit.speed1;
-	}		
+	}
 	if(speed < gRobot.upperGun.minPoseLimit.speed1)
 	{
 		gRobot.upperGun.targetPose.speed1 = gRobot.upperGun.minPoseLimit.speed1;
@@ -1165,7 +1165,7 @@ int32_t UpperGunLeftSpeedTransform(float speed)
 
 /*
 *名称：UpperGunLeftSpeedInverseTransform
-*功能：上枪左传送带速度逆变换，pulse/s到m/s 
+*功能：上枪左传送带速度逆变换，pulse/s到m/s
 *参数：
 *
 *注意：
@@ -1177,7 +1177,7 @@ float UpperGunLeftSpeedInverseTransform(int32_t speed)
 
 /*
 ============================================================
-				   机器人动作流程函数			
+				   机器人动作流程函数
 ============================================================
 */
 
@@ -1297,7 +1297,7 @@ status_t ROBOT_RightGunReload(void)
 //				OSTimeDly(2);
 //				RightHold();
 //				OSTimeDly(8);
-//			}			
+//			}
 			OSTimeDly(100);
 		}
 		else
@@ -1313,7 +1313,7 @@ status_t ROBOT_RightGunReload(void)
 		gRobot.rightGun.reloadState = GUN_ALREADY_RELOAD;
 	}
 	return GUN_NO_ERROR;
-	
+
 }
 /**
 *名称：ROBOT_LeftGunCheckReload
@@ -1338,16 +1338,16 @@ status_t ROBOT_LeftGunCheckReload(void)
 	if(noPlateTimes>=8)
 	{
 		gRobot.leftGun.champerErrerState = GUN_RELOAD_ERROR;
-		reloadErrorTimes++;		
+		reloadErrorTimes++;
 	}
 	else
 	{
-		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;		
+		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
 	}
 	if(reloadErrorTimes >= 2)
 	{
 		gRobot.leftGun.champerErrerState = GUN_RELOAD_OK;
-		reloadErrorTimes = 0;			
+		reloadErrorTimes = 0;
 	}
 	return GUN_NO_ERROR;
 }
@@ -1375,22 +1375,22 @@ status_t ROBOT_RightGunCheckReload(void)
 	if(noPlateTimes>=8)
 	{
 		gRobot.rightGun.champerErrerState = GUN_RELOAD_ERROR;
-		reloadErrorTimes++;		
+		reloadErrorTimes++;
 	}
 	else
 	{
-		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;		
+		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
 	}
 	if(reloadErrorTimes >= 2)
 	{
 		gRobot.rightGun.champerErrerState = GUN_RELOAD_OK;
-		reloadErrorTimes = 0;			
+		reloadErrorTimes = 0;
 	}
 	return GUN_NO_ERROR;
 }
 
 /** @defgroup Left_Gun_Shoot_Tragedy
-  * @brief 
+  * @brief
   * @{
   */
 
@@ -1410,12 +1410,12 @@ status_t ROBOT_RightGunCheckReload(void)
 */
 status_t ROBOT_LeftGunAim(void)
 {
-	
+
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gRobot.leftGun.targetPose.yaw));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.targetPose.pitch));			
-	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gRobot.leftGun.targetPose.roll));	
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.targetPose.pitch));
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gRobot.leftGun.targetPose.roll));
 
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gRobot.leftGun.targetPose.speed1));
 	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gRobot.leftGun.targetPose.speed2));
@@ -1424,12 +1424,12 @@ status_t ROBOT_LeftGunAim(void)
 }
 status_t ROBOT_LeftGunReloadAim(void)
 {
-	
+
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gRobot.leftGun.reloadPose.yaw));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.reloadPose.pitch));			
-	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gRobot.leftGun.reloadPose.roll));	
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gRobot.leftGun.reloadPose.pitch));
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gRobot.leftGun.reloadPose.roll));
 
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gRobot.leftGun.reloadPose.speed1));
 	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gRobot.leftGun.reloadPose.speed2));
@@ -1437,7 +1437,7 @@ status_t ROBOT_LeftGunReloadAim(void)
 	return GUN_NO_ERROR;
 }
 /** @defgroup Right_Gun_Shoot_Tragedy
-  * @brief 
+  * @brief
   * @{
   */
 
@@ -1462,8 +1462,8 @@ status_t ROBOT_RightGunAim(void)
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.targetPose.yaw));
-			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.targetPose.pitch));			
-			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.targetPose.roll));	
+			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.targetPose.pitch));
+			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.targetPose.roll));
 
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRobot.rightGun.targetPose.speed1));
 			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRobot.rightGun.targetPose.speed2));
@@ -1475,8 +1475,8 @@ status_t ROBOT_RightGunReloadAim(void)
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 			gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 			PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRobot.rightGun.reloadPose.yaw));
-			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.reloadPose.pitch));			
-			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.reloadPose.roll));	
+			PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRobot.rightGun.reloadPose.pitch));
+			PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRobot.rightGun.reloadPose.roll));
 
 			VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRobot.rightGun.reloadPose.speed1));
 			VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRobot.rightGun.reloadPose.speed2));
@@ -1498,7 +1498,7 @@ status_t ROBOT_UpperGunAim(void)
 	//这里应该保证枪膛里有子弹！！！,fix me，检测参数合法性
 	gRobot.upperGun.ready = GUN_AIM_IN_PROCESS;
 	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(gRobot.upperGun.targetPose.yaw));
-	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gRobot.upperGun.targetPose.pitch));			
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gRobot.upperGun.targetPose.pitch));
 
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(gRobot.upperGun.targetPose.speed1));
 
@@ -1517,7 +1517,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//左枪到位标准
-	#define LEFT_READY_STANDARD (5u)
+	#define LEFT_READY_STANDARD (15u)
 	//左枪超时时间 单位为LEFT_SAMPLING_PERIOD
 	#define LEFT_TIME_OUT (50u)
 	//左枪位置检测采样周期 单位为系统tick
@@ -1533,8 +1533,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 		gRobot.leftGun.actualPose.roll = 0.0f;
 		gRobot.leftGun.actualPose.yaw = 0.0f;
 		gRobot.leftGun.actualPose.speed1 = 0.0f;
-		gRobot.leftGun.actualPose.speed2 = 0.0f;		
-		ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
+		gRobot.leftGun.actualPose.speed2 = 0.0f;
+		ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);
 		ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
 		//检查命令状态是否发生改变
 		if(gRobot.leftGun.gunCommand == gRobot.autoCommand || gRobot.isBleOk.noBleFlag == BLE_LOST)
@@ -1556,10 +1556,10 @@ status_t ROBOT_LeftGunCheckAim(void)
 					{
 						gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
 						break;
-					}		
+					}
 				}
 			}
-		}		
+		}
 		OSTimeDly(LEFT_SAMPLIING_PERIOD);
 		LeftGunSendDebugInfo();
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
@@ -1568,13 +1568,13 @@ status_t ROBOT_LeftGunCheckAim(void)
 		{
 			continue;
 		}
-		
+
 		if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.targetPose.roll + 0.5f ||\
 			gRobot.leftGun.actualPose.roll < gRobot.leftGun.targetPose.roll - 0.5f)
 		{
 			continue;
 		}
-		
+
 		if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.targetPose.yaw + 0.5f ||\
 			gRobot.leftGun.actualPose.yaw < gRobot.leftGun.targetPose.yaw - 0.5f)
 		{
@@ -1597,7 +1597,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 			break;
 		}
 	}
-	checkTime = (LEFT_TIME_OUT-timeout)*LEFT_SAMPLIING_PERIOD;	
+	checkTime = (LEFT_TIME_OUT-timeout)*LEFT_SAMPLIING_PERIOD;
 	if(checkTime > (LEFT_TIME_OUT * LEFT_SAMPLIING_PERIOD))
 	{
 		UART5_OUT((uint8_t *)"Left Gun Check Time Out !!!\r\n");
@@ -1621,7 +1621,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 		int timeout = 20;
 		while(timeout--)
 		{
-			ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);		
+			ReadActualPos(CAN1, LEFT_GUN_GROUP_ID);
 			ReadActualVel(CAN1, LEFT_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
 			LeftGunSendDebugInfo();
@@ -1631,13 +1631,13 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 			{
 				continue;
 			}
-			
+
 			if(gRobot.leftGun.actualPose.roll > gRobot.leftGun.reloadPose.roll + 0.5f ||\
 				gRobot.leftGun.actualPose.roll < gRobot.leftGun.reloadPose.roll - 0.5f)
 			{
 				continue;
 			}
-			
+
 			if(gRobot.leftGun.actualPose.yaw > gRobot.leftGun.reloadPose.yaw + 0.5f ||\
 				gRobot.leftGun.actualPose.yaw < gRobot.leftGun.reloadPose.yaw - 0.5f)
 			{
@@ -1658,7 +1658,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime += (20-timeout)*5;	
+		checkTime += (20-timeout)*5;
 	}
 	if(checkTime > 200)
 	{
@@ -1680,7 +1680,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
  status_t ROBOT_RightGunCheckAim(void)
 {
 	//右枪到位标准
-	#define RIGHT_READY_STANDARD (5u)
+	#define RIGHT_READY_STANDARD (15u)
 	//右枪超时时间 单位为RIGHT_SAMPLING_PERIOD
 	#define RIGHT_TIME_OUT (50u)
 	//右枪位置检测采样周期 单位为系统tick
@@ -1697,8 +1697,8 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 		gRobot.rightGun.actualPose.roll = 0.0f;
 		gRobot.rightGun.actualPose.yaw = 0.0f;
 		gRobot.rightGun.actualPose.speed1 = 0.0f;
-		gRobot.rightGun.actualPose.speed2 = 0.0f;			
-		ReadActualPos(CAN1, RIGHT_GUN_GROUP_ID);		
+		gRobot.rightGun.actualPose.speed2 = 0.0f;
+		ReadActualPos(CAN1, RIGHT_GUN_GROUP_ID);
 		ReadActualVel(CAN1, RIGHT_GUN_VEL_GROUP_ID);
 		//检查命令状态是否发生改变
 		if(gRobot.rightGun.gunCommand == gRobot.autoCommand||gRobot.isBleOk.noBleFlag == BLE_LOST)
@@ -1720,10 +1720,10 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 					{
 						gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
 						break;
-					}		
+					}
 				}
 			}
-		}		
+		}
 		OSTimeDly(RIGHT_SAMPLIING_PERIOD);
 		RightGunSendDebugInfo();
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
@@ -1732,13 +1732,13 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 		{
 			continue;
 		}
-		
+
 		if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.targetPose.roll + 0.5f ||\
 			gRobot.rightGun.actualPose.roll < gRobot.rightGun.targetPose.roll - 0.5f)
 		{
 			continue;
 		}
-		
+
 		if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.targetPose.yaw + 0.5f ||\
 			gRobot.rightGun.actualPose.yaw < gRobot.rightGun.targetPose.yaw - 0.5f)
 		{
@@ -1761,7 +1761,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 			break;
 		}
 	}
-	checkTime = (RIGHT_TIME_OUT-timeout)*RIGHT_SAMPLIING_PERIOD;	
+	checkTime = (RIGHT_TIME_OUT-timeout)*RIGHT_SAMPLIING_PERIOD;
 	if(checkTime > (RIGHT_TIME_OUT * RIGHT_SAMPLIING_PERIOD))
 	{
 		UART5_OUT((uint8_t *)"Right Gun Check Time Out !!!\r\n");
@@ -1784,7 +1784,7 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 		while(timeout--)
 		{
 			//fix me 三轴位置已经支持组ID，组ID在robot.h中定义
-			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);		
+			ReadActualPos(CAN1,RIGHT_GUN_GROUP_ID);
 			ReadActualVel(CAN1,RIGHT_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
 			RightGunSendDebugInfo();
@@ -1794,19 +1794,19 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 			{
 				continue;
 			}
-			
+
 			if(gRobot.rightGun.actualPose.roll > gRobot.rightGun.reloadPose.roll + 0.5f ||\
 				gRobot.rightGun.actualPose.roll < gRobot.rightGun.reloadPose.roll - 0.5f)
 			{
 				continue;
 			}
-			
+
 			if(gRobot.rightGun.actualPose.yaw > gRobot.rightGun.reloadPose.yaw + 0.5f ||\
 				gRobot.rightGun.actualPose.yaw < gRobot.rightGun.reloadPose.yaw - 0.5f)
 			{
 				continue;
 			}
-			
+
 			if(gRobot.rightGun.actualPose.speed1 > gRobot.rightGun.reloadPose.speed1 + 1.0f ||\
 				gRobot.rightGun.actualPose.speed1 < gRobot.rightGun.reloadPose.speed1 - 1.0f)
 			{
@@ -1821,7 +1821,7 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 			//运行到这里，表示都满足指标，跳出循环
 			break;
 		}
-		checkTime+=(20-timeout)*5;	
+		checkTime+=(20-timeout)*5;
 	}
 	if(checkTime > 200)
 	{
@@ -1849,7 +1849,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	while(checkTimes--)
 	{
-		//超时时间为20*5*10ms，1秒	
+		//超时时间为20*5*10ms，1秒
 		int timeout = 20;
 		while(timeout--)
 		{
@@ -1875,14 +1875,14 @@ status_t ROBOT_UpperGunCheckAim(void)
 			ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
 			UpperGunSendDebugInfo();
-			
+
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f ||\
 				gRobot.upperGun.actualPose.pitch < gRobot.upperGun.targetPose.pitch - 0.5f)
 			{
 				continue;
 			}
-			
+
 			if(gRobot.upperGun.actualPose.yaw > gRobot.upperGun.targetPose.yaw + 0.2f ||\
 				gRobot.upperGun.actualPose.yaw < gRobot.upperGun.targetPose.yaw - 0.2f)
 			{
@@ -1893,7 +1893,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 			{
 				continue;
 			}
-			
+
 			break;
 		}
 		checkTime+=(20 - timeout) *5;
@@ -1910,7 +1910,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		if(checkTime >= 200)
 		{
 			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
-		}		
+		}
 	}
 	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
@@ -1924,7 +1924,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	{
 		gRobot.upperGun.ready = GUN_AIM_DONE;
 	}
-	
+
 	return GUN_NO_ERROR;
 }
 
@@ -2003,7 +2003,7 @@ status_t ROBOT_LeftGunShoot(void)
 				if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
 				{
 					gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
-					gRobot.leftGun.shootTimes++;		
+					gRobot.leftGun.shootTimes++;
 					gRobot.leftGun.bulletNumber--;
 				}
 				else
@@ -2020,16 +2020,16 @@ status_t ROBOT_LeftGunShoot(void)
 		if(gRobot.leftGun.targetPlant!= PLANT7)
 		{
 			LeftPush();
-		}		
+		}
 		OSTimeDly(6);
 		LeftShootReset();
 		gRobot.leftGun.shootTimes++;
 		gRobot.leftGun.bulletNumber--;
 		gRobot.leftGun.reloadState = GUN_NOT_RELOAD;
 	}
-	
+
 	return GUN_NO_ERROR;
-	
+
 }
 
 /**
@@ -2076,7 +2076,7 @@ status_t ROBOT_RightGunShoot(void)
 	}
 	if(gRobot.rightGun.mode == GUN_MANUAL_MODE)
 	{
-		RightShoot();	
+		RightShoot();
 		OSTimeDly(20);
 		if(gRobot.rightGun.targetPlant != PLANT7)
 		{
@@ -2104,7 +2104,7 @@ status_t ROBOT_UpperGunShoot(void)
 			UpperShoot();
 			OSTimeDly(20);
 			UpperShootReset();
-			gRobot.upperGun.shootTimes++;		
+			gRobot.upperGun.shootTimes++;
 			//fix me, 应该检查子弹是否用完
 			gRobot.upperGun.bulletNumber--;
 	}
@@ -2121,9 +2121,9 @@ status_t ROBOT_UpperGunShoot(void)
 status_t ROBOT_LeftGunHome(void)
 {
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));			
-	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));	
-	
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));
+
 	return GUN_NO_ERROR;
 }
 /**
@@ -2136,9 +2136,9 @@ status_t ROBOT_LeftGunHome(void)
 status_t ROBOT_RightGunHome(void)
 {
 	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
-	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));			
-	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));	
-	
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));
+	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));
+
 	return GUN_NO_ERROR;
 }
 
@@ -2152,8 +2152,8 @@ status_t ROBOT_RightGunHome(void)
 status_t ROBOT_UpperGunHome(void)
 {
 	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.4f));
-	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-3.4f));	
-	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(131.0f));	
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-3.4f));
+	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(131.0f));
 	return GUN_NO_ERROR;
 }
 
@@ -2271,12 +2271,12 @@ status_t ROBOT_RightGunCheckConflict(void)
 status_t ROBOT_LeftGunReturn(void)
 {
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].yaw));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));			
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));
 	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].roll));
 
 	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].speed1));
 	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));
-	
+
 	return GUN_NO_ERROR;
 }
 
@@ -2289,12 +2289,12 @@ status_t ROBOT_LeftGunReturn(void)
 status_t ROBOT_RightGunReturn(void)
 {
 	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].yaw));
-	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));			
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));
 	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].roll));
 
 	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed1));
-	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));	
-	
+	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));
+
 	return GUN_NO_ERROR;
 
 }
