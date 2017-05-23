@@ -331,11 +331,11 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
-	GPIO_Init_Pins(GPIOE,GPIO_Pin_2,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOE,GPIO_Pin_6,GPIO_Mode_OUT);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
-	GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+	GPIO_ResetBits(GPIOE, GPIO_Pin_6);
 #endif
 #ifdef RED_FIELD
 	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
@@ -344,14 +344,14 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 17000);
 
 #ifdef BLUE_FIELD
-	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+	GPIO_SetBits(GPIOE, GPIO_Pin_6);
 #endif
 #ifdef RED_FIELD
 	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 #endif
 #endif
 
-	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+	GPIO_SetBits(GPIOE, GPIO_Pin_6);
 	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 
 	TIM_Delayms(TIM5, 50);
@@ -367,11 +367,11 @@ void ConfigTask(void)
 
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
-	GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+	GPIO_ResetBits(GPIOE, GPIO_Pin_6);
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
-	GPIO_SetBits(GPIOE, GPIO_Pin_2);
+	GPIO_SetBits(GPIOE, GPIO_Pin_6);
 #endif
 #ifdef RED_FIELD
 	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
