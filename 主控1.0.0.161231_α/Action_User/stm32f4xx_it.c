@@ -1236,6 +1236,7 @@ void USART6_IRQHandler(void)       //更新频率200Hz
 * notes:
 */
 u8 receive_data=0;
+u8 receiveDataTrust = 0u;
 void USART3_IRQHandler(void)        
 {	 
 #define HEADER1 0x80
@@ -1385,6 +1386,7 @@ void USART3_IRQHandler(void)
 				state = 0;
 				break;
 			case PLAT_DATA_STATE1:
+				receiveDataTrust = data;
 				isPlateDataOk[PLANT1].ball = (data&0x01)==0x01;
 				isPlateDataOk[PLANT1].plate = (data&0x02)==0x02;
 				isPlateDataOk[PLANT2].ball = (data&0x04)==0x04;
@@ -1482,7 +1484,7 @@ void USART3_IRQHandler(void)
 					if(!((data&0x80)==0x80))
 					{
 						if(gRobot.plateShootTimes[PLANT5]!=0)
-						{
+						{	
 							gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;
 							gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
 						}
@@ -1512,7 +1514,7 @@ void USART3_IRQHandler(void)
 					{
 						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
 						{
-							GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+							GPIO_ResetBits(GPIOE, GPIO_Pin_6);
 							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 						}
 					}

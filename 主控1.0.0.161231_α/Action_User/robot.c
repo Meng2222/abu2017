@@ -86,7 +86,7 @@ static void LeftGunInit(void)
 	//射击次数为0
 	gRobot.leftGun.shootTimes = 0;
 	//初始化时命令指向自动命令
-	gRobot.leftGun.gunCommand = (plant_t *)gRobot.autoCommand;
+	gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
 
@@ -169,7 +169,7 @@ static void RightGunInit(void)
 	//射击次数为0
 	gRobot.rightGun.shootTimes = 0;
 	//初始化时命令指向自动命令
-	gRobot.rightGun.gunCommand = (plant_t *)gRobot.autoCommand;
+	gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	gRobot.rightGun.lastPlant = INVALID_PLANT_NUMBER;
 	gRobot.rightGun.lastParaMode = INVALID_SHOOT_METHOD;
 
@@ -343,29 +343,29 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
-		gRobot.cameraInfo[i].ball = 1;
+		gRobot.cameraInfo[i].ball = 0;
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
-		gRobot.cameraInfo[i].plate = 1;
+		gRobot.cameraInfo[i].plate = 0;
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
-		gRobot.autoCommand[i].ball = 1;
+		gRobot.autoCommand[i].ball = 0;
 	}
     gRobot.plantState[PLANT6].ball = 0;
 	gRobot.autoCommand[PLANT6].ball = 0;
-	gRobot.autoCommand[PLANT7].ball = 1;
-	gRobot.autoCommand[PLANT3].ball = 1;
+	gRobot.autoCommand[PLANT7].ball = 0;
+	gRobot.autoCommand[PLANT3].ball = 0;
 
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].plate = 1;
+		gRobot.autoCommand[i].plate = 0;
 	}
 	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT6].plate = 0;
-	gRobot.autoCommand[PLANT3].plate = 1;
+	gRobot.autoCommand[PLANT3].plate = 0;
 
 	LeftGunInit();
 	RightGunInit();
@@ -538,7 +538,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 	{
 		searchRange = 7;
-		GPIO_ResetBits(GPIOE, GPIO_Pin_2);
+		GPIO_ResetBits(GPIOE, GPIO_Pin_6);
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
@@ -1517,7 +1517,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//左枪到位标准
-	#define LEFT_READY_STANDARD (15u)
+	#define LEFT_READY_STANDARD (5u)
 	//左枪超时时间 单位为LEFT_SAMPLING_PERIOD
 	#define LEFT_TIME_OUT (50u)
 	//左枪位置检测采样周期 单位为系统tick
@@ -1680,7 +1680,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
  status_t ROBOT_RightGunCheckAim(void)
 {
 	//右枪到位标准
-	#define RIGHT_READY_STANDARD (15u)
+	#define RIGHT_READY_STANDARD (5u)
 	//右枪超时时间 单位为RIGHT_SAMPLING_PERIOD
 	#define RIGHT_TIME_OUT (50u)
 	//右枪位置检测采样周期 单位为系统tick

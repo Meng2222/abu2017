@@ -23,6 +23,7 @@
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
 extern uint8_t receive_data;
+extern uint8_t receiveDataTrust;
 /*
 ===============================================================
                         信号量定义
@@ -153,7 +154,8 @@ void LeftGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.speed2),\
 		(int)(gRobot.leftGun.actualPose.speed2));
 		
-	UART5_OUT((uint8_t *)"su%d",(int)receive_data);
+	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust, (int)(gRobot.leftGun.gunCommand == (plant_t *)gRobot.plantState));
+
 	
 	UART5BufPut('\r');
 	UART5BufPut('\n');
@@ -179,7 +181,7 @@ void RightGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.speed2),\
 		(int)(gRobot.rightGun.actualPose.speed2));
 	
-	UART5_OUT((uint8_t *)"su%d",(int)receive_data);
+	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust, (int)(gRobot.rightGun.gunCommand == (plant_t *)gRobot.plantState));
 	
 	UART5BufPut('\r');
 	UART5BufPut('\n');
@@ -333,6 +335,8 @@ void ConfigTask(void)
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
 	GPIO_Init_Pins(GPIOE,GPIO_Pin_6,GPIO_Mode_OUT);
 	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
+	GPIO_SetBits(GPIOE, GPIO_Pin_6);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	GPIO_ResetBits(GPIOE, GPIO_Pin_6);
@@ -351,8 +355,7 @@ void ConfigTask(void)
 #endif
 #endif
 
-	GPIO_SetBits(GPIOE, GPIO_Pin_6);
-	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+
 
 	TIM_Delayms(TIM5, 50);
 
