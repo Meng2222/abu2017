@@ -796,14 +796,7 @@ void WalkTask(void)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
-		//检查是否需要重启 fix me 需要更好的处理方式来避免一直进入重试
-		if(status == launch)
-		{
-			if(gRobot.isReset == ROBOT_RESET)
-			{
-				status = reset;
-			}
-		}
+
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
 		if((status != launch && status < reset)||status > resetConfig)
 		{
@@ -1030,6 +1023,14 @@ void WalkTask(void)
 						sendSignal=0;
 					}
 				}
+				
+				//按行程开关进行重启
+				if(RESET_SWITCH)
+				{
+					gRobot.isReset = ROBOT_RESET;
+					status = reset;
+				}
+				
 				break;
 			//失能电机，中断发射任务
 			case reset:
