@@ -755,7 +755,7 @@ void TIM4_IRQHandler(void)
 *枪号：0左枪 1右枪 2上枪
 */
 void UART4_IRQHandler(void)
-{	 
+{
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
 
@@ -1108,6 +1108,21 @@ void UART4_IRQHandler(void)
 				break;					
 		}
 	 }
+//	else
+//	{
+//			USART_ClearITPendingBit( UART4,USART_IT_PE);
+//			USART_ClearITPendingBit( UART4,USART_IT_TXE);
+//			USART_ClearITPendingBit( UART4,USART_IT_TC);
+//			USART_ClearITPendingBit( UART4,USART_IT_ORE_RX);
+//			USART_ClearITPendingBit( UART4,USART_IT_IDLE);
+//			USART_ClearITPendingBit( UART4,USART_IT_LBD);
+//			USART_ClearITPendingBit( UART4,USART_IT_CTS);
+//			USART_ClearITPendingBit( UART4,USART_IT_ERR);
+//			USART_ClearITPendingBit( UART4,USART_IT_ORE_ER);
+//			USART_ClearITPendingBit( UART4,USART_IT_NE);
+//			USART_ClearITPendingBit( UART4,USART_IT_FE);
+//			USART_ReceiveData(UART4);
+//	}
 	OSIntExit();
 }
 
@@ -1115,7 +1130,7 @@ void UART4_IRQHandler(void)
 
 extern  OS_EVENT 		*GyroSem;
 void USART6_IRQHandler(void)       //更新频率200Hz
-{	 
+{
 	static uint8_t ch;
 	static union
     {
