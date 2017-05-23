@@ -351,18 +351,18 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
-		gRobot.autoCommand[i].ball = 2;
+		gRobot.autoCommand[i].ball = 1;
 	}
-    gRobot.plantState[PLANT6].ball = 2;
+    gRobot.plantState[PLANT6].ball = 0;
 	gRobot.autoCommand[PLANT6].ball = 0;
 	gRobot.autoCommand[PLANT7].ball = 1;
 	gRobot.autoCommand[PLANT3].ball = 1;
 	
 	for(uint8_t i = 0; i < 7;i++)
 	{
-		gRobot.autoCommand[i].plate = 2;
+		gRobot.autoCommand[i].plate = 1;
 	}
-	gRobot.plantState[PLANT6].plate = 2;
+	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT3].plate = 1;
@@ -1517,7 +1517,7 @@ status_t ROBOT_UpperGunAim(void)
 status_t ROBOT_LeftGunCheckAim(void)
 {
 	//左枪到位标准
-	#define LEFT_READY_STANDARD (15u)
+	#define LEFT_READY_STANDARD (5u)
 	//左枪超时时间 单位为LEFT_SAMPLING_PERIOD
 	#define LEFT_TIME_OUT (50u)
 	//左枪位置检测采样周期 单位为系统tick
@@ -1680,7 +1680,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
  status_t ROBOT_RightGunCheckAim(void)
 {
 	//右枪到位标准
-	#define RIGHT_READY_STANDARD (15u)
+	#define RIGHT_READY_STANDARD (5u)
 	//右枪超时时间 单位为RIGHT_SAMPLING_PERIOD
 	#define RIGHT_TIME_OUT (50u)
 	//右枪位置检测采样周期 单位为系统tick
