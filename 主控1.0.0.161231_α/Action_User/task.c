@@ -953,8 +953,10 @@ void WalkTask(void)
             //从装载区走向发射区				
 			case goToLaunchingArea:
 #ifdef RED_FIELD
-                MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
-			    if (GetPosX() >= -6459.14f)
+//                MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
+                MoveTo(-6500.14f, 3000.0f, 2500.0f , 2000.0f);
+//			    if (GetPosX() >= -6459.14f)
+			    if (GetPosX() >= -6500.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -963,10 +965,12 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
+//                MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
+                MoveTo(6500.14f, -3000.0f, 2500.0f , 2000.0f);
 				//到位后给靠墙速度
 
-			    if (GetPosX() <= 6459.14f)
+//			    if (GetPosX() <= 6459.14f)
+			    if (GetPosX() <= 6500.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -1053,9 +1057,11 @@ void WalkTask(void)
 				break;
 			case resetRunToLaunch:
 #ifdef RED_FIELD
-                MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
+//                MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
+                MoveTo(-6500.14f, -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
-			    if (GetPosX() <= -6459.14f)
+//			    if (GetPosX() <= -6459.14f)
+			    if (GetPosX() <= -6500.14f)
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1063,9 +1069,11 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-                MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
+//                MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
+                MoveTo(6500.14f, 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
-			    if (GetPosX() >= 6459.14f)
+//			    if (GetPosX() >= 6459.14f)
+			    if (GetPosX() >= 6500.14f)
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
