@@ -1091,6 +1091,10 @@ void UART4_IRQHandler(void)
 			case 14:
 				if(ch == 'B')
 				{
+					if(gRobot.isBleOk.noBleFlag == BLE_LOST)
+					{
+						gRobot.isBleOk.bleHeartBeat = 0;
+					}
 					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 					{
 						gRobot.isBleOk.bleHeartBeat++;
