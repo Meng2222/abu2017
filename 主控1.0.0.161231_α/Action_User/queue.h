@@ -14,15 +14,15 @@
 
 /* Exported types ------------------------------------------------------------*/
 
-/** 
-  * @brief  
+/**
+  * @brief
   */
 //命令类型
 typedef struct
 {
 	//柱子号
 	uint8_t plantNum;
-	
+
 	//动作
 	uint8_t method;
 }cmd_t;
@@ -32,20 +32,24 @@ typedef struct
 {
 	//命令线性数组
 	cmd_t cmdArr[CMD_QUEUE_LENGTH];
-	
+
 	//头位置
 	uint8_t headNum;
-	
+
 	//尾位置
-	uint8_t tailNum;	
+	uint8_t tailNum;
+	
+	//队列中元素个数
+	uint8_t elementNum;
+	
 }cmdBuffer_t;
 
- 
+
 /* Exported constants --------------------------------------------------------*/
 
 
 
-/** @defgroup 
+/** @defgroup
   * @{
   */
 
@@ -62,6 +66,13 @@ void InCmdQueue(cmd_t inCmd);
 cmd_t OutCmdQueue(void);
 cmd_t ReplaceHeadQueue(cmd_t inCmd);
 
+/**
+  * @brief	
+  * @note	
+  * @param	None
+  * @retval	
+  */
+uint8_t getCmdQueueElementNum(void);
 
 #ifdef __cplusplus
 }

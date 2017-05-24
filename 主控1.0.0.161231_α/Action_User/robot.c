@@ -529,7 +529,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 
 	#define LEFT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 4;
 	cmd_t manualCmd;
 	//防止同一个枪连续执行命令
 	OSTimeDly(1);
