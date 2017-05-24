@@ -722,7 +722,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 	OSTimeDly(1);
 	gRobot.rightGun.commandState = GUN_NO_COMMAND;
 	//判断是否没弹
-	if(gRobot.rightGun.shootTimes >= RIGHT_NEW_PLATE_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
+	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.rightGun.commandState = GUN_NO_COMMAND;
 	}
