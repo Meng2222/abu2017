@@ -946,6 +946,8 @@ void WalkTask(void)
 			{
 				//检测上枪光电
 				if (PHOTOSENSORUPGUN)
+				//检测行程开关
+//				if(RESET_SWITCH)
 				{
 					//					status++;
 					//					OSTaskResume(DEBUG_TASK_PRIO);
@@ -1136,6 +1138,10 @@ void LeftGunShootTask(void)
 	//	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
+#ifdef NO_WALK_TASK
+	gRobot.leftGun.mode = GUN_MANUAL_MODE;
+	gRobot.leftGun.gunCommand = gRobot.plantState;
+#endif
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
 	{
@@ -1319,6 +1325,10 @@ void RightGunShootTask(void)
 	//	RightPush();
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
+#ifdef NO_WALK_TASK
+	gRobot.rightGun.mode = GUN_MANUAL_MODE;
+	gRobot.rightGun.gunCommand = gRobot.plantState;
+#endif
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 	while(1)
 	{
@@ -1502,6 +1512,9 @@ void UpperGunShootTask(void)
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
+#ifdef NO_WALK_TASK
+	gRobot.upperGun.mode = GUN_MANUAL_MODE;
+#endif
 	while(1)
 	{
 		//如果接收到防守命令进入防守模式
