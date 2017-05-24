@@ -517,7 +517,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 }
 
 /**
-  * @brief	Get left gun shoot command
+  * @brief	Get left gun shoot command FIFO
   * @note
   * @param
   *     @arg
@@ -567,7 +567,6 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 					shootCommand.shootMethod = manualCmd.method;
 					gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 				}
-
 			}
 		}
 	}
@@ -705,6 +704,65 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	}
 	return shootCommand;
 }
+
+/**
+  * @brief	Get right gun shoot command FIFO
+  * @note
+  * @param
+  *     @arg
+  * @param	`
+  * @retval
+  */
+shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
+{
+	#define RIGHT_NEW_PLATE_NUM 10u
+	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	cmd_t manualCmd;
+	//防止同一个枪连续执行命令
+	OSTimeDly(1);
+	gRobot.rightGun.commandState = GUN_NO_COMMAND;
+	//判断是否没弹
+	if(gRobot.rightGun.shootTimes >= RIGHT_NEW_PLATE_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
+	{
+		gRobot.rightGun.commandState = GUN_NO_COMMAND;
+	}
+	else		//有弹
+	{
+		manualCmd = OutCmdQueue();
+		if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+		{
+			gRobot.rightGun.commandState = GUN_NO_COMMAND;		
+		}
+		else
+		{
+			shootCommand.plantNum = manualCmd.plantNum;
+			shootCommand.shootMethod = manualCmd.method;
+			gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+		}
+		//左右枪交叉打1#和5#柱子时机械上会有干涉
+		if(gRobot.leftGun.targetPlant == PLANT5 && gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
+		{
+			if(shootCommand.plantNum == PLANT1)
+			{
+				manualCmd = ReplaceHeadQueue(manualCmd);
+				if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+				{
+					gRobot.rightGun.commandState = GUN_NO_COMMAND;		
+				}
+				else
+				{
+					shootCommand.plantNum = manualCmd.plantNum;
+					shootCommand.shootMethod = manualCmd.method;
+					gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+				}
+			}
+		}
+	}
+	return shootCommand;
+}
+
+
+
 
 /**
   * @brief	Get upper gun shoot command
