@@ -51,6 +51,7 @@
 #include "robot.h"
 #include "movebase2.h"
 #include "dma.h"
+#include "queue.h"
 
 //用来处理CAN接收数据
 union MSG
@@ -1027,6 +1028,7 @@ void UART4_IRQHandler(void)
 				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
+					cmd_t manualCmd;
 					switch(id/10)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
@@ -1035,6 +1037,9 @@ void UART4_IRQHandler(void)
 							{
 								gRobot.plantState[id - 10].ball = 1;
 							}
+							manualCmd.plantNum = id - 10;
+							manualCmd.method = SHOOT_METHOD5;							
+							InCmdQueue(manualCmd);
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
@@ -1049,6 +1054,9 @@ void UART4_IRQHandler(void)
 									gRobot.plantState[id - 20].plate = 1;									
 								}
 							}
+							manualCmd.plantNum = id - 20;
+							manualCmd.method = SHOOT_METHOD6;							
+							InCmdQueue(manualCmd);
 							break;
 					}
 				}

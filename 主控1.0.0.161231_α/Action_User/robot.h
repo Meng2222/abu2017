@@ -1,6 +1,7 @@
 #ifndef __ROBOT_H
 #define __ROBOT_H
 #include "stdint.h"
+#include "queue.h"
 #include "movebase.h"
 /**************************************************************************************
  宏定义
@@ -384,6 +385,7 @@ typedef struct
 	int noBleTimer;
 }ble_t;
 
+
 //机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
 typedef struct 
 {	
@@ -408,6 +410,9 @@ typedef struct
 	//摄像头反馈着陆台状态
 	plant_t cameraInfo[LAND_NUMBER];
 
+	//全手动命令环状数组
+	cmdBuffer_t manualCmdQueue;
+	
 	//蓝牙通信状态
 	ble_t isBleOk;
 
