@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250
@@ -1158,7 +1158,8 @@ void LeftGunShootTask(void)
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
 		{
 			//自获取命令
-			shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
+//			shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
+			shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommandFIFO();
 			if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 			{
 				gRobot.leftGun.noCommandTimer = 0;
@@ -1342,7 +1343,8 @@ void RightGunShootTask(void)
 		if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_AUTO_MODE)
 		{
 			//获取命令
-			shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
+//			shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
+			shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommandFIFO();
 
 			if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 			{
