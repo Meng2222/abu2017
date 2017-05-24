@@ -1168,6 +1168,7 @@ void UART4_IRQHandler(void)
 		}
 		
 		USART_ReceiveData(UART4);
+		UART5_OUT((uint8_t*)"UART4_Err");
 	}
 	OSIntExit();
 }
@@ -1445,133 +1446,138 @@ void USART3_IRQHandler(void)
 				break;
 			case PLAT_DATA_STATE2:
 				receive_data=data;
-				if(isPlateDataOk[PLANT1].ball==PLAT_DATA_STABLE)
-				{
-					gRobot.cameraInfo[PLANT1].ball = (data&0x01)==0x01;
-					if(!((data&0x01)==0x01))
-					{
-						gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
-					}
-				}
-				if(isPlateDataOk[PLANT1].plate==PLAT_DATA_STABLE)
-				{
-					if(!((data&0x02)==0x02))
-					{
-						if(gRobot.plateShootTimes[PLANT1]!=0)
-						{
-							gRobot.cameraInfo[PLANT1].plate = (data&0x02)==0x02;
-							gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
-						}
-					}
-					else
-					{
-						gRobot.cameraInfo[PLANT1].plate = (data&0x02)==0x02;					
-						gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
-					}
-				}
-				if(isPlateDataOk[PLANT2].ball==PLAT_DATA_STABLE)
-				{
-					gRobot.cameraInfo[PLANT2].ball = (data&0x04)==0x04;
-					if(!((data&0x04)==0x04))
-					{
-						gRobot.autoCommand[PLANT2].ball = (data&0x04)==0x04;
-					}
-				}
-				if(isPlateDataOk[PLANT2].plate==PLAT_DATA_STABLE)
-				{
-					if(!((data&0x08)==0x08))
-					{
-						if(gRobot.plateShootTimes[PLANT2]!=0)
-						{
-							gRobot.cameraInfo[PLANT2].plate = (data&0x08)==0x08;
-							gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
-						}
-					}
-					else
-					{
-						gRobot.cameraInfo[PLANT2].plate = (data&0x08)==0x08;					
-						gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
-					}
-				}
-				if(isPlateDataOk[PLANT4].ball==PLAT_DATA_STABLE)
-				{
-					gRobot.cameraInfo[PLANT4].ball = (data&0x10)==0x10;
-					if(!((data&0x10)==0x10))
-					{
-						gRobot.autoCommand[PLANT4].ball = (data&0x10)==0x10;
-					}
-				}
-				if(isPlateDataOk[PLANT4].plate==PLAT_DATA_STABLE)
-				{
-					if(!((data&0x20)==0x20))
-					{
-						if(gRobot.plateShootTimes[PLANT4]!=0)
-						{
-							gRobot.cameraInfo[PLANT4].plate = (data&0x20)==0x20;
-							gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
-						}
-					}
-					else
-					{
-						gRobot.cameraInfo[PLANT4].plate = (data&0x20)==0x20;					
-						gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
-					}
-				}
-				if(isPlateDataOk[PLANT5].ball==PLAT_DATA_STABLE)
-				{
-					gRobot.cameraInfo[PLANT5].ball = (data&0x40)==0x40;
-					if(!((data&0x40)==0x40))
-					{
-						gRobot.autoCommand[PLANT5].ball = (data&0x40)==0x40;
-					}
-				}
-				if(isPlateDataOk[PLANT5].plate==PLAT_DATA_STABLE)
-				{
-					if(!((data&0x80)==0x80))
-					{
-						if(gRobot.plateShootTimes[PLANT5]!=0)
-						{	
-							gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;
-							gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
-						}
-					}
-					else
-					{
-						gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;					
-						gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
-					}
-				}
-				if((data&0x0f)==0)
-				{
-					if(isPlateDataOk[PLANT1].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT1].plate == PLAT_DATA_STABLE &&\
-						isPlateDataOk[PLANT2].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT2].plate == PLAT_DATA_STABLE)
-					{
-						if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
-						{
-							GPIO_ResetBits(GPIOC, GPIO_Pin_0);
-							gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
-						}
-					}
-				}
-				if((data&0xf0)==0)
-				{
-					if(isPlateDataOk[PLANT4].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT4].plate == PLAT_DATA_STABLE &&\
-						isPlateDataOk[PLANT5].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT5].plate == PLAT_DATA_STABLE)
-					{
-						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
-						{
-							GPIO_ResetBits(GPIOE, GPIO_Pin_6);
-							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
-						}
-					}
-				}
+//				if(isPlateDataOk[PLANT1].ball==PLAT_DATA_STABLE)
+//				{
+//					gRobot.cameraInfo[PLANT1].ball = (data&0x01)==0x01;
+//					if(!((data&0x01)==0x01))
+//					{
+//						gRobot.autoCommand[PLANT1].ball = (data&0x01)==0x01;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT1].plate==PLAT_DATA_STABLE)
+//				{
+//					if(!((data&0x02)==0x02))
+//					{
+//						if(gRobot.plateShootTimes[PLANT1]!=0)
+//						{
+//							gRobot.cameraInfo[PLANT1].plate = (data&0x02)==0x02;
+//							gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
+//						}
+//					}
+//					else
+//					{
+//						gRobot.cameraInfo[PLANT1].plate = (data&0x02)==0x02;					
+//						gRobot.autoCommand[PLANT1].plate = (data&0x02)==0x02;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT2].ball==PLAT_DATA_STABLE)
+//				{
+//					gRobot.cameraInfo[PLANT2].ball = (data&0x04)==0x04;
+//					if(!((data&0x04)==0x04))
+//					{
+//						gRobot.autoCommand[PLANT2].ball = (data&0x04)==0x04;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT2].plate==PLAT_DATA_STABLE)
+//				{
+//					if(!((data&0x08)==0x08))
+//					{
+//						if(gRobot.plateShootTimes[PLANT2]!=0)
+//						{
+//							gRobot.cameraInfo[PLANT2].plate = (data&0x08)==0x08;
+//							gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
+//						}
+//					}
+//					else
+//					{
+//						gRobot.cameraInfo[PLANT2].plate = (data&0x08)==0x08;					
+//						gRobot.autoCommand[PLANT2].plate = (data&0x08)==0x08;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT4].ball==PLAT_DATA_STABLE)
+//				{
+//					gRobot.cameraInfo[PLANT4].ball = (data&0x10)==0x10;
+//					if(!((data&0x10)==0x10))
+//					{
+//						gRobot.autoCommand[PLANT4].ball = (data&0x10)==0x10;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT4].plate==PLAT_DATA_STABLE)
+//				{
+//					if(!((data&0x20)==0x20))
+//					{
+//						if(gRobot.plateShootTimes[PLANT4]!=0)
+//						{
+//							gRobot.cameraInfo[PLANT4].plate = (data&0x20)==0x20;
+//							gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
+//						}
+//					}
+//					else
+//					{
+//						gRobot.cameraInfo[PLANT4].plate = (data&0x20)==0x20;					
+//						gRobot.autoCommand[PLANT4].plate = (data&0x20)==0x20;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT5].ball==PLAT_DATA_STABLE)
+//				{
+//					gRobot.cameraInfo[PLANT5].ball = (data&0x40)==0x40;
+//					if(!((data&0x40)==0x40))
+//					{
+//						gRobot.autoCommand[PLANT5].ball = (data&0x40)==0x40;
+//					}
+//				}
+//				if(isPlateDataOk[PLANT5].plate==PLAT_DATA_STABLE)
+//				{
+//					if(!((data&0x80)==0x80))
+//					{
+//						if(gRobot.plateShootTimes[PLANT5]!=0)
+//						{	
+//							gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;
+//							gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
+//						}
+//					}
+//					else
+//					{
+//						gRobot.cameraInfo[PLANT5].plate = (data&0x80)==0x80;					
+//						gRobot.autoCommand[PLANT5].plate = (data&0x80)==0x80;
+//					}
+//				}
+//				if((data&0x0f)==0)
+//				{
+//					if(isPlateDataOk[PLANT1].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT1].plate == PLAT_DATA_STABLE &&\
+//						isPlateDataOk[PLANT2].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT2].plate == PLAT_DATA_STABLE)
+//					{
+//						if(gRobot.plateShootTimes[PLANT1]!=0&&gRobot.plateShootTimes[PLANT2]!=0)
+//						{
+//							GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+//							gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
+//						}
+//					}
+//				}
+//				if((data&0xf0)==0)
+//				{
+//					if(isPlateDataOk[PLANT4].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT4].plate == PLAT_DATA_STABLE &&\
+//						isPlateDataOk[PLANT5].ball == PLAT_DATA_STABLE && isPlateDataOk[PLANT5].plate == PLAT_DATA_STABLE)
+//					{
+//						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
+//						{
+//							GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+//							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
+//						}
+//					}
+//				}
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
+					UART5_OUT((uint8_t*)"BLELOSTCAMERA");
 					if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 					{
+						UART5_OUT((uint8_t*)"BLELOSTCAMERA");
 						if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
+						{
 							gRobot.plantState[PLANT1].ball = 1;
+							UART5_OUT((uint8_t*)"BLELOSTCAMERA");
+						}
 						if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
 							gRobot.plantState[PLANT1].plate = 1;

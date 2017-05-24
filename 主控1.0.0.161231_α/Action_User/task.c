@@ -865,6 +865,7 @@ void WalkTask(void)
 				break;
 				//从出发区走向装载区
 			case goToLoadingArea:
+			{
 #ifdef RED_FIELD
 				MoveTo(-13033.14f, -4200.0f, 2500.0f , 2000.0f);
 
@@ -921,9 +922,11 @@ void WalkTask(void)
 					}
 				}
 				break;
-
+			}
+			
 				//装载飞盘
 			case load:
+			{
 				//停车
 				LockWheel();
 				//爪子关
@@ -937,8 +940,10 @@ void WalkTask(void)
 					status = beginToGo1;
 				}
 				break;
-
+			}
+			
 			case beginToGo1:
+			{
 				//检测上枪光电
 				if (PHOTOSENSORUPGUN)
 				{
@@ -953,8 +958,10 @@ void WalkTask(void)
 					}
 				}
 				break;
+			}
 				//从装载区走向发射区
 			case goToLaunchingArea:
+			{
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 				MoveTo(-6500.14f, 3000.0f, 2500.0f , 2000.0f);
@@ -982,8 +989,10 @@ void WalkTask(void)
 				}
 #endif
 				break;
+			}
 				//停车
 			case stopRobot:
+			{
 				//通知摄像头开始工作
 				SendStop2Camera();
 				//靠墙一段时间后抱死
@@ -1008,33 +1017,40 @@ void WalkTask(void)
 				}
 				OSSemSet(PeriodSem, 0, &os_err);
 				break;
+			}
 				//发射飞盘
 			case launch:
+			{
 				StickPos(launchPosX,launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
+					BEEP_ON;
 					if(sendSignal2Camera == 1)
 					{
 						SendWatchWholeArena2Camera();
 						sendSignal2Camera = 0;
 					}
 					if(gRobot.plantState[PLANT1].plate == 0 && gRobot.plantState[PLANT2].plate == 0
-							&& gRobot.plantState[PLANT4].plate == 0 && gRobot.plantState[PLANT5].plate == 0
-							&& gRobot.plantState[PLANT1].ball == 0 && gRobot.plantState[PLANT2].ball == 0
-							&& gRobot.plantState[PLANT4].ball == 0 && gRobot.plantState[PLANT5].ball == 0)
+						&& gRobot.plantState[PLANT4].plate == 0 && gRobot.plantState[PLANT5].plate == 0
+						&& gRobot.plantState[PLANT1].ball == 0 && gRobot.plantState[PLANT2].ball == 0
+						&& gRobot.plantState[PLANT4].ball == 0 && gRobot.plantState[PLANT5].ball == 0)
 					{
 						if(gRobot.plantState[PLANT6].plate == 0)
 						{
-							gRobot.plantState[PLANT6].plate = 1;
+							UART5_OUT((uint8_t*)"BLE lost Plant6");
+//							gRobot.plantState[PLANT6].plate = 1;
 						}
 						if(gRobot.plantState[PLANT3].plate==0)
 						{
-							gRobot.plantState[PLANT3].plate = 1;
+							UART5_OUT((uint8_t*)"BLE lost Plant3");
+//							gRobot.plantState[PLANT3].plate = 1;
 						}
 					}
 				}
+				else
+					BEEP_OFF;
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
 					if(sendSignal == 1)
@@ -1044,8 +1060,10 @@ void WalkTask(void)
 					}
 				}
 				break;
+			}
 				//失能电机，中断发射任务
 			case reset:
+			{
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 				if(RESET_SWITCH)
@@ -1053,7 +1071,9 @@ void WalkTask(void)
 					status = resetConfig;
 				}
 				break;
+			}
 			case resetConfig:
+			{
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 				TIM_Delayms(TIM5,50);
 				setLaunchPosFlag = 1;
@@ -1062,9 +1082,13 @@ void WalkTask(void)
 				status = resetRunToLaunch;
 				OSSemSet(PeriodSem, 0, &os_err);
 				break;
+			}
 			case resetRunToLoad:
+			{
 				break;
+			}
 			case resetRunToLaunch:
+			{
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				MoveTo(-6500.14f, -3000.0f, 2000.0f, 2000.0f);
@@ -1090,6 +1114,7 @@ void WalkTask(void)
 				}
 #endif
 				break;
+			}
 			default:
 				break;
 		}
@@ -1482,35 +1507,35 @@ void UpperGunShootTask(void)
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 #ifndef NO_WALK_TASK
 		//不需要防守时如果7#需要落盘则对7#落盘命令置位
-		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
-		{
-			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
-			{
-				//等待0.8s避免已经发射弹盘没落上时重复发射
-				uint8_t checkGap = 16;
-				while(checkGap--)
-				{
-					if(gRobot.upperGun.targetZone & 0xff)
-					{
-						break;
-					}
-					OSTimeDly(5);
-				}
-				if((gRobot.upperGun.targetZone & 0xff )==0)
-				{
-					//对7#落盘命令进行置位
-					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
-					{
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
-						gRobot.plantState[PLANT7].plate = 1;
-					}
-				}
-				else
-				{
-					gRobot.upperGun.mode = GUN_DEFEND_MODE;
-				}
-			}
-		}
+//		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+//		{
+//			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
+//			{
+//				//等待0.8s避免已经发射弹盘没落上时重复发射
+//				uint8_t checkGap = 16;
+//				while(checkGap--)
+//				{
+//					if(gRobot.upperGun.targetZone & 0xff)
+//					{
+//						break;
+//					}
+//					OSTimeDly(5);
+//				}
+//				if((gRobot.upperGun.targetZone & 0xff )==0)
+//				{
+//					//对7#落盘命令进行置位
+//					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+//					{
+//						gRobot.upperGun.mode = GUN_ATTACK_MODE;
+//						gRobot.plantState[PLANT7].plate = 1;
+//					}
+//				}
+//				else
+//				{
+//					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+//				}
+//			}
+//		}
 #endif
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
@@ -1557,7 +1582,7 @@ void UpperGunShootTask(void)
 					{
 						gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
 					}
-					OSTimeDly(50);
+					OSTimeDly(70);
 				}
 				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)
