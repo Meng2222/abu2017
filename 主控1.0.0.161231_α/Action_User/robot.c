@@ -404,7 +404,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 	if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER)
 	{
 		searchRange = 7;
-		GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+		RED_LED_ON;
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM || gRobot.leftGun.bulletNumber == GUN_NO_BULLET_ERROR)
@@ -594,7 +594,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 	if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 	{
 		searchRange = 7;
-		GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+		BLUE_LED_ON;
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)

@@ -21,7 +21,7 @@
 //#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
-#define NO_COMMAND_COUNTER 250
+#define NO_COMMAND_COUNTER 250			//0.25s
 extern uint8_t receive_data;
 extern uint8_t receiveDataTrust;
 /*
@@ -154,7 +154,8 @@ void LeftGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.speed2),\
 		(int)(gRobot.leftGun.actualPose.speed2));
 
-	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust, (int)(gRobot.leftGun.gunCommand == (plant_t *)gRobot.plantState));
+	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust,\
+		(int)(gRobot.leftGun.gunCommand == (plant_t *)gRobot.plantState));
 
 
 	UART5BufPut('\r');
@@ -181,7 +182,8 @@ void RightGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.speed2),\
 		(int)(gRobot.rightGun.actualPose.speed2));
 
-	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust, (int)(gRobot.rightGun.gunCommand == (plant_t *)gRobot.plantState));
+	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust,\
+		(int)(gRobot.rightGun.gunCommand == (plant_t *)gRobot.plantState));
 
 	UART5BufPut('\r');
 	UART5BufPut('\n');
@@ -319,6 +321,7 @@ void ConfigTask(void)
 	TIM_Init(TIM2, 99, 839, 0, 0);   //1ms主定时器
 
 	KeyInit();
+	LEDInit();
 	PhotoelectricityInit();
 	BeepInit();
 
@@ -331,26 +334,22 @@ void ConfigTask(void)
 	//	FlashInit();
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
-	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
-	GPIO_Init_Pins(GPIOE,GPIO_Pin_6,GPIO_Mode_OUT);
-	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
-	GPIO_SetBits(GPIOE, GPIO_Pin_6);
-	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
-	GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+	BLUE_LED_ON;
 #endif
 #ifdef RED_FIELD
-	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+	RED_LED_ON;
 #endif
 
 	TIM_Delayms(TIM5, 17000);
 
 #ifdef BLUE_FIELD
-	GPIO_SetBits(GPIOE, GPIO_Pin_6);
+	BLUE_LED_OFF;
 #endif
 #ifdef RED_FIELD
-	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+	RED_LED_OFF;
 #endif
 #endif
 
@@ -369,14 +368,14 @@ void ConfigTask(void)
 
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
-	GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+	BLUE_LED_ON;
 	BEEP_ON;
 	TIM_Delayms(TIM5, 1000);
 	BEEP_OFF;
-	GPIO_SetBits(GPIOE, GPIO_Pin_6);
+	BLUE_LED_OFF;
 #endif
 #ifdef RED_FIELD
-	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+	RED_LED_ON;
 	BEEP_ON;
 	TIM_Delayms(TIM5, 300);
 	BEEP_OFF;
@@ -385,7 +384,7 @@ void ConfigTask(void)
 	TIM_Delayms(TIM5, 300);
 	BEEP_OFF;
 	TIM_Delayms(TIM5, 200);
-	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+	RED_LED_OFF;
 #endif
 #endif
 #ifdef NO_WALK_TASK
@@ -952,7 +951,7 @@ void WalkTask(void)
 					//					status++;
 					//					OSTaskResume(DEBUG_TASK_PRIO);
 					upperPhotoSensorCounter++;
-					//触发六次后开始走向发射区
+					//触发10次后开始走向发射区
 					if(upperPhotoSensorCounter >= 10)
 					{
 						ROBOT_UpperGunAim();
@@ -1131,8 +1130,10 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 #ifndef NO_WALK_TASK
+	//此处等待邮箱 此邮箱在walktask 中 states >= load 且行程开关触发后 立刻发送 
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
+	//然后延时0.2s以后 弹匣推弹收回
 	OSTimeDly(20);
 	LeftBack();
 	//	LeftPush();
@@ -1314,9 +1315,10 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 #ifndef NO_WALK_TASK
+	//此处等待邮箱 此邮箱在walktask 中 states >= load 且行程开关触发后 立刻发送 
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
-	OSTimeDly(20);
+	//然后延时0.2s以后 弹匣推弹收回
 	RightBack();
 	//	RightPush();
 	gRobot.rightGun.noCommandTimer = 0;

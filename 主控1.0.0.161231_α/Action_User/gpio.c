@@ -106,6 +106,16 @@ void KeyInit(void)
 	
 }
 
+//LED
+void LEDInit(void)
+{
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOE,GPIO_Pin_6,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
+	GPIO_SetBits(GPIOE, GPIO_Pin_6);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+}
+
 //蜂鸣器PE7
 void BeepInit(void)
 { 

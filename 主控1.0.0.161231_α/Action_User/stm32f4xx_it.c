@@ -1571,7 +1571,7 @@ void USART3_IRQHandler(void)
 //					{
 //						if(gRobot.plateShootTimes[PLANT4]!=0&&gRobot.plateShootTimes[PLANT5]!=0)
 //						{
-//							GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+//							BLUE_LED_ON;
 //							gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 //						}
 //					}
