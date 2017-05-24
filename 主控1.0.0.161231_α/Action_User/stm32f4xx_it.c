@@ -773,7 +773,7 @@ void UART4_IRQHandler(void)
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
 
-	if(USART_GetITStatus(UART4, USART_IT_RXNE) == SET)   
+	if(USART_GetITStatus(UART4, USART_IT_RXNE) == SET)
 	{
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
@@ -1108,21 +1108,67 @@ void UART4_IRQHandler(void)
 				break;					
 		}
 	 }
-//	else
-//	{
-//			USART_ClearITPendingBit( UART4,USART_IT_PE);
-//			USART_ClearITPendingBit( UART4,USART_IT_TXE);
-//			USART_ClearITPendingBit( UART4,USART_IT_TC);
-//			USART_ClearITPendingBit( UART4,USART_IT_ORE_RX);
-//			USART_ClearITPendingBit( UART4,USART_IT_IDLE);
-//			USART_ClearITPendingBit( UART4,USART_IT_LBD);
-//			USART_ClearITPendingBit( UART4,USART_IT_CTS);
-//			USART_ClearITPendingBit( UART4,USART_IT_ERR);
-//			USART_ClearITPendingBit( UART4,USART_IT_ORE_ER);
-//			USART_ClearITPendingBit( UART4,USART_IT_NE);
-//			USART_ClearITPendingBit( UART4,USART_IT_FE);
-//			USART_ReceiveData(UART4);
-//	}
+	else
+	{
+		//虽然没有使能其他中断，但是查看是否有其他中断
+		if(USART_GetITStatus(UART4, USART_IT_PE) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_PE);
+			UART5_OUT((uint8_t*)"USART_IT_PE");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_TXE) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_TXE);
+			UART5_OUT((uint8_t*)"USART_IT_TXE");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_TC) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_TC);
+			UART5_OUT((uint8_t*)"USART_IT_TC");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_ORE_RX) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_ORE_RX);
+			UART5_OUT((uint8_t*)"USART_IT_ORE_RX");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_IDLE) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_IDLE);
+			UART5_OUT((uint8_t*)"USART_IT_IDLE");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_LBD) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_LBD);
+			UART5_OUT((uint8_t*)"USART_IT_LBD");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_CTS) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_CTS);
+			UART5_OUT((uint8_t*)"USART_IT_CTS");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_ERR) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_ERR);
+			UART5_OUT((uint8_t*)"USART_IT_ERR");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_ORE_ER) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_ORE_ER);
+			UART5_OUT((uint8_t*)"USART_IT_ORE_ER");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_NE) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_NE);
+			UART5_OUT((uint8_t*)"USART_IT_NE");
+		}
+		if(USART_GetITStatus(UART4, USART_IT_FE) == SET)
+		{
+			USART_ClearITPendingBit( UART4,USART_IT_FE);
+			UART5_OUT((uint8_t*)"USART_IT_FE");
+		}
+		
+		USART_ReceiveData(UART4);
+	}
 	OSIntExit();
 }
 
