@@ -408,6 +408,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 		GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 		gRobot.leftGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
+	gRobot.leftGun.gunCommand[PLANT6].plate = 1;
 	if(gRobot.leftGun.shootTimes >= LEFT_BULLET_NUM || gRobot.leftGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.leftGun.commandState = GUN_NO_COMMAND;
@@ -682,6 +683,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 		GPIO_ResetBits(GPIOE, GPIO_Pin_6);
 		gRobot.rightGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
+	gRobot.rightGun.gunCommand[PLANT6].plate = 1;
 	if(gRobot.rightGun.shootTimes >= RIGHT_BULLET_NUM || gRobot.rightGun.bulletNumber == GUN_NO_BULLET_ERROR)
 	{
 		gRobot.rightGun.commandState = GUN_NO_COMMAND;

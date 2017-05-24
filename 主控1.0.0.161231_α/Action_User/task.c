@@ -1139,7 +1139,6 @@ void LeftGunShootTask(void)
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
 #ifdef NO_WALK_TASK
-	gRobot.leftGun.mode = GUN_MANUAL_MODE;
 	gRobot.leftGun.gunCommand = gRobot.plantState;
 #endif
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -1326,7 +1325,6 @@ void RightGunShootTask(void)
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 #ifdef NO_WALK_TASK
-	gRobot.rightGun.mode = GUN_MANUAL_MODE;
 	gRobot.rightGun.gunCommand = gRobot.plantState;
 #endif
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
