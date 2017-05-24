@@ -1393,7 +1393,7 @@ void USART3_IRQHandler(void)
 						gRobot.upperGun.targetZone = data;
 					}
 					if(data != 0x00)
-					{					
+					{
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
 				}
@@ -1424,6 +1424,8 @@ void USART3_IRQHandler(void)
 					if(gRobot.plateShootTimes[PLANT6] > 6)
 					{
 						gRobot.upperGun.isSelfEmpty = SELF_EMPTY;
+						gRobot.leftGun.isSelfEmpty = SELF_EMPTY;
+						gRobot.rightGun.isSelfEmpty = SELF_EMPTY;
 					}
 				}
 				else if(data == SELF_ALREADY_HAVE)
