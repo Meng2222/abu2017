@@ -1038,27 +1038,27 @@ void UART4_IRQHandler(void)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
 						case 1:
-							if(gRobot.plantState[id - 10].ballState == COMMAND_DONE)
-							{
-								gRobot.plantState[id - 10].ball = 1;
-							}
+//							if(gRobot.plantState[id - 10].ballState == COMMAND_DONE)
+//							{
+//								gRobot.plantState[id - 10].ball = 1;
+//							}
 							manualCmd.plantNum = id - 10;
 							manualCmd.method = SHOOT_METHOD5;							
 							InCmdQueue(manualCmd);
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
-							if(gRobot.plantState[id - 20].plateState == COMMAND_DONE)
-							{
-								gRobot.plantState[id - 20].plate = 1;
-							}
-							else
-							{
-								if(id-20==PLANT6)
-								{
-									gRobot.plantState[id - 20].plate = 1;									
-								}
-							}
+//							if(gRobot.plantState[id - 20].plateState == COMMAND_DONE)
+//							{
+//								gRobot.plantState[id - 20].plate = 1;
+//							}
+//							else
+//							{
+//								if(id-20==PLANT6)
+//								{
+//									gRobot.plantState[id - 20].plate = 1;									
+//								}
+//							}
 							manualCmd.plantNum = id - 20;
 							manualCmd.method = SHOOT_METHOD6;							
 							InCmdQueue(manualCmd);

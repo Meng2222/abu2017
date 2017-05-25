@@ -100,7 +100,7 @@ void sendDebugInfo(void)
 {
 
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
-			(int)gRobot.moveBase.actualAngle,(int)gRobot.moveBase.actualXPos,\
+			(int)(gRobot.moveBase.actualAngle * 100.0f),(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\

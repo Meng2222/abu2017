@@ -330,7 +330,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	float posErr = 0.0f;                                    //posErr:位置误差
 	float outputSpeed = 0.0f;                               //outputSpeed:输出速度
 	float velY = 0.0f;
-	
+	float angleAdjust = 0.0f;
+	static float angleErr = 0.0f;
+	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	posErr = pExpData->pos - GetPosX();
 	if (posErr > 75.0f)
@@ -360,6 +362,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	velX = outputSpeed;
 
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
+	velY += 100.0f;
 	if(velY <= 80.0f)
 	{
 		velY = 30.0f;
@@ -397,10 +400,22 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);	
 	}
 	//姿态修正
-	pSpeedOut->backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	pSpeedOut->forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	pSpeedOut->leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
-
+	if(fabs(gRobot.moveBase.actualAngle)>=0.1f)
+	{
+		angleAdjust = Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle() + DPOSE * (GetAngle() - angleErr)));
+		if(angleAdjust>ANGLE_ADJUST_LIMIT)
+		{
+			angleAdjust = ANGLE_ADJUST_LIMIT;
+		}
+		if(angleAdjust < -ANGLE_ADJUST_LIMIT)
+		{
+			angleAdjust = -ANGLE_ADJUST_LIMIT;
+		}
+		pSpeedOut->backwardWheelSpeed -= angleAdjust;
+		pSpeedOut->forwardWheelSpeed -= angleAdjust;
+		pSpeedOut->leftWheelSpeed -= angleAdjust;
+	}
+	angleErr = GetAngle();
 	//防止电机速度超过极限速度
 	if(fabs(pSpeedOut->backwardWheelSpeed) > INSANEVEL || fabs(pSpeedOut->forwardWheelSpeed) > INSANEVEL || fabs(pSpeedOut->leftWheelSpeed) > INSANEVEL)
 	{
