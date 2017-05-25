@@ -1099,6 +1099,22 @@ void UART4_IRQHandler(void)
 						gRobot.rightGun.bulletNumber = GUN_NO_BULLET_ERROR;
 					}
 				}
+				else
+				{
+					//ID=255，全部切换为自动模式
+					if(id == 255)
+					{
+						//左枪自动模式
+						gRobot.leftGun.mode = GUN_AUTO_MODE;
+						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+						//右枪自动模式
+						gRobot.rightGun.mode = GUN_AUTO_MODE;
+						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+						//上枪自动模式
+						gRobot.upperGun.mode = GUN_ATTACK_MODE;
+						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+					}
+				}
 				status=15;
 			break;
 			case 14:
