@@ -1111,16 +1111,22 @@ void UART4_IRQHandler(void)
 				status = 0;
 				break;
 			case 15:
+				status++;
 				break;
 			case 16:
+				status++;
 				break;
 			case 17:
+				status++;
 				break;
 			case 18:
+				status++;
 				break;
 			case 19:
+				status++;
 				break;
 			case 20:
+				status++;
 				break;
 			case 21:
 				if(msgId == ch)
