@@ -569,6 +569,15 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 				}
 			}
 		}
+		//标记命令开始执行
+		if(shootCommand.shootMethod%2)
+		{
+			gRobot.leftGun.gunCommand[shootCommand.plantNum].plateState = COMMAND_IN_PROCESS;
+		}
+		else
+		{
+			gRobot.leftGun.gunCommand[shootCommand.plantNum].ballState = COMMAND_IN_PROCESS;		
+		}
 	}
 	return shootCommand;
 }
@@ -756,6 +765,15 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 					gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				}
 			}
+		}
+		//标记命令开始执行
+		if(shootCommand.shootMethod%2)
+		{
+			gRobot.rightGun.gunCommand[shootCommand.plantNum].plateState = COMMAND_IN_PROCESS;
+		}
+		else
+		{
+			gRobot.rightGun.gunCommand[shootCommand.plantNum].ballState = COMMAND_IN_PROCESS;		
 		}
 	}
 	return shootCommand;

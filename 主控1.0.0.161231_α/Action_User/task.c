@@ -1206,6 +1206,14 @@ void LeftGunShootTask(void)
 				ROBOT_LeftGunCheckReload();
 
 				//					OSTimeDly(100);
+				//落盘时，检查对应柱子是否已经打球
+				if(gRobot.leftGun.shootParaMode%2)
+				{
+					while(gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState == COMMAND_IN_PROCESS)
+					{
+						OSTimeDly(1);
+					}
+				}
 				//发射
 				ROBOT_LeftGunShoot();
 
@@ -1395,6 +1403,14 @@ void RightGunShootTask(void)
 				ROBOT_RightGunCheckReload();
 
 				//					OSTimeDly(100);
+				//落盘时，检查对应柱子是否已经打球
+				if(gRobot.rightGun.shootParaMode%2)
+				{
+					while(gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ballState == COMMAND_IN_PROCESS)
+					{
+						OSTimeDly(1);
+					}
+				}
 				//发射
 				ROBOT_RightGunShoot();
 
