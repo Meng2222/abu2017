@@ -343,6 +343,14 @@ status_t ROBOT_Init(void)
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
+		gRobot.autoCommand[i].ballState = COMMAND_DONE;
+	}
+	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
+	{
+		gRobot.autoCommand[i].plateState = COMMAND_DONE;
+	}
+	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
+	{
 		gRobot.cameraInfo[i].ball = 1;
 	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
