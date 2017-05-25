@@ -1394,7 +1394,7 @@ status_t ROBOT_LeftGunReload(void)
 //				LeftHold();
 //				OSTimeDly(8);
 //			}
-			OSTimeDly(100);
+			OSTimeDly(50);
 		}
 		else
 		{
@@ -1439,7 +1439,7 @@ status_t ROBOT_RightGunReload(void)
 //				RightHold();
 //				OSTimeDly(8);
 //			}
-			OSTimeDly(100);
+			OSTimeDly(50);
 		}
 		else
 		{
