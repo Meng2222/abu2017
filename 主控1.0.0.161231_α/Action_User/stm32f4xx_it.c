@@ -611,11 +611,12 @@ void TIM2_IRQHandler(void)
 {
 	#define PERIOD_COUNTER 10
 	#define DEBUG_PERIOD_COUNTER 200
-	#define BLE_CHECK_COUNTER 600
+	#define BLE_CHECK_COUNTER 3000
 	//用来计数10次，产生10ms的定时器
 	static uint8_t periodCounter = PERIOD_COUNTER;
 	static uint8_t debugPeriodCounter = DEBUG_PERIOD_COUNTER;
 	static uint16_t bleCheckCounter = BLE_CHECK_COUNTER;
+	static int lastBleHeartBeat = 0;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
@@ -655,8 +656,7 @@ void TIM2_IRQHandler(void)
 			bleCheckCounter--;
 			if(bleCheckCounter == 0)
 			{
-				gRobot.isBleOk.bleHeartBeat--;	
-				if(gRobot.isBleOk.bleHeartBeat < 0)
+				if(gRobot.isBleOk.bleHeartBeat - lastBleHeartBeat <= 0)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_LOST;
 				}
@@ -664,6 +664,7 @@ void TIM2_IRQHandler(void)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_OK;						
 				}
+				lastBleHeartBeat = gRobot.isBleOk.bleHeartBeat;
 				bleCheckCounter = BLE_CHECK_COUNTER;
 			}
 		}
@@ -779,7 +780,10 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
-		
+		if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+		{
+			gRobot.isBleOk.bleHeartBeat++;
+		}	
 		USART_SendData(UART4, ch);
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
@@ -1099,10 +1103,6 @@ void UART4_IRQHandler(void)
 			case 14:
 				if(ch == 'B')
 				{
-					if(gRobot.isBleOk.noBleFlag == BLE_LOST)
-					{
-						gRobot.isBleOk.bleHeartBeat = 0;
-					}
 					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 					{
 						gRobot.isBleOk.bleHeartBeat++;

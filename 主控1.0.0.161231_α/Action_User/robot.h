@@ -380,7 +380,7 @@ typedef struct
 	//蓝牙通信是否正常标志位
 	uint8_t noBleFlag;
 	//心跳包
-	int16_t bleHeartBeat;
+	int bleHeartBeat;
 	//记录蓝牙命令时间间隔
 	int noBleTimer;
 }ble_t;
