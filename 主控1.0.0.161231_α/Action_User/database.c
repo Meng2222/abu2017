@@ -271,7 +271,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //5#着陆台
 		 {35.4f,15.4f,18.5f,90.0f,18.0f},
 		 //6#着陆台
-		 {6.0f,20.0f,2.3f,125.0f,12.0f},
+		 {8.0f,19.9f,0.6f,125.0f,15.0f},
 		 //7#着陆台
 		 {-1.0f,35.5f, 2.9f,50.0f,15.0f}},
 		
@@ -334,7 +334,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //5#着陆台
 		 {35.4f,15.4f,18.5f,90.0f,18.0f},
 		 //6#着陆台
-		 {6.0f,20.0f,2.3f,125.0f,12.0f},
+		 {8.0f,19.9f,0.6f,125.0f,15.0f},
 		 //7#着陆台
 		 {-1.0f,35.5f, 2.9f,50.0f,15.0f}}
 
@@ -546,9 +546,9 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	},	
 	//三号柱子对应参数
 	{
-		//第一种参数类型对应打球落盘
+		//第一种参数类型对应bu打球落盘
 		{
-			{1.1f,10.3f,0.0f,109.0f,0.0f},
+			{6.8f,20.4f,0.0f,97.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
