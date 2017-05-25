@@ -689,6 +689,9 @@ status_t ROBOT_RightGunCheckConflict(void);
 status_t ROBOT_LeftGunReturn(void);
 status_t ROBOT_RightGunReturn(void);
 
+shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void);
+shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void);
+
 
 /*
 ============================================================
