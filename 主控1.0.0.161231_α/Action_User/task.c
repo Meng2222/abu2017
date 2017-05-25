@@ -437,6 +437,7 @@ void ConfigTask(void)
 	{
 		//WAIT
 	}
+	SendStop2Camera();
 	//	MoveY(50);
 	OSTaskSuspend(Walk_TASK_PRIO);
 #endif
@@ -1524,11 +1525,16 @@ void UpperGunShootTask(void)
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
+#ifdef NO_WALK_TASK
+	gRobot.upperGun.gunCommand = gRobot.plantState;
+	gRobot.upperGun.mode = GUN_DEFEND_MODE;
+#endif
 	while(1)
 	{
 		//如果接收到防守命令进入防守模式
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 #ifndef NO_WALK_TASK
+
 		//不需要防守时如果7#需要落盘则对7#落盘命令置位
 //		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
 //		{
