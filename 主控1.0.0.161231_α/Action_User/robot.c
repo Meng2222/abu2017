@@ -1414,7 +1414,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	//超时时间为100*5*10ms，5秒
 	uint8_t checkTimes = 5;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
-	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 2;
+	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	while(checkTimes--)
 	{
 		int timeout = 20;
@@ -1617,7 +1617,7 @@ status_t ROBOT_UpperGunShoot(void)
 	{
 			UpperShoot();
 			USART_SendData(USART3,'b');
-			OSTimeDly(40);
+			OSTimeDly(20);
 			UpperShootReset();
 			gRobot.upperGun.shootTimes++;		
 			//fix me, 应该检查子弹是否用完
