@@ -918,7 +918,7 @@ void UpperGunShootTask(void)
 
 	//fix me, if camera send data, this flag = 1
 	uint8_t upperGunShootFlag = 0;
-	gRobot.upperGun.mode = GUN_ATTACK_MODE;
+	gRobot.upperGun.mode = GUN_DEFEND_MODE;
 	while(1)
 	{
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
@@ -971,7 +971,6 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
-				gRobot.upperGun.mode = GUN_ATTACK_MODE;
 //				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
