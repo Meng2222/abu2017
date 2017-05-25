@@ -125,5 +125,28 @@ cmd_t ReplaceHeadQueue(cmd_t inCmd)
 	
 	return outCmd;
 }
+/**
+  * @brief  DelTailQueue
+  * @note	删除队尾
+  * @param  
+  * @retval None
+  */
+void DelTailQueue(void)
+{	
+	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
+	{	
+		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = INVALID_PLANT_NUMBER;
+		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = INVALID_SHOOT_METHOD;
+		if(gRobot.manualCmdQueue.tailNum != 0)		
+		{
+			gRobot.manualCmdQueue.tailNum-=1;
+		}
+
+	}
+	
+}
 
 /********************* (C) COPYRIGHT NEU_ACTION_2017 ****************END OF FILE************************/

@@ -760,7 +760,7 @@ void UART4_IRQHandler(void)
 {
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
-
+	static uint8_t msgId = 0xff;
 	static union
 	{
 		uint8_t data8[4];
@@ -780,7 +780,6 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
-
 		USART_SendData(UART4, ch);
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
@@ -1099,7 +1098,7 @@ void UART4_IRQHandler(void)
 						gRobot.rightGun.bulletNumber = GUN_NO_BULLET_ERROR;
 					}
 				}
-				status=0;
+				status=15;
 			break;
 			case 14:
 				if(ch == 'B')
@@ -1109,6 +1108,20 @@ void UART4_IRQHandler(void)
 						gRobot.isBleOk.bleHeartBeat++;
 					}					
 				}
+				status = 0;
+				break;
+			case 15:
+			case 16:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
+			case 21:
+				if(msgId == ch)
+				{
+					
+				}
+				msgId = ch;
 				status = 0;
 				break;
 			default:
