@@ -789,6 +789,7 @@ void UART4_IRQHandler(void)
 				if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 				{
 					gRobot.isBleOk.bleHeartBeat++;
+					gRobot.isBleOk.noBleFlag = BLE_OK;
 				}						
 				status++;
 				break;

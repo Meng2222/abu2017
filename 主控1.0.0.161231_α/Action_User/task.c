@@ -801,7 +801,7 @@ void WalkTask(void)
 		//检查是否需要重启 fix me 需要更好的处理方式来避免一直进入重试
 		if(status == launch)
 		{
-			if(gRobot.isReset == ROBOT_RESET)
+			if(gRobot.isReset == ROBOT_RESET||RESET_SWITCH)
 			{
 				status = reset;
 			}
