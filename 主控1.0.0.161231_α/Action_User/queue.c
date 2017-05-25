@@ -133,8 +133,6 @@ cmd_t ReplaceHeadQueue(cmd_t inCmd)
   */
 void DelTailQueue(void)
 {	
-	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
 	{	
@@ -143,6 +141,10 @@ void DelTailQueue(void)
 		if(gRobot.manualCmdQueue.tailNum != 0)		
 		{
 			gRobot.manualCmdQueue.tailNum-=1;
+		}
+		else
+		{
+			gRobot.manualCmdQueue.tailNum = CMD_QUEUE_LENGTH - 1;
 		}
 
 	}

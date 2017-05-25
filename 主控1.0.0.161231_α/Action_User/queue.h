@@ -73,7 +73,13 @@ cmd_t ReplaceHeadQueue(cmd_t inCmd);
   * @retval	
   */
 uint8_t getCmdQueueElementNum(void);
-
+/**
+  * @brief  DelTailQueue
+  * @note	删除队尾
+  * @param  
+  * @retval None
+  */
+void DelTailQueue(void);
 #ifdef __cplusplus
 }
 #endif
