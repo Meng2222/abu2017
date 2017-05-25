@@ -961,7 +961,7 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.targetZone = 0x00;
 					upperGunShootFlag = 0;
-					OSTimeDly(70);
+					OSTimeDly(20);
 				}
 				if(gRobot.upperGun.targetZone == 0)
 				{
