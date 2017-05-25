@@ -780,17 +780,18 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
-		if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
-		{
-			gRobot.isBleOk.bleHeartBeat++;
-		}	
+
 		USART_SendData(UART4, ch);
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
 			case 0:                       
 				if (ch == 'A')        
-					status++;
+				if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+				{
+					gRobot.isBleOk.bleHeartBeat++;
+				}						
+				status++;
 				break;
 			case 1:
 				if (ch == 'C')
