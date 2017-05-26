@@ -1472,7 +1472,7 @@ void USART3_IRQHandler(void)
 				
 				if(data == SELF_NEED_PLATE)
 				{
-					if(gRobot.plateShootTimes[PLANT6] > 6)
+					if(gRobot.plateShootTimes[PLANT6] > 2)
 					{
 						gRobot.upperGun.isSelfEmpty = SELF_EMPTY;
 						gRobot.leftGun.isSelfEmpty = SELF_EMPTY;

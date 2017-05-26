@@ -546,9 +546,9 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	},	
 	//三号柱子对应参数
 	{
-		//第一种参数类型对应bu打球落盘
+		//第一种参数类型对应打球落盘
 		{
-			{6.8f,20.4f,0.0f,97.0f,0.0f},
+			{2.3f,10.3f,0.0f,109.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -557,7 +557,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{6.8f,20.4f,0.0f,97.0f,0.0f},
+			{8.0f,20.4f,0.0f,99.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -575,7 +575,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第四种参数类型对应补弹打球
 		{
-			{1.1f,10.3f,0.0f,109.0f,0.0f},
+			{2.3f,10.3f,0.0f,109.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},

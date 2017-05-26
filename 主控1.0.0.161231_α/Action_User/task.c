@@ -966,7 +966,7 @@ void WalkTask(void)
 			{
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
-				MoveTo(-6500.14f, 3000.0f, 2500.0f , 2000.0f);
+				MoveTo(-6500.14f, 3000.0f, 2000.0f , 2000.0f);
 				//				if (GetPosX() >= -6459.14f)
 				if (GetPosX() >= -6500.14f)
 				{
@@ -978,7 +978,7 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
-				MoveTo(6500.14f, -3000.0f, 2500.0f , 2000.0f);
+				MoveTo(6500.14f, -3000.0f, 2000.0f , 2000.0f);
 				//到位后给靠墙速度
 
 				//				if (GetPosX() <= 6459.14f)
@@ -1536,35 +1536,39 @@ void UpperGunShootTask(void)
 #ifndef NO_WALK_TASK
 
 		//不需要防守时如果7#需要落盘则对7#落盘命令置位
-//		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
-//		{
-//			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
-//			{
-//				//等待0.8s避免已经发射弹盘没落上时重复发射
-//				uint8_t checkGap = 16;
-//				while(checkGap--)
-//				{
-//					if(gRobot.upperGun.targetZone & 0xff)
-//					{
-//						break;
-//					}
-//					OSTimeDly(5);
-//				}
-//				if((gRobot.upperGun.targetZone & 0xff )==0)
-//				{
-//					//对7#落盘命令进行置位
-//					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
-//					{
-//						gRobot.upperGun.mode = GUN_ATTACK_MODE;
-//						gRobot.plantState[PLANT7].plate = 1;
-//					}
-//				}
-//				else
-//				{
-//					gRobot.upperGun.mode = GUN_DEFEND_MODE;
-//				}
-//			}
-//		}
+		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+		{
+			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
+			{
+				//等待0.8s避免已经发射弹盘没落上时重复发射
+				uint8_t checkGap = 16;
+				while(checkGap--)
+				{
+					if(gRobot.upperGun.targetZone & 0xff)
+					{
+						break;
+					}
+					OSTimeDly(5);
+				}
+				if((gRobot.upperGun.targetZone & 0xff )==0)
+				{
+					//对7#落盘命令进行置位
+					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+					{
+						cmd_t selfCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+						gRobot.upperGun.mode = GUN_ATTACK_MODE;
+						gRobot.plantState[PLANT7].plate = 1;
+						selfCmd.plantNum = PLANT7;
+						selfCmd.method = SHOOT_METHOD6;							
+						InCmdQueue(selfCmd);
+					}
+				}
+				else
+				{
+					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+				}
+			}
+		}
 #endif
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘

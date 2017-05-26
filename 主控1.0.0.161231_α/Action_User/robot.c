@@ -809,7 +809,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 	OSTimeDly(5);
 	if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
 	{
-		searchRange = 1;
+		searchRange = 0;
 		gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	for( i = 0;i < searchRange;i++)
