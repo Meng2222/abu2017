@@ -953,7 +953,7 @@ void WalkTask(void)
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
 		//装弹后检查行程开关是否触发
-		if(status > beginToGo1/*= load*/)
+		if(status >= load)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
