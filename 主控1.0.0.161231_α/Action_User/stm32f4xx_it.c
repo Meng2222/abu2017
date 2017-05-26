@@ -1048,10 +1048,13 @@ void UART4_IRQHandler(void)
 //							{
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
-							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD3;							
-							InCmdQueue(manualCmd);
-							CheckCmdQueueState();
+							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(id - 10)))==0)
+							{
+								manualCmd.plantNum = id - 10;
+								manualCmd.method = SHOOT_METHOD3;							
+								InCmdQueue(manualCmd);
+								CheckCmdQueueState();
+							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
@@ -1066,10 +1069,13 @@ void UART4_IRQHandler(void)
 //									gRobot.plantState[id - 20].plate = 1;									
 //								}
 //							}
-							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD4;							
-							InCmdQueue(manualCmd);
-							CheckCmdQueueState();
+							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(id - 20)))==0 || (id - 20 == PLANT6))
+							{
+								manualCmd.plantNum = id - 20;
+								manualCmd.method = SHOOT_METHOD4;							
+								InCmdQueue(manualCmd);
+								CheckCmdQueueState();
+							}
 						break;
 					}
 				}
@@ -2949,10 +2955,13 @@ void UART5_IRQHandler(void)
 //							{
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
-							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD3;							
-							InCmdQueue(manualCmd);
-							CheckCmdQueueState();
+							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(id - 10)))==0)
+							{
+								manualCmd.plantNum = id - 10;
+								manualCmd.method = SHOOT_METHOD3;							
+								InCmdQueue(manualCmd);
+								CheckCmdQueueState();
+							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
@@ -2967,10 +2976,13 @@ void UART5_IRQHandler(void)
 //									gRobot.plantState[id - 20].plate = 1;									
 //								}
 //							}
-							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD4;							
-							InCmdQueue(manualCmd);
-							CheckCmdQueueState();
+							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(id - 20)))==0 || (id - 20 == PLANT6))
+							{
+								manualCmd.plantNum = id - 20;
+								manualCmd.method = SHOOT_METHOD4;							
+								InCmdQueue(manualCmd);
+								CheckCmdQueueState();
+							}
 						break;
 					}
 				}
