@@ -586,7 +586,15 @@ status_t ROBOT_RightGunCheckReloadAim(void);
 */
 status_t ROBOT_RightGunCheckShootPoint(void);
 
-
+/*
+*名称：ROBOT_UpperGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_UpperGunCheckShootPoint(void);
 /*
 *名称：ROBOT_LeftGunCheckAim
 *功能：检查瞄准是否已完成

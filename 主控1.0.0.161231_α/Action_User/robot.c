@@ -18,6 +18,7 @@ robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
 extern OS_EVENT *LeftGunShootPointMbox;
 extern OS_EVENT *RightGunShootPointMbox;
+extern OS_EVENT *UpperGunShootPointMbox;
 
 /*
 ============================================================
@@ -2112,6 +2113,26 @@ status_t ROBOT_UpperGunCheckAim(void)
 	return GUN_NO_ERROR;
 }
 
+/*
+*名称：ROBOT_UpperGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_UpperGunCheckShootPoint(void)
+{
+	CPU_INT08U  os_err;
+
+	if(gRobot.upperGun.shootTimes == 0||gRobot.isReset == ROBOT_RESET)
+	{
+		OSMboxPend(UpperGunShootPointMbox,0,&os_err);
+//		OSTimeDly(100);
+		return MOVEBASE_POS_READY;
+	}
+	return GUN_NO_ERROR;
+}
 /**
 *名称：ROBOT_LeftGunShoot
 *功能：左枪开枪，开枪前需要确保子弹上膛，拉开保险，枪支架已经就绪

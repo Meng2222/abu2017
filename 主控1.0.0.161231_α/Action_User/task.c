@@ -39,8 +39,7 @@ OS_EVENT *CANSendMutex;
 OS_EVENT *OpenSaftyMbox;
 OS_EVENT *LeftGunShootPointMbox;
 OS_EVENT *RightGunShootPointMbox;
-OS_EVENT *LeftGunNextPointMbox;
-OS_EVENT *RightGunNextPointMbox;
+OS_EVENT *UpperGunShootPointMbox;
 
 //定义机器人全局变量
 extern robot_t gRobot;
@@ -263,8 +262,8 @@ void App_Task()
 	OpenSaftyMbox			=   OSMboxCreate((void *)0);
 	LeftGunShootPointMbox	=   OSMboxCreate((void *)0);
 	RightGunShootPointMbox   =   OSMboxCreate((void *)0);
-	LeftGunNextPointMbox	 =   OSMboxCreate((void *)0);
-	RightGunNextPointMbox	=   OSMboxCreate((void *)0);
+	UpperGunShootPointMbox   =   OSMboxCreate((void *)0);
+
 	/*创建任务*/
 	os_err = OSTaskCreate(	(void (*)(void *)) ConfigTask,				/*初始化任务*/
 							(void		  * ) 0,
@@ -1708,6 +1707,9 @@ void UpperGunShootTask(void)
 #endif
 	while(1)
 	{
+#ifndef NO_WALK_TASK
+		ROBOT_UpperGunCheckShootPoint();
+#endif
 		//如果接收到防守命令进入防守模式
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 #ifndef NO_WALK_TASK
