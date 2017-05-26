@@ -757,11 +757,12 @@ void TIM4_IRQHandler(void)
 *枪号：0左枪 1右枪 2上枪
 */
 static uint8_t msgId = 0xff;
+static uint8_t bleUseNum = 0;
 void UART4_IRQHandler(void)
 {
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
-
+	static uint8_t bleNumCountFlag = 1;
 	static union
 	{
 		uint8_t data8[4];
@@ -781,6 +782,11 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
+		if(bleNumCountFlag == 1)
+		{
+			bleUseNum++;
+			bleNumCountFlag = 0;
+		}
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
@@ -1106,15 +1112,18 @@ void UART4_IRQHandler(void)
 					//ID=255，全部切换为自动模式
 					if(id == 255)
 					{
-						//左枪自动模式
-						gRobot.leftGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-						//右枪自动模式
-						gRobot.rightGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-						//上枪自动模式
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
-						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						if(bleUseNum < 2)
+						{
+							//左枪自动模式
+							gRobot.leftGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+							//右枪自动模式
+							gRobot.rightGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							//上枪自动模式
+							gRobot.upperGun.mode = GUN_ATTACK_MODE;
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						}
 					}
 				}
 				status=15;
@@ -1265,6 +1274,7 @@ void USART1_IRQHandler(void)
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
 	static uint8_t msgId1 = 0xff;
+	static uint8_t bleNumCountFlag = 1;
 	static union
 	{
 		uint8_t data8[4];
@@ -1285,6 +1295,11 @@ void USART1_IRQHandler(void)
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 		ch = USART_ReceiveData(USART1);
 		USART_SendData(USART1, ch);
+		if(bleNumCountFlag == 1)
+		{
+			bleUseNum++;
+			bleNumCountFlag = 0;
+		}
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
@@ -1608,15 +1623,18 @@ void USART1_IRQHandler(void)
 					//ID=255，全部切换为自动模式
 					if(id == 255)
 					{
-						//左枪自动模式
-						gRobot.leftGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-						//右枪自动模式
-						gRobot.rightGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-						//上枪自动模式
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
-						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						if(bleUseNum < 2)
+						{
+							//左枪自动模式
+							gRobot.leftGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+							//右枪自动模式
+							gRobot.rightGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							//上枪自动模式
+							gRobot.upperGun.mode = GUN_ATTACK_MODE;
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						}
 					}
 				}
 				status=15;
@@ -1733,6 +1751,7 @@ void USART2_IRQHandler(void)
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
 	static uint8_t msgId2 = 0xff;
+	static uint8_t bleNumCountFlag = 1;
 	static union
 	{
 		uint8_t data8[4];
@@ -1753,6 +1772,11 @@ void USART2_IRQHandler(void)
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 		ch = USART_ReceiveData(USART2);
 		USART_SendData(USART2, ch);
+		if(bleNumCountFlag == 1)
+		{
+			bleUseNum++;
+			bleNumCountFlag = 0;
+		}
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
@@ -2076,15 +2100,18 @@ void USART2_IRQHandler(void)
 					//ID=255，全部切换为自动模式
 					if(id == 255)
 					{
-						//左枪自动模式
-						gRobot.leftGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-						//右枪自动模式
-						gRobot.rightGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-						//上枪自动模式
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
-						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						if(bleUseNum < 2)
+						{
+							//左枪自动模式
+							gRobot.leftGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+							//右枪自动模式
+							gRobot.rightGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							//上枪自动模式
+							gRobot.upperGun.mode = GUN_ATTACK_MODE;
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						}
 					}
 				}
 				status=15;
