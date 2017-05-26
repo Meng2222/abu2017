@@ -42,6 +42,12 @@ typedef struct
 	//队列中元素个数
 	uint8_t elementNum;
 	
+	//队列中打球命令状态
+	uint8_t cmdBallState;
+	
+	//队列中落盘命令状态
+	uint8_t cmdPlateState;
+	
 }cmdBuffer_t;
 
 
@@ -80,6 +86,13 @@ uint8_t getCmdQueueElementNum(void);
   * @retval None
   */
 void DelTailQueue(void);
+/**
+  * @brief  CheckCmdQueueState
+  * @note	检查队列中命令状态
+  * @param  
+  * @retval None
+  */
+void CheckCmdQueueState(void);
 #ifdef __cplusplus
 }
 #endif

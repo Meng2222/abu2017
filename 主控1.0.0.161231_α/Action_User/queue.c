@@ -150,5 +150,33 @@ void DelTailQueue(void)
 	}
 	
 }
-
+/**
+  * @brief  CheckCmdQueueState
+  * @note	检查队列中命令状态
+  * @param  
+  * @retval None
+  */
+void CheckCmdQueueState(void)
+{	
+	gRobot.manualCmdQueue.cmdPlateState = 0;
+	gRobot.manualCmdQueue.cmdBallState = 0;
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
+	{	
+		for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
+		{
+			uint8_t counter = 0;
+			counter = i%CMD_QUEUE_LENGTH;
+			if(gRobot.manualCmdQueue.cmdArr[counter].method == SHOOT_METHOD6)
+			{
+				gRobot.manualCmdQueue.cmdPlateState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;
+			}
+			if(gRobot.manualCmdQueue.cmdArr[counter].method == SHOOT_METHOD5)
+			{
+				gRobot.manualCmdQueue.cmdBallState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;			
+			}
+		}
+	}
+	
+}
 /********************* (C) COPYRIGHT NEU_ACTION_2017 ****************END OF FILE************************/

@@ -780,7 +780,6 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
-		USART_SendData(UART4, ch);
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
@@ -1045,6 +1044,7 @@ void UART4_IRQHandler(void)
 							manualCmd.plantNum = id - 10;
 							manualCmd.method = SHOOT_METHOD5;							
 							InCmdQueue(manualCmd);
+							CheckCmdQueueState();
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
@@ -1062,7 +1062,8 @@ void UART4_IRQHandler(void)
 							manualCmd.plantNum = id - 20;
 							manualCmd.method = SHOOT_METHOD6;							
 							InCmdQueue(manualCmd);
-							break;
+							CheckCmdQueueState();
+						break;
 					}
 				}
 				else if(id == 30)
@@ -1124,8 +1125,12 @@ void UART4_IRQHandler(void)
 					{
 						gRobot.isBleOk.bleHeartBeat++;
 					}					
+					status = 22;
 				}
-				status = 0;
+				else
+				{
+					status = 0;
+				}
 				break;
 			case 15:
 				status++;
@@ -1149,8 +1154,37 @@ void UART4_IRQHandler(void)
 				if(msgId == ch)
 				{
 					DelTailQueue();
+					CheckCmdQueueState();
 				}
 				msgId = ch;
+				status = 0;
+				break;
+			case 22:
+				status++;
+				break;
+			case 23:
+				status++;
+				break;
+			case 24:
+				status++;
+				break;
+			case 25:
+				status++;
+				break;
+			case 26:
+				status++;
+				break;
+			case 27:
+				status++;
+				break;
+			case 28:
+				//向平板发送打球命令状态
+				ch = gRobot.manualCmdQueue.cmdBallState;
+				status++;
+				break;
+			case 29:
+				//向平板发送落盘命令状态
+				ch = gRobot.manualCmdQueue.cmdPlateState;
 				status = 0;
 				break;
 			default:
@@ -1158,6 +1192,7 @@ void UART4_IRQHandler(void)
 				id = 0xff;
 				break;					
 		}
+		USART_SendData(UART4, ch);
 	 }
 	else
 	{
