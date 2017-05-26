@@ -9,6 +9,7 @@ void UART4_Init(uint32_t BaudRate);
 void USART3_Init(uint32_t BaudRate);
 void UART5_Init(uint32_t BaudRate);
 void USART6_Init(uint32_t BaudRate);
+void USART2_Init(uint32_t BaudRate);
 
 void USART_OUT(USART_TypeDef* USARTx, const uint8_t *Data,...);
 char *itoa(int value, char *string, int radix);

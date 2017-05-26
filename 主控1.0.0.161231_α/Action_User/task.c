@@ -327,7 +327,9 @@ void ConfigTask(void)
 
 	//串口初始化
 	UART4_Init(115200);	 //蓝牙手柄
-
+	USART1_Init(115200);
+	USART2_Init(115200);
+	//WIFI串口初始化
 	UART5DMAInit();
 
 	USART6_Init(115200);	//定位系统
@@ -1540,8 +1542,8 @@ void UpperGunShootTask(void)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
-				//等待0.8s避免已经发射弹盘没落上时重复发射
-				uint8_t checkGap = 16;
+				//等待1.5s避免已经发射弹盘没落上时重复发射
+				uint8_t checkGap = 30;
 				while(checkGap--)
 				{
 					if(gRobot.upperGun.targetZone & 0xff)
