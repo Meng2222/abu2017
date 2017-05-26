@@ -802,7 +802,7 @@ void WalkTask(void)
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
 		//装弹后检查行程开关是否触发
-		if(status >= load)
+		if(status > beginToGo1/*= load*/)
 		{
 			ROBOT_CheckGunOpenSafety();
 		}
@@ -1144,6 +1144,13 @@ void LeftGunShootTask(void)
 	//然后延时0.2s以后 弹匣推弹收回
 	OSTimeDly(20);
 	LeftBack();
+	//改为手动点命令后开始可能没有命令，需要转到一个姿态上第一发弹
+	ROBOT_LeftGunReturn();
+	//上第一发弹
+	OSTimeDly(50);
+	LeftPush();
+	OSTimeDly(50);
+	LeftBack();
 	//	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
@@ -1192,11 +1199,11 @@ void LeftGunShootTask(void)
 					ROBOT_LeftGunAim();
 				}
 				//第一发弹先调整姿态一段时间后再上弹
-				if(gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
-				{
-					OSTimeDly(90);
-					LeftPush();
-				}
+//				if(gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+//				{
+//					OSTimeDly(90);
+//					LeftPush();
+//				}
 				//上弹
 				ROBOT_LeftGunReload();
 
@@ -1338,8 +1345,15 @@ void RightGunShootTask(void)
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 	//然后延时0.2s以后 弹匣推弹收回
+	OSTimeDly(20);
 	RightBack();
-	//	RightPush();
+	//改为手动点命令后开始可能没有命令，需要转到一个姿态上第一发弹
+	ROBOT_RightGunReturn();
+	//上第一发弹
+	OSTimeDly(50);
+	RightPush();
+	OSTimeDly(50);
+	RightBack();
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
@@ -1390,12 +1404,12 @@ void RightGunShootTask(void)
 												 [rightGunShootCommand.plantNum];
 					ROBOT_RightGunAim();
 				}
-				//第一发弹调整姿态一段时间后开始上弹
-				if(gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
-				{
-					OSTimeDly(110);
-					RightPush();
-				}
+//				//第一发弹调整姿态一段时间后开始上弹
+//				if(gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)
+//				{
+//					OSTimeDly(110);
+//					RightPush();
+//				}
 				//上弹
 				ROBOT_RightGunReload();
 
