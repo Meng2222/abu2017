@@ -146,7 +146,7 @@ void DelTailQueue(void)
 		{
 			gRobot.manualCmdQueue.tailNum = CMD_QUEUE_LENGTH - 1;
 		}
-
+		gRobot.manualCmdQueue.elementNum--;
 	}
 	
 }

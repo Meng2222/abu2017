@@ -451,7 +451,7 @@ void ConfigTask(void)
 	//	OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 	//	OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
 #ifndef NO_WALK_TASK
-	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
+//	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 #endif
 	OSTaskSuspend(DEBUG_TASK_PRIO);
 	OSTaskSuspend(OS_PRIO_SELF);
