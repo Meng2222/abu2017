@@ -1744,7 +1744,7 @@ void UpperGunShootTask(void)
 								uint8_t counter = 0;
 								counter = i%CMD_QUEUE_LENGTH;
 								if(gRobot.manualCmdQueue.cmdArr[counter].plantNum == PLANT7 && \
-									gRobot.manualCmdQueue.cmdArr[counter].method == SHOOT_METHOD6)
+									gRobot.manualCmdQueue.cmdArr[counter].method%2)
 								{
 									//队列中有7#落盘命令时不再重复入队
 									putPlateFlag = 0;
@@ -1755,7 +1755,7 @@ void UpperGunShootTask(void)
 						if(putPlateFlag==1)
 						{
 							selfCmd.plantNum = PLANT7;
-							selfCmd.method = SHOOT_METHOD6;							
+							selfCmd.method = SHOOT_METHOD4;							
 							InCmdQueue(selfCmd);
 						}
 					}

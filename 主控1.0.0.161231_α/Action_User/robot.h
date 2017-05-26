@@ -23,7 +23,7 @@
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
 //参数种类，打球，落盘
-#define SHOOT_METHOD_NUMBER		6
+#define SHOOT_METHOD_NUMBER		4
 //上枪参数种类
 #define UPPER_SHOOT_METHOD_NUMBER  5
 

@@ -1043,7 +1043,7 @@ void UART4_IRQHandler(void)
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
 							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD5;							
+							manualCmd.method = SHOOT_METHOD3;							
 							InCmdQueue(manualCmd);
 							CheckCmdQueueState();
 							break;
@@ -1061,7 +1061,7 @@ void UART4_IRQHandler(void)
 //								}
 //							}
 							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD6;							
+							manualCmd.method = SHOOT_METHOD4;							
 							InCmdQueue(manualCmd);
 							CheckCmdQueueState();
 						break;
@@ -1547,7 +1547,7 @@ void USART1_IRQHandler(void)
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
 							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD5;							
+							manualCmd.method = SHOOT_METHOD3;							
 							InCmdQueue(manualCmd);
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
@@ -1564,7 +1564,7 @@ void USART1_IRQHandler(void)
 //								}
 //							}
 							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD6;							
+							manualCmd.method = SHOOT_METHOD4;							
 							InCmdQueue(manualCmd);
 							break;
 					}
@@ -2015,7 +2015,7 @@ void USART2_IRQHandler(void)
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
 							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD5;							
+							manualCmd.method = SHOOT_METHOD3;							
 							InCmdQueue(manualCmd);
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
@@ -2032,7 +2032,7 @@ void USART2_IRQHandler(void)
 //								}
 //							}
 							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD6;							
+							manualCmd.method = SHOOT_METHOD4;							
 							InCmdQueue(manualCmd);
 							break;
 					}
@@ -2597,34 +2597,34 @@ void USART3_IRQHandler(void)
 					{
 						UART5_OUT((uint8_t*)"BLELOSTCAMERA");
 						if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD5, 1100))
+							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD3, 1100))
 						{
 							gRobot.plantState[PLANT1].ball = 1;
 							UART5_OUT((uint8_t*)"BLELOSTCAMERA");
 						}
 						if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD6, 1100))
+							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD4, 1100))
 							gRobot.plantState[PLANT1].plate = 1;
 						if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD5, 1100))
+							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD3, 1100))
 							gRobot.plantState[PLANT2].ball = 1;
 						if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD6, 1100))
+							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD4, 1100))
 							gRobot.plantState[PLANT2].plate = 1;
 					}
 					if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 					{
 						if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD5, 1100))
+							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD3, 1100))
 							gRobot.plantState[PLANT4].ball = 1;
 						if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD6, 1100))
+							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD4, 1100))
 							gRobot.plantState[PLANT4].plate = 1;
 						if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD5, 1100))
+							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD3, 1100))
 							gRobot.plantState[PLANT5].ball = 1;
 						if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
-							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD6, 1100))
+							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD4, 1100))
 							gRobot.plantState[PLANT5].plate = 1;
 					}
 				}
@@ -2923,7 +2923,7 @@ void UART5_IRQHandler(void)
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
 							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD5;							
+							manualCmd.method = SHOOT_METHOD3;							
 							InCmdQueue(manualCmd);
 							CheckCmdQueueState();
 							break;
@@ -2941,7 +2941,7 @@ void UART5_IRQHandler(void)
 //								}
 //							}
 							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD6;							
+							manualCmd.method = SHOOT_METHOD4;							
 							InCmdQueue(manualCmd);
 							CheckCmdQueueState();
 						break;

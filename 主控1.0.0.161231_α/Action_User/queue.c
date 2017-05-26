@@ -167,11 +167,11 @@ void CheckCmdQueueState(void)
 		{
 			uint8_t counter = 0;
 			counter = i%CMD_QUEUE_LENGTH;
-			if(gRobot.manualCmdQueue.cmdArr[counter].method == SHOOT_METHOD6)
+			if(gRobot.manualCmdQueue.cmdArr[counter].method%2)
 			{
 				gRobot.manualCmdQueue.cmdPlateState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;
 			}
-			if(gRobot.manualCmdQueue.cmdArr[counter].method == SHOOT_METHOD5)
+			else
 			{
 				gRobot.manualCmdQueue.cmdBallState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;			
 			}

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string.h>
 #include "robot.h"
 #include "elmo.h"
 #include "database.h"
@@ -30,27 +31,26 @@ static void LeftGunInit(void)
 	gRobot.leftGun.actualPose.pitch = 0.0f;
 	gRobot.leftGun.actualPose.yaw = 0.0f;
 	gRobot.leftGun.actualPose.roll = 0.0f;
+	
+	//将参数赋值到上弹姿势中
+	for(uint8_t i = 0;i < SHOOT_METHOD_NUMBER;i++)
+	{
+		for(uint8_t j = 0;j < LAND_NUMBER;j++)
+		{
+			gLeftGunReloadPosDatabase[i][j] = gLeftGunPosDatabase[i][j];
+		}
+	}
 
-//	gRobot.leftGun.targetPose.pitch = 0.0f;
-//	gRobot.leftGun.targetPose.yaw = 0.0f;
-//	gRobot.leftGun.targetPose.roll = 0.0f;
 	//特殊上弹角度
 	gLeftGunReloadPosDatabase[SHOOT_METHOD1][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_METHOD5][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_METHOD6][PLANT3].pitch = 26.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
 	gLeftGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_METHOD5][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;
 
-	gRobot.leftGun.targetPose.pitch = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].pitch;
-	gRobot.leftGun.targetPose.yaw = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].yaw;
-	gRobot.leftGun.targetPose.roll = gLeftGunPosDatabase[gLeftGunShootCmds[0].shootMethod][gLeftGunShootCmds[0].plantNum].roll;
 
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.leftGun.maxPoseLimit.yaw = 50.0f;
@@ -117,24 +117,24 @@ static void RightGunInit(void)
 	gRobot.rightGun.actualPose.pitch = 0.0f;
 	gRobot.rightGun.actualPose.yaw = 0.0f;
 	gRobot.rightGun.actualPose.roll = 0.0f;
-
-
+	
+	//将参数赋值到上弹姿势中
+	for(uint8_t i = 0;i < SHOOT_METHOD_NUMBER;i++)
+	{
+		for(uint8_t j = 0;j < LAND_NUMBER;j++)
+		{
+			gRightGunReloadPosDatabase[i][j] = gRightGunPosDatabase[i][j];
+		}
+	}
+	
 	gRightGunReloadPosDatabase[SHOOT_METHOD1][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD3][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_METHOD5][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_METHOD6][PLANT3].pitch = 26.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD1][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD2][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD3][PLANT7].pitch = 20.0f;
 	gRightGunReloadPosDatabase[SHOOT_METHOD4][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_METHOD5][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_METHOD6][PLANT7].pitch = 20.0f;
-
-	gRobot.rightGun.targetPose.pitch = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].pitch;
-	gRobot.rightGun.targetPose.yaw = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].yaw;
-	gRobot.rightGun.targetPose.roll = gRightGunPosDatabase[gRightGunShootCmds[0].shootMethod][gRightGunShootCmds[0].plantNum].roll;
 
 	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
@@ -428,9 +428,9 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 			{
 				shootCommand.plantNum = LeftGunPriority[i];
 				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
-					shootCommand.shootMethod = SHOOT_METHOD3;
+					shootCommand.shootMethod = SHOOT_METHOD1;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD5;
+					shootCommand.shootMethod = SHOOT_METHOD3;
 //				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
 //					shootCommand.shootMethod = SHOOT_METHOD5;
 //				else
@@ -464,7 +464,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD6;
+					shootCommand.shootMethod = SHOOT_METHOD4;
 //				else if(gRobot.leftGun.shootTimes < LEFT_NEW_PLATE_NUM)
 //					shootCommand.shootMethod = SHOOT_METHOD6;
 //				else
@@ -627,9 +627,9 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 			{
 				shootCommand.plantNum = RightGunPriority[i];
 				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
-					shootCommand.shootMethod = SHOOT_METHOD3;
+					shootCommand.shootMethod = SHOOT_METHOD1;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD5;
+					shootCommand.shootMethod = SHOOT_METHOD2;
 //				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
 //					shootCommand.shootMethod = SHOOT_METHOD5;
 //				else
@@ -663,7 +663,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
 					shootCommand.shootMethod = SHOOT_METHOD2;
 				else
-					shootCommand.shootMethod = SHOOT_METHOD6;
+					shootCommand.shootMethod = SHOOT_METHOD4;
 //				else if(gRobot.rightGun.shootTimes < RIGHT_NEW_PLATE_NUM)
 //					shootCommand.shootMethod = SHOOT_METHOD6;
 //				else
@@ -2411,12 +2411,12 @@ status_t ROBOT_RightGunCheckConflict(void)
 */
 status_t ROBOT_LeftGunReturn(void)
 {
-	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].yaw));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));
-	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].roll));
+	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT6].yaw));
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT6].pitch));
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT6].roll));
 
-	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].speed1));
-	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));
+	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT6].speed1));
+	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT6].speed2));
 
 	return GUN_NO_ERROR;
 }
@@ -2429,12 +2429,12 @@ status_t ROBOT_LeftGunReturn(void)
 */
 status_t ROBOT_RightGunReturn(void)
 {
-	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].yaw));
-	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].pitch));
-	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].roll));
+	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT6].yaw));
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT6].pitch));
+	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT6].roll));
 
-	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed1));
-	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD6][PLANT6].speed2));
+	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT6].speed1));
+	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT6].speed2));
 
 	return GUN_NO_ERROR;
 
