@@ -1565,8 +1565,8 @@ void UpperGunShootTask(void)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
-				//等待1.5s避免已经发射弹盘没落上时重复发射
-				uint8_t checkGap = 30;
+				//等待2.0s避免已经发射弹盘没落上时重复发射
+				uint8_t checkGap = 40;
 				while(checkGap--)
 				{
 					if(gRobot.upperGun.targetZone & 0xff)
@@ -1580,12 +1580,32 @@ void UpperGunShootTask(void)
 					//对7#落盘命令进行置位
 					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
 					{
+						uint8_t putPlateFlag = 1;
 						cmd_t selfCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
 						gRobot.upperGun.mode = GUN_ATTACK_MODE;
 						gRobot.plantState[PLANT7].plate = 1;
-						selfCmd.plantNum = PLANT7;
-						selfCmd.method = SHOOT_METHOD6;							
-						InCmdQueue(selfCmd);
+						//搜索队列中是否有7#落盘命令
+						if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
+						{	
+							for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
+							{
+								uint8_t counter = 0;
+								counter = i%CMD_QUEUE_LENGTH;
+								if(gRobot.manualCmdQueue.cmdArr[counter].plantNum == PLANT7 && \
+									gRobot.manualCmdQueue.cmdArr[counter].method == SHOOT_METHOD6)
+								{
+									//队列中有7#落盘命令时不再重复入队
+									putPlateFlag = 0;
+								}
+							}
+						}
+						//如果队列中没有7#落盘命令时在队列中加入7#落盘命令
+						if(putPlateFlag==1)
+						{
+							selfCmd.plantNum = PLANT7;
+							selfCmd.method = SHOOT_METHOD6;							
+							InCmdQueue(selfCmd);
+						}
 					}
 				}
 				else
