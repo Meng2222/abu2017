@@ -1161,7 +1161,7 @@ void WalkTask(void)
 				//开始执行发射任务
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+				OSMboxPostOpt(UpperGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				if(setLaunchPosFlag == 1)
 				{
 					launchPosX = gRobot.moveBase.actualXPos;
@@ -1226,7 +1226,6 @@ void WalkTask(void)
 			case reset:
 			{
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
-				OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 				if(RESET_SWITCH)
 				{
 					status = resetConfig;
