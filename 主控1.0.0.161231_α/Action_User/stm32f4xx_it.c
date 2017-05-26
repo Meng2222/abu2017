@@ -3073,7 +3073,6 @@ void UART5_IRQHandler(void)
 				id = 0xff;
 				break;					
 		}
-		USART_SendData(UART5, ch);
 	 }
 	else
 	{
