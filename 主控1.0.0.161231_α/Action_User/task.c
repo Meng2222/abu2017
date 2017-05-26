@@ -745,28 +745,180 @@ void SelfCheckTask(void)
 				}
 				break;
 			case commicationCheck:
+			//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
 
-				if(gRobot.leftGun.aim == GUN_START_AIM)
+				//手自动切换时上弹气缸推到头后收回
+				if(gRobot.leftGun.modeChangeFlag == 1)
 				{
-					//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
-					//瞄准，此函数最好瞄准完成后再返回
-					//这个函数使用了CAN，要考虑被其他任务抢占的风险,dangerous!!!
-					ROBOT_LeftGunAim();
-					//更新数据库中参数并写入FLASH
-					//				UpdateLeftGunPosDatabaseManualMode();
-					//				FlashWriteGunPosData();
-					ROBOT_LeftGunCheckAim();
-					gRobot.leftGun.aim = GUN_STOP_AIM;
+					gRobot.leftGun.lastPlant = INVALID_PLANT_NUMBER;
+					gRobot.leftGun.lastParaMode = INVALID_SHOOT_METHOD;
+					LeftBack();
+					gRobot.leftGun.modeChangeFlag = 0;
 				}
-				else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
+				//等待命令时上弹气缸推到头后收回
+				if(gRobot.leftGun.noCommandTimer >= NO_COMMAND_COUNTER)
 				{
-					ROBOT_LeftGunCheckAim();
-					ROBOT_LeftGunShoot();
-					ROBOT_LeftGunReload();
-					//				OSTimeDly(50);
-					//更改射击命令标记，此标记在接收到对端设备发生命令时更新
-					gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+					LeftBack();
 				}
+				//自动模式
+				if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
+				{
+					//自获取命令
+		//			shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
+					shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommandFIFO();
+					if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
+					{
+						gRobot.leftGun.noCommandTimer = 0;
+						gRobot.leftGun.targetPlant = leftGunShootCommand.plantNum;
+						gRobot.leftGun.nextStep = 2;
+						gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
+						//对于7#柱子先到位后再上弹，其它柱子直接瞄准
+						if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT3 )
+						{
+							//获取并更新枪上弹姿态
+							gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootMethod]\
+														[leftGunShootCommand.plantNum];
+
+							ROBOT_LeftGunAim();
+							ROBOT_LeftGunCheckAim();
+						}
+						else/* if(gRobot.leftGun.shootTimes == 0)*/
+						{
+							gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
+														[leftGunShootCommand.plantNum];
+							ROBOT_LeftGunAim();
+						}
+						//第一发弹先调整姿态一段时间后再上弹
+		//				if(gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+		//				{
+		//					OSTimeDly(90);
+		//					LeftPush();
+		//				}
+						//上弹
+						ROBOT_LeftGunReload();
+
+						gRobot.leftGun.targetPose = gLeftGunPosDatabase[leftGunShootCommand.shootMethod]\
+													[leftGunShootCommand.plantNum];
+						ROBOT_LeftGunAim();
+
+						//检测枪是否到位
+						ROBOT_LeftGunCheckAim();
+						//检查上弹是否到位
+						ROBOT_LeftGunCheckReload();
+
+						//					OSTimeDly(100);
+						//落盘时，检查对应柱子是否已经打球
+						if(gRobot.leftGun.shootParaMode%2)
+						{
+							while(gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState == COMMAND_IN_PROCESS)
+							{
+								OSTimeDly(1);
+							}
+						}
+						//发射
+						ROBOT_LeftGunShoot();
+
+						if(gRobot.leftGun.ready == GUN_AIM_DONE)
+						{
+							if(gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+							{
+								//记录每个柱子的发射命令
+								gRobot.plateShootTimes[gRobot.leftGun.targetPlant]+=1;
+								//记录发射命令
+								gRobot.leftGun.lastPlant = leftGunShootCommand.plantNum;
+								gRobot.leftGun.lastParaMode = leftGunShootCommand.shootMethod;
+							}
+							else
+							{
+								if(gRobot.leftGun.shootParaMode%2)
+								{
+									gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
+								}
+								else
+								{
+									gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;
+								}
+							}
+							SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
+						}
+						//对命令状态进行复位
+						if(gRobot.leftGun.shootParaMode%2)
+						{
+							gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.leftGun.targetPlant));
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
+						}
+						else
+						{
+							gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.leftGun.targetPlant));
+							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;
+						}
+					}
+					else
+					{
+						//没有命令时回到6#落盘姿态
+						OSTimeDly(6);
+						ROBOT_LeftGunReturn();
+					}
+
+				}
+				//手动模式用于调试过程中，对端设备只会发送枪号和着陆号，枪的姿态
+				//调试过程中着陆台信息没有用，根据shoot标志来开枪
+				else if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_MANUAL_MODE)
+				{
+					gRobot.leftGun.nextStep = 3;
+					if(gRobot.leftGun.aim == GUN_START_AIM)
+					{
+						//获得目标位姿，这里应该由对端设备发送过来，直接更新的gRobot.leftGun中的目标位姿
+						ROBOT_LeftGunAim();
+						//更新数据库中参数并写入FLASH
+						//				UpdateLeftGunPosDatabaseManualMode();
+						//				FlashWriteGunPosData();
+						gRobot.leftGun.aim = GUN_STOP_AIM;
+					}
+					else if(gRobot.leftGun.shoot==GUN_START_SHOOT)
+					{
+						//7#柱子需要瞄准，因为需要特殊角度上弹
+						if(gRobot.leftGun.targetPlant == PLANT7)
+						{
+							ROBOT_LeftGunAim();
+						}
+						//检测左枪是否到位
+						ROBOT_LeftGunCheckAim();
+						//发射
+						ROBOT_LeftGunShoot();
+
+						//7#需要先到上弹角度再上弹
+						if(gRobot.leftGun.targetPlant == PLANT7)
+						{
+							gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[gRobot.leftGun.shootParaMode]\
+														[gRobot.leftGun.targetPlant];
+
+							ROBOT_LeftGunReloadAim();
+							//检测是否到位
+							ROBOT_LeftGunCheckReloadAim();
+							LeftPush();
+						}
+						//上弹
+						ROBOT_LeftGunReload();
+						//				OSTimeDly(50);
+						//更改射击命令标记，此标记在接收到对端设备发生命令时更新
+						gRobot.leftGun.shoot = GUN_STOP_SHOOT;
+					}
+					else
+					{
+						OSTaskSuspend(OS_PRIO_SELF);
+					}
+				}
+				else
+				{
+					BEEP_ON;
+					while(1)
+					{
+						UART5_OUT((uint8_t *)"Left Gun Mode Error!!!!!!!!!!\r\n");
+					}
+				}
+				LeftGunSendDebugInfo();
+				gRobot.leftGun.checkTimeUsage = 0;
 				break;
 			default :
 				break;
