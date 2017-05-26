@@ -243,7 +243,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 
 		//第一类参数，对应打球参数
 		{//1#着陆台
-		 {-42.1f, 0.0f, 15.4f, 104.0f, 19.0f},
+		 {-41.1f, 0.0f, 15.4f, 104.0f, 19.0f},
 		 //2#着陆台
 		 {-28.3f, 15.5f, 15.5f, 119.0f, 0.0f},
 		 //3#着陆台

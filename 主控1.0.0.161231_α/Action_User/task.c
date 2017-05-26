@@ -417,7 +417,12 @@ void ConfigTask(void)
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
 		BEEP_ON;TIM_Delayms(TIM5, 100);BEEP_OFF;TIM_Delayms(TIM5, 100);
-
+#ifdef RED_FIELD
+		RED_LED_ON;
+#endif
+#ifdef BLUE_FIELD
+		BLUE_LED_ON;
+#endif
 		OSTaskSuspend(Walk_TASK_PRIO);
 		OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
 		OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
