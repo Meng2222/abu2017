@@ -966,7 +966,7 @@ void WalkTask(void)
 			}
 		}
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
-		if((status != launch && status < reset)||status > resetConfig)
+		if(status != launch)
 		{
 			ReadActualVel(CAN2, MOVEBASE_BROADCAST_ID);
 			ReadActualCurrent(CAN2, MOVEBASE_BROADCAST_ID);
@@ -1126,7 +1126,7 @@ void WalkTask(void)
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 				MoveTo(-6500.14f, 3000.0f, 2000.0f , 2000.0f);
 				//				if (GetPosX() >= -6459.14f)
-				if (GetPosX() >= -6500.14f)
+				if (GetPosX() <= -6500.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -1140,7 +1140,7 @@ void WalkTask(void)
 				//到位后给靠墙速度
 
 				//				if (GetPosX() <= 6459.14f)
-				if (GetPosX() <= 6500.14f)
+				if (GetPosX() >= 6500.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
