@@ -177,6 +177,32 @@ void CheckCmdQueueState(void)
 			}
 		}
 	}
-	
+}
+
+/**
+  * @brief  CheckCmdInQueue
+  * @note	检查队列中是否有命令
+  * @param  checkCmd
+  * @retval None
+  */
+uint8_t CheckCmdInQueue(cmd_t checkCmd)
+{	
+	gRobot.manualCmdQueue.cmdPlateState = 0;
+	gRobot.manualCmdQueue.cmdBallState = 0;
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
+	{	
+		for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
+		{
+			uint8_t counter = 0;
+			counter = i%CMD_QUEUE_LENGTH;
+			if(gRobot.manualCmdQueue.cmdArr[counter].method == checkCmd.method && \
+				gRobot.manualCmdQueue.cmdArr[counter].plantNum == checkCmd.plantNum)
+			{
+				return 1;
+			}
+		}
+	}
+	return 0;
 }
 /********************* (C) COPYRIGHT NEU_ACTION_2017 ****************END OF FILE************************/

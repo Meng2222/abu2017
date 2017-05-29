@@ -1192,6 +1192,17 @@ void WalkTask(void)
 						SendWatchWholeArena2Camera();
 						sendSignal2Camera = 0;
 					}
+					if(gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
+					{
+						cmd_t cmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+						cmd.plantNum = PLANT6;
+						cmd.method = SHOOT_METHOD4;
+						InCmdQueue(cmd);
+						InCmdQueue(cmd);
+						cmd.plantNum = PLANT3;
+						cmd.method = SHOOT_METHOD4;
+						InCmdQueue(cmd);					
+					}
 					if(gRobot.plantState[PLANT1].plate == 0 && gRobot.plantState[PLANT2].plate == 0
 						&& gRobot.plantState[PLANT4].plate == 0 && gRobot.plantState[PLANT5].plate == 0
 						&& gRobot.plantState[PLANT1].ball == 0 && gRobot.plantState[PLANT2].ball == 0

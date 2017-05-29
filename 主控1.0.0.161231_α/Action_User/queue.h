@@ -93,6 +93,13 @@ void DelTailQueue(void);
   * @retval None
   */
 void CheckCmdQueueState(void);
+/**
+  * @brief  CheckCmdInQueue
+  * @note	检查队列中是否有命令
+  * @param  checkCmd
+  * @retval None
+  */
+uint8_t CheckCmdInQueue(cmd_t checkCmd);
 #ifdef __cplusplus
 }
 #endif

@@ -2379,6 +2379,7 @@ void USART3_IRQHandler(void)
 		uint16_t ActPos;
     }posInfo;
 	static plant_t isPlateDataOk[LAND_NUMBER]={PLAT_DATA_UNSTABLE};
+	cmd_t cameraCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -2632,33 +2633,96 @@ void USART3_IRQHandler(void)
 						if((data&0x01)==0x01 && gRobot.plantState[PLANT1].ballState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD3, 1100))
 						{
+							cameraCmd.method = SHOOT_METHOD3;
+							cameraCmd.plantNum = PLANT1;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT1].ball = 1;
 							UART5_OUT((uint8_t*)"BLELOSTCAMERA");
 						}
 						if((data&0x02)==0x02 && gRobot.plantState[PLANT1].plateState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT1, SHOOT_METHOD4, 1100))
+						{
+							
+							cameraCmd.method = SHOOT_METHOD4;
+							cameraCmd.plantNum = PLANT1;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT1].plate = 1;
+						}
 						if((data&0x04)==0x04 && gRobot.plantState[PLANT2].ballState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD3, 1100))
+						{
+							cameraCmd.method = SHOOT_METHOD3;
+							cameraCmd.plantNum = PLANT2;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT2].ball = 1;
+						}
 						if((data&0x08)==0x08 && gRobot.plantState[PLANT2].plateState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT2, SHOOT_METHOD4, 1100))
+						{
+							cameraCmd.method = SHOOT_METHOD4;
+							cameraCmd.plantNum = PLANT2;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT2].plate = 1;
+						}
 					}
 					if(gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 					{
 						if((data&0x10)==0x10 && gRobot.plantState[PLANT4].ballState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD3, 1100))
+						{
+							cameraCmd.method = SHOOT_METHOD3;
+							cameraCmd.plantNum = PLANT4;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT4].ball = 1;
+						}
 						if((data&0x20)==0x20 && gRobot.plantState[PLANT4].plateState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT4, SHOOT_METHOD4, 1100))
+						{
+							cameraCmd.method = SHOOT_METHOD4;
+							cameraCmd.plantNum = PLANT4;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT4].plate = 1;
+						}
 						if((data&0x40)==0x40 && gRobot.plantState[PLANT5].ballState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD3, 1100))
+						{
+							cameraCmd.method = SHOOT_METHOD3;
+							cameraCmd.plantNum = PLANT5;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT5].ball = 1;
+						}
 						if((data&0x80)==0x80 && gRobot.plantState[PLANT5].plateState == COMMAND_DONE
 							&& CheckShootPlantTimeDelay(PLANT5, SHOOT_METHOD4, 1100))
+						{
+							cameraCmd.method = SHOOT_METHOD4;
+							cameraCmd.plantNum = PLANT5;
+							if(CheckCmdInQueue(cameraCmd))
+							{
+								InCmdQueue(cameraCmd);
+							}
 							gRobot.plantState[PLANT5].plate = 1;
+						}
 					}
 				}
 				state = HEADER_STATE1;
