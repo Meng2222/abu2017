@@ -962,6 +962,11 @@ void WalkTask(void)
 		{
 			if(gRobot.isReset == ROBOT_RESET||RESET_SWITCH)
 			{
+				if(RESET_SWITCH)
+				{
+					TIM_Delayms(TIM5,1000);
+					OSSemSet(PeriodSem,0,&os_err);
+				}
 				status = reset;
 			}
 		}
@@ -1125,7 +1130,7 @@ void WalkTask(void)
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 				MoveTo(-6500.14f, 3000.0f, 2000.0f , 2000.0f);
-				//				if (GetPosX() >= -6459.14f)
+				//				if (GetPosX() <= -6459.14f)
 				if (GetPosX() <= -6500.14f)
 				{
 					ClampReset();
@@ -1139,7 +1144,7 @@ void WalkTask(void)
 				MoveTo(6500.14f, -3000.0f, 2000.0f , 2000.0f);
 				//到位后给靠墙速度
 
-				//				if (GetPosX() <= 6459.14f)
+				//				if (GetPosX() >= 6459.14f)
 				if (GetPosX() >= 6500.14f)
 				{
 					ClampReset();
