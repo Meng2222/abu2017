@@ -1130,8 +1130,8 @@ void WalkTask(void)
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 				MoveTo(-6500.14f, 3000.0f, 2000.0f , 2000.0f);
-				//				if (GetPosX() <= -6459.14f)
-				if (GetPosX() <= -6500.14f)
+				//				if (GetPosX() >= -6459.14f)
+				if (GetPosX() >= -6500.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -1144,8 +1144,8 @@ void WalkTask(void)
 				MoveTo(6500.14f, -3000.0f, 2000.0f , 2000.0f);
 				//到位后给靠墙速度
 
-				//				if (GetPosX() >= 6459.14f)
-				if (GetPosX() >= 6500.14f)
+				//				if (GetPosX() <= 6459.14f)
+				if (GetPosX() <= 6500.14f)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -1206,7 +1206,19 @@ void WalkTask(void)
 						InCmdQueue(cmd);
 						cmd.plantNum = PLANT3;
 						cmd.method = SHOOT_METHOD4;
-						InCmdQueue(cmd);					
+						InCmdQueue(cmd);
+						cmd.plantNum = PLANT1;
+						cmd.method = SHOOT_METHOD4;
+						InCmdQueue(cmd);						
+						cmd.plantNum = PLANT2;
+						cmd.method = SHOOT_METHOD4;
+						InCmdQueue(cmd);						
+						cmd.plantNum = PLANT4;
+						cmd.method = SHOOT_METHOD4;
+						InCmdQueue(cmd);						
+						cmd.plantNum = PLANT5;
+						cmd.method = SHOOT_METHOD4;
+						InCmdQueue(cmd);						
 					}
 					if(gRobot.plantState[PLANT1].plate == 0 && gRobot.plantState[PLANT2].plate == 0
 						&& gRobot.plantState[PLANT4].plate == 0 && gRobot.plantState[PLANT5].plate == 0
