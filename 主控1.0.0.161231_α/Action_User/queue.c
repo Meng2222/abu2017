@@ -187,8 +187,6 @@ void CheckCmdQueueState(void)
   */
 uint8_t CheckCmdInQueue(cmd_t checkCmd)
 {	
-	gRobot.manualCmdQueue.cmdPlateState = 0;
-	gRobot.manualCmdQueue.cmdBallState = 0;
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
 	{	
