@@ -29,14 +29,15 @@
 extern robot_t gRobot;
 float moveTimer=0.0f;
 extern float amendX;
+extern float gyroAngleErr;
 float GetPosX(void)
 {
-	return -gRobot.moveBase.actualXPos+amendX;
+	return (-gRobot.moveBase.actualXPos+amendX);
 }
 
 float GetAngle(void)
 {
-	return gRobot.moveBase.actualAngle;
+	return (gRobot.moveBase.actualAngle - gyroAngleErr);
 }
 /*
 ============================================================
@@ -203,9 +204,9 @@ wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
 	#define LEFT_WHEEL_VEL_ANG (-90.0f)
 	#define FORWARD_WHEEL_VEL_ANG (150.0f)
 	wheelSpeed_t wheelSpeed = {0.0f};
-	wheelSpeed.backwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - BACK_WHEEL_VEL_ANG));
-	wheelSpeed.leftWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - LEFT_WHEEL_VEL_ANG));
-	wheelSpeed.forwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - gRobot.moveBase.actualAngle - FORWARD_WHEEL_VEL_ANG));
+	wheelSpeed.backwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - GetAngle() - BACK_WHEEL_VEL_ANG));
+	wheelSpeed.leftWheelSpeed = carVel*cosf(ANGTORAD(velAngle - GetAngle() - LEFT_WHEEL_VEL_ANG));
+	wheelSpeed.forwardWheelSpeed = carVel*cosf(ANGTORAD(velAngle - GetAngle() - FORWARD_WHEEL_VEL_ANG));
 	return wheelSpeed;
 }
 
@@ -400,7 +401,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);	
 	}
 	//姿态修正
-	if(fabs(gRobot.moveBase.actualAngle)>=0.1f)
+	if(fabs(GetAngle())>=0.1f)
 	{
 		angleAdjust = Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle() + DPOSE * (GetAngle() - angleErr)));
 		if(angleAdjust>ANGLE_ADJUST_LIMIT)

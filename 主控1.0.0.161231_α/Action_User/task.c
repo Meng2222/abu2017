@@ -22,6 +22,7 @@
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250			//0.25s
+float gyroAngleErr = 0.0f;
 extern uint8_t receive_data;
 extern uint8_t receiveDataTrust;
 /*
@@ -1256,6 +1257,7 @@ void WalkTask(void)
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				if(RESET_SWITCH)
 				{
+					gyroAngleErr = gRobot.moveBase.actualAngle;
 					status = resetConfig;
 				}
 				break;
@@ -1279,7 +1281,7 @@ void WalkTask(void)
 			{
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
-				MoveTo(-6500.14f, -3000.0f, 2000.0f, 2000.0f);
+				MoveTo((-6500.14f/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
 				if (GetPosX() <= -6500.14f)
@@ -1291,7 +1293,7 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
-				MoveTo(6500.14f, 3000.0f, 2000.0f, 2000.0f);
+				MoveTo((6500.14f/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
 				if (GetPosX() >= 6500.14f)
