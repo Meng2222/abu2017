@@ -2444,7 +2444,7 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				if(gRobot.isReset != ROBOT_RESET)
 				{
-					if(data != 0x00 && gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
+					if(gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
 					{
 						gRobot.upperGun.targetZone = data;
 					}
