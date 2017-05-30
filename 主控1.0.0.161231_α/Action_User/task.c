@@ -230,7 +230,7 @@ void SendStartWork2Camera(void)
 {
 	USART_SendData(USART3, 'd');
 }
-//通知摄像头自动射击完成
+//通知摄像头自动射击完成 看近台6#
 void SendAutoOver2Camera(void)
 {
 	USART_SendData(USART3, 'e');
@@ -949,6 +949,7 @@ uint8_t moveTimFlag = 0;
 
 void WalkTask(void)
 {
+	//仅在 load 中使用 计时400ms
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
 	os_err = os_err;
@@ -958,13 +959,14 @@ void WalkTask(void)
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
 	uint8_t sendSignal2Camera = 1;
+	//仅在beginToGO1中计时使用
 	uint8_t upperPhotoSensorCounter = 0;
 	OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
 		GPIO_SetBits(GPIOC, GPIO_Pin_9);
-		//装弹后检查行程开关是否触发
+		//装弹后检查行程开关是否触发 如果触发则发送邮箱 左枪和右枪的任务在此之前一直在等待OpenSaftyMbox邮箱
 		if(status >= load)
 		{
 			ROBOT_CheckGunOpenSafety();
@@ -976,7 +978,8 @@ void WalkTask(void)
 			{
 				if(RESET_SWITCH)
 				{
-					TIM_Delayms(TIM5,1000);
+					//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
+					TIM_Delayms(TIM5, 1000);
 					OSSemSet(PeriodSem,0,&os_err);
 				}
 				status = reset;
@@ -1007,14 +1010,19 @@ void WalkTask(void)
 			case getReady:
 				if(PHOTOSENSORUPGUN)
 				{
+					//photeElectricCounter 五次触发了上枪光电时才会执行命令跳到下一步
 					static uint8_t photoElectricCounter = 0;
 					photoElectricCounter++;
 					if(photoElectricCounter >= 5)
 					{
+						//在车启动前才发命令给陀螺仪 通知其完成初始化
 						GyroInit();
 						//等待定位系统信号量
+						//OSSemSet 命令先清空了信号量
 						OSSemSet(GyroSem, 0, &os_err);
+						//OSSemPend 等待信号量 如果一直等待不到 也只会等待 200 clock tick 即 2s
 						OSSemPend(GyroSem,200, &os_err);
+						//错误处理  将会通过wifi显示错误 并且蜂鸣器响提示
 						if(os_err == OS_ERR_TIMEOUT)
 						{
 							//如果超时没有接收到定位系统数据则提示错误
@@ -1029,40 +1037,46 @@ void WalkTask(void)
 						}
 						//出发后爪子张开
 						ClampOpen();
+						//fix me maybe useless
 						TIM_Delayms(TIM5,20);
 						//出发时左右枪复位
 //						ROBOT_LeftGunHome();
 //						ROBOT_RightGunHome();
 						status = goToLoadingArea;
+						//在触发光电前 信号量也在一直累加 在等待陀螺仪时也有可能等待了几个tick 故在此必须清信号量
 						OSSemSet(PeriodSem, 0, &os_err);
 					}
 				}
 				break;
-				//从出发区走向装载区
+				//走行开始 从出发区走向装载区
 			case goToLoadingArea:
 			{
 #ifdef RED_FIELD
 				MoveTo(-13033.14f, -4200.0f, 2500.0f , 2000.0f);
 
-				//接近装载区时通过光电校正坐标
+				//接近装载区时通过光电校正坐标 红场使用右侧光电
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
+					//为了防止一直进入矫正环节 设置amendFlag 仅矫正1次
 					if (amendXFlag == 0)
 					{
 						amendX = -12776.96f - GetPosX();
 						amendXFlag = 1;
 					}
+					//矫正的那一瞬间蜂鸣器开始响  直到到达目的地停止下来轮子锁死 蜂鸣器灭
 					BEEP_ON;
-					//					status++;
 				}
 				//到达装弹位置
 				if(GetPosX()<=-13033.14f)
 				{
+					//moveTimFlag 是用来控制是否进行走形计时的 在TIM2 中使用
+					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
 					moveTimFlag = 0;
 					status = load;
 					BEEP_OFF;
 				}
 #endif
+				//红蓝场走形对称 实现是一样的
 #ifdef BLUE_FIELD
 				MoveTo(13033.14f, 4200.0f, 2500.0f, 2000.0f);
 				//接近装载区时通过光电校正坐标
@@ -1083,7 +1097,7 @@ void WalkTask(void)
 					BEEP_OFF;
 				}
 #endif
-				//光电检测是否下错程序
+				//光电检测是否下错程序 如果走了一段距离 光电仍然出发 则判断走反了
 				if(fabs(gRobot.moveBase.actualXPos)>200.0f && fabs(gRobot.moveBase.actualXPos)<300.0f)
 				{
 					if(PHOTOSENSORLEFT&&PHOTOSENSORRIGHT)
@@ -1104,13 +1118,15 @@ void WalkTask(void)
 			{
 				//停车
 				LockWheel();
-				//爪子关
+				//弹匣的爪子收起
 				ClampClose();
 				timeCounter++;
-				//爪子关一段时间后翻并开始检测光电
+				//爪子关一段时间 400 ms 后 爪子翻翻并开始检测光电
 				if (timeCounter >= 40)
 				{
+					//复位
 					timeCounter = 0;
+					//爪子翻
 					ClampRotate();
 					status = beginToGo1;
 				}
@@ -1124,8 +1140,6 @@ void WalkTask(void)
 				//检测行程开关
 //				if(RESET_SWITCH)
 				{
-					//					status++;
-					//					OSTaskResume(DEBUG_TASK_PRIO);
 					upperPhotoSensorCounter++;
 					//触发10次后开始走向发射区
 					if(upperPhotoSensorCounter >= 10)
@@ -1145,7 +1159,9 @@ void WalkTask(void)
 				//				if (GetPosX() >= -6459.14f)
 				if (GetPosX() >= -6500.14f)
 				{
+					//翻弹匣的气缸恢复
 					ClampReset();
+					//停下以后给y方向向前50mm/s的速度向前拱 保证贴墙
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
@@ -1161,6 +1177,7 @@ void WalkTask(void)
 				{
 					ClampReset();
 					MoveY(50.0f);
+					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
 					moveTimFlag = 0;
 					status = stopRobot;
 				}
@@ -1172,13 +1189,15 @@ void WalkTask(void)
 			{
 				//通知摄像头开始工作
 				SendStop2Camera();
-				//靠墙一段时间后抱死
+				//靠墙一段时间 0.5s 后抱死
 				OSTimeDly(50);
 				LockWheel();
 				//开始执行发射任务
+				//三枪的任务都有对应的ROBOT_xxxGunCheckShootPoint()函数 等待着邮箱的发送
 				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
 				OSMboxPostOpt(UpperGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+				//已经完成向前拱的动作，抱死 此时记录1次当前的x y 坐标
 				if(setLaunchPosFlag == 1)
 				{
 					launchPosX = gRobot.moveBase.actualXPos;
@@ -1187,6 +1206,7 @@ void WalkTask(void)
 				}
 				//				CameraInit();
 				status = launch;
+				//fix me 注释没写完
 				if(gRobot.isReset == ROBOT_RESET)
 				{
 					OSTimeDly(2);
@@ -1198,17 +1218,24 @@ void WalkTask(void)
 				//发射飞盘
 			case launch:
 			{
+				//调节保持位置不动 带死区
 				StickPos(launchPosX,launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
+				/*对蓝牙是否断开的检测*/
+				//把检查ble的Flag 置位
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
+					//蓝牙断开蜂鸣器将长鸣
 					BEEP_ON;
+					//如果蓝牙失联 则通知视觉模块看全场按照视觉模块反馈的信息打 但是实际上现在视觉反馈的信息没有使用
 					if(sendSignal2Camera == 1)
 					{
+						//向视觉模块发信号，看全场 信息的接收部分再中断中
 						SendWatchWholeArena2Camera();
 						sendSignal2Camera = 0;
 					}
+					//如果蓝牙失联，且任务队列为空则按照6631245的顺序打全场
 					if(gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
 					{
 						cmd_t cmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
@@ -1232,6 +1259,8 @@ void WalkTask(void)
 						cmd.method = SHOOT_METHOD4;
 						InCmdQueue(cmd);						
 					}
+					//视觉模块只能看12457台，如果视觉反馈这些台上都没有需要打球或补盘则落3台和6台
+					//这一部分现在实际上没有使用
 					if(gRobot.plantState[PLANT1].plate == 0 && gRobot.plantState[PLANT2].plate == 0
 						&& gRobot.plantState[PLANT4].plate == 0 && gRobot.plantState[PLANT5].plate == 0
 						&& gRobot.plantState[PLANT1].ball == 0 && gRobot.plantState[PLANT2].ball == 0
@@ -1250,8 +1279,9 @@ void WalkTask(void)
 					}
 				}
 				else
+					//如果蓝牙没有断开，则会关掉蜂鸣器
 					BEEP_OFF;
-				
+				//如果左右两枪都超过自动子弹数 发一个信息 命令视觉模块看近台
 				if(gRobot.leftGun.shootTimes >= LEFT_AUTO_NUMBER && gRobot.rightGun.shootTimes >= RIGHT_AUTO_NUMBER)
 				{
 					if(sendSignal == 1)
@@ -1262,10 +1292,12 @@ void WalkTask(void)
 				}
 				break;
 			}
-				//失能电机，中断发射任务
+			/*重试*/
 			case reset:
 			{
+				//失能电机，中断发射任务
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
+				//等待按下重试开关 
 				if(RESET_SWITCH)
 				{
 					gyroAngleErr = gRobot.moveBase.actualAngle;
@@ -1299,6 +1331,7 @@ void WalkTask(void)
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
+					//重回stopRobot
 					status = stopRobot;
 				}
 #endif
