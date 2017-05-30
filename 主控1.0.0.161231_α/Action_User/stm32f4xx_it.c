@@ -1084,7 +1084,7 @@ void UART4_IRQHandler(void)
 				}
 				else if(id < 60)
 				{
-					if(id == 51)
+					if(id == 50)
 					{
 						gRobot.leftGun.bulletNumber = gRobot.leftGun.shootTimes;
 					}
