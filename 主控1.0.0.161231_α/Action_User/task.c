@@ -1374,9 +1374,10 @@ void LeftGunShootTask(void)
 	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT3].yaw));
 	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT3].pitch));
 	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT3].roll));
-	//上第一发弹
+	//再等0.5s 上第一发弹 
 	OSTimeDly(50);
 	LeftPush();
+	//0.5s 后 气缸收回
 	OSTimeDly(50);
 	LeftBack();
 //	OSTimeDly(20);
