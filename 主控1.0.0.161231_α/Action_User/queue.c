@@ -4,7 +4,7 @@
   * @author  ACTION_2017
   * @version V
   * @date	 2017/05/28
-  * @brief   This file contains 
+  * @brief   This file contains
   *
   *******************************************************************************************************
   * @attention
@@ -29,22 +29,15 @@ extern robot_t gRobot;
 /* Private function prototypes ------------------------------------------------------------------------*/
 /* Private functions ----------------------------------------------------------------------------------*/
 
-
-/**
-  * @brief	
-  * @note	
-  * @param	None
-  * @retval	
+/** @defgroup Basic_Queue_Operatiion
+  * @brief	对队列的基础操作
+  * @{
   */
-uint8_t getCmdQueueElementNum(void)
-{
-	return gRobot.manualCmdQueue.elementNum;
-}
 
 /**
-  * @brief  Enter cammand queue
-  * @note
-  * @param  
+  * @brief  Enter cammand queue 入队
+  * @note	入队 如果队列已满时将 将通过串口向wifi模块发出错误信息
+  * @param  inCmd 将要入队的命令
   * @retval None
   */
 void InCmdQueue(cmd_t inCmd)
@@ -59,57 +52,68 @@ void InCmdQueue(cmd_t inCmd)
 	{
 		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = inCmd.plantNum;
 		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = inCmd.method;
-		gRobot.manualCmdQueue.tailNum++;
-		gRobot.manualCmdQueue.elementNum++;
 		UART5_OUT((uint8_t *)"plant%d method%d\r\n",inCmd.plantNum,inCmd.method);
-		//尾位置超过数组长度
+		//尾位置递增1 循环数组尾位置需要处理
+		gRobot.manualCmdQueue.tailNum++;
 		if (gRobot.manualCmdQueue.tailNum >= CMD_QUEUE_LENGTH)
 		{
 			gRobot.manualCmdQueue.tailNum = 0;
 		}
+		gRobot.manualCmdQueue.elementNum++;
 	}
 }
 
 
 /**
-  * @brief	
-  * @note	
-  * @param	
-  * @retval None
+  * @brief	OutCmdQueue 出队
+  * @note	命令出队 队伍为空时也有处理
+  * @param	None
+  * @retval 如果队列不为空 则返回队头的元素
+  *			如果队列为空 则返回 {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD}
   */
 cmd_t OutCmdQueue(void)
 {
 	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	
+
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
 	{
 		outCmd.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
 		outCmd.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
 
-		//头位置移动 头的位置移动到了数组外的时候进行了处理	
+		//头位置移动 头的位置移动到了数组外的时候进行了处理
 		gRobot.manualCmdQueue.headNum++;
 		if (gRobot.manualCmdQueue.headNum >= CMD_QUEUE_LENGTH)
 		{
 			gRobot.manualCmdQueue.headNum = 0;
 		}
-		
+
 		gRobot.manualCmdQueue.elementNum --;
 	}
 	return outCmd;
 }
 
 
+
 /**
-  * @brief  
-  * @note
-  * @param  
+  * @}
+  */
+
+/** @defgroup Alternative_Queue_Operation
+  * @brief
+  * @{
+  */
+
+/**
+  * @brief  ReplaceHeadQueue 替换队列头处(即将出队)的元素
+  * @note	其中 如果队列为空时使用到了InCmdQueue()函数
+  * @param  inCmd 用来替换的命令
   * @retval None
   */
 cmd_t ReplaceHeadQueue(cmd_t inCmd)
-{	
+{
 	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	
+
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
 	{
@@ -119,26 +123,27 @@ cmd_t ReplaceHeadQueue(cmd_t inCmd)
 
 	outCmd.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
 	outCmd.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
-	
+
 	gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = inCmd.plantNum;
 	gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = inCmd.method;
-	
+
 	return outCmd;
 }
 /**
-  * @brief  DelTailQueue
-  * @note	删除队尾
-  * @param  
+  * @brief  DelTailQueue 删除队尾
+  * @note	删除队尾的同时 还把被删除元素原来的位置复位为了INVALID变量
+  * @param  None
   * @retval None
   */
 void DelTailQueue(void)
-{	
+{
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
-	{	
+	{
+		//删除队尾的同时 还把被删除元素原来的位置复位为了INVALID变量
 		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = INVALID_PLANT_NUMBER;
 		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = INVALID_SHOOT_METHOD;
-		if(gRobot.manualCmdQueue.tailNum != 0)		
+		if(gRobot.manualCmdQueue.tailNum != 0)
 		{
 			gRobot.manualCmdQueue.tailNum-=1;
 		}
@@ -148,59 +153,61 @@ void DelTailQueue(void)
 		}
 		gRobot.manualCmdQueue.elementNum--;
 	}
-	
+
 }
+
+
 /**
-  * @brief  CheckCmdQueueState
-  * @note	检查队列中命令状态
-  * @param  
+  * @brief  CheckCmdQueueState 检查队列中命令状态
+  * @note	该函数遍历队列 然后修改全局变量gRobot.manualCmdQueue
+  * @param  None
   * @retval None
   */
 void CheckCmdQueueState(void)
 {
-	uint8_t tempCmdPlateState = 0;
-	uint8_t tempCmdBallState = 0;
+	uint8_t tempCmdPlateState = 0u;
+	uint8_t tempCmdBallState = 0u;
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
-	{	
+	{
 		for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
 		{
-			uint8_t counter = 0;
+			uint8_t counter = 0u;
+			//循环队列 对索引号进行处理
 			counter = i%CMD_QUEUE_LENGTH;
+
+			//取余得1则为落盘 取余为0为打球
 			if(gRobot.manualCmdQueue.cmdArr[counter].method%2)
 			{
 				tempCmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum);
 			}
 			else
 			{
-				tempCmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum);			
+				tempCmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum);
 			}
 		}
-		gRobot.manualCmdQueue.cmdPlateState = tempCmdPlateState;
-		gRobot.manualCmdQueue.cmdBallState = tempCmdPlateState;
 	}
-	else
-	{
-		gRobot.manualCmdQueue.cmdPlateState = tempCmdPlateState;
-		gRobot.manualCmdQueue.cmdBallState = tempCmdPlateState;	
-	}
+	//更新全局变量
+	gRobot.manualCmdQueue.cmdPlateState = tempCmdPlateState;
+	gRobot.manualCmdQueue.cmdBallState = tempCmdPlateState;
 }
 
 /**
-  * @brief  CheckCmdInQueue
-  * @note	检查队列中是否有命令
+  * @brief  CheckCmdInQueue 检查队列中是否有命令
+  * @note	如果不为空 遍历数组 寻找是否有相同的命令 相同的命令指 plantNum 与 method 均相同
   * @param  checkCmd
   * @retval None
   */
 uint8_t CheckCmdInQueue(cmd_t checkCmd)
-{	
-	//判断是否为空
+{
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
-	{	
+	{
+		//如果不为空 遍历数组 寻找是否有相同的命令 相同的命令指 plantNum 与 method 均相同
 		for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
 		{
 			uint8_t counter = 0;
-			counter = i%CMD_QUEUE_LENGTH;
+			//循环队列 对索引号进行处理
+			counter = i % CMD_QUEUE_LENGTH;
 			if(gRobot.manualCmdQueue.cmdArr[counter].method == checkCmd.method && \
 				gRobot.manualCmdQueue.cmdArr[counter].plantNum == checkCmd.plantNum)
 			{
@@ -208,6 +215,14 @@ uint8_t CheckCmdInQueue(cmd_t checkCmd)
 			}
 		}
 	}
+	//如果 1.队列为空 或者 2.遍历队列以后没有找到相同的命令 则返回0
 	return 0;
 }
+
+/**
+  * @}
+  */
+
+
+
 /********************* (C) COPYRIGHT NEU_ACTION_2017 ****************END OF FILE************************/

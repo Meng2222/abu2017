@@ -41,7 +41,7 @@ float GetAngle(void)
 }
 /*
 ============================================================
-         车速（mm/s）与电机转速（脉冲/s）的转换             
+         车速（mm/s）与电机转速（脉冲/s）的转换
 ============================================================
 */
 
@@ -79,10 +79,10 @@ float Vel2Pulse(float vel)
 */
 void MOVEBASE_Init(void)
 {
-	
+
     //电机初始化及使能
 	elmo_Init(CAN2);
-	
+
 	elmo_Enable(CAN2,1);
 	elmo_Enable(CAN2,2);
 	elmo_Enable(CAN2,3);
@@ -158,7 +158,7 @@ motorAcc_t CalcMotorAcc(float carAcc, float angle)
 	motorAcc.wheel3 = carAcc * fabs(cosf(ANGTORAD(150 - RADTOANG(angle))));
 	motorAcc.wheel2 = carAcc * fabs(cosf(ANGTORAD(90  - RADTOANG(angle))));
 	motorAcc.wheel1 = carAcc * fabs(cosf(ANGTORAD(30  - RADTOANG(angle))));
-	
+
 	return motorAcc;
 }
 
@@ -187,16 +187,16 @@ void ThreeWheelVelControl(wheelSpeed_t speed)
 	gRobot.moveBase.targetSpeed.leftWheelSpeed = speed.leftWheelSpeed/100.0f;
 	gRobot.moveBase.targetSpeed.backwardWheelSpeed = speed.backwardWheelSpeed/100.0f;
 	gRobot.moveBase.targetSpeed.forwardWheelSpeed = speed.forwardWheelSpeed/100.0f;
-	
+
 	VelCrl(CAN2, BACKWARD_WHEEL_ID, speed.backwardWheelSpeed);
 	VelCrl(CAN2, FORWARD_WHEEL_ID, speed.forwardWheelSpeed);
 	VelCrl(CAN2, LEFT_WHEEL_ID, speed.leftWheelSpeed);
 }
 /**
 * @brief 将车的平动速度分解到三个轮上
-* @param  carVel : 车速  
+* @param  carVel : 车速
 *		velAngle ：速度方向（以面向场地方向为0度，顺时针为负，逆时针为正，范围-180-180）
-  * @retval 分解到三个轮的速度
+  * @retval 分解到三个轮的速度 速度的单位时mm/s
   */
 wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
 {
@@ -212,7 +212,7 @@ wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
 
 /*
 ============================================================
-                     过程量控制与调节            
+                     过程量控制与调节
 ============================================================
 */
 /**
@@ -238,7 +238,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	float distAcc = 0.0f, timeAcc = 0.0f;
 	float distConst = 0.0f, timeConst = 0.0f;
 	float distDec = 0.0f, timeDec = 0.0f;
-	
+
 	//计算理论距离和理论速度的绝对值
 	targetDist = fabs(targetPos - startPos);
 	timeAcc = fabs(velX) / accX;
@@ -250,7 +250,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	{
 		distConst = targetDist - distAcc - distDec;
 		timeConst = distConst / fabs(velX);
-		
+
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
@@ -261,7 +261,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->dist = targetDist - distAcc - fabs(velX) * (moveTimer - timeAcc);
 			pExpData->speed = fabs(velX);
 		}
-		else if (moveTimer > (timeAcc + timeConst) && 
+		else if (moveTimer > (timeAcc + timeConst) &&
 			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
 		{
 			pExpData->dist = 0.5f * decX * (pow(timeAcc + timeDec + timeConst - moveTimer, 2));
@@ -273,7 +273,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->speed = 0;
 		}
 	}
-	
+
 	/*三角形速度规划部分*/
 	else if ((distAcc + distDec) >= targetDist)
 	{
@@ -281,7 +281,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
 		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) / decX;
 		distDec = 0.5f * decX * pow(timeDec, 2);
-		
+
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
@@ -292,25 +292,25 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec - moveTimer, 2);
 			pExpData->speed = decX * (timeAcc + timeDec - moveTimer - 0.01f);
 		}
-		else if (moveTimer > (timeAcc + timeDec))    
+		else if (moveTimer > (timeAcc + timeDec))
 		{
 			pExpData->dist = 0;
 			pExpData->speed = 0;
 		}
 	}
-	
-	
+
+
 	//计算理论位置并修正理论速度的符号
 	if(velX < 0.0f)
 	{
 		pExpData->pos = startPos - targetDist + pExpData->dist;
 		pExpData->speed = -pExpData->speed;
 	}
-	else 
+	else
 	{
 		pExpData->pos = startPos + targetDist - pExpData->dist;
 	}
-	
+
 }
 
 
@@ -345,7 +345,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		posErr = -75.0f;
 	}
 	outputSpeed = pExpData->speed + posErr * PVEL;
-	
+
 	/*特殊情况导致速度极不安全时紧急制动*/
 	if(fabs(outputSpeed) > MAXSPEED)
 	{
@@ -358,8 +358,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	if((outputSpeed > 5000.0f) ||(outputSpeed < -5000.0f))
 	{
 		UART5BufPut((uint8_t)(outputSpeed/100.0f));
-	}		
-	
+	}
+
 	velX = outputSpeed;
 
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
@@ -398,7 +398,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 		pSpeedOut->backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).backwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).backwardWheelSpeed);
 		pSpeedOut->forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).forwardWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).forwardWheelSpeed);
-		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);	
+		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
 	}
 	//姿态修正
 	if(fabs(GetAngle())>=0.1f)
@@ -430,7 +430,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 
 /*
 ============================================================
-                      机器人运动部分            
+                      机器人运动部分
 ============================================================
 */
 
@@ -452,31 +452,40 @@ void MoveX(float velX)
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
 	float velY = 0.0f;
 	velY = fabs(0.07f * velX) + 100.0f;
-	
-	
+
+
 	//速度分配至各轮
 	speedOut.backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
 	speedOut.forwardWheelSpeed = Vel2Pulse(-velX                                             );
 	speedOut.leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
 
-	
+
 	//姿态修正
 	if(GetAngle() > 0)
 	{
 		speedOut.backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
+		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 	}
 	else if(GetAngle() < 0)
 	{
 		speedOut.backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 		speedOut.forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle())); 
+		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
 	}
-	
+
 	ThreeWheelVelControl(speedOut);
 }
 
+
+/**
+  * @brief
+  * @note
+  * @param
+  *     @arg
+  * @param
+  * @retval	None
+  */
 void MoveTo(float targetPos, float velX, float accX , float decX)
 {
 	//速度控制需要的过程变量
@@ -484,21 +493,26 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 	static float startPos = 0.0f;
 	expData_t expData = {0.0f, 0.0f, 0.0f};
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
-	
+
 	//新运动过程初始化
+	//当目标的位置targetPos 改变时 认为进行了一个新运动
 	if(formerTargetPos != targetPos)
-	{	
-		formerTargetPos = targetPos;		
+	{
+		//记录下这一个新的目标位置
+		formerTargetPos = targetPos;
+		//把当前点作为新的起点
+		//fix me 此函数不能在仍有速度时改变目标位置 由于每次规划的都是梯形
 		startPos = GetPosX();
+		//每次都会重置此时间
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
 	}
 	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH)
 	{
-		formerTargetPos = targetPos;		
+		formerTargetPos = targetPos;
 		startPos = GetPosX();
 		moveTimer = 0.0f;
-		moveTimFlag = 1;	
+		moveTimFlag = 1;
 	}
 
 	//轨迹计算
@@ -511,20 +525,21 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 //	USART_SendData(UART5,(int8_t)(expData.speed/100.0f));
 //	UART5_OUT((uint8_t *)"%d\t",(int)(speedDebug*0.1f));
 	UART5_OUT((uint8_t *)"%d\t",(int)(distDebug*0.1f));
-	
-	
+
+
 	//速度给出至各轮
 	ThreeWheelVelControl(speedOut);
 }
 
 void MoveY(float velY)
 {
-	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
+	wheelSpeed_t speedOut = SeperateVelToThreeMotor(fabs(velY) , 0.0f);
 
-	speedOut.backwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velY) , 0.0f).backwardWheelSpeed);
-	speedOut.forwardWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velY) , 0.0f).forwardWheelSpeed);
-	speedOut.leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(fabs(velY) , 0.0f).leftWheelSpeed);
-	
+	//把 轮速的单位转换到脉冲
+	speedOut.backwardWheelSpeed = Vel2Pulse(speedOut.backwardWheelSpeed);
+	speedOut.forwardWheelSpeed = Vel2Pulse(speedOut.forwardWheelSpeed);
+	speedOut.leftWheelSpeed = Vel2Pulse(speedOut.leftWheelSpeed);
+	//输出到轮上
 	ThreeWheelVelControl(speedOut);
 }
 /**
@@ -580,7 +595,7 @@ void StickPos(float posX,float posY)
 			speedOut.backwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PANGLE * GetAngle()));
 			speedOut.forwardWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PANGLE * GetAngle()));
 			speedOut.leftWheelSpeed -= Vel2Pulse(ROTATERAD * ANGTORAD(PANGLE * GetAngle()));
-		}		
+		}
 		//将速度输出到三个轮
 		ThreeWheelVelControl(speedOut);
 	}
