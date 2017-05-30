@@ -336,7 +336,18 @@ void ConfigTask(void)
 	//	FlashInit();
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
+	
+	TIM_Delayms(TIM5, 50);
 
+	ROBOT_Init();
+	
+	ClampClose();
+	//	LeftBack();
+	//	RightBack();
+	LeftPush();
+	RightPush();
+	ClampReset();
+	
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	BLUE_LED_ON;
@@ -345,7 +356,7 @@ void ConfigTask(void)
 	RED_LED_ON;
 #endif
 
-	TIM_Delayms(TIM5, 17000);
+	TIM_Delayms(TIM5, 15000);
 
 #ifdef BLUE_FIELD
 	BLUE_LED_OFF;
@@ -357,16 +368,16 @@ void ConfigTask(void)
 
 
 
-	TIM_Delayms(TIM5, 50);
+//	TIM_Delayms(TIM5, 50);
 
-	ROBOT_Init();
+//	ROBOT_Init();
 
-	ClampClose();
-	//	LeftBack();
-	//	RightBack();
-	LeftPush();
-	RightPush();
-	ClampReset();
+//	ClampClose();
+//	//	LeftBack();
+//	//	RightBack();
+//	LeftPush();
+//	RightPush();
+//	ClampReset();
 
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
@@ -1020,8 +1031,8 @@ void WalkTask(void)
 						ClampOpen();
 						TIM_Delayms(TIM5,20);
 						//出发时左右枪复位
-						ROBOT_LeftGunHome();
-						ROBOT_RightGunHome();
+//						ROBOT_LeftGunHome();
+//						ROBOT_RightGunHome();
 						status = goToLoadingArea;
 						OSSemSet(PeriodSem, 0, &os_err);
 					}
