@@ -1841,7 +1841,7 @@ void UpperGunShootTask(void)
 					{
 						gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
 					}
-					OSTimeDly(70);
+					OSTimeDly(90);
 				}
 				//对标志位进行置位
 				if(gRobot.upperGun.targetZone == 0)
