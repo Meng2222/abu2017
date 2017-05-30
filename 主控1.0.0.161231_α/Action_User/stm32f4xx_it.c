@@ -647,6 +647,7 @@ void TIM2_IRQHandler(void)
 				if(gRobot.isBleOk.bleHeartBeat - lastBleHeartBeat <= 0)
 				{
 					gRobot.isBleOk.noBleFlag = BLE_LOST;
+					UART5_OUT((uint8_t *)"BLE LOST\r\n");
 				}
 				else
 				{
