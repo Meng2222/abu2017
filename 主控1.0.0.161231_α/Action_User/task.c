@@ -337,7 +337,7 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 	
-	TIM_Delayms(TIM5, 50);
+	TIM_Delayms(TIM5, 500);
 
 	ROBOT_Init();
 	
@@ -356,7 +356,7 @@ void ConfigTask(void)
 	RED_LED_ON;
 #endif
 
-	TIM_Delayms(TIM5, 15000);
+	TIM_Delayms(TIM5, 14500);
 
 #ifdef BLUE_FIELD
 	BLUE_LED_OFF;
@@ -1120,9 +1120,9 @@ void WalkTask(void)
 			case beginToGo1:
 			{
 				//检测上枪光电
-//				if (PHOTOSENSORUPGUN)
+				if (PHOTOSENSORUPGUN)
 				//检测行程开关
-				if(RESET_SWITCH)
+//				if(RESET_SWITCH)
 				{
 					//					status++;
 					//					OSTaskResume(DEBUG_TASK_PRIO);
@@ -1337,6 +1337,7 @@ void LeftGunShootTask(void)
 	LeftBack();
 	//改为手动点命令后开始可能没有命令，需要转到一个姿态上第一发弹
 	ROBOT_LeftGunReturn();
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(24.0f));
 	//上第一发弹
 	OSTimeDly(50);
 	LeftPush();
@@ -1540,6 +1541,7 @@ void RightGunShootTask(void)
 	RightBack();
 	//改为手动点命令后开始可能没有命令，需要转到一个姿态上第一发弹
 	ROBOT_RightGunReturn();
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(24.0f));
 	//上第一发弹
 	OSTimeDly(50);
 	RightPush();
