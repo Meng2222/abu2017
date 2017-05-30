@@ -337,7 +337,7 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 	
-	TIM_Delayms(TIM5, 500);
+	TIM_Delayms(TIM5, 1000);
 
 	ROBOT_Init();
 	
@@ -356,7 +356,7 @@ void ConfigTask(void)
 	RED_LED_ON;
 #endif
 
-	TIM_Delayms(TIM5, 14500);
+	TIM_Delayms(TIM5, 14000);
 
 #ifdef BLUE_FIELD
 	BLUE_LED_OFF;
@@ -1336,13 +1336,17 @@ void LeftGunShootTask(void)
 	OSTimeDly(20);
 	LeftBack();
 	//改为手动点命令后开始可能没有命令，需要转到一个姿态上第一发弹
-	ROBOT_LeftGunReturn();
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(24.0f));
+//	ROBOT_LeftGunReturn();
+//	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(24.0f));
+	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT3].yaw));
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT3].pitch));
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_METHOD4][PLANT3].roll));
 	//上第一发弹
 	OSTimeDly(50);
 	LeftPush();
 	OSTimeDly(50);
 	LeftBack();
+//	OSTimeDly(20);
 	//	LeftPush();
 	gRobot.leftGun.noCommandTimer = 0;
 	gRobot.leftGun.mode = GUN_AUTO_MODE;
@@ -1540,13 +1544,17 @@ void RightGunShootTask(void)
 	OSTimeDly(20);
 	RightBack();
 	//改为手动点命令后开始可能没有命令，需要转到一个姿态上第一发弹
-	ROBOT_RightGunReturn();
-	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(24.0f));
+//	ROBOT_RightGunReturn();
+//	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(24.0f));
+	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT3].yaw));
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT3].pitch));
+	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_METHOD4][PLANT3].roll));
 	//上第一发弹
 	OSTimeDly(50);
 	RightPush();
 	OSTimeDly(50);
 	RightBack();
+//	OSTimeDly(20);
 	gRobot.rightGun.noCommandTimer = 0;
 	gRobot.rightGun.mode = GUN_AUTO_MODE;
 	//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
