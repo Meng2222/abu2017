@@ -61,7 +61,7 @@ void InCmdQueue(cmd_t inCmd)
 		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = inCmd.method;
 		gRobot.manualCmdQueue.tailNum++;
 		gRobot.manualCmdQueue.elementNum++;
-		
+		UART5_OUT((uint8_t *)"plant%d method%d\r\n",inCmd.plantNum,inCmd.method);
 		//尾位置超过数组长度
 		if (gRobot.manualCmdQueue.tailNum >= CMD_QUEUE_LENGTH)
 		{
@@ -157,9 +157,9 @@ void DelTailQueue(void)
   * @retval None
   */
 void CheckCmdQueueState(void)
-{	
-	gRobot.manualCmdQueue.cmdPlateState = 0;
-	gRobot.manualCmdQueue.cmdBallState = 0;
+{
+	uint8_t tempCmdPlateState = 0;
+	uint8_t tempCmdBallState = 0;
 	//判断是否为空
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
 	{	
@@ -169,13 +169,20 @@ void CheckCmdQueueState(void)
 			counter = i%CMD_QUEUE_LENGTH;
 			if(gRobot.manualCmdQueue.cmdArr[counter].method%2)
 			{
-				gRobot.manualCmdQueue.cmdPlateState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;
+				tempCmdPlateState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;
 			}
 			else
 			{
-				gRobot.manualCmdQueue.cmdBallState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;			
+				tempCmdBallState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;			
 			}
 		}
+		gRobot.manualCmdQueue.cmdPlateState = tempCmdPlateState;
+		gRobot.manualCmdQueue.cmdBallState = tempCmdPlateState;
+	}
+	else
+	{
+		gRobot.manualCmdQueue.cmdPlateState = tempCmdPlateState;
+		gRobot.manualCmdQueue.cmdBallState = tempCmdPlateState;	
 	}
 }
 

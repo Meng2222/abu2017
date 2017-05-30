@@ -752,6 +752,8 @@ void UART4_IRQHandler(void)
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
 	static uint8_t bleNumCountFlag = 1;
+	static cmd_t manualCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+
 	static union
 	{
 		uint8_t data8[4];
@@ -1028,7 +1030,6 @@ void UART4_IRQHandler(void)
 				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
-					cmd_t manualCmd;
 					switch(id/10)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
@@ -1041,8 +1042,8 @@ void UART4_IRQHandler(void)
 //							{
 								manualCmd.plantNum = id - 10;
 								manualCmd.method = SHOOT_METHOD3;							
-								InCmdQueue(manualCmd);
-								CheckCmdQueueState();
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
 //							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
@@ -1062,8 +1063,8 @@ void UART4_IRQHandler(void)
 //							{
 								manualCmd.plantNum = id - 20;
 								manualCmd.method = SHOOT_METHOD4;							
-								InCmdQueue(manualCmd);
-								CheckCmdQueueState();
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
 //							}
 						break;
 					}
@@ -1156,10 +1157,12 @@ void UART4_IRQHandler(void)
 				status++;
 				break;
 			case 21:
-				if(msgId == ch)
+				if(ch <= ((msgId + 10)%100))
 				{
-					DelTailQueue();
+					InCmdQueue(manualCmd);
 					CheckCmdQueueState();
+//					DelTailQueue();
+//					CheckCmdQueueState();
 				}
 				msgId = ch;
 				status = 0;
@@ -2433,13 +2436,16 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				if(gRobot.isReset != ROBOT_RESET)
 				{
-					if(gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
+					if(gRobot.upperGun.shootTimes >= 5)
 					{
-						gRobot.upperGun.targetZone = data;
-					}
-					if(data != 0x00)
-					{
-						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						if(gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
+						{
+							gRobot.upperGun.targetZone = data;
+						}
+						if(data != 0x00)
+						{
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						}
 					}
 				}
 				state = 0;
@@ -2728,6 +2734,9 @@ void UART5_IRQHandler(void)
 {
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
+	static uint8_t bleNumCountFlag = 1;
+	static cmd_t manualCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+
 	static union
 	{
 		uint8_t data8[4];
@@ -2747,6 +2756,11 @@ void UART5_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART5);
+		if(bleNumCountFlag == 1)
+		{
+			bleUseNum++;
+			bleNumCountFlag = 0;
+		}
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
@@ -2999,7 +3013,6 @@ void UART5_IRQHandler(void)
 				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
-					cmd_t manualCmd;
 					switch(id/10)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
@@ -3012,8 +3025,8 @@ void UART5_IRQHandler(void)
 //							{
 								manualCmd.plantNum = id - 10;
 								manualCmd.method = SHOOT_METHOD3;							
-								InCmdQueue(manualCmd);
-								CheckCmdQueueState();
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
 //							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
@@ -3033,8 +3046,8 @@ void UART5_IRQHandler(void)
 //							{
 								manualCmd.plantNum = id - 20;
 								manualCmd.method = SHOOT_METHOD4;							
-								InCmdQueue(manualCmd);
-								CheckCmdQueueState();
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
 //							}
 						break;
 					}
@@ -3056,7 +3069,7 @@ void UART5_IRQHandler(void)
 				}
 				else if(id < 60)
 				{
-					if(id == 51)
+					if(id == 50)
 					{
 						gRobot.leftGun.bulletNumber = gRobot.leftGun.shootTimes;
 					}
@@ -3078,15 +3091,18 @@ void UART5_IRQHandler(void)
 					//ID=255，全部切换为自动模式
 					if(id == 255)
 					{
-						//左枪自动模式
-						gRobot.leftGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-						//右枪自动模式
-						gRobot.rightGun.mode = GUN_AUTO_MODE;
-						OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-						//上枪自动模式
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
-						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						if(bleUseNum < 2)
+						{
+							//左枪自动模式
+							gRobot.leftGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+							//右枪自动模式
+							gRobot.rightGun.mode = GUN_AUTO_MODE;
+							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							//上枪自动模式
+							gRobot.upperGun.mode = GUN_ATTACK_MODE;
+							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+						}
 					}
 				}
 				status=15;
@@ -3124,10 +3140,12 @@ void UART5_IRQHandler(void)
 				status++;
 				break;
 			case 21:
-				if(msgId == ch)
+				if(ch <= ((msgId + 10)%100))
 				{
-					DelTailQueue();
-					CheckCmdQueueState();
+					InCmdQueue(manualCmd);
+//					CheckCmdQueueState();
+//					DelTailQueue();
+//					CheckCmdQueueState();
 				}
 				msgId = ch;
 				status = 0;
@@ -3226,9 +3244,10 @@ void UART5_IRQHandler(void)
 		}
 		
 		USART_ReceiveData(UART5);
-		UART5_OUT((uint8_t*)"UART4_Err");
+		UART5_OUT((uint8_t*)"UART5_Err");
 	}
-	OSIntExit();		
+	OSIntExit();
+	
 }
 
 /**

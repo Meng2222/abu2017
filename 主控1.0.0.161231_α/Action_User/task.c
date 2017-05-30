@@ -312,6 +312,11 @@ void ConfigTask(void)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
 
+	
+//	while(!KEYSWITCH)
+//	{
+//		//等待给摄像头发送初始化命令
+//	}
 	//************************
 	USART3_Init(115200);	//摄像头
 	CameraInit();
@@ -337,6 +342,10 @@ void ConfigTask(void)
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 	
+//	while(!RESET_SWITCH)
+//	{
+//		//等待初始化
+//	} 
 	TIM_Delayms(TIM5, 1000);
 
 	ROBOT_Init();
@@ -1487,12 +1496,14 @@ void LeftGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.leftGun.shootParaMode%2)
 				{
-					gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.leftGun.targetPlant));
+//					gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.leftGun.targetPlant));
+					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-					gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.leftGun.targetPlant));
+//					gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.leftGun.targetPlant));
+					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;
 				}
 			}
@@ -1698,12 +1709,14 @@ void RightGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.rightGun.shootParaMode%2)
 				{
-					gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.rightGun.targetPlant));
+//					gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.rightGun.targetPlant));
+					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-					gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.rightGun.targetPlant));
+//					gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.rightGun.targetPlant));
+					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;
 				}
 			}
@@ -1939,12 +1952,12 @@ void UpperGunShootTask(void)
 					//执行命令过程中若切到防守模式将命令状态复位
 					if(gRobot.upperGun.shootParaMode%3)
 					{
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plate = 1;
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plate += 1;
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
 					}
 					else
 					{
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ball = 1;
+						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ball += 1;
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
 					}
 				}
