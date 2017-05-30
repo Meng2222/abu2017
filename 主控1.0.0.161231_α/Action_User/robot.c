@@ -1985,7 +1985,7 @@ status_t ROBOT_RightGunCheckReloadAim(void)
 status_t ROBOT_UpperGunCheckAim(void)
 {
 
-	uint8_t checkTimes = 2;
+	uint8_t checkTimes = 5;
 	int checkTime = 0;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
@@ -2049,7 +2049,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	}
 	else
 	{
-		if(checkTime >= 200)
+		if(checkTime >= 500)
 		{
 			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
 		}
