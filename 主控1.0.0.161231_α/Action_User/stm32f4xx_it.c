@@ -1192,12 +1192,12 @@ void UART4_IRQHandler(void)
 						{
 							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
 						}
+						msgId = ch;
 	//					CheckCmdQueueState();
 	//					DelTailQueue();
 	//					CheckCmdQueueState();
 					}
 				}
-				msgId = ch;
 				status = 0;
 				break;
 			case 22:
@@ -3198,12 +3198,12 @@ void UART5_IRQHandler(void)
 						{
 							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
 						}
+						msgId = ch;
 	//					CheckCmdQueueState();
 	//					DelTailQueue();
 	//					CheckCmdQueueState();
 					}
 				}
-				msgId = ch;
 				status = 0;
 				break;
 			case 22:
