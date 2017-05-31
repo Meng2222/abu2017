@@ -1989,6 +1989,10 @@ status_t ROBOT_UpperGunCheckAim(void)
 	int checkTime = 0;
 	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
+	if(gRobot.upperGun.targetPlant == PLANT6)
+	{
+		checkTimes = 10;
+	}
 	while(checkTimes--)
 	{
 		//超时时间为20*5*10ms，1秒
