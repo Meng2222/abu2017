@@ -169,11 +169,11 @@ void CheckCmdQueueState(void)
 			counter = i%CMD_QUEUE_LENGTH;
 			if(gRobot.manualCmdQueue.cmdArr[counter].method%2)
 			{
-				tempCmdPlateState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;
+				tempCmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum);
 			}
 			else
 			{
-				tempCmdBallState |= 0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum;			
+				tempCmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[counter].plantNum);			
 			}
 		}
 		gRobot.manualCmdQueue.cmdPlateState = tempCmdPlateState;
