@@ -1342,7 +1342,9 @@ void WalkTask(void)
 			case resetRunToLaunch:
 			{
 #ifdef RED_FIELD
+				
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
+				//由于重试后陀螺仪零漂较严重，矫正角度后也位置也有偏差
 				MoveTo((-6500.14f/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)

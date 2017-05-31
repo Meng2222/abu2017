@@ -1813,12 +1813,14 @@ void USART2_IRQHandler(void)
 		{
 			case 0:
 				if (ch == 'A')
-				if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 				{
-					gRobot.isBleOk.bleHeartBeat++;
-					gRobot.isBleOk.noBleFlag = BLE_OK;
+					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+					{
+						gRobot.isBleOk.bleHeartBeat++;
+						gRobot.isBleOk.noBleFlag = BLE_OK;
+					}
+					status++;
 				}
-				status++;
 				break;
 			case 1:
 				if (ch == 'C')
