@@ -1245,7 +1245,14 @@ void WalkTask(void)
 						sendSignal2Camera = 0;
 					}
 					//如果蓝牙失联，且任务队列为空则按照6631245的顺序打全场
-					if(gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
+					if(gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum &&\
+						gRobot.plantState[PLANT1].plateState == COMMAND_DONE&&\
+						gRobot.plantState[PLANT2].plateState == COMMAND_DONE&&\
+						gRobot.plantState[PLANT4].plateState == COMMAND_DONE&&\
+						gRobot.plantState[PLANT5].plateState == COMMAND_DONE&&\
+						gRobot.plantState[PLANT6].plateState == COMMAND_DONE&&\
+						gRobot.plantState[PLANT3].plateState == COMMAND_DONE
+					)
 					{
 						cmd_t cmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
 						cmd.plantNum = PLANT6;
