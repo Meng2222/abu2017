@@ -1504,14 +1504,14 @@ void LeftGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.leftGun.shootParaMode%2)
 				{
-//					gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.leftGun.targetPlant));
-					CheckCmdQueueState();
+					gRobot.manualCmdQueue.cmdPlateState&=(~(0x01<<(gRobot.leftGun.targetPlant)));
+//					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-//					gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.leftGun.targetPlant));
-					CheckCmdQueueState();
+					gRobot.manualCmdQueue.cmdBallState&=(~(0x01<<(gRobot.leftGun.targetPlant)));
+//					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;
 				}
 			}
@@ -1717,14 +1717,14 @@ void RightGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.rightGun.shootParaMode%2)
 				{
-//					gRobot.manualCmdQueue.cmdPlateState^=(0x01<<(gRobot.rightGun.targetPlant));
-					CheckCmdQueueState();
+					gRobot.manualCmdQueue.cmdPlateState&=(~(0x01<<(gRobot.rightGun.targetPlant)));
+//					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-//					gRobot.manualCmdQueue.cmdBallState^=(0x01<<(gRobot.rightGun.targetPlant));
-					CheckCmdQueueState();
+					gRobot.manualCmdQueue.cmdBallState&=(~(0x01<<(gRobot.rightGun.targetPlant)));
+//					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;
 				}
 			}

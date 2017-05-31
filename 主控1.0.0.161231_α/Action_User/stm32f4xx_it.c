@@ -1165,7 +1165,15 @@ void UART4_IRQHandler(void)
 				{
 					UART5_OUT((uint8_t *)"BLE");
 					InCmdQueue(manualCmd);
-					CheckCmdQueueState();
+					if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method%2)
+					{
+						gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);
+					}
+					else
+					{
+						gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
+					}
+//					CheckCmdQueueState();
 //					DelTailQueue();
 //					CheckCmdQueueState();
 				}
@@ -3144,6 +3152,14 @@ void UART5_IRQHandler(void)
 				{
 					UART5_OUT((uint8_t *)"Wifi");
 					InCmdQueue(manualCmd);
+					if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method%2)
+					{
+						gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);
+					}
+					else
+					{
+						gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
+					}
 //					CheckCmdQueueState();
 //					DelTailQueue();
 //					CheckCmdQueueState();
