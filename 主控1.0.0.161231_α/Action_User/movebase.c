@@ -349,6 +349,22 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	}
 }
 
+//状态变量
+typedef enum
+{
+	getReady,
+	goToLoadingArea,
+	load,
+	beginToGo1,
+	goToLaunchingArea,
+	stopRobot,
+	launch,
+	reset,
+	resetConfig,
+	resetRunToLoad,
+	resetRunToLaunch
+}Status_t;
+extern Status_t status;
 
 /**
   * @brief  速度调节函数
@@ -368,7 +384,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	float angleAdjust = 0.0f;
 	static float angleErr = 0.0f;
 	//前馈调节的角度（的大小）
-	#define FEEDFORWARD_COMPENSATION_ANGLE 0.5f
+	#define FEEDFORWARD_COMPENSATION_ANGLE_ACC 0.3f
+	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 2.0f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
@@ -448,19 +465,19 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 
 #ifdef BLUE_FIELD
 		//在蓝场加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
-		if(moveState == ACCERLATING)
-			exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE;
-		else if(moveState == DECELERATING && GetPosX() < +12500.0f)
-			exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE;
+		if(moveState == ACCERLATING && GetPosX() > 2500.0f && status == goToLoadingArea)
+			exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+		else if(moveState == DECELERATING && GetPosX() < +12500.0f && status == goToLoadingArea)
+			exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
 		else
 			exPoseAngle = 0.0f;
 #endif
 #ifdef RED_FIELD
 		//在红场加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
-		if(moveState == ACCERLATING)
-			exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE;
-		else if(moveState == DECELERATING && GetPosX() > -12500.0f)
-			exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE;
+		if(moveState == ACCERLATING && GetPosX() < -2500.0f && status == goToLoadingArea)
+			exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+		else if(moveState == DECELERATING && GetPosX() > -12500.0f && status == goToLoadingArea)
+			exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
 		else
 			exPoseAngle = 0.0f;
 #endif
