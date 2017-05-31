@@ -1243,7 +1243,7 @@ void WalkTask(void)
 					if(sendSignal2Camera == 1)
 					{
 						//向视觉模块发信号，看全场 信息的接收部分再中断中
-						SendWatchWholeArena2Camera();
+//						SendWatchWholeArena2Camera();
 						sendSignal2Camera = 0;
 					}
 					//蓝牙失联时，如果任务队列为空 则按照6631245的顺序打全场
@@ -1824,9 +1824,8 @@ void UpperGunShootTask(void)
 		//如果接收到防守命令进入防守模式
 		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
 #ifndef NO_WALK_TASK
-
-		//不需要防守时如果7#需要落盘则对7#落盘命令置位
-		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+		//当蓝牙中断时不需要防守时如果7#需要落盘则对7#落盘命令置位，通信正常时由平板控制7#落盘时机
+		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY && gRobot.isBleOk.noBleFlag == BLE_LOST)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
