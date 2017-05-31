@@ -749,15 +749,18 @@ void TIM4_IRQHandler(void)
 *数据：yaw data/patch data/roll data/speed1 data/speed2 data
 *枪号：0左枪 1右枪 2上枪
 */
-static uint8_t msgId = 0xff;
+static int8_t msgId = -1;
 static uint8_t bleUseNum = 0;
+#define MSG_ID_LIMIT  (101)
 void UART4_IRQHandler(void)
 {
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
 	static uint8_t bleNumCountFlag = 1;
+	static uint8_t cmdFlag = 0;
 	static cmd_t manualCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
-
+	static uint8_t bleMsg[12]={0};
+	static uint8_t bleMsgCounter = 0;
 	static union
 	{
 		uint8_t data8[4];
@@ -777,6 +780,15 @@ void UART4_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART4);
+		bleMsg[bleMsgCounter]=ch;
+		if(bleMsgCounter == 11)
+		{
+			UART5_OUT((uint8_t *)"%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
+			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
+		}			
+		bleMsgCounter = (bleMsgCounter + 1)%12;
+
 		if(bleNumCountFlag == 1)
 		{
 			bleUseNum++;
@@ -787,12 +799,15 @@ void UART4_IRQHandler(void)
 		{
 			case 0:
 				if (ch == 'A')
-				if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 				{
-					gRobot.isBleOk.bleHeartBeat++;
-					gRobot.isBleOk.noBleFlag = BLE_OK;
+					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+					{
+						gRobot.isBleOk.bleHeartBeat++;
+						gRobot.isBleOk.noBleFlag = BLE_OK;
+					}
+					cmdFlag = 0;
+					status++;
 				}
-				status++;
 				break;
 			case 1:
 				if (ch == 'C')
@@ -1045,7 +1060,8 @@ void UART4_IRQHandler(void)
 //							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(id - 10)))==0)
 //							{
 								manualCmd.plantNum = id - 10;
-								manualCmd.method = SHOOT_METHOD3;							
+								manualCmd.method = SHOOT_METHOD3;
+								cmdFlag = 1;
 //								InCmdQueue(manualCmd);
 //								CheckCmdQueueState();
 //							}
@@ -1066,7 +1082,8 @@ void UART4_IRQHandler(void)
 //							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(id - 20)))==0 || (id - 20 == PLANT6))
 //							{
 								manualCmd.plantNum = id - 20;
-								manualCmd.method = SHOOT_METHOD4;							
+								manualCmd.method = SHOOT_METHOD4;
+								cmdFlag = 1;
 //								InCmdQueue(manualCmd);
 //								CheckCmdQueueState();
 //							}
@@ -1161,21 +1178,24 @@ void UART4_IRQHandler(void)
 				status++;
 				break;
 			case 21:
-				if(ch <= ((msgId + 10)%100) && ch > msgId)
+				if(cmdFlag == 1)
 				{
-					UART5_OUT((uint8_t *)"BLE");
-					InCmdQueue(manualCmd);
-					if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method%2)
+					if(ch <= ((msgId + 10)%MSG_ID_LIMIT) && ch > msgId)
 					{
-						gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);
+						UART5_OUT((uint8_t *)"BLE");
+						InCmdQueue(manualCmd);
+						if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method%2)
+						{
+							gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);
+						}
+						else
+						{
+							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
+						}
+	//					CheckCmdQueueState();
+	//					DelTailQueue();
+	//					CheckCmdQueueState();
 					}
-					else
-					{
-						gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
-					}
-//					CheckCmdQueueState();
-//					DelTailQueue();
-//					CheckCmdQueueState();
 				}
 				msgId = ch;
 				status = 0;
@@ -2757,7 +2777,9 @@ void UART5_IRQHandler(void)
 	}data;
 
 	float targetAngle = 0.0f;
-
+	static uint8_t bleMsg[12]={0};
+	static uint8_t bleMsgCounter = 0;
+	static uint8_t cmdFlag = 0;
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -2768,17 +2790,29 @@ void UART5_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
 		ch = USART_ReceiveData(UART5);
+		bleMsg[bleMsgCounter]=ch;
+		if(bleMsgCounter == 11)
+		{
+			UART5_OUT((uint8_t *)"%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
+			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
+		}			
+		bleMsgCounter = (bleMsgCounter + 1)%12;
+
 		gRobot.isBleOk.noBleTimer = 0;
 		switch (status)
 		{
 			case 0:
 				if (ch == 'A')
-				if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 				{
-					gRobot.isBleOk.bleHeartBeat++;
-					gRobot.isBleOk.noBleFlag = BLE_OK;
+					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+					{
+						gRobot.isBleOk.bleHeartBeat++;
+						gRobot.isBleOk.noBleFlag = BLE_OK;
+					}
+					cmdFlag = 0;
+					status++;
 				}
-				status++;
 				break;
 			case 1:
 				if (ch == 'C')
@@ -3031,7 +3065,8 @@ void UART5_IRQHandler(void)
 //							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(id - 10)))==0)
 //							{
 								manualCmd.plantNum = id - 10;
-								manualCmd.method = SHOOT_METHOD3;							
+								manualCmd.method = SHOOT_METHOD3;
+								cmdFlag = 1;
 //								InCmdQueue(manualCmd);
 //								CheckCmdQueueState();
 //							}
@@ -3052,7 +3087,8 @@ void UART5_IRQHandler(void)
 //							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(id - 20)))==0 || (id - 20 == PLANT6))
 //							{
 								manualCmd.plantNum = id - 20;
-								manualCmd.method = SHOOT_METHOD4;							
+								manualCmd.method = SHOOT_METHOD4;
+								cmdFlag = 1;
 //								InCmdQueue(manualCmd);
 //								CheckCmdQueueState();
 
@@ -3148,21 +3184,24 @@ void UART5_IRQHandler(void)
 				status++;
 				break;
 			case 21:
-				if(ch <= ((msgId + 10)%100) && ch > msgId)
+				if(cmdFlag == 1)
 				{
-					UART5_OUT((uint8_t *)"Wifi");
-					InCmdQueue(manualCmd);
-					if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method%2)
+					if(ch <= ((msgId + 10)%MSG_ID_LIMIT) && ch > msgId)
 					{
-						gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);
+						UART5_OUT((uint8_t *)"Wifi");
+						InCmdQueue(manualCmd);
+						if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method%2)
+						{
+							gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);
+						}
+						else
+						{
+							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
+						}
+	//					CheckCmdQueueState();
+	//					DelTailQueue();
+	//					CheckCmdQueueState();
 					}
-					else
-					{
-						gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
-					}
-//					CheckCmdQueueState();
-//					DelTailQueue();
-//					CheckCmdQueueState();
 				}
 				msgId = ch;
 				status = 0;
