@@ -1180,7 +1180,8 @@ void UART4_IRQHandler(void)
 			case 21:
 				if(cmdFlag == 1)
 				{
-					if(ch <= ((msgId + 10)%MSG_ID_LIMIT) && ch > msgId)
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
 					{
 						UART5_OUT((uint8_t *)"BLE");
 						InCmdQueue(manualCmd);
@@ -3188,7 +3189,8 @@ void UART5_IRQHandler(void)
 			case 21:
 				if(cmdFlag == 1)
 				{
-					if(ch <= ((msgId + 10)%MSG_ID_LIMIT) && ch > msgId)
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
 					{
 						UART5_OUT((uint8_t *)"Wifi");
 						InCmdQueue(manualCmd);
