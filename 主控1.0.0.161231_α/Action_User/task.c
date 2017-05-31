@@ -1477,6 +1477,7 @@ void LeftGunShootTask(void)
 					{
 						OSTimeDly(1);
 					}
+					OSTimeDly(20);
 				}
 				//发射
 				ROBOT_LeftGunShoot();
@@ -1690,6 +1691,7 @@ void RightGunShootTask(void)
 					{
 						OSTimeDly(1);
 					}
+					OSTimeDly(20);
 				}
 				//发射
 				ROBOT_RightGunShoot();
