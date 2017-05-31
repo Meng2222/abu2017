@@ -1863,6 +1863,11 @@ void UpperGunShootTask(void)
 								}
 							}
 						}
+						//正在执行7#落盘命令时
+						if(gRobot.plantState[PLANT7].plateState == COMMAND_IN_PROCESS)
+						{
+							putPlateFlag = 0;
+						}
 						//如果队列中没有7#落盘命令时在队列中加入7#落盘命令
 						if(putPlateFlag==1)
 						{
