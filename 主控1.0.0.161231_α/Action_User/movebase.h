@@ -344,6 +344,7 @@ typedef struct
 //速度规划的理论值结构体
 typedef struct
 {
+	//当前理想位置距离目标点之间的距离
 	float dist;
 	float speed;
 	float pos;

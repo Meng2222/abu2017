@@ -1233,9 +1233,11 @@ void WalkTask(void)
 				/*对蓝牙是否断开的检测*/
 				//把检查ble的Flag 置位
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
+				
+				/*对于蓝牙失联的处理*/
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
-					//蓝牙断开蜂鸣器将长鸣
+					//蜂鸣器将长鸣
 					BEEP_ON;
 					//如果蓝牙失联 则通知视觉模块看全场按照视觉模块反馈的信息打 但是实际上现在视觉反馈的信息没有使用
 					if(sendSignal2Camera == 1)
@@ -1244,8 +1246,9 @@ void WalkTask(void)
 						SendWatchWholeArena2Camera();
 						sendSignal2Camera = 0;
 					}
-					//如果蓝牙失联，且任务队列为空则按照6631245的顺序打全场
+					//蓝牙失联时，如果任务队列为空 则按照6631245的顺序打全场
 					if(gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum &&\
+						//加入以下判断 使得 能够按照6631245顺序 一轮一轮打 而不会不停地有命令进队
 						gRobot.plantState[PLANT1].plateState == COMMAND_DONE&&\
 						gRobot.plantState[PLANT2].plateState == COMMAND_DONE&&\
 						gRobot.plantState[PLANT4].plateState == COMMAND_DONE&&\
