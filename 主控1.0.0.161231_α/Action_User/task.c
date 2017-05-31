@@ -1847,7 +1847,6 @@ void UpperGunShootTask(void)
 					{
 						uint8_t putPlateFlag = 1;
 						cmd_t selfCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
 						gRobot.plantState[PLANT7].plate = 1;
 						//搜索队列中是否有7#落盘命令
 						if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
