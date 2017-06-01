@@ -376,8 +376,9 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT6].plate = 2;
 	gRobot.autoCommand[PLANT3].plate = 1;
 	
-	InitQueue();
+//	InitQueue();
 
+	
 	LeftGunInit();
 	RightGunInit();
 	UpperGunInit();
