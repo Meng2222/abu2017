@@ -1425,14 +1425,14 @@ void LeftGunShootTask(void)
 		{
 			shoot_command_t leftGunShootCommand;
 			//自获取命令
-			if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
-			{
-				leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
-			}
-			else
-			{
+//			if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
+//			{
+//				leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
+//			}
+//			else
+//			{
 				leftGunShootCommand = ROBOT_LeftGunGetShootCommandFIFO();
-			}
+//			}
 			if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 			{
 				gRobot.leftGun.noCommandTimer = 0;
@@ -1643,14 +1643,14 @@ void RightGunShootTask(void)
 		{
 			shoot_command_t rightGunShootCommand;
 			//获取命令
-			if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
-			{
-				rightGunShootCommand = ROBOT_RightGunGetShootCommand();
-			}
-			else
-			{
+//			if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
+//			{
+//				rightGunShootCommand = ROBOT_RightGunGetShootCommand();
+//			}
+//			else
+//			{
 				rightGunShootCommand = ROBOT_RightGunGetShootCommandFIFO();
-			}
+//			}
 
 			if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 			{

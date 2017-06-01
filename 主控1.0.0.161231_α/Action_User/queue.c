@@ -128,6 +128,74 @@ cmd_t ReplaceHeadQueue(cmd_t inCmd)
 
 	return outCmd;
 }
+
+/**
+  * @brief  LeftGunOutQueue 
+  * @note	其中 
+  * @param  outCmd2 队列中第二个命令
+  * @retval outCmd
+  */
+cmd_t LeftGunOutQueue(void)
+{
+	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	cmd_t outCmd2 = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+
+	outCmd = OutCmdQueue();
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
+	{
+		return outCmd;
+	}
+	
+	outCmd2.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
+	outCmd2.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
+	
+	if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
+	{
+		if((outCmd2.plantNum == PLANT1)||(outCmd2.plantNum == PLANT2))
+		{
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+			return outCmd2;
+		}
+	}
+
+	return outCmd;
+}
+
+/**
+  * @brief  RightGunOutQueue 
+  * @note	其中 
+  * @param  outCmd2 队列中第二个命令
+  * @retval outCmd
+  */
+cmd_t RightGunOutQueue(void)
+{
+	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	cmd_t outCmd2 = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+
+	outCmd = OutCmdQueue();
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
+	{
+		return outCmd;
+	}
+	
+	outCmd2.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
+	outCmd2.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
+	
+	if((outCmd.plantNum == PLANT1)||(outCmd.plantNum == PLANT2))
+	{
+		if((outCmd2.plantNum == PLANT4)||(outCmd2.plantNum == PLANT5))
+		{
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+			return outCmd2;
+		}
+	}
+
+	return outCmd;
+}
 /**
   * @brief  DelTailQueue 删除队尾
   * @note	删除队尾的同时 还把被删除元素原来的位置复位为了INVALID变量
@@ -242,9 +310,10 @@ void InitQueue(void)
 	rand0 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
 	rand1 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
 	rand2 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
+
 	RNG_Cmd(DISABLE);
 	
-	randCmd = rand1<<1 | rand0;
+	randCmd = rand1<<1 | rand0;rand2 = rand2;
 
 	switch(randCmd)
 	{

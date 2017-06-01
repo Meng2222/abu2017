@@ -341,7 +341,7 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT6].plate = 3;
 	gRobot.autoCommand[PLANT3].plate = 1;
 	
-//	InitQueue();
+	InitQueue();
 
 	
 	LeftGunInit();
@@ -519,7 +519,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 	}
 	else		//有弹
 	{
-		manualCmd = OutCmdQueue();
+		manualCmd = LeftGunOutQueue();
 		if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
 		{
 			gRobot.leftGun.commandState = GUN_NO_COMMAND;		
@@ -736,7 +736,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 	}
 	else		//有弹
 	{
-		manualCmd = OutCmdQueue();
+		manualCmd = RightGunOutQueue();
 		if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
 		{
 			gRobot.rightGun.commandState = GUN_NO_COMMAND;		
