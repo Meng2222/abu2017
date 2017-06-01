@@ -340,10 +340,10 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT6].plate = 3;
 	gRobot.autoCommand[PLANT3].plate = 1;
-	
-	InitQueue();
 
-	
+#ifdef AUTO_MODE	
+	InitQueue();
+#endif	
 	LeftGunInit();
 	RightGunInit();
 	UpperGunInit();

@@ -2407,7 +2407,7 @@ void USART3_IRQHandler(void)
 		uint8_t data[2];
 		uint16_t ActPos;
     }posInfo;
-	static plant_t isPlateDataOk[LAND_NUMBER]={PLAT_DATA_UNSTABLE};
+//	static plant_t isPlateDataOk[LAND_NUMBER]={PLAT_DATA_UNSTABLE};
 	cmd_t cameraCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
 	OS_CPU_SR  cpu_sr;
 	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
@@ -2524,14 +2524,14 @@ void USART3_IRQHandler(void)
 				break;
 			case PLAT_DATA_STATE1:
 				receiveDataTrust = data;
-				isPlateDataOk[PLANT1].ball = (data&0x01)==0x01;
-				isPlateDataOk[PLANT1].plate = (data&0x02)==0x02;
-				isPlateDataOk[PLANT2].ball = (data&0x04)==0x04;
-				isPlateDataOk[PLANT2].plate = (data&0x08)==0x08;
-				isPlateDataOk[PLANT4].ball = (data&0x10)==0x10;
-				isPlateDataOk[PLANT4].plate = (data&0x20)==0x20;
-				isPlateDataOk[PLANT5].ball = (data&0x40)==0x40;
-				isPlateDataOk[PLANT5].plate = (data&0x80)==0x80;
+//				isPlateDataOk[PLANT1].ball = (data&0x01)==0x01;
+//				isPlateDataOk[PLANT1].plate = (data&0x02)==0x02;
+//				isPlateDataOk[PLANT2].ball = (data&0x04)==0x04;
+//				isPlateDataOk[PLANT2].plate = (data&0x08)==0x08;
+//				isPlateDataOk[PLANT4].ball = (data&0x10)==0x10;
+//				isPlateDataOk[PLANT4].plate = (data&0x20)==0x20;
+//				isPlateDataOk[PLANT5].ball = (data&0x40)==0x40;
+//				isPlateDataOk[PLANT5].plate = (data&0x80)==0x80;
 				state = PLAT_DATA_STATE2;
 				break;
 			case PLAT_DATA_STATE2:
