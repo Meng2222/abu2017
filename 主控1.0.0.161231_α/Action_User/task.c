@@ -246,6 +246,12 @@ void SendWatchWholeArena2Camera(void)
 	USART_SendData(USART3, 'e');
 	USART_SendData(USART3, 'p');
 }
+void CameraSelfCheck(void)
+{
+	USART_SendData(USART3, 'c');
+	USART_SendData(USART3, 'h');
+	USART_SendData(USART3, 'e');	
+}
 void App_Task()
 {
 	CPU_INT08U  os_err;
@@ -502,6 +508,7 @@ void SelfCheckTask(void)
 {
 	static int self_circle=0,self_circle_end=3;
 	static uint8_t emptyQueueFlag = 1;
+	CameraSelfCheck();
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
@@ -1520,13 +1527,13 @@ void LeftGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.leftGun.shootParaMode%2)
 				{
-					gRobot.manualCmdQueue.cmdPlateState&=(~(0x01<<(gRobot.leftGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdPlateState&=(~(uint8_t)(0x01<<(gRobot.leftGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-					gRobot.manualCmdQueue.cmdBallState&=(~(0x01<<(gRobot.leftGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdBallState&=(~(uint8_t)(0x01<<(gRobot.leftGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;
 				}
@@ -1741,13 +1748,13 @@ void RightGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.rightGun.shootParaMode%2)
 				{
-					gRobot.manualCmdQueue.cmdPlateState&=(~(0x01<<(gRobot.rightGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdPlateState&=(~((uint8_t)0x01<<(gRobot.rightGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-					gRobot.manualCmdQueue.cmdBallState&=(~(0x01<<(gRobot.rightGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdBallState&=(~((uint8_t)0x01<<(gRobot.rightGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;
 				}
