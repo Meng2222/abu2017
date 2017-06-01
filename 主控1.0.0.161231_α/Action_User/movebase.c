@@ -12,18 +12,14 @@
   */
 
 /* Includes -------------------------------------------------------------------*/
-#include "stm32f4xx.h"
-#include "math.h"
-#include "usart.h"
-#include "stdlib.h"
-#include "elmo.h"
-#include "timer.h"
 #include "movebase.h"
-#include "stm32f4xx_usart.h"
-#include "robot.h"
-#include "dma.h"
-#include "gpio.h"
+#include <stdlib.h>
+#include <math.h>
 #include "ucos_ii.h"
+#include "usart.h"
+#include "elmo.h"
+#include "gpio.h"
+#include "robot.h"
 /* Exported functions ---------------------------------------------------------*/
 extern robot_t gRobot;
 float moveTimer=0.0f;
@@ -348,22 +344,6 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	}
 }
 
-//状态变量
-typedef enum
-{
-	getReady,
-	goToLoadingArea,
-	load,
-	beginToGo1,
-	goToLaunchingArea,
-	stopRobot,
-	launch,
-	reset,
-	resetConfig,
-	resetRunToLoad,
-	resetRunToLaunch
-}Status_t;
-extern Status_t status;
 
 /**
   * @brief  速度调节函数
@@ -430,7 +410,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 		velY = 250.0f;
 	}
-	//如果Y方向偏差过大 不调节
+	//如果Y方向向场内偏差过大 不调节
 #ifdef BLUE_FIELD
 	if(gRobot.moveBase.actualYPos > 40.0f)
 	{
@@ -463,22 +443,48 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 
 #ifdef BLUE_FIELD
-		//在蓝场加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
-		if(moveState == ACCERLATING && GetPosX() > 2500.0f && status == goToLoadingArea)
-			exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-		else if(moveState == DECELERATING && GetPosX() < +12500.0f && status == goToLoadingArea)
-			exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+		if(velX > 0)
+		{
+			//在蓝场 从出发区到装填区 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+			if(moveState == ACCERLATING && GetPosX() > 2500.0f)
+				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+			else if(moveState == DECELERATING && GetPosX() < 12500.0f)
+				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+			else
+				exPoseAngle = 0.0f;
+		}
 		else
-			exPoseAngle = 0.0f;
+		{
+			//在蓝场 从装填区到发射位置 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+			if(moveState == ACCERLATING && GetPosX() < 12500.0f)
+				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+			else if(moveState == DECELERATING && GetPosX() > 7000.0f)
+				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+			else
+				exPoseAngle = 0.0f;
+		}
 #endif
 #ifdef RED_FIELD
-		//在红场加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
-		if(moveState == ACCERLATING && GetPosX() < -2500.0f && status == goToLoadingArea)
-			exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-		else if(moveState == DECELERATING && GetPosX() > -12500.0f && status == goToLoadingArea)
-			exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+		if(velX < 0)
+		{
+			//在红场 从出发区到装填区 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
+			if(moveState == ACCERLATING && GetPosX() < -2500.0f)
+				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+			else if(moveState == DECELERATING && GetPosX() > -12500.0f)
+				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+			else
+				exPoseAngle = 0.0f;
+		}
 		else
-			exPoseAngle = 0.0f;
+		{
+			//在红场 从装填区到发射位置 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+			if(moveState == ACCERLATING && GetPosX() > -12500.0f)
+				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+			else if(moveState == DECELERATING && GetPosX() < -7000.0f)
+				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+			else
+				exPoseAngle = 0.0f;
+		}
 #endif
 
 

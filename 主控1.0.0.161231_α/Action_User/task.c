@@ -1215,10 +1215,9 @@ void WalkTask(void)
 				}
 				//				CameraInit();
 				status = launch;
-				//fix me 注释没写完
+				//如果是从重启进入的 stopRobot 则清除标志位
 				if(gRobot.isReset == ROBOT_RESET)
 				{
-					OSTimeDly(2);
 					gRobot.isReset = ROBOT_NOT_RESET;
 				}
 				OSSemSet(PeriodSem, 0, &os_err);
