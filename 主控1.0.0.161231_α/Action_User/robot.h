@@ -545,12 +545,6 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void);
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void);
 
-void RNG_Config(void);
-
-
-uint32_t RNG_Get_RandomNum(void);
-
-
 /**
   * @}
   */

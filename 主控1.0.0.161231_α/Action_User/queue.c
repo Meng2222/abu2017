@@ -14,12 +14,10 @@
   */
 
 /* Includes -------------------------------------------------------------------------------------------*/
-
-#include "stm32f4xx.h"
 #include "queue.h"
+#include "rng.h"
 #include "robot.h"
 #include "usart.h"
-#include "stm32f4xx_rng.h"
 /* Private typedef ------------------------------------------------------------------------------------*/
 /* Private define -------------------------------------------------------------------------------------*/
 
@@ -238,16 +236,18 @@ void InitQueue(void)
 {
 	uint8_t rand0 = 0 , rand1 = 0, rand2 = 0;
 	uint8_t randCmd;
-	
+	cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
+
 	RNG_Config();
 	rand0 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
 	rand1 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
 	rand2 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
-	randCmd = rand1<<1 | rand0;
 	RNG_Cmd(DISABLE);
+	
+	randCmd = rand1<<1 | rand0;
+
 	switch(randCmd)
 	{
-		cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
 		case 0:
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);

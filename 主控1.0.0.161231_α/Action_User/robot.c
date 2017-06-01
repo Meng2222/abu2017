@@ -12,8 +12,7 @@
 #include "app_cfg.h"
 #include "stdlib.h"
 #include "time.h"
-#include "stm32f4xx_rng.h"
-#include "stm32f4xx_rcc.h"
+#include "rng.h"
 robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
 extern OS_EVENT *LeftGunShootPointMbox;
@@ -259,40 +258,6 @@ static void UpperGunInit(void)
 //	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
 //	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
-}
-/*
-*名称：RNG_Config
-*功能：初始化随机数发生器
-*参数：none
-*注意：
-*
-*/
-void RNG_Config(void)
-{
-	uint16_t retry=0;
-	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE); //开启 RNG 时钟
-	RNG_Cmd(ENABLE); //使能 RNG
-	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET&&retry<10000)//等待就绪
-	{
-		retry++;
-		delay_us(100);
-	}
-	if(retry>=10000)
-	{
-		UART5_OUT((uint8_t *)"RNG Config ERROR!!\r\n");
-	}
-}
-/*
-*名称：RNG_Get_RandonNum
-*功能：获取随机数
-*参数：void
-*注意：
-*
-*/
-uint32_t RNG_Get_RandomNum(void)
-{
-	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET); //等待随机数就绪
-	return RNG_GetRandomNumber();
 }
 /*
 *名称：ROBOT_Init
