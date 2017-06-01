@@ -338,7 +338,7 @@ status_t ROBOT_Init(void)
 	}
 	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 2;
+	gRobot.autoCommand[PLANT6].plate = 3;
 	gRobot.autoCommand[PLANT3].plate = 1;
 	
 //	InitQueue();
@@ -368,7 +368,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 
 	#define LEFT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 4;
+	uint8_t searchRange = 2;
 	//防止同一个枪连续执行命令
 	OSTimeDly(1);
 	gRobot.leftGun.commandState = GUN_NO_COMMAND;
@@ -424,7 +424,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -461,7 +461,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -595,7 +595,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
 	#define RIGHT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 4;
+	uint8_t searchRange = 2;
 	//使同一个枪不连续获得命令
 	OSTimeDly(2);
 	gRobot.rightGun.commandState = GUN_NO_COMMAND;
@@ -643,7 +643,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -679,7 +679,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -812,7 +812,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 5u
+	#define UPPER_AUTO_NUM 6u
 	uint8_t i = 0u;
 	uint8_t searchRange = 3;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
