@@ -274,11 +274,11 @@ status_t ROBOT_Init(void)
 	gRobot.moveBase.targetPoint = 2;
 	gRobot.isReset = ROBOT_NOT_RESET;
 	//产生两个随机数
-	RNG_Config();
-	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
-	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
+//	RNG_Config();
+//	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
+//	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
 
-	RNG_Cmd(DISABLE);
+//	RNG_Cmd(DISABLE);
 
 	//根据随机数给出左右枪的优先级顺序
 	if(leftRand <= 0.5f)
