@@ -354,10 +354,11 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
   * @attention
   *         None
   */
-void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
+void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 {
 	float posErr = 0.0f;									//posErr:位置误差
 	float outputSpeed = 0.0f;								//outputSpeed:输出速度
+	float velX = 0.0f;
 	float velY = 0.0f;
 	float exPoseAngle = 0.0f;
 	float angleAdjust = 0.0f;
@@ -443,47 +444,53 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 
 #ifdef BLUE_FIELD
-		if(velX > 0)
+		if(fabs(velX / maxVelX) < 0.3f)
 		{
-			//在蓝场 从出发区到装填区 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
-			if(moveState == ACCERLATING && GetPosX() > 2500.0f)
-				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-			else if(moveState == DECELERATING && GetPosX() < 12250.0f)
-				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+			if(maxVelX > 0)
+			{
+				//在蓝场 从出发区到装填区 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+				if(moveState == ACCERLATING)
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+				else if(moveState == DECELERATING)
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+				else
+					exPoseAngle = 0.0f;
+			}
 			else
-				exPoseAngle = 0.0f;
-		}
-		else
-		{
-			//在蓝场 从装填区到发射位置 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
-			if(moveState == ACCERLATING && GetPosX() < 12500.0f)
-				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-			else if(moveState == DECELERATING && GetPosX() > 7000.0f)
-				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
-			else
-				exPoseAngle = 0.0f;
+			{
+				//在蓝场 从装填区到发射位置 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
+				if(moveState == ACCERLATING)
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+				else if(moveState == DECELERATING)
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+				else
+					exPoseAngle = 0.0f;
+			}
 		}
 #endif
 #ifdef RED_FIELD
-		if(velX < 0)
+		if(fabs(velX / maxVelX) < 0.3f)
 		{
-			//在红场 从出发区到装填区 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
-			if(moveState == ACCERLATING && GetPosX() < -2500.0f)
-				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-			else if(moveState == DECELERATING && GetPosX() > -12250.0f)
-				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+			if(maxVelX < 0)
+			{
+				//在红场 从出发区到装填区 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
+				if(moveState == ACCERLATING)
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+				else if(moveState == DECELERATING)
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+				else
+					exPoseAngle = 0.0f;
+			}
 			else
-				exPoseAngle = 0.0f;
-		}
-		else
-		{
-			//在红场 从装填区到发射位置 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
-			if(moveState == ACCERLATING && GetPosX() > -12250.0f)
-				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-			else if(moveState == DECELERATING && GetPosX() < -7000.0f)
-				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
-			else
-				exPoseAngle = 0.0f;
+			{
+				//在红场 从装填区到发射位置 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+				if(moveState == ACCERLATING)
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+				else if(moveState == DECELERATING)
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+				else
+					exPoseAngle = 0.0f;
+			}
 		}
 #endif
 
