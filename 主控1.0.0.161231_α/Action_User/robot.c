@@ -804,13 +804,13 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 				manualCmd = ReplaceHeadQueue(manualCmd);
 				if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
 				{
-					gRobot.leftGun.commandState = GUN_NO_COMMAND;		
+					gRobot.rightGun.commandState = GUN_NO_COMMAND;		
 				}
 				else
 				{
 					shootCommand.plantNum = manualCmd.plantNum;
 					shootCommand.shootMethod = manualCmd.method;
-					gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+					gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				}
 			}
 		}
