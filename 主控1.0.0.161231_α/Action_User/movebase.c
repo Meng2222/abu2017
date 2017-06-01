@@ -364,7 +364,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	static float angleErr = 0.0f;
 	//前馈调节的角度（的大小）
 	#define FEEDFORWARD_COMPENSATION_ANGLE_ACC 0.3f
-	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 3.0f
+	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 2.5f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
@@ -448,7 +448,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			//在蓝场 从出发区到装填区 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
 			if(moveState == ACCERLATING && GetPosX() > 2500.0f)
 				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-			else if(moveState == DECELERATING && GetPosX() < 12500.0f)
+			else if(moveState == DECELERATING && GetPosX() < 12250.0f)
 				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
 			else
 				exPoseAngle = 0.0f;
@@ -470,7 +470,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			//在红场 从出发区到装填区 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
 			if(moveState == ACCERLATING && GetPosX() < -2500.0f)
 				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-			else if(moveState == DECELERATING && GetPosX() > -12500.0f)
+			else if(moveState == DECELERATING && GetPosX() > -12250.0f)
 				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
 			else
 				exPoseAngle = 0.0f;
@@ -478,7 +478,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		else
 		{
 			//在红场 从装填区到发射位置 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
-			if(moveState == ACCERLATING && GetPosX() > -12500.0f)
+			if(moveState == ACCERLATING && GetPosX() > -12250.0f)
 				exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
 			else if(moveState == DECELERATING && GetPosX() < -7000.0f)
 				exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
