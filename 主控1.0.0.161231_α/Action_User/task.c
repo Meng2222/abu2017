@@ -598,127 +598,92 @@ void SelfCheckTask(void)
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
-					LeftPush();TIM_Delayms(TIM5, 500);LeftBack();TIM_Delayms(TIM5, 500);
+					LeftPush();RightPush();TIM_Delayms(TIM5, 500);LeftBack();RightBack();TIM_Delayms(TIM5, 500);
 				}
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
-					RightPush();TIM_Delayms(TIM5, 500);RightBack();TIM_Delayms(TIM5, 500);
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					LeftShoot();TIM_Delayms(TIM5, 500);LeftShootReset();TIM_Delayms(TIM5, 500);
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					RightShoot();TIM_Delayms(TIM5, 500); RightShootReset();TIM_Delayms(TIM5, 500);
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					UpperShoot();TIM_Delayms(TIM5, 500);  UpperShootReset();TIM_Delayms(TIM5, 500);
+					LeftShoot();RightShoot();UpperShoot();
+					TIM_Delayms(TIM5, 500);
+					LeftShootReset();RightShootReset();UpperShootReset();
+					TIM_Delayms(TIM5, 500);
 				}
 
 				/************下枪左*********/
 				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(140.0f));
 				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(140.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//横滚向一侧一定角度
-					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(40.0f));TIM_Delayms(TIM5, 1000);
-					//横滚向另一侧一定角度
-					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);
-
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//左转一定角度
-					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-					//右转一定角度
-					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
-				}
-
-				PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//俯仰向上一定角度
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);
-					//俯仰向下一定角度
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);
-				}
-
-				PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
-
-				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
-				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
-
 				/************下枪右*********/
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(140.0f));
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(140.0f));
-
+				/************上枪*********/
+				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(140.0f));
+				
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//横滚向一侧一定角度
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));TIM_Delayms(TIM5, 1000);
-
+					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(40.0f));
+					//横滚向一侧一定角度
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));					
+					TIM_Delayms(TIM5, 1000);
 					//横滚向另一侧一定角度
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));
+					//横滚向另一侧一定角度
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));
+					TIM_Delayms(TIM5, 1000);
+
 				}
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//左转一定角度
-					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(20.0f));
+					//左转一定角度
+					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));
+					//左转一定角度
+					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));
+					TIM_Delayms(TIM5, 1000);					
 					//右转一定角度
-					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));
+					//右转一定角度
+					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-20.0f));
+					//右转一定角度
+					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(-20.0f));
+					TIM_Delayms(TIM5, 1000);
 				}
 
+				PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
 				PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
+				PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
+				TIM_Delayms(TIM5, 1000);
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//俯仰向上一定角度
-					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);
-
+					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));
+					//俯仰向上一定角度
+					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));
+					//俯仰向上一定角度 起始角度
+					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(20.0f));
+					TIM_Delayms(TIM5, 1000);
 					//俯仰向下一定角度
-					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(10.0f));
+					//俯仰向下一定角度
+					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(10.0f));
+					//俯仰向下一定角度
+					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));
+					TIM_Delayms(TIM5, 1000);
 				}
+
+
+				PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
+				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
 
 				PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
-
-
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
-				/************上枪*********/
-				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(140.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//左转一定角度
-					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-					//右转一定角度
-					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
-				}
-
-
-				PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//俯仰向上一定角度 起始角度
-					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(20.0f));TIM_Delayms(TIM5, 1000);
-					//俯仰向下一定角度
-					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));TIM_Delayms(TIM5, 1000);
-				}
 
 				PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(0.0f));
-
-
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 
 				status_check++;
