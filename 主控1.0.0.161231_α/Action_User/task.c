@@ -501,7 +501,7 @@ void ConfigTask(void)
 void SelfCheckTask(void)
 {
 	static int self_circle=0,self_circle_end=3;
-
+	static uint8_t emptyQueueFlag = 1;
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
@@ -766,7 +766,11 @@ void SelfCheckTask(void)
 				break;
 			case commicationCheck:
 			//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
-
+				if(emptyQueueFlag==1)
+				{
+					gRobot.manualCmdQueue.headNum = gRobot.manualCmdQueue.tailNum;
+					emptyQueueFlag = 0;
+				}
 				//手自动切换时上弹气缸推到头后收回
 				if(gRobot.leftGun.modeChangeFlag == 1)
 				{
