@@ -267,7 +267,7 @@ static void UpperGunInit(void)
 *注意：
 *
 */
-static void RNG_Config(void)
+void RNG_Config(void)
 {
 	uint16_t retry=0;
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE); //开启 RNG 时钟
@@ -289,7 +289,7 @@ static void RNG_Config(void)
 *注意：
 *
 */
-static uint32_t RNG_Get_RandomNum(void)
+uint32_t RNG_Get_RandomNum(void)
 {
 	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET); //等待随机数就绪
 	return RNG_GetRandomNumber();
@@ -312,7 +312,9 @@ status_t ROBOT_Init(void)
 	RNG_Config();
 	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
 	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
+
 	RNG_Cmd(DISABLE);
+
 	//根据随机数给出左右枪的优先级顺序
 	if(leftRand <= 0.5f)
 	{
@@ -373,6 +375,8 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT7].plate = 0;
 	gRobot.autoCommand[PLANT6].plate = 2;
 	gRobot.autoCommand[PLANT3].plate = 1;
+	
+	InitQueue();
 
 	LeftGunInit();
 	RightGunInit();

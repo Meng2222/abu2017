@@ -118,6 +118,9 @@ void CheckCmdQueueState(void);
   */
 uint8_t CheckCmdInQueue(cmd_t checkCmd);
 
+
+void InitQueue(void);
+
 /**
   * @}
   */

@@ -15,10 +15,11 @@
 
 /* Includes -------------------------------------------------------------------------------------------*/
 
+#include "stm32f4xx.h"
 #include "queue.h"
 #include "robot.h"
 #include "usart.h"
-
+#include "stm32f4xx_rng.h"
 /* Private typedef ------------------------------------------------------------------------------------*/
 /* Private define -------------------------------------------------------------------------------------*/
 
@@ -223,6 +224,75 @@ uint8_t CheckCmdInQueue(cmd_t checkCmd)
   * @}
   */
 
+/** @defgroup Init_Queue_Operation
+  * @brief
+  * @{
+  */
+/**
+  * @brief  Init
+  * @note	
+  * @param  
+  * @retval None
+  */
+void InitQueue(void)
+{
+	uint8_t rand0 = 0 , rand1 = 0, rand2 = 0;
+	uint8_t randCmd;
+	
+	RNG_Config();
+	rand0 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
+	rand1 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
+	rand2 = (float)(RNG_Get_RandomNum()/0xffffffff)>0.5f;
+	randCmd = rand1<<1 | rand0;
+	RNG_Cmd(DISABLE);
+	switch(randCmd)
+	{
+		cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
+		case 0:
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			break;
+		case 1:
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			break;
+		case 2:
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			break;
+		default:
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			break;
+	}
+}
 
 
+/**
+  * @}
+  */
 /********************* (C) COPYRIGHT NEU_ACTION_2017 ****************END OF FILE************************/
