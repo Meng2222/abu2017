@@ -307,9 +307,18 @@ void InitQueue(void)
 	cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
 
 	RNG_Config();
-	rand0 = ((float)(RNG_Get_RandomNum()/0xffffffff)>0.5f);
-	rand1 = ((float)(RNG_Get_RandomNum()/0xffffffff)>0.5f);
-	rand2 = ((float)(RNG_Get_RandomNum()/0xffffffff)>0.5f);
+	if((float)(RNG_Get_RandomNum()/0xffffffff)>0.5f)
+	{
+		rand0 = 1;
+	}
+	if((float)(RNG_Get_RandomNum()/0xffffffff)>0.5f)
+	{
+		rand1 = 1;
+	}	
+	if((float)(RNG_Get_RandomNum()/0xffffffff)>0.5f)
+	{
+		rand2 = 1;
+	}
 
 	RNG_Cmd(DISABLE);
 	

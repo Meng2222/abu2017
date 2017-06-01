@@ -693,6 +693,8 @@ void StickPos(float posX,float posY)
 			MoveY(50.0f);
 			OSTimeDly(50);
 			LockWheel();
+			gRobot.launchPosX = gRobot.moveBase.actualXPos;
+			gRobot.launchPosY = gRobot.moveBase.actualYPos;
 			isOutOfRange = MOVEBASE_IN_RANGE;
 		}
 	}

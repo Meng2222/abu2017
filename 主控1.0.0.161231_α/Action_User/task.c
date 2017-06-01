@@ -939,8 +939,6 @@ void WalkTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	int shootPointMsg = MOVEBASE_POS_READY;
-	float launchPosX = 0.0f;
-	float launchPosY = 0.0f;
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
 	uint8_t sendSignal2Camera = 1;
@@ -1185,8 +1183,8 @@ void WalkTask(void)
 				//已经完成向前拱的动作，抱死 此时记录1次当前的x y 坐标
 				if(setLaunchPosFlag == 1)
 				{
-					launchPosX = gRobot.moveBase.actualXPos;
-					launchPosY = gRobot.moveBase.actualYPos;
+					gRobot.launchPosX = gRobot.moveBase.actualXPos;
+					gRobot.launchPosY = gRobot.moveBase.actualYPos;
 					setLaunchPosFlag-=1;
 				}
 				//				CameraInit();
@@ -1203,7 +1201,7 @@ void WalkTask(void)
 			case launch:
 			{
 				//调节保持位置不动 带死区
-				StickPos(launchPosX,launchPosY);
+				StickPos(gRobot.launchPosX,gRobot.launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
 				/*对蓝牙是否断开的检测*/
 				//把检查ble的Flag 置位

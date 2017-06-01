@@ -423,6 +423,9 @@ typedef struct
 	
 	//是否重启
 	unsigned char isReset;
+	//发射点坐标
+	float launchPosX;
+	float launchPosY;
 
 }robot_t;
 
