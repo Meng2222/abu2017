@@ -248,9 +248,9 @@ void SendWatchWholeArena2Camera(void)
 }
 void CameraSelfCheck(void)
 {
-	USART_SendData(USART3, 'c');
-	USART_SendData(USART3, 'h');
-	USART_SendData(USART3, 'e');	
+	USART_SendData(USART3, 'z');
+	USART_SendData(USART3, 'z');
+	USART_SendData(USART3, 'z');	
 }
 void App_Task()
 {
