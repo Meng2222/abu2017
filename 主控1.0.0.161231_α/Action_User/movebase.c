@@ -442,9 +442,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 	/*带死区和限幅的姿态PD调节*/
 	if(fabs(GetAngle())>=0.1f)
 	{
-
-#ifdef BLUE_FIELD
-		if(fabs(velX / maxVelX) < 0.3f)
+		//速度较小时不进行前馈 则接近终点时不前馈
+		if(fabs(velX / maxVelX) < 0.5f)
 		{
 			if(maxVelX > 0)
 			{
@@ -467,33 +466,6 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 					exPoseAngle = 0.0f;
 			}
 		}
-#endif
-#ifdef RED_FIELD
-		if(fabs(velX / maxVelX) < 0.3f)
-		{
-			if(maxVelX < 0)
-			{
-				//在红场 从出发区到装填区 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
-				if(moveState == ACCERLATING)
-					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-				else if(moveState == DECELERATING)
-					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
-				else
-					exPoseAngle = 0.0f;
-			}
-			else
-			{
-				//在红场 从装填区到发射位置 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
-				if(moveState == ACCERLATING)
-					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
-				else if(moveState == DECELERATING)
-					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
-				else
-					exPoseAngle = 0.0f;
-			}
-		}
-#endif
-
 
 		//用的是实际值减去期望值
 		angleAdjust = Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * (GetAngle() - exPoseAngle) + DPOSE * (GetAngle() - angleErr)));
