@@ -1193,6 +1193,7 @@ void UART4_IRQHandler(void)
 						{
 							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum);			
 						}
+						UART5_OUT((uint8_t *)"%d\t%d\t",gRobot.manualCmdQueue.cmdBallState,gRobot.manualCmdQueue.cmdPlateState);
 						msgId = ch;
 	//					CheckCmdQueueState();
 	//					DelTailQueue();
@@ -1227,6 +1228,7 @@ void UART4_IRQHandler(void)
 			case 29:
 				//向平板发送落盘命令状态
 				ch = gRobot.manualCmdQueue.cmdPlateState;
+				UART5_OUT((uint8_t *)"%d\t%d\t",gRobot.manualCmdQueue.cmdBallState,gRobot.manualCmdQueue.cmdPlateState);
 				status = 0;
 				break;
 			default:
