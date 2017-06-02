@@ -1416,7 +1416,7 @@ void LeftGunShootTask(void)
 				gRobot.leftGun.nextStep = 2;
 				gRobot.leftGun.shootParaMode = leftGunShootCommand.shootMethod;
 				//对于7#柱子先到位后再上弹，其它柱子直接瞄准
-				if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT3 )
+				if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT7 )
 				{
 					//获取并更新枪上弹姿态
 					gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[leftGunShootCommand.shootMethod]\
@@ -1636,7 +1636,7 @@ void RightGunShootTask(void)
 				gRobot.rightGun.shootParaMode = rightGunShootCommand.shootMethod;
 
 				//7#柱子需要到上弹姿态后再上弹，其它直接瞄准
-				if(gRobot.rightGun.lastPlant == PLANT7 || rightGunShootCommand.plantNum == PLANT3)
+				if(gRobot.rightGun.lastPlant == PLANT7 || rightGunShootCommand.plantNum == PLANT7)
 				{
 					//获取并更新枪目标姿态  上弹姿态
 					gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[rightGunShootCommand.shootMethod]\
