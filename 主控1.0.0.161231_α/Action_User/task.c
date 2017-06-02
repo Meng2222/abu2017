@@ -135,6 +135,7 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
+	UART5_OUT((uint8_t *)"\t%d\t%d", (int)gyroXErr*10.0f, (int)gyroXErr*10.0f);
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }

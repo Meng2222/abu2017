@@ -28,7 +28,7 @@ extern float gyroAngleErr;
 extern float gyroXErr;
 float GetPosX(void)
 {
-	return (-gRobot.moveBase.actualXPos+amendX - gyroXErr);
+	return (-gRobot.moveBase.actualXPos+amendX);
 }
 
 float GetAngle(void)
