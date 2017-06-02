@@ -1174,7 +1174,7 @@ void WalkTask(void)
 				//通知摄像头开始工作
 				SendStop2Camera();
 				//靠墙一段时间 0.5s 后抱死
-				OSTimeDly(50);
+				OSTimeDly(20);
 				LockWheel();
 				//开始执行发射任务
 				//三枪的任务都有对应的ROBOT_xxxGunCheckShootPoint()函数 等待着邮箱的发送
