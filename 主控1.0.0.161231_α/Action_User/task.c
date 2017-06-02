@@ -936,6 +936,12 @@ void WalkTask(void)
 {
 #define LOAD_AREA_STOP_X 13033.14f
 #define LAUNCH_STOP_X 6500.14f
+	/*供重试时矫正原点的偏移使用*/
+	//此变量记录离开出发区时 在前方的光电不触发时的X方向的坐标
+	float startLeaveX = 0.0f;
+	//记录光电没有出发的次数 10ms 一次
+	uint8_t startLeaveCnt = 0u;
+	
 	//仅在 load 中使用 计时400ms
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
@@ -1040,7 +1046,7 @@ void WalkTask(void)
 #ifdef RED_FIELD
 				MoveTo(-LOAD_AREA_STOP_X, -4200.0f, 2500.0f , 2000.0f);
 
-				//接近装载区时通过光电校正坐标 红场使用右侧光电
+				//接近装载区时通过光电校正坐标 红场使用右侧光电（处于行进方向后方的光电）
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					//为了防止一直进入矫正环节 设置amendFlag 仅矫正1次
@@ -1051,6 +1057,19 @@ void WalkTask(void)
 					}
 					//矫正的那一瞬间蜂鸣器开始响  直到到达目的地停止下来轮子锁死 蜂鸣器灭
 					BEEP_ON;
+				}
+				//离开出发区时通过光电记录坐标为重试时使用 红场使用左侧光电（处于行进方向前方的光电）
+				if(GetPosX() > -500.0f && PHOTOSENSORLEFT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						startLeaveX = GetPosX();
+					}
 				}
 				//到达装弹位置
 				if(GetPosX()<=-LOAD_AREA_STOP_X)
@@ -1065,7 +1084,7 @@ void WalkTask(void)
 				//红蓝场走形对称 实现是一样的
 #ifdef BLUE_FIELD
 				MoveTo(LOAD_AREA_STOP_X, 4200.0f, 2500.0f, 2000.0f);
-				//接近装载区时通过光电校正坐标
+				//接近装载区时通过光电校正坐标 蓝场使用左侧光电（处于行进方向后方的光电）
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -1074,6 +1093,19 @@ void WalkTask(void)
 						amendXFlag = 1;
 					}
 					BEEP_ON;
+				}
+				//离开出发区时通过光电记录坐标为重试时使用 蓝场使用右侧光电（处于行进方向前方的光电）
+				if(GetPosX() < 500.0f && PHOTOSENSORRIGHT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						startLeaveX = GetPosX();
+					}
 				}
 				//到达装弹位置
 				if(GetPosX() >= LOAD_AREA_STOP_X)
