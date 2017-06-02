@@ -365,8 +365,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 	float angleAdjust = 0.0f;
 	static float angleErr = 0.0f;
 	//前馈调节的角度（的大小）
-	#define FEEDFORWARD_COMPENSATION_ANGLE_ACC 0.6f
-	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 2.5f
+	#define FEEDFORWARD_COMPENSATION_ANGLE_ACC 0.8f
+	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 2.25f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
