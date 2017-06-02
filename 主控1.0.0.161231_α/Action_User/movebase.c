@@ -439,7 +439,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
 	}
 
-	/*带死区和限幅的姿态PD调节*/
+	/*带死区和限幅和前馈的姿态PD调节*/
 	if(fabs(GetAngle()) >= 0.1f)
 	{
 		//速度较小时不进行前馈 则接近终点时不前馈
