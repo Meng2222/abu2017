@@ -1950,7 +1950,7 @@ void UpperGunShootTask(void)
 				//更新枪目标位姿
 				gRobot.upperGun.targetPose.pitch = pose.pitch;
 				gRobot.upperGun.targetPose.yaw = pose.yaw;
-				gRobot.upperGun.targetPose.speed1 = 0/*pose.speed1*/;
+				gRobot.upperGun.targetPose.speed1 = pose.speed1;
 
 				//瞄准，此函数最好瞄准完成后再返回 
 				ROBOT_UpperGunAim();
@@ -2021,7 +2021,7 @@ void UpperGunShootTask(void)
 					//更新枪目标位姿
 					gRobot.upperGun.targetPose.pitch = pose.pitch;
 					gRobot.upperGun.targetPose.yaw = pose.yaw;
-					gRobot.upperGun.targetPose.speed1 = 0/*pose.speed1*/;
+					gRobot.upperGun.targetPose.speed1 = pose.speed1;
 
 					//瞄准，此函数最好瞄准完成后再返回 
 					ROBOT_UpperGunAim();
