@@ -1375,14 +1375,14 @@ void WalkTask(void)
 					}
 					else if(startLeaveCnt == 3u)
 					{
-						//Err = 理想-实际
+						//Err = Err = 实际-标准
 						gyroXErr = GetPosX() - startLeaveX;
 					}
 				}
 
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
-				if (GetPosX() <= -LAUNCH_STOP_X)
+				if ((GetPosX() <= -LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr)))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1404,14 +1404,14 @@ void WalkTask(void)
 					}
 					else if(startLeaveCnt == 3u)
 					{
-						//Err = 理想-实际
+						//Err = 实际-标准
 						gyroXErr = GetPosX() - startLeaveX;
 					}
 				}
 				
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
-				if (GetPosX() >= LAUNCH_STOP_X)
+				if (GetPosX() >= LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr)))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
