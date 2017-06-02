@@ -1065,7 +1065,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//离开出发区时通过光电记录坐标为重试时使用 红场使用左侧光电（处于行进方向前方的光电）
-				if(GetPosX() > -500.0f && PHOTOSENSORLEFT)
+				if(GetPosX() > -500.0f && !PHOTOSENSORLEFT)
 				{
 					//有3次没有触发才记录
 					if(startLeaveCnt < 3u)
@@ -1102,7 +1102,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//离开出发区时通过光电记录坐标为重试时使用 蓝场使用右侧光电（处于行进方向前方的光电）
-				if(GetPosX() < 500.0f && PHOTOSENSORRIGHT)
+				if(GetPosX() < 500.0f && !PHOTOSENSORRIGHT)
 				{
 					//有3次没有触发才记录
 					if(startLeaveCnt < 3u)
@@ -1370,7 +1370,7 @@ void WalkTask(void)
 				MoveTo((-LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
 
 				//离开出发区时通过光电矫正X方向坐标 红场使用左侧光电（处于行进方向前方的光电）
-				if(GetPosX() > -500.0f && PHOTOSENSORLEFT)
+				if(GetPosX() > -500.0f && !PHOTOSENSORLEFT)
 				{
 					//有3次没有触发才记录
 					if(startLeaveCnt < 3u)
@@ -1400,7 +1400,7 @@ void WalkTask(void)
 				MoveTo((LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
 				
 				//离开出发区时通过光电矫正X方向坐标 蓝场使用右侧光电（处于行进方向前方的光电）
-				if(GetPosX() < 500.0f && PHOTOSENSORRIGHT)
+				if(GetPosX() < 500.0f && !PHOTOSENSORRIGHT)
 				{
 					//有3次没有触发才记录
 					if(startLeaveCnt < 3u)
