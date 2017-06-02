@@ -439,15 +439,15 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
 	}
 
-	/*带死区和限幅的姿态PD调节*/
-	if(fabs(GetAngle())>=0.1f)
+	/*带死区和限幅和前馈的姿态PD调节*/
+	if(fabs(GetAngle()) >= 0.1f)
 	{
 		//速度较小时不进行前馈 则接近终点时不前馈
-		if(fabs(velX / maxVelX) < 0.5f)
+		if(fabs(velX / maxVelX) > 0.5f)
 		{
-			if(maxVelX > 0)
+			if(maxVelX > 0.0f)
 			{
-				//在蓝场 从出发区到装填区 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+				//2#轮正转时 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
 				if(moveState == ACCERLATING)
 					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
 				else if(moveState == DECELERATING)
@@ -457,7 +457,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 			}
 			else
 			{
-				//在蓝场 从装填区到发射位置 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
+				//2#轮反转时 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
 				if(moveState == ACCERLATING)
 					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
 				else if(moveState == DECELERATING)
