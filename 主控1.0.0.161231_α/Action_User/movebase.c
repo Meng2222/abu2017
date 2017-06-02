@@ -25,9 +25,10 @@ extern robot_t gRobot;
 float moveTimer=0.0f;
 extern float amendX;
 extern float gyroAngleErr;
+extern float gyroXErr;
 float GetPosX(void)
 {
-	return (-gRobot.moveBase.actualXPos+amendX);
+	return (-gRobot.moveBase.actualXPos+amendX - gyroXErr);
 }
 
 float GetAngle(void)
