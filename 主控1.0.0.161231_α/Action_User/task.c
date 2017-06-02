@@ -1074,6 +1074,7 @@ void WalkTask(void)
 					else if(startLeaveCnt == 3u)
 					{
 						startLeaveX = GetPosX();
+						startLeaveCnt++;
 					}
 				}
 				//到达装弹位置
@@ -1110,6 +1111,7 @@ void WalkTask(void)
 					else if(startLeaveCnt == 3u)
 					{
 						startLeaveX = GetPosX();
+						startLeaveX++;
 					}
 				}
 				//到达装弹位置
@@ -1378,6 +1380,7 @@ void WalkTask(void)
 					{
 						//Err = Err = 实际-标准
 						gyroXErr = GetPosX() - startLeaveX;
+						startLeaveCnt++;
 					}
 				}
 
@@ -1407,6 +1410,7 @@ void WalkTask(void)
 					{
 						//Err = 实际-标准
 						gyroXErr = GetPosX() - startLeaveX;
+						startLeaveCnt++;
 					}
 				}
 				
