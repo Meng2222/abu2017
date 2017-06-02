@@ -246,6 +246,12 @@ void SendWatchWholeArena2Camera(void)
 	USART_SendData(USART3, 'e');
 	USART_SendData(USART3, 'p');
 }
+void CameraSelfCheck(void)
+{
+	USART_SendData(USART3, 'z');
+	USART_SendData(USART3, 'z');
+	USART_SendData(USART3, 'z');	
+}
 void App_Task()
 {
 	CPU_INT08U  os_err;
@@ -501,7 +507,8 @@ void ConfigTask(void)
 void SelfCheckTask(void)
 {
 	static int self_circle=0,self_circle_end=3;
-
+	static uint8_t emptyQueueFlag = 1;
+	CameraSelfCheck();
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
@@ -591,127 +598,92 @@ void SelfCheckTask(void)
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
-					LeftPush();TIM_Delayms(TIM5, 500);LeftBack();TIM_Delayms(TIM5, 500);
+					LeftPush();RightPush();TIM_Delayms(TIM5, 500);LeftBack();RightBack();TIM_Delayms(TIM5, 500);
 				}
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
-					RightPush();TIM_Delayms(TIM5, 500);RightBack();TIM_Delayms(TIM5, 500);
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					LeftShoot();TIM_Delayms(TIM5, 500);LeftShootReset();TIM_Delayms(TIM5, 500);
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					RightShoot();TIM_Delayms(TIM5, 500); RightShootReset();TIM_Delayms(TIM5, 500);
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					UpperShoot();TIM_Delayms(TIM5, 500);  UpperShootReset();TIM_Delayms(TIM5, 500);
+					LeftShoot();RightShoot();UpperShoot();
+					TIM_Delayms(TIM5, 500);
+					LeftShootReset();RightShootReset();UpperShootReset();
+					TIM_Delayms(TIM5, 500);
 				}
 
 				/************下枪左*********/
 				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(140.0f));
 				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(140.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//横滚向一侧一定角度
-					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(40.0f));TIM_Delayms(TIM5, 1000);
-					//横滚向另一侧一定角度
-					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);
-
-				}
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//左转一定角度
-					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-					//右转一定角度
-					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
-				}
-
-				PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//俯仰向上一定角度
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);
-					//俯仰向下一定角度
-					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);
-				}
-
-				PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
-
-				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
-				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
-
 				/************下枪右*********/
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(140.0f));
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(140.0f));
-
+				/************上枪*********/
+				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(140.0f));
+				
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//横滚向一侧一定角度
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));TIM_Delayms(TIM5, 1000);
-
+					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(40.0f));
+					//横滚向一侧一定角度
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));					
+					TIM_Delayms(TIM5, 1000);
 					//横滚向另一侧一定角度
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));
+					//横滚向另一侧一定角度
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(0.0f));
+					TIM_Delayms(TIM5, 1000);
+
 				}
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//左转一定角度
-					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(20.0f));
+					//左转一定角度
+					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));
+					//左转一定角度
+					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));
+					TIM_Delayms(TIM5, 1000);					
 					//右转一定角度
-					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));
+					//右转一定角度
+					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(-20.0f));
+					//右转一定角度
+					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(-20.0f));
+					TIM_Delayms(TIM5, 1000);
 				}
 
+				PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(0.0f));
 				PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(0.0f));
+				PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
+				TIM_Delayms(TIM5, 1000);
 
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//俯仰向上一定角度
-					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));TIM_Delayms(TIM5, 1000);
-
+					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(40.0f));
+					//俯仰向上一定角度
+					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(40.0f));
+					//俯仰向上一定角度 起始角度
+					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(20.0f));
+					TIM_Delayms(TIM5, 1000);
 					//俯仰向下一定角度
-					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(10.0f));TIM_Delayms(TIM5, 1000);
+					PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(10.0f));
+					//俯仰向下一定角度
+					PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(10.0f));
+					//俯仰向下一定角度
+					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));
+					TIM_Delayms(TIM5, 1000);
 				}
+
+
+				PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(20.0f));
+				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
+				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
 
 				PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(20.0f));
-
-
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
-				/************上枪*********/
-				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(140.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//左转一定角度
-					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));TIM_Delayms(TIM5, 1000);
-					//右转一定角度
-					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(-20.0f));TIM_Delayms(TIM5, 1000);
-				}
-
-
-				PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
-
-				for(self_circle=0;self_circle<self_circle_end;self_circle++)
-				{
-					//俯仰向上一定角度 起始角度
-					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(20.0f));TIM_Delayms(TIM5, 1000);
-					//俯仰向下一定角度
-					PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));TIM_Delayms(TIM5, 1000);
-				}
 
 				PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(0.0f));
-
-
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 
 				status_check++;
@@ -767,7 +739,11 @@ void SelfCheckTask(void)
 				break;
 			case commicationCheck:
 			//自动模式下，如果收到对端设备发送的命令，则停止自动模式进入自动模式中的手动部分，只指定着陆台，不要参数
-
+				if(emptyQueueFlag==1)
+				{
+					gRobot.manualCmdQueue.headNum = gRobot.manualCmdQueue.tailNum;
+					emptyQueueFlag = 0;
+				}
 				//手自动切换时上弹气缸推到头后收回
 				if(gRobot.leftGun.modeChangeFlag == 1)
 				{
@@ -964,8 +940,6 @@ void WalkTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 	int shootPointMsg = MOVEBASE_POS_READY;
-	float launchPosX = 0.0f;
-	float launchPosY = 0.0f;
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
 	uint8_t sendSignal2Camera = 1;
@@ -989,6 +963,7 @@ void WalkTask(void)
 				if(RESET_SWITCH)
 				{
 					//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
+					gRobot.isReset = ROBOT_RESET;
 					TIM_Delayms(TIM5, 1000);
 					OSSemSet(PeriodSem,0,&os_err);
 				}
@@ -1200,7 +1175,7 @@ void WalkTask(void)
 				//通知摄像头开始工作
 				SendStop2Camera();
 				//靠墙一段时间 0.5s 后抱死
-				OSTimeDly(50);
+				OSTimeDly(20);
 				LockWheel();
 				//开始执行发射任务
 				//三枪的任务都有对应的ROBOT_xxxGunCheckShootPoint()函数 等待着邮箱的发送
@@ -1210,16 +1185,15 @@ void WalkTask(void)
 				//已经完成向前拱的动作，抱死 此时记录1次当前的x y 坐标
 				if(setLaunchPosFlag == 1)
 				{
-					launchPosX = gRobot.moveBase.actualXPos;
-					launchPosY = gRobot.moveBase.actualYPos;
+					gRobot.launchPosX = gRobot.moveBase.actualXPos;
+					gRobot.launchPosY = gRobot.moveBase.actualYPos;
 					setLaunchPosFlag-=1;
 				}
 				//				CameraInit();
 				status = launch;
-				//fix me 注释没写完
+				//如果是从重启进入的 stopRobot 则清除标志位
 				if(gRobot.isReset == ROBOT_RESET)
 				{
-					OSTimeDly(2);
 					gRobot.isReset = ROBOT_NOT_RESET;
 				}
 				OSSemSet(PeriodSem, 0, &os_err);
@@ -1229,7 +1203,7 @@ void WalkTask(void)
 			case launch:
 			{
 				//调节保持位置不动 带死区
-				StickPos(launchPosX,launchPosY);
+				StickPos(gRobot.launchPosX,gRobot.launchPosY);
 				gRobot.isReset = ROBOT_NOT_RESET;
 				/*对蓝牙是否断开的检测*/
 				//把检查ble的Flag 置位
@@ -1244,7 +1218,7 @@ void WalkTask(void)
 					if(sendSignal2Camera == 1)
 					{
 						//向视觉模块发信号，看全场 信息的接收部分再中断中
-						SendWatchWholeArena2Camera();
+//						SendWatchWholeArena2Camera();
 						sendSignal2Camera = 0;
 					}
 					//蓝牙失联时，如果任务队列为空 则按照6631245的顺序打全场
@@ -1343,11 +1317,13 @@ void WalkTask(void)
 			case resetRunToLaunch:
 			{
 #ifdef RED_FIELD
+				
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
+				//由于重试后陀螺仪零漂较严重，矫正角度后也位置也有偏差
 				MoveTo((-6500.14f/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
-				if (GetPosX() <= -6500.14f)
+				if (GetPosX() <= (-6500.14f/cosf(ANGTORAD(gyroAngleErr))))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1360,7 +1336,7 @@ void WalkTask(void)
 				MoveTo((6500.14f/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
-				if (GetPosX() >= 6500.14f)
+				if (GetPosX() >= (6500.14f/cosf(ANGTORAD(gyroAngleErr))))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1423,9 +1399,16 @@ void LeftGunShootTask(void)
 		//自动模式
 		if(ROBOT_GunCheckMode(LEFT_GUN) == GUN_AUTO_MODE)
 		{
+			shoot_command_t leftGunShootCommand;
 			//自获取命令
-//			shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
-			shoot_command_t leftGunShootCommand = ROBOT_LeftGunGetShootCommandFIFO();
+//			if(gRobot.leftGun.shootTimes < LEFT_AUTO_NUMBER)
+//			{
+//				leftGunShootCommand = ROBOT_LeftGunGetShootCommand();
+//			}
+//			else
+//			{
+				leftGunShootCommand = ROBOT_LeftGunGetShootCommandFIFO();
+//			}
 			if(gRobot.leftGun.commandState == GUN_HAVE_COMMAND)
 			{
 				gRobot.leftGun.noCommandTimer = 0;
@@ -1509,13 +1492,13 @@ void LeftGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.leftGun.shootParaMode%2)
 				{
-					gRobot.manualCmdQueue.cmdPlateState&=(~(0x01<<(gRobot.leftGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdPlateState&=(~(uint8_t)(0x01<<(gRobot.leftGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-					gRobot.manualCmdQueue.cmdBallState&=(~(0x01<<(gRobot.leftGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdBallState&=(~(uint8_t)(0x01<<(gRobot.leftGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ballState = COMMAND_DONE;
 				}
@@ -1634,9 +1617,16 @@ void RightGunShootTask(void)
 		//auto mode用在正式比赛中，平板上位机只会发送枪号和柱子号
 		if(ROBOT_GunCheckMode(RIGHT_GUN) == GUN_AUTO_MODE)
 		{
+			shoot_command_t rightGunShootCommand;
 			//获取命令
-//			shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommand();
-			shoot_command_t rightGunShootCommand = ROBOT_RightGunGetShootCommandFIFO();
+//			if(gRobot.rightGun.shootTimes < RIGHT_AUTO_NUMBER)
+//			{
+//				rightGunShootCommand = ROBOT_RightGunGetShootCommand();
+//			}
+//			else
+//			{
+				rightGunShootCommand = ROBOT_RightGunGetShootCommandFIFO();
+//			}
 
 			if(gRobot.rightGun.commandState == GUN_HAVE_COMMAND)
 			{
@@ -1723,13 +1713,13 @@ void RightGunShootTask(void)
 				//对命令状态进行复位
 				if(gRobot.rightGun.shootParaMode%2)
 				{
-					gRobot.manualCmdQueue.cmdPlateState&=(~(0x01<<(gRobot.rightGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdPlateState&=(~((uint8_t)0x01<<(gRobot.rightGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plateState = COMMAND_DONE;
 				}
 				else
 				{
-					gRobot.manualCmdQueue.cmdBallState&=(~(0x01<<(gRobot.rightGun.targetPlant)));
+					gRobot.manualCmdQueue.cmdBallState&=(~((uint8_t)0x01<<(gRobot.rightGun.targetPlant)))&0x7f;
 //					CheckCmdQueueState();
 					gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ballState = COMMAND_DONE;
 				}
@@ -1826,9 +1816,8 @@ void UpperGunShootTask(void)
 			gRobot.upperGun.mode = GUN_DEFEND_MODE;
 		}
 #ifndef NO_WALK_TASK
-
-		//不需要防守时如果7#需要落盘则对7#落盘命令置位
-		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
+		//当蓝牙中断时不需要防守时如果7#需要落盘则对7#落盘命令置位，通信正常时由平板控制7#落盘时机
+		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY && gRobot.isBleOk.noBleFlag == BLE_LOST)
 		{
 			if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 			{
@@ -1849,7 +1838,6 @@ void UpperGunShootTask(void)
 					{
 						uint8_t putPlateFlag = 1;
 						cmd_t selfCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
-						gRobot.upperGun.mode = GUN_ATTACK_MODE;
 						gRobot.plantState[PLANT7].plate = 1;
 						//搜索队列中是否有7#落盘命令
 						if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
@@ -1865,6 +1853,11 @@ void UpperGunShootTask(void)
 									putPlateFlag = 0;
 								}
 							}
+						}
+						//正在执行7#落盘命令时
+						if(gRobot.plantState[PLANT7].plateState == COMMAND_IN_PROCESS)
+						{
+							putPlateFlag = 0;
 						}
 						//如果队列中没有7#落盘命令时在队列中加入7#落盘命令
 						if(putPlateFlag==1)

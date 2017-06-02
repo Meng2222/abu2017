@@ -12,8 +12,7 @@
 #include "app_cfg.h"
 #include "stdlib.h"
 #include "time.h"
-#include "stm32f4xx_rng.h"
-#include "stm32f4xx_rcc.h"
+#include "rng.h"
 robot_t gRobot = {0};
 extern OS_EVENT *OpenSaftyMbox;
 extern OS_EVENT *LeftGunShootPointMbox;
@@ -276,40 +275,6 @@ static void UpperGunInit(void)
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
 }
 /*
-*名称：RNG_Config
-*功能：初始化随机数发生器
-*参数：none
-*注意：
-*
-*/
-static void RNG_Config(void)
-{
-	uint16_t retry=0;
-	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE); //开启 RNG 时钟
-	RNG_Cmd(ENABLE); //使能 RNG
-	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET&&retry<10000)//等待就绪
-	{
-		retry++;
-		delay_us(100);
-	}
-	if(retry>=10000)
-	{
-		UART5_OUT((uint8_t *)"RNG Config ERROR!!\r\n");
-	}
-}
-/*
-*名称：RNG_Get_RandonNum
-*功能：获取随机数
-*参数：void
-*注意：
-*
-*/
-static uint32_t RNG_Get_RandomNum(void)
-{
-	while(RNG_GetFlagStatus(RNG_FLAG_DRDY)==RESET); //等待随机数就绪
-	return RNG_GetRandomNumber();
-}
-/*
 *名称：ROBOT_Init
 *功能：机器人初始化，初始化底盘，初始化枪，初始化
 *参数：none
@@ -324,10 +289,12 @@ status_t ROBOT_Init(void)
 	gRobot.moveBase.targetPoint = 2;
 	gRobot.isReset = ROBOT_NOT_RESET;
 	//产生两个随机数
-	RNG_Config();
-	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
-	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
-	RNG_Cmd(DISABLE);
+//	RNG_Config();
+//	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
+//	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
+
+//	RNG_Cmd(DISABLE);
+
 	//根据随机数给出左右枪的优先级顺序
 	if(leftRand <= 0.5f)
 	{
@@ -386,9 +353,12 @@ status_t ROBOT_Init(void)
 	}
 	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 2;
+	gRobot.autoCommand[PLANT6].plate = 4;
 	gRobot.autoCommand[PLANT3].plate = 1;
 
+#ifdef AUTO_MODE	
+	InitQueue();
+#endif	
 	LeftGunInit();
 	RightGunInit();
 	UpperGunInit();
@@ -413,7 +383,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 
 	#define LEFT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 4;
+	uint8_t searchRange = 2;
 	//防止同一个枪连续执行命令
 	OSTimeDly(1);
 	gRobot.leftGun.commandState = GUN_NO_COMMAND;
@@ -469,7 +439,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -506,7 +476,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 				gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.leftGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -564,7 +534,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 	}
 	else		//有弹
 	{
-		manualCmd = OutCmdQueue();
+		manualCmd = LeftGunOutQueue();
 		if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
 		{
 			gRobot.leftGun.commandState = GUN_NO_COMMAND;		
@@ -593,6 +563,26 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 				}
 			}
 		}
+		
+		//左枪优先打1#、2#;右枪优先打4#、5#
+		if(gRobot.rightGun.commandState == GUN_NO_COMMAND)
+		{
+			if((shootCommand.plantNum == PLANT5)||(shootCommand.plantNum == PLANT4))
+			{
+				manualCmd = ReplaceHeadQueue(manualCmd);
+				if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+				{
+					gRobot.leftGun.commandState = GUN_NO_COMMAND;		
+				}
+				else
+				{
+					shootCommand.plantNum = manualCmd.plantNum;
+					shootCommand.shootMethod = manualCmd.method;
+					gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+				}
+			}
+		}
+		
 		//标记命令开始执行
 		if(shootCommand.shootMethod%2)
 		{
@@ -620,7 +610,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 {
 	#define RIGHT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
-	uint8_t searchRange = 4;
+	uint8_t searchRange = 2;
 	//使同一个枪不连续获得命令
 	OSTimeDly(2);
 	gRobot.rightGun.commandState = GUN_NO_COMMAND;
@@ -668,7 +658,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -704,7 +694,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 				gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
 				if(shootCommand.plantNum == gRobot.rightGun.lastPlant)
 				{
-					continue;
+//					continue;
 				}
 				break;
 			}
@@ -761,7 +751,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 	}
 	else		//有弹
 	{
-		manualCmd = OutCmdQueue();
+		manualCmd = RightGunOutQueue();
 		if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
 		{
 			gRobot.rightGun.commandState = GUN_NO_COMMAND;		
@@ -790,6 +780,26 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 				}
 			}
 		}
+		
+		//左枪优先打1#、2#;右枪优先打4#、5#
+		if(gRobot.leftGun.commandState == GUN_NO_COMMAND)
+		{
+			if((shootCommand.plantNum == PLANT1)||(shootCommand.plantNum == PLANT2))
+			{
+				manualCmd = ReplaceHeadQueue(manualCmd);
+				if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+				{
+					gRobot.rightGun.commandState = GUN_NO_COMMAND;		
+				}
+				else
+				{
+					shootCommand.plantNum = manualCmd.plantNum;
+					shootCommand.shootMethod = manualCmd.method;
+					gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+				}
+			}
+		}
+
 		//标记命令开始执行
 		if(shootCommand.shootMethod%2)
 		{
@@ -817,7 +827,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 5u
+	#define UPPER_AUTO_NUM 7u
 	uint8_t i = 0u;
 	uint8_t searchRange = 3;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};

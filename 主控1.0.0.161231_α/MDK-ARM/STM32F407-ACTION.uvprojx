@@ -459,6 +459,11 @@
               <FileType>1</FileType>
               <FilePath>..\Action_User\queue.c</FilePath>
             </File>
+            <File>
+              <FileName>rng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Action_User\rng.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

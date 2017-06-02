@@ -14,11 +14,10 @@
   */
 
 /* Includes -------------------------------------------------------------------------------------------*/
-
 #include "queue.h"
+#include "rng.h"
 #include "robot.h"
 #include "usart.h"
-
 /* Private typedef ------------------------------------------------------------------------------------*/
 /* Private define -------------------------------------------------------------------------------------*/
 
@@ -129,6 +128,73 @@ cmd_t ReplaceHeadQueue(cmd_t inCmd)
 
 	return outCmd;
 }
+
+/**
+  * @brief  LeftGunOutQueue 
+  * @note	其中 
+  * @param  outCmd2 队列中第二个命令
+  * @retval outCmd
+  */
+cmd_t LeftGunOutQueue(void)
+{
+	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	cmd_t outCmd2 = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+
+	outCmd = OutCmdQueue();
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
+	{
+		return outCmd;
+	}
+	
+	outCmd2 = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum];
+	
+	if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
+	{
+		if((outCmd2.plantNum == PLANT1)||(outCmd2.plantNum == PLANT2))
+		{
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+			return outCmd2;
+		}
+	}
+
+	return outCmd;
+}
+
+/**
+  * @brief  RightGunOutQueue 
+  * @note	其中 
+  * @param  outCmd2 队列中第二个命令
+  * @retval outCmd
+  */
+cmd_t RightGunOutQueue(void)
+{
+	cmd_t outCmd = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	cmd_t outCmd2 = {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+
+	outCmd = OutCmdQueue();
+	//判断是否为空
+	if (gRobot.manualCmdQueue.headNum == gRobot.manualCmdQueue.tailNum)
+	{
+		return outCmd;
+	}
+	
+	outCmd2.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
+	outCmd2.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
+	
+	if((outCmd.plantNum == PLANT1)||(outCmd.plantNum == PLANT2))
+	{
+		if((outCmd2.plantNum == PLANT4)||(outCmd2.plantNum == PLANT5))
+		{
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+			return outCmd2;
+		}
+	}
+
+	return outCmd;
+}
 /**
   * @brief  DelTailQueue 删除队尾
   * @note	删除队尾的同时 还把被删除元素原来的位置复位为了INVALID变量
@@ -141,8 +207,6 @@ void DelTailQueue(void)
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
 	{
 		//删除队尾的同时 还把被删除元素原来的位置复位为了INVALID变量
-		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = INVALID_PLANT_NUMBER;
-		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = INVALID_SHOOT_METHOD;
 		if(gRobot.manualCmdQueue.tailNum != 0)
 		{
 			gRobot.manualCmdQueue.tailNum-=1;
@@ -151,6 +215,9 @@ void DelTailQueue(void)
 		{
 			gRobot.manualCmdQueue.tailNum = CMD_QUEUE_LENGTH - 1;
 		}
+		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = INVALID_PLANT_NUMBER;
+		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = INVALID_SHOOT_METHOD;
+
 		gRobot.manualCmdQueue.elementNum--;
 	}
 
@@ -223,6 +290,95 @@ uint8_t CheckCmdInQueue(cmd_t checkCmd)
   * @}
   */
 
+/** @defgroup Init_Queue_Operation
+  * @brief
+  * @{
+  */
+/**
+  * @brief  Init
+  * @note	
+  * @param  
+  * @retval None
+  */
+void InitQueue(void)
+{
+	uint8_t rand0 = 0 , rand1 = 0, rand2 = 0;
+	uint8_t randCmd;
+	cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
+
+	RNG_Config();
+	
+	rand0 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
+	rand1 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
+	rand2 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
+
+	RNG_Cmd(DISABLE);
+	
+	randCmd = rand1<<1 | rand0;rand2 = rand2;
+
+	switch(randCmd)
+	{
+		case 0:
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);				
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		break;
+		case 1:
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		break;
+		case 2:
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		break;
+		default:
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		break;
+	}
+}
 
 
+/**
+  * @}
+  */
 /********************* (C) COPYRIGHT NEU_ACTION_2017 ****************END OF FILE************************/

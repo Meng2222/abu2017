@@ -118,6 +118,14 @@ void CheckCmdQueueState(void);
   */
 uint8_t CheckCmdInQueue(cmd_t checkCmd);
 
+
+void InitQueue(void);
+
+cmd_t LeftGunOutQueue(void);
+
+cmd_t RightGunOutQueue(void);
+
+
 /**
   * @}
   */

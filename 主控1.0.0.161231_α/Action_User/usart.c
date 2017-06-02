@@ -467,7 +467,8 @@ void UART5_OUT(const uint8_t *Data, ...)
 **********************************************************/
 char *itoa(int value, char *string, int radix)
 {
-    int     i, d;
+    uint32_t i;
+	int d;
     int     flag = 0;
     char    *ptr = string;
 
@@ -494,7 +495,7 @@ char *itoa(int value, char *string, int radix)
         value *= -1;
     }
 
-    for (i = 10000; i > 0; i /= 10)
+    for (i = 100000000; i > 0; i /= 10)
     {
         d = value / i;
 

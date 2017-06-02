@@ -11,6 +11,8 @@
 //#define RED_FIELD
 #define BLUE_FIELD
 
+#define AUTO_MODE
+
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
 
@@ -428,6 +430,9 @@ typedef struct
 	
 	//是否重启
 	unsigned char isReset;
+	//发射点坐标
+	float launchPosX;
+	float launchPosY;
 
 }robot_t;
 

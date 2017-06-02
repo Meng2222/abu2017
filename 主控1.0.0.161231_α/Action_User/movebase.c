@@ -12,20 +12,15 @@
   */
 
 /* Includes -------------------------------------------------------------------*/
-#include "stm32f4xx.h"
-#include "math.h"
-#include "usart.h"
-#include "stdlib.h"
-#include "elmo.h"
-#include "timer.h"
 #include "movebase.h"
-#include "stm32f4xx_usart.h"
-#include "robot.h"
-#include "dma.h"
-#include "gpio.h"
+#include <stdlib.h>
+#include <math.h>
 #include "ucos_ii.h"
+#include "usart.h"
+#include "elmo.h"
+#include "gpio.h"
+#include "robot.h"
 /* Exported functions ---------------------------------------------------------*/
-
 extern robot_t gRobot;
 float moveTimer=0.0f;
 extern float amendX;
@@ -230,6 +225,13 @@ wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
 extern float moveTimer;
 extern uint8_t moveTimFlag;
 
+enum moveState_t
+{
+	ACCERLATING,
+	CONSTANT_SPEED,
+	DECELERATING,
+	STOPPING
+}moveState;
 
 float distDebug = 0.0f;
 float speedDebug = 0.0f;
@@ -271,6 +273,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
 			//注意： 此处计算的是下一个周期的目标速度
 			pExpData->speed = accX * (moveTimer + 0.01f);
+			moveState = ACCERLATING;
 		}
 		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))		/*匀速段*/
 		{
@@ -280,6 +283,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->dist = targetDist - distAcc - fabs(velX) * (moveTimer - timeAcc);
 			//下周期的目标速度
 			pExpData->speed = fabs(velX);
+			moveState = CONSTANT_SPEED;
 		}
 		else if (moveTimer > (timeAcc + timeConst) &&
 			    moveTimer <= (timeAcc + timeConst + timeDec))					/*减速段*/
@@ -288,12 +292,14 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->dist = 0.5f * decX * (pow(timeAcc + timeDec + timeConst - moveTimer, 2));
 			//下周期的目标速度
 			pExpData->speed = decX * (timeAcc + timeDec + timeConst - moveTimer - 0.01f);
+			moveState = DECELERATING;
 		}
 		else if (moveTimer > (timeAcc + timeConst + timeDec))					/*低速匀速准备停车*/
 		{
 			//如果时间超过了计算的整个时间 则 理想位置到达目标位置的距离为0 下周期的目标速度为0
 			pExpData->dist = 0;
 			pExpData->speed = 0;
+			moveState = STOPPING;
 		}
 	}
 
@@ -309,16 +315,19 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
 			pExpData->speed = accX * (moveTimer + 0.01f);
+			moveState = ACCERLATING;
 		}
 		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
 		{
 			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec - moveTimer, 2);
 			pExpData->speed = decX * (timeAcc + timeDec - moveTimer - 0.01f);
+			moveState = DECELERATING;
 		}
 		else if (moveTimer > (timeAcc + timeDec))
 		{
 			pExpData->dist = 0;
 			pExpData->speed = 0;
+			moveState = STOPPING;
 		}
 	}
 
@@ -345,13 +354,18 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
   * @attention
   *         None
   */
-void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
+void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 {
 	float posErr = 0.0f;									//posErr:位置误差
 	float outputSpeed = 0.0f;								//outputSpeed:输出速度
+	float velX = 0.0f;
 	float velY = 0.0f;
+	float exPoseAngle = 0.0f;
 	float angleAdjust = 0.0f;
 	static float angleErr = 0.0f;
+	//前馈调节的角度（的大小）
+	#define FEEDFORWARD_COMPENSATION_ANGLE_ACC 0.6f
+	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 2.5f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
@@ -377,20 +391,17 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 			LockWheel();
 		}
 	}
-	
-	//fix me maybe useless 旧发数机制的遗留
-	if((outputSpeed > 5000.0f) ||(outputSpeed < -5000.0f))
-	{
-		UART5BufPut((uint8_t)(outputSpeed/100.0f));
-	}
 
 	velX = outputSpeed;
-	/*带死区的 使用y方向速度二次导数的二次方根的P调节*/
+	/*带死区以及限幅的 使用y方向速度导数的二次方根的P调节*/
 	//y方向速度的导数 的绝对值 开平方 作P调节
 	velY = sqrtf(gRobot.moveBase.posYSecondDerivative)*PVELY;
-	//y方向速度加大
-	velY += 100.0f;
-	//y方向速度较小时保持一个y方向速度
+	//减速段 y方向速度加大
+	if(moveState == DECELERATING)
+	{
+		velY += 100.0f;
+	}
+	//y方向速度较小时保持一个较小的y方向速度
 	if(velY <= 80.0f)
 	{
 		velY = 30.0f;
@@ -400,7 +411,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 	{
 		velY = 250.0f;
 	}
-	//如果Y方向偏差过大 不调节
+	//如果Y方向向场内偏差过大 不调节
 #ifdef BLUE_FIELD
 	if(gRobot.moveBase.actualYPos > 40.0f)
 	{
@@ -413,9 +424,6 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		velY = 0.0f;
 	}
 #endif
-//暂时未使用
-#define MAXMOVEACC (Vel2Pulse(2000))
-#define PULSE_Y 100
 	speedDebug = velX;
 	distDebug = posErr;
 	if(velX <= 0.0f)
@@ -431,12 +439,36 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX)
 		pSpeedOut->leftWheelSpeed = Vel2Pulse(SeperateVelToThreeMotor(velX , -90.0f).leftWheelSpeed + SeperateVelToThreeMotor(velY , 0.0f).leftWheelSpeed);
 	}
 
-	/*带死区和限幅的姿态PD调节*/
-	if(fabs(GetAngle())>=0.1f)
+	/*带死区和限幅和前馈的姿态PD调节*/
+	if(fabs(GetAngle()) >= 0.1f)
 	{
-		//由于期望值一直为0
-		//并且用的是实际值减去期望值
-		angleAdjust = Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle() + DPOSE * (GetAngle() - angleErr)));
+		//速度较小时不进行前馈 则接近终点时不前馈
+		if(fabs(velX / maxVelX) > 0.5f)
+		{
+			if(maxVelX > 0.0f)
+			{
+				//2#轮正转时 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
+				if(moveState == ACCERLATING)
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+				else if(moveState == DECELERATING)
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+				else
+					exPoseAngle = 0.0f;
+			}
+			else
+			{
+				//2#轮反转时 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
+				if(moveState == ACCERLATING)
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+				else if(moveState == DECELERATING)
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+				else
+					exPoseAngle = 0.0f;
+			}
+		}
+
+		//用的是实际值减去期望值
+		angleAdjust = Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * (GetAngle() - exPoseAngle) + DPOSE * (GetAngle() - angleErr)));
 		if(angleAdjust>ANGLE_ADJUST_LIMIT)
 		{
 			angleAdjust = ANGLE_ADJUST_LIMIT;
@@ -569,7 +601,7 @@ void MoveY(float velY)
 {
 	wheelSpeed_t speedOut = SeperateVelToThreeMotor(fabs(velY) , 0.0f);
 
-	//把 轮速的单位转换到脉冲
+	//把 轮速 的单位转换到脉冲
 	speedOut.backwardWheelSpeed = Vel2Pulse(speedOut.backwardWheelSpeed);
 	speedOut.forwardWheelSpeed = Vel2Pulse(speedOut.forwardWheelSpeed);
 	speedOut.leftWheelSpeed = Vel2Pulse(speedOut.leftWheelSpeed);
@@ -640,6 +672,8 @@ void StickPos(float posX,float posY)
 			MoveY(50.0f);
 			OSTimeDly(50);
 			LockWheel();
+			gRobot.launchPosX = gRobot.moveBase.actualXPos;
+			gRobot.launchPosY = gRobot.moveBase.actualYPos;
 			isOutOfRange = MOVEBASE_IN_RANGE;
 		}
 	}
