@@ -199,9 +199,10 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
-		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.defendData1,(int)gRobot.upperGun.defendData2,\
-		(int) gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.presentDefendZoneId,(int)gRobot.upperGun.lastDefendZoneId,\
+		(int)gRobot.upperGun.defendData1,(int)gRobot.upperGun.defendData2,\
+		(int)gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
 
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
@@ -2033,6 +2034,7 @@ void UpperGunShootTask(void)
 					mainZoneId = ZONE3;
 				}
 				
+				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
 				
 				//获取目标位姿
@@ -2056,6 +2058,7 @@ void UpperGunShootTask(void)
 						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 					{
 						OSTimeDly(70);
+						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					}
 					
 					//发射
@@ -2084,7 +2087,6 @@ void UpperGunShootTask(void)
 				}
 				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
 				{
-					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					continue;
 				}
 				
@@ -2129,6 +2131,7 @@ void UpperGunShootTask(void)
 							gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 						{
 							OSTimeDly(70);
+							gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 						}
 						ROBOT_UpperGunShoot();
 						gRobot.upperGun.shoot = GUN_STOP_SHOOT;
@@ -2137,10 +2140,6 @@ void UpperGunShootTask(void)
 						viceZoneId = INVALID_ZONE_NUMBER;
 						upperGunShootFlag = 0;
 						OSTimeDly(10);
-					}
-					else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
-					{
-						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					}
 				}
 				if (diskNum == threeAndMore)
