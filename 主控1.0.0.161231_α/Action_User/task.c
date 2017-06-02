@@ -944,6 +944,8 @@ void WalkTask(void)
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
 	uint8_t sendSignal2Camera = 1;
+	uint8_t clampSmallOpenFlag = 1;
+	uint8_t clampSmallOpenCounter = 0;
 	//仅在beginToGO1中计时使用
 	uint8_t upperPhotoSensorCounter = 0;
 	OSSemSet(PeriodSem, 0, &os_err);
@@ -1168,6 +1170,24 @@ void WalkTask(void)
 					status = stopRobot;
 				}
 #endif
+				if(KEYSWITCH)
+				{
+					if(clampSmallOpenFlag == 1)
+					{
+						GasValveControl(CLAMP_CLOSE_BOARD_ID , CLAMP_CLOSE_IO_ID , 0);
+						GasValveControl(CLAMP_OPEN_BOARD_ID , CLAMP_OPEN_IO_ID , 1);
+						clampSmallOpenFlag = 0;
+					}
+					if(clampSmallOpenFlag == 0)
+					{
+						clampSmallOpenCounter++;
+					}
+					if(clampSmallOpenCounter > 2)
+					{
+						GasValveControl(CLAMP_CLOSE_BOARD_ID , CLAMP_CLOSE_IO_ID , 1);
+						GasValveControl(CLAMP_OPEN_BOARD_ID , CLAMP_OPEN_IO_ID , 0);						
+					}
+				}
 				break;
 			}
 				//停车
