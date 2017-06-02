@@ -195,9 +195,9 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
-		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.targetZone,(int) gRobot.upperGun.shootParaMode,\
-		(int)gRobot.upperGun.commandState);
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.defendData1,(int)gRobot.upperGun.defendData2,\
+		(int) gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
 
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
 		(int)(gRobot.upperGun.actualPose.yaw*10.0f));
@@ -698,8 +698,9 @@ void SelfCheckTask(void)
 				break;
 			case cameraCheck:
 
-				UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.targetZone);
-
+				UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.defendData1);
+				UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.defendData2);
+			
 				Sendfloat(gRobot.moveBase.actualYPos);
 				if(RESET_SWITCH==1)
 				{
@@ -1886,7 +1887,10 @@ void UpperGunShootTask(void)
 		ROBOT_UpperGunCheckShootPoint();
 #endif
 		//如果接收到防守命令进入防守模式
-		if(gRobot.upperGun.targetZone & 0xff)gRobot.upperGun.mode = GUN_DEFEND_MODE;
+		if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
+		{
+			gRobot.upperGun.mode = GUN_DEFEND_MODE;
+		}
 #ifndef NO_WALK_TASK
 		//当蓝牙中断时不需要防守时如果7#需要落盘则对7#落盘命令置位，通信正常时由平板控制7#落盘时机
 		else if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY && gRobot.isBleOk.noBleFlag == BLE_LOST)
@@ -1897,13 +1901,16 @@ void UpperGunShootTask(void)
 				uint8_t checkGap = 40;
 				while(checkGap--)
 				{
-					if(gRobot.upperGun.targetZone & 0xff)
+					/*等待过程中如果视觉模块告知需要防守 进入防守模式*/
+					if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
 					{
+						gRobot.upperGun.mode = GUN_DEFEND_MODE; //fix me 不一定需要
 						break;
 					}
 					OSTimeDly(5);
 				}
-				if((gRobot.upperGun.targetZone & 0xff )==0)
+				//如果进入防守模式则不补7#
+				if(gRobot.upperGun.defendData1 == 0x00 && gRobot.upperGun.defendData2 == 0x00)
 				{
 					//对7#落盘命令进行置位
 					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
@@ -1913,7 +1920,7 @@ void UpperGunShootTask(void)
 						gRobot.plantState[PLANT7].plate = 1;
 						//搜索队列中是否有7#落盘命令
 						if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
-						{	
+						{
 							for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
 							{
 								uint8_t counter = 0;
@@ -1935,7 +1942,8 @@ void UpperGunShootTask(void)
 						if(putPlateFlag==1)
 						{
 							selfCmd.plantNum = PLANT7;
-							selfCmd.method = SHOOT_METHOD4;							
+							selfCmd.method = SHOOT_METHOD4;
+							//为下枪补7# 入队
 							InCmdQueue(selfCmd);
 						}
 					}
@@ -1951,25 +1959,78 @@ void UpperGunShootTask(void)
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
 		{
-			//fix me,此处应该检查目标区域是否合法
-			if(gRobot.upperGun.targetZone & 0xff) upperGunShootFlag = 1;
+			if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
+			{
+				upperGunShootFlag = 1;
+			}
+			
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;
 				gRobot.upperGun.shootParaMode = SHOOT_METHOD3;
-				int zoneId = INVALID_ZONE_NUMBER;
-				//fix me,此处应该检查着陆台编号是否合法
-				if(gRobot.upperGun.targetZone & 0x01)	  zoneId = ZONE1;
-				else if(gRobot.upperGun.targetZone & 0x02) zoneId = ZONE2;
-				else if(gRobot.upperGun.targetZone & 0x04) zoneId = ZONE3;
-				else if(gRobot.upperGun.targetZone & 0x08) zoneId = ZONE4;
-				else if(gRobot.upperGun.targetZone & 0x10) zoneId = ZONE5;
-				else if(gRobot.upperGun.targetZone & 0x20) zoneId = ZONE6;
-				//fix me,there may be something wrong
-				else									   continue;
-
+				//主副防守区Id
+				int mainZoneId = INVALID_ZONE_NUMBER;
+				int viceZoneId = INVALID_ZONE_NUMBER;
+				
+				//7号台敌方落盘状况枚举：有一个盘，有两个以上的盘
+				typedef enum
+				{
+					//一个盘
+					one,
+					//两个盘
+					two,
+					//三个及以上的盘
+					threeAndMore
+				}DiskNum_t;
+				DiskNum_t diskNum = one;
+				
+				/*判断是 只有一到两个盘 还是 三个及以上的盘*/
+				
+				if (gRobot.upperGun.defendData1 != 0x00 && gRobot.upperGun.defendData2 == 0x00)
+				{	
+					//只有一到两个盘的情况
+					//主防守区
+					//defendData1 取值为1~6
+					if ((gRobot.upperGun.defendData1 & 0x07) >= 0x01 && (gRobot.upperGun.defendData1 & 0x07) <= 0x06)
+					{
+						mainZoneId = (gRobot.upperGun.defendData1 & 0x07) - 0x01;
+					}
+					//如果再次判断时 defendData1 的低三位为0 有可能盘又掉落 
+					else
+					{
+						continue;
+					}
+					/*判断有多少敌方盘*/
+					if (((gRobot.upperGun.defendData1 & 0x38) >> 3u) == 0x00)
+					{
+						diskNum = one;
+					}
+					else if (((gRobot.upperGun.defendData1 & 0x38) >> 0x03) >= 0x01 && 
+						     ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) <= 0x06)
+					{
+						//如果判断敌方有两个盘 副防守区有效
+						//副防守区
+						viceZoneId = ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) - 0x01;
+						diskNum = two;
+					}
+					else
+					{
+						//如果发过来其他值 传输可能错误
+						continue;
+					}
+				}
+				else if (gRobot.upperGun.defendData1 == 0x00 && gRobot.upperGun.defendData2 != 0x00)
+				{
+					//fix me 此处功能需补充
+					diskNum = threeAndMore;
+					//决策器
+					mainZoneId = ZONE3;
+				}
+				
+				gRobot.upperGun.presentDefendZoneId = mainZoneId;
+				
 				//获取目标位姿
-				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][zoneId];
+				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][mainZoneId];
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
 
 				//更新枪目标位姿
@@ -1980,22 +2041,108 @@ void UpperGunShootTask(void)
 				//瞄准，此函数最好瞄准完成后再返回
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
+				
+				//gRobot.upperGun.shoot 在 ROBOT_UpperGunCheckAim() 中置位
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
+					//如果台上敌盘数为2+，且和上次射击位置相同（即无需CheckAim时间较短 ），延时700ms
+					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
+						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
+					{
+						OSTimeDly(70);
+					}
+					
 					//发射
 					ROBOT_UpperGunShoot();
-					//对标志为进行复位
+					//标志位复位
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
-					gRobot.upperGun.targetZone = 0x00;
+					//记录所打区域
+					gRobot.upperGun.lastDefendZoneId = gRobot.upperGun.presentDefendZoneId;
+					
+					//清除defendData对应位
+					if (diskNum == one || diskNum == two)    gRobot.upperGun.defendData1 &= 0xf8;
+					else if (diskNum == threeAndMore)        gRobot.upperGun.defendData2 &= 0x00;
+					
+					mainZoneId = INVALID_ZONE_NUMBER;
 					upperGunShootFlag = 0;
+					
 					if(gRobot.upperGun.isManualDefend == UPPER_MANUAL_DEFEND)
 					{
 						gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
 					}
-					OSTimeDly(90);
+					
+					if (diskNum == one || diskNum == two)
+					{
+						OSTimeDly(10);
+					}
 				}
-				//对标志位进行置位
-				if(gRobot.upperGun.targetZone == 0)
+				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
+				{
+					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					continue;
+				}
+				
+				//分两种情况：7号台一个敌盘，两个及以上敌盘
+				if (diskNum == one)
+				{
+					//如果仅一个盘 等待0.5s 但期间检测是否再落上盘
+					for (int i = 0; i < 10; i++)
+					{
+						if ((gRobot.upperGun.defendData1 & 0x38) != 0x00)
+						{
+							diskNum = two;
+							viceZoneId = ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) - 0x01;
+							break;
+						}
+						OSTimeDly(5);
+					}
+					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+				}
+
+				if (diskNum == two)
+				{
+					//当前防守分区为副防守分区
+					gRobot.upperGun.presentDefendZoneId = viceZoneId;
+					
+					//获取目标位姿
+					pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][viceZoneId];
+					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
+
+					//更新枪目标位姿
+					gRobot.upperGun.targetPose.pitch = pose.pitch;
+					gRobot.upperGun.targetPose.yaw = pose.yaw;
+					gRobot.upperGun.targetPose.speed1 = pose.speed1;
+
+					//瞄准，此函数最好瞄准完成后再返回 
+					ROBOT_UpperGunAim();
+					ROBOT_UpperGunCheckAim();
+					if (gRobot.upperGun.shoot == GUN_START_SHOOT)
+					{
+						//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
+						if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
+							gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
+						{
+							OSTimeDly(70);
+						}
+						ROBOT_UpperGunShoot();
+						gRobot.upperGun.shoot = GUN_STOP_SHOOT;
+						gRobot.upperGun.lastDefendZoneId = gRobot.upperGun.presentDefendZoneId;
+						gRobot.upperGun.defendData1 &= 0xc7;
+						viceZoneId = INVALID_ZONE_NUMBER;
+						upperGunShootFlag = 0;
+						OSTimeDly(10);
+					}
+					else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
+					{
+						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					}
+				}
+				if (diskNum == threeAndMore)
+				{
+					continue;
+				}
+				
+				if(gRobot.upperGun.defendData1 == 0x00 && gRobot.upperGun.defendData2 == 0x00)
 				{
 					upperGunShootFlag = 0;
 				}
@@ -2028,7 +2175,7 @@ void UpperGunShootTask(void)
 				ROBOT_UpperGunAim();
 				//检查是否到位
 				ROBOT_UpperGunCheckAim();
-				if(gRobot.upperGun.targetZone & 0xff)
+				if (gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
 					//执行命令过程中若切到防守模式将命令状态复位

@@ -81,8 +81,13 @@ static void LeftGunInit(void)
 	gRobot.leftGun.shootCommand = (shoot_command_t *)gLeftGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
-	//目标打盘区设置为无效区
-	gRobot.leftGun.targetZone = INVALID_ZONE_NUMBER;
+	//防守区设置为无敌盘
+	gRobot.leftGun.defendData1 = 0x00;
+	gRobot.leftGun.defendData2 = 0x00;
+	//当前打盘区设为无效区
+	gRobot.leftGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
+	//上一打盘区设为无效区
+	gRobot.leftGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 	//射击次数为0
 	gRobot.leftGun.shootTimes = 0;
 	//初始化时命令指向自动命令
@@ -164,8 +169,13 @@ static void RightGunInit(void)
 	gRobot.rightGun.shootCommand = (shoot_command_t *)gRightGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
-	//目标打盘区设置为无效区
-	gRobot.rightGun.targetZone = INVALID_ZONE_NUMBER;
+	//防守区设置为无敌盘
+	gRobot.rightGun.defendData1 = 0x00;
+	gRobot.rightGun.defendData2 = 0x00;
+	//当前打盘区设为无效区
+	gRobot.rightGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
+	//上一打盘区设为无效区
+	gRobot.rightGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 	//射击次数为0
 	gRobot.rightGun.shootTimes = 0;
 	//初始化时命令指向自动命令
@@ -237,8 +247,13 @@ static void UpperGunInit(void)
 	gRobot.upperGun.shootCommand = (shoot_command_t *)gUpperGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.upperGun.targetPlant = INVALID_PLANT_NUMBER;
-	//目标打盘区设置为无效区
-	gRobot.upperGun.targetZone = INVALID_ZONE_NUMBER;
+	//防守区设置为无敌盘
+	gRobot.upperGun.defendData1 = 0x00;
+	gRobot.upperGun.defendData2 = 0x00;
+	//当前打盘区设为无效区
+	gRobot.upperGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
+	//上一打盘区设为无效区
+	gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 	//射击次数为0
 	gRobot.upperGun.shootTimes = 0;
 	//初始化时命令指向自动命令
@@ -338,7 +353,7 @@ status_t ROBOT_Init(void)
 	}
 	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 3;
+	gRobot.autoCommand[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT3].plate = 1;
 
 #ifdef AUTO_MODE	
@@ -812,7 +827,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 6u
+	#define UPPER_AUTO_NUM 3u
 	uint8_t i = 0u;
 	uint8_t searchRange = 3;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
@@ -1997,7 +2012,6 @@ status_t ROBOT_UpperGunCheckAim(void)
 
 	uint8_t checkTimes = 5;
 	int checkTime = 0;
-	uint8_t lastTargetZone = gRobot.upperGun.targetZone;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	if(gRobot.upperGun.targetPlant == PLANT6)
 	{
@@ -2013,14 +2027,17 @@ status_t ROBOT_UpperGunCheckAim(void)
 			//fix me 耦合太高
 			if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
 			{
-				if(gRobot.upperGun.targetZone &0xff)
+				if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
 				{
 					break;
 				}
 			}
 			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 			{
-				if (lastTargetZone != gRobot.upperGun.targetZone)
+				//如果只有一或两个盘 且当前指令在两个指令中都没有 Stop shoot
+				if (gRobot.upperGun.defendData1 != 0 && gRobot.upperGun.defendData2 == 0 &&
+					gRobot.upperGun.presentDefendZoneId != (gRobot.upperGun.defendData1 & 0x07) - 0x01 &&
+					gRobot.upperGun.presentDefendZoneId != ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) - 0x01)
 				{
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					return GUN_NO_READY_ERROR;
@@ -2052,7 +2069,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 
 			break;
 		}
-		checkTime+=(20 - timeout) *5;
+		checkTime += (20 - timeout) *5;
 	}
 	if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
 	{

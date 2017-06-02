@@ -147,8 +147,7 @@ cmd_t LeftGunOutQueue(void)
 		return outCmd;
 	}
 	
-	outCmd2.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
-	outCmd2.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
+	outCmd2 = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum];
 	
 	if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
 	{
@@ -208,8 +207,6 @@ void DelTailQueue(void)
 	if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
 	{
 		//删除队尾的同时 还把被删除元素原来的位置复位为了INVALID变量
-		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = INVALID_PLANT_NUMBER;
-		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = INVALID_SHOOT_METHOD;
 		if(gRobot.manualCmdQueue.tailNum != 0)
 		{
 			gRobot.manualCmdQueue.tailNum-=1;
@@ -218,6 +215,9 @@ void DelTailQueue(void)
 		{
 			gRobot.manualCmdQueue.tailNum = CMD_QUEUE_LENGTH - 1;
 		}
+		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].plantNum = INVALID_PLANT_NUMBER;
+		gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum].method   = INVALID_SHOOT_METHOD;
+
 		gRobot.manualCmdQueue.elementNum--;
 	}
 
@@ -322,12 +322,12 @@ void InitQueue(void)
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);				
+			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-			break;
+		break;
 		case 1:
 			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
@@ -337,7 +337,7 @@ void InitQueue(void)
 			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
 			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-			break;
+		break;
 		case 2:
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
@@ -347,7 +347,7 @@ void InitQueue(void)
 			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-			break;
+		break;
 		default:
 			initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
@@ -357,7 +357,7 @@ void InitQueue(void)
 			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-			break;
+		break;
 	}
 }
 

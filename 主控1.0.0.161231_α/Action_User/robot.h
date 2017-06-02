@@ -222,7 +222,8 @@
 
 //防守台分区数
 #define ZONE_NUMBER 6
-#define INVALID_ZONE_NUMBER 0u
+//不可到达分区
+#define INVALID_ZONE_NUMBER 6u
 //7#着陆台左后侧区域
 #define ZONE1 0u
 //7#着陆台左前区域
@@ -338,8 +339,14 @@ typedef struct
 	shoot_command_t *shootCommand;
 	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
-	//防守台分区，用于上枪打盘
-	int targetZone;
+	//防守台数据，用于上枪打盘收摄像头数据，有两种
+	//defendData1：00+副防守台三位+主防守台三位    defendData2：11+六个台状态6位
+	int defendData1;
+	int defendData2;
+	//当前防守台分区号
+	int presentDefendZoneId;
+	//上一个防守台分区号
+	int lastDefendZoneId;
 	//射击次数
 	int shootTimes;
 	//检查到位使用的时间

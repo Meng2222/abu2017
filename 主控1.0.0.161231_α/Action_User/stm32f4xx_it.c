@@ -783,7 +783,7 @@ void UART4_IRQHandler(void)
 		bleMsg[bleMsgCounter]=ch;
 		if(bleMsgCounter == 11)
 		{
-			UART5_OUT((uint8_t *)"%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			UART5_OUT((uint8_t *)"UART4%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
 			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
 			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
 		}			
@@ -1100,7 +1100,7 @@ void UART4_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.targetZone = 0x01<<(id - 40);
+						gRobot.upperGun.defendData1 = id - 40;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
@@ -1308,8 +1308,11 @@ void USART1_IRQHandler(void)
 {
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
-	static uint8_t msgId1 = 0xff;
 	static uint8_t bleNumCountFlag = 1;
+	static uint8_t cmdFlag = 0;
+	static cmd_t manualCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+	static uint8_t bleMsg[12]={0};
+	static uint8_t bleMsgCounter = 0;
 	static union
 	{
 		uint8_t data8[4];
@@ -1329,7 +1332,15 @@ void USART1_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 		ch = USART_ReceiveData(USART1);
-		USART_SendData(USART1, ch);
+		bleMsg[bleMsgCounter]=ch;
+		if(bleMsgCounter == 11)
+		{
+			UART5_OUT((uint8_t *)"USART1%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
+			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
+		}			
+		bleMsgCounter = (bleMsgCounter + 1)%12;
+
 		if(bleNumCountFlag == 1)
 		{
 			bleUseNum++;
@@ -1340,12 +1351,15 @@ void USART1_IRQHandler(void)
 		{
 			case 0:
 				if (ch == 'A')
-				if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 				{
-					gRobot.isBleOk.bleHeartBeat++;
-					gRobot.isBleOk.noBleFlag = BLE_OK;
+					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
+					{
+						gRobot.isBleOk.bleHeartBeat++;
+						gRobot.isBleOk.noBleFlag = BLE_OK;
+					}
+					cmdFlag = 0;
+					status++;
 				}
-				status++;
 				break;
 			case 1:
 				if (ch == 'C')
@@ -1587,7 +1601,6 @@ void USART1_IRQHandler(void)
 				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
-					cmd_t manualCmd;
 					switch(id/10)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
@@ -1596,9 +1609,14 @@ void USART1_IRQHandler(void)
 //							{
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
-							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD3;
-							InCmdQueue(manualCmd);
+//							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(id - 10)))==0)
+//							{
+								manualCmd.plantNum = id - 10;
+								manualCmd.method = SHOOT_METHOD3;
+								cmdFlag = 1;
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
+//							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
@@ -1613,10 +1631,15 @@ void USART1_IRQHandler(void)
 //									gRobot.plantState[id - 20].plate = 1;
 //								}
 //							}
-							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD4;
-							InCmdQueue(manualCmd);
-							break;
+//							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(id - 20)))==0 || (id - 20 == PLANT6))
+//							{
+								manualCmd.plantNum = id - 20;
+								manualCmd.method = SHOOT_METHOD4;
+								cmdFlag = 1;
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
+//							}
+						break;
 					}
 				}
 				else if(id == 30)
@@ -1629,14 +1652,14 @@ void USART1_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.targetZone = 0x01<<(id - 40);
+						gRobot.upperGun.defendData1 = id - 40;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
 				}
 				else if(id < 60)
 				{
-					if(id == 51)
+					if(id == 50)
 					{
 						gRobot.leftGun.bulletNumber = gRobot.leftGun.shootTimes;
 					}
@@ -1681,8 +1704,12 @@ void USART1_IRQHandler(void)
 					{
 						gRobot.isBleOk.bleHeartBeat++;
 					}
+					status = 22;
 				}
-				status = 0;
+				else
+				{
+					status = 0;
+				}
 				break;
 			case 15:
 				status++;
@@ -1703,11 +1730,58 @@ void USART1_IRQHandler(void)
 				status++;
 				break;
 			case 21:
-				if(msgId1 == ch)
+				if(cmdFlag == 1)
 				{
-					DelTailQueue();
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
+					{
+						UART5_OUT((uint8_t *)"BLE");
+						InCmdQueue(manualCmd);
+						UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
+						gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method);
+						if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method%2)
+						{
+							gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);
+						}
+						else
+						{
+							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);			
+						}
+						msgId = ch;
+	//					CheckCmdQueueState();
+	//					DelTailQueue();
+	//					CheckCmdQueueState();
+					}
 				}
-				msgId1 = ch;
+				status = 0;
+				break;
+			case 22:
+				status++;
+				break;
+			case 23:
+				status++;
+				break;
+			case 24:
+				status++;
+				break;
+			case 25:
+				status++;
+				break;
+			case 26:
+				status++;
+				break;
+			case 27:
+				status++;
+				break;
+			case 28:
+				//向平板发送打球命令状态
+				ch = gRobot.manualCmdQueue.cmdBallState;
+				status++;
+				break;
+			case 29:
+				//向平板发送落盘命令状态
+				ch = gRobot.manualCmdQueue.cmdPlateState;
+				UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdBallState,gRobot.manualCmdQueue.cmdPlateState);
 				status = 0;
 				break;
 			default:
@@ -1715,6 +1789,7 @@ void USART1_IRQHandler(void)
 				id = 0xff;
 				break;
 		}
+		USART_SendData(USART1, ch);
 	 }
 	else
 	{
@@ -1785,8 +1860,11 @@ void USART2_IRQHandler(void)
 {
 	static int	status = 0;
 	static uint8_t id = 0xff ,id2 = 0xff;
-	static uint8_t msgId2 = 0xff;
 	static uint8_t bleNumCountFlag = 1;
+	static uint8_t cmdFlag = 0;
+	static cmd_t manualCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+	static uint8_t bleMsg[12]={0};
+	static uint8_t bleMsgCounter = 0;
 	static union
 	{
 		uint8_t data8[4];
@@ -1806,7 +1884,15 @@ void USART2_IRQHandler(void)
 		uint8_t ch;
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 		ch = USART_ReceiveData(USART2);
-		USART_SendData(USART2, ch);
+		bleMsg[bleMsgCounter]=ch;
+		if(bleMsgCounter == 11)
+		{
+			UART5_OUT((uint8_t *)"USART2%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
+			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
+		}			
+		bleMsgCounter = (bleMsgCounter + 1)%12;
+
 		if(bleNumCountFlag == 1)
 		{
 			bleUseNum++;
@@ -1823,6 +1909,7 @@ void USART2_IRQHandler(void)
 						gRobot.isBleOk.bleHeartBeat++;
 						gRobot.isBleOk.noBleFlag = BLE_OK;
 					}
+					cmdFlag = 0;
 					status++;
 				}
 				break;
@@ -2066,7 +2153,6 @@ void USART2_IRQHandler(void)
 				else if(id < 30)
 				{
 					//此部分为打完第一轮后接收补弹命令
-					cmd_t manualCmd;
 					switch(id/10)
 					{
 						//id 10-16 为打球 ，0 - 6为1 - 7 号柱子
@@ -2075,9 +2161,14 @@ void USART2_IRQHandler(void)
 //							{
 //								gRobot.plantState[id - 10].ball = 1;
 //							}
-							manualCmd.plantNum = id - 10;
-							manualCmd.method = SHOOT_METHOD3;
-							InCmdQueue(manualCmd);
+//							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(id - 10)))==0)
+//							{
+								manualCmd.plantNum = id - 10;
+								manualCmd.method = SHOOT_METHOD3;
+								cmdFlag = 1;
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
+//							}
 							break;
 						//id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 						case 2:
@@ -2092,10 +2183,15 @@ void USART2_IRQHandler(void)
 //									gRobot.plantState[id - 20].plate = 1;
 //								}
 //							}
-							manualCmd.plantNum = id - 20;
-							manualCmd.method = SHOOT_METHOD4;
-							InCmdQueue(manualCmd);
-							break;
+//							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(id - 20)))==0 || (id - 20 == PLANT6))
+//							{
+								manualCmd.plantNum = id - 20;
+								manualCmd.method = SHOOT_METHOD4;
+								cmdFlag = 1;
+//								InCmdQueue(manualCmd);
+//								CheckCmdQueueState();
+//							}
+						break;
 					}
 				}
 				else if(id == 30)
@@ -2108,14 +2204,14 @@ void USART2_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.targetZone = 0x01<<(id - 40);
+						gRobot.upperGun.defendData1 = id - 40;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
 				}
 				else if(id < 60)
 				{
-					if(id == 51)
+					if(id == 50)
 					{
 						gRobot.leftGun.bulletNumber = gRobot.leftGun.shootTimes;
 					}
@@ -2160,8 +2256,12 @@ void USART2_IRQHandler(void)
 					{
 						gRobot.isBleOk.bleHeartBeat++;
 					}
+					status = 22;
 				}
-				status = 0;
+				else
+				{
+					status = 0;
+				}
 				break;
 			case 15:
 				status++;
@@ -2182,11 +2282,58 @@ void USART2_IRQHandler(void)
 				status++;
 				break;
 			case 21:
-				if(msgId2 == ch)
+				if(cmdFlag == 1)
 				{
-					DelTailQueue();
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
+					{
+						UART5_OUT((uint8_t *)"BLE");
+						InCmdQueue(manualCmd);
+						UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
+						gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method);
+						if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method%2)
+						{
+							gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);
+						}
+						else
+						{
+							gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);			
+						}
+						msgId = ch;
+	//					CheckCmdQueueState();
+	//					DelTailQueue();
+	//					CheckCmdQueueState();
+					}
 				}
-				msgId2 = ch;
+				status = 0;
+				break;
+			case 22:
+				status++;
+				break;
+			case 23:
+				status++;
+				break;
+			case 24:
+				status++;
+				break;
+			case 25:
+				status++;
+				break;
+			case 26:
+				status++;
+				break;
+			case 27:
+				status++;
+				break;
+			case 28:
+				//向平板发送打球命令状态
+				ch = gRobot.manualCmdQueue.cmdBallState;
+				status++;
+				break;
+			case 29:
+				//向平板发送落盘命令状态
+				ch = gRobot.manualCmdQueue.cmdPlateState;
+				UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdBallState,gRobot.manualCmdQueue.cmdPlateState);
 				status = 0;
 				break;
 			default:
@@ -2194,6 +2341,7 @@ void USART2_IRQHandler(void)
 				id = 0xff;
 				break;
 		}
+		USART_SendData(USART2, ch);
 	 }
 	else
 	{
@@ -2475,11 +2623,20 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				if(gRobot.isReset != ROBOT_RESET)
 				{
-					if(gRobot.upperGun.shootTimes >= 6)
+					if(gRobot.upperGun.shootTimes >= 3)
 					{
 						if(gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
 						{
-							gRobot.upperGun.targetZone = data;
+							if ((data >> 0x06) == 0x00)
+							{
+								gRobot.upperGun.defendData1 = (data & 0x3f);
+								gRobot.upperGun.defendData2 = 0x00;
+							}
+							else if ((data >> 0x06) == 0x03)
+							{
+								gRobot.upperGun.defendData2 = (data & 0x3f);
+								gRobot.upperGun.defendData1 = 0x00;
+							}
 						}
 						if(data != 0x00)
 						{
@@ -2799,7 +2956,7 @@ void UART5_IRQHandler(void)
 		bleMsg[bleMsgCounter]=ch;
 		if(bleMsgCounter == 11)
 		{
-			UART5_OUT((uint8_t *)"%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			UART5_OUT((uint8_t *)"Wifi%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
 			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
 			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
 		}			
@@ -3112,7 +3269,7 @@ void UART5_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.targetZone = 0x01<<(id - 40);
+						gRobot.upperGun.defendData1 = id - 40;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
