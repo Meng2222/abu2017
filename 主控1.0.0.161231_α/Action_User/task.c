@@ -1976,6 +1976,7 @@ void UpperGunShootTask(void)
 						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 					{
 						OSTimeDly(70);
+						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					}
 					
 					//发射
@@ -2004,7 +2005,6 @@ void UpperGunShootTask(void)
 				}
 				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
 				{
-					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					continue;
 				}
 				
@@ -2049,6 +2049,7 @@ void UpperGunShootTask(void)
 							gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 						{
 							OSTimeDly(70);
+							gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 						}
 						ROBOT_UpperGunShoot();
 						gRobot.upperGun.shoot = GUN_STOP_SHOOT;
@@ -2057,10 +2058,6 @@ void UpperGunShootTask(void)
 						viceZoneId = INVALID_ZONE_NUMBER;
 						upperGunShootFlag = 0;
 						OSTimeDly(10);
-					}
-					else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
-					{
-						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					}
 				}
 				if (diskNum == threeAndMore)
