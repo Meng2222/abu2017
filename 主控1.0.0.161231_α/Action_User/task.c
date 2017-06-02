@@ -1958,11 +1958,11 @@ void UpperGunShootTask(void)
 				
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
-					//如果台上敌盘数为2+，且和上次射击位置相同（即无需CheckAim时间较短 ），延时200ms
+					//如果台上敌盘数为2+，且和上次射击位置相同（即无需CheckAim时间较短 ），延时700ms
 					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 					{
-						OSTimeDly(20);
+						OSTimeDly(70);
 					}
 					
 					//发射
