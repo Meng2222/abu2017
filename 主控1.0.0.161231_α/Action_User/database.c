@@ -101,7 +101,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //2#着陆台
 		 {-10.9f, 16.7f, 16.9f, 3.0f, 111.0f},
 		 //3#着陆台
-		 {2.5f, 22.8f, -0.6f, 5.0f, 110.0f},
+		 {2.0f, 22.3f, 1.9f, 9.0f, 105.0f},
 		 //4#着陆台
 		 {28.9f, 16.0f, 12.8f, 0.0f,117.0f},
 		 //5#着陆台
@@ -132,7 +132,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //2#着陆台
 		 {-10.9f, 16.7f, 16.9f, 3.0f, 111.0f},
 		 //3#着陆台
-		 {2.5f, 22.8f, -0.6f, 5.0f, 110.0f},
+		 {2.0f, 22.3f, 1.9f, 9.0f, 105.0f},
 		 //4#着陆台
 		 {28.9f, 16.0f, 12.8f, 0.0f,117.0f},
 		 //5#着陆台
@@ -175,7 +175,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //2#着陆台
 		 {-27.8f, 14.0f, 15.5f, 115.0f, 7.0f},
 		 //3#着陆台
-		 {-1.0f, 22.8f, 0.9f, 110.0f, 7.0f},
+		 {0.0f, 24.3f, 0.9f, 107.0f, 10.0f},
 		 //4#着陆台
 		 {10.8f,18.4f,20.0f,104.0f,7.0f},
 		 //5#着陆台
@@ -207,7 +207,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 //2#着陆台
 		 {-27.8f, 14.0f, 15.5f, 115.0f, 7.0f},
 		 //3#着陆台
-		 {-1.0f, 22.8f, 0.9f, 110.0f, 7.0f},
+		 {0.0f, 24.3f, 0.9f, 107.0f, 10.0f},
 		 //4#着陆台
 		 {10.8f,18.4f,20.0f,104.0f,7.0f},
 		 //5#着陆台
