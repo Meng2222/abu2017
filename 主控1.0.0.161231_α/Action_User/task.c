@@ -1955,6 +1955,14 @@ void UpperGunShootTask(void)
 				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
 				
+				//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
+				if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
+					gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
+				{
+					OSTimeDly(70);
+					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+				}
+				
 				//获取目标位姿
 				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][mainZoneId];
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
@@ -1971,14 +1979,6 @@ void UpperGunShootTask(void)
 				//gRobot.upperGun.shoot 在 ROBOT_UpperGunCheckAim() 中置位
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
-					//如果台上敌盘数为2+，且和上次射击位置相同（即无需CheckAim时间较短 ），延时700ms
-					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
-						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
-					{
-						OSTimeDly(70);
-						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
-					}
-					
 					//发射
 					ROBOT_UpperGunShoot();
 					//标志位复位
@@ -2030,6 +2030,14 @@ void UpperGunShootTask(void)
 					//当前防守分区为副防守分区
 					gRobot.upperGun.presentDefendZoneId = viceZoneId;
 					
+					//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
+					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
+						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
+					{
+						OSTimeDly(70);
+						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					}
+					
 					//获取目标位姿
 					pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][viceZoneId];
 					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
@@ -2042,15 +2050,9 @@ void UpperGunShootTask(void)
 					//瞄准，此函数最好瞄准完成后再返回 
 					ROBOT_UpperGunAim();
 					ROBOT_UpperGunCheckAim();
+					
 					if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 					{
-						//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
-						if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
-							gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
-						{
-							OSTimeDly(70);
-							gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
-						}
 						ROBOT_UpperGunShoot();
 						gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 						gRobot.upperGun.lastDefendZoneId = gRobot.upperGun.presentDefendZoneId;
