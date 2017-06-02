@@ -22,7 +22,11 @@
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250			//0.25s
+/*重试时记录角度和x y方向 角度的误差*/
 float gyroAngleErr = 0.0f;
+float gyroXErr = 0.0f;
+float gyroYErr = 0.0f;
+
 extern uint8_t receive_data;
 extern uint8_t receiveDataTrust;
 /*
@@ -1174,6 +1178,7 @@ void WalkTask(void)
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 				MoveTo(-LAUNCH_STOP_X, 3000.0f, 2000.0f , 2000.0f);
+
 				//				if (GetPosX() >= -6459.14f)
 				if (GetPosX() >= -LAUNCH_STOP_X)
 				{
@@ -1188,8 +1193,8 @@ void WalkTask(void)
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
 				MoveTo(LAUNCH_STOP_X, -3000.0f, 2000.0f , 2000.0f);
-				//到位后给靠墙速度
 
+				//到位后给靠墙速度
 				//				if (GetPosX() <= 6459.14f)
 				if (GetPosX() <= LAUNCH_STOP_X)
 				{
@@ -1324,16 +1329,21 @@ void WalkTask(void)
 			{
 				//失能电机，中断发射任务
 				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
-				//等待按下重试开关 
+				//清空计数 ResetRunRoLaunch 中将再次使用
+				startLeaveCnt = 0u;
+				/*等待按下重试开关 */
 				if(RESET_SWITCH)
 				{
 					gyroAngleErr = gRobot.moveBase.actualAngle;
+					//Err = 理想-实际
+					gyroYErr = gRobot.moveBase.actualYPos;
 					status = resetConfig;
 				}
 				break;
 			}
 			case resetConfig:
 			{
+				elmo_Init(CAN2);
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 				TIM_Delayms(TIM5,50);
 				setLaunchPosFlag = 1;
@@ -1354,6 +1364,22 @@ void WalkTask(void)
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				//由于重试后陀螺仪零漂较严重，矫正角度后也位置也有偏差
 				MoveTo((-LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
+
+				//离开出发区时通过光电矫正X方向坐标 红场使用左侧光电（处于行进方向前方的光电）
+				if(GetPosX() > -500.0f && PHOTOSENSORLEFT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						//Err = 理想-实际
+						gyroXErr = GetPosX() - startLeaveX;
+					}
+				}
+
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
 				if (GetPosX() <= -LAUNCH_STOP_X)
@@ -1367,6 +1393,22 @@ void WalkTask(void)
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
 				MoveTo((LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
+				
+				//离开出发区时通过光电矫正X方向坐标 蓝场使用右侧光电（处于行进方向前方的光电）
+				if(GetPosX() < 500.0f && PHOTOSENSORRIGHT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						//Err = 理想-实际
+						gyroXErr = GetPosX() - startLeaveX;
+					}
+				}
+				
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
 				if (GetPosX() >= LAUNCH_STOP_X)
