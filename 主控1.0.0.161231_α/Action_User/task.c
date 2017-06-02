@@ -1951,6 +1951,7 @@ void UpperGunShootTask(void)
 					mainZoneId = ZONE3;
 				}
 				
+				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
 				
 				//获取目标位姿
