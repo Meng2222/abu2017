@@ -1825,13 +1825,16 @@ void UpperGunShootTask(void)
 				uint8_t checkGap = 40;
 				while(checkGap--)
 				{
-					if(gRobot.upperGun.defendData1 != 0 || gRobot.upperGun.defendData2 != 0)
+					/*等待过程中如果视觉模块告知需要防守 进入防守模式*/
+					if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
 					{
+						gRobot.upperGun.mode = GUN_DEFEND_MODE; //fix me 不一定需要
 						break;
 					}
 					OSTimeDly(5);
 				}
-				if(gRobot.upperGun.defendData1 == 0 && gRobot.upperGun.defendData2 == 0)
+				//如果进入防守模式则不补7#
+				if(gRobot.upperGun.defendData1 == 0x00 && gRobot.upperGun.defendData2 == 0x00)
 				{
 					//对7#落盘命令进行置位
 					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
@@ -1841,7 +1844,7 @@ void UpperGunShootTask(void)
 						gRobot.plantState[PLANT7].plate = 1;
 						//搜索队列中是否有7#落盘命令
 						if (gRobot.manualCmdQueue.headNum != gRobot.manualCmdQueue.tailNum)
-						{	
+						{
 							for(uint8_t i = gRobot.manualCmdQueue.headNum;i<gRobot.manualCmdQueue.headNum + gRobot.manualCmdQueue.elementNum;i++)
 							{
 								uint8_t counter = 0;
@@ -1863,7 +1866,8 @@ void UpperGunShootTask(void)
 						if(putPlateFlag==1)
 						{
 							selfCmd.plantNum = PLANT7;
-							selfCmd.method = SHOOT_METHOD4;							
+							selfCmd.method = SHOOT_METHOD4;
+							//为下枪补7# 入队
 							InCmdQueue(selfCmd);
 						}
 					}
@@ -1879,7 +1883,6 @@ void UpperGunShootTask(void)
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
 		{
-			//fix me,此处应该检查目标区域是否合法
 			if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
 			{
 				upperGunShootFlag = 1;
@@ -1896,51 +1899,58 @@ void UpperGunShootTask(void)
 				//7号台敌方落盘状况枚举：有一个盘，有两个以上的盘
 				typedef enum
 				{
+					//一个盘
 					one,
+					//两个盘
 					two,
+					//三个及以上的盘
 					threeAndMore
 				}DiskNum_t;
 				DiskNum_t diskNum = one;
 				
+				/*判断是 只有一到两个盘 还是 三个及以上的盘*/
+				
 				if (gRobot.upperGun.defendData1 != 0x00 && gRobot.upperGun.defendData2 == 0x00)
-				{
+				{	
+					//只有一到两个盘的情况
 					//主防守区
-					//fix me,此处应该检查着陆台编号是否合法
+					//defendData1 取值为1~6
 					if ((gRobot.upperGun.defendData1 & 0x07) >= 0x01 && (gRobot.upperGun.defendData1 & 0x07) <= 0x06)
 					{
 						mainZoneId = (gRobot.upperGun.defendData1 & 0x07) - 0x01;
 					}
-					//fix me,there may be something wrong
+					//如果再次判断时 defendData1 的低三位为0 有可能盘又掉落 
 					else
 					{
 						continue;
-					}				
-					//副防守区
-					if (((gRobot.upperGun.defendData1 & 0x38) >> 0x03) == 0x00)
+					}
+					/*判断有多少敌方盘*/
+					if (((gRobot.upperGun.defendData1 & 0x38) >> 3u) == 0x00)
 					{
 						diskNum = one;
 					}
 					else if (((gRobot.upperGun.defendData1 & 0x38) >> 0x03) >= 0x01 && 
 						     ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) <= 0x06)
 					{
+						//如果判断敌方有两个盘 副防守区有效
+						//副防守区
 						viceZoneId = ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) - 0x01;
 						diskNum = two;
 					}
-					//fix me,there may be something wrong
 					else
 					{
+						//如果发过来其他值 传输可能错误
 						continue;
 					}
 				}
 				else if (gRobot.upperGun.defendData1 == 0x00 && gRobot.upperGun.defendData2 != 0x00)
 				{
+					//fix me 此处功能需补充
 					diskNum = threeAndMore;
 					//决策器
 					mainZoneId = ZONE3;
 				}
-
 				
-				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
 				
 				//获取目标位姿
@@ -1952,10 +1962,11 @@ void UpperGunShootTask(void)
 				gRobot.upperGun.targetPose.yaw = pose.yaw;
 				gRobot.upperGun.targetPose.speed1 = pose.speed1;
 
-				//瞄准，此函数最好瞄准完成后再返回 
+				//瞄准，此函数最好瞄准完成后再返回
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
 				
+				//gRobot.upperGun.shoot 在 ROBOT_UpperGunCheckAim() 中置位
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
 					//如果台上敌盘数为2+，且和上次射击位置相同（即无需CheckAim时间较短 ），延时700ms
@@ -1967,10 +1978,12 @@ void UpperGunShootTask(void)
 					
 					//发射
 					ROBOT_UpperGunShoot();
-					//对标志为进行复位
+					//标志位复位
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
+					//记录所打区域
 					gRobot.upperGun.lastDefendZoneId = gRobot.upperGun.presentDefendZoneId;
 					
+					//清除defendData对应位
 					if (diskNum == one || diskNum == two)    gRobot.upperGun.defendData1 &= 0xf8;
 					else if (diskNum == threeAndMore)        gRobot.upperGun.defendData2 &= 0x00;
 					
@@ -1996,6 +2009,7 @@ void UpperGunShootTask(void)
 				//分两种情况：7号台一个敌盘，两个及以上敌盘
 				if (diskNum == one)
 				{
+					//如果仅一个盘 等待0.5s 但期间检测是否再落上盘
 					for (int i = 0; i < 10; i++)
 					{
 						if ((gRobot.upperGun.defendData1 & 0x38) != 0x00)
