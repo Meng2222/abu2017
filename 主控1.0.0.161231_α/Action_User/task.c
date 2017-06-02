@@ -934,6 +934,8 @@ uint8_t moveTimFlag = 0;
 
 void WalkTask(void)
 {
+#define LOAD_AREA_STOP_X 13033.14f
+#define LAUNCH_STOP_X 6500.14f
 	//仅在 load 中使用 计时400ms
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
@@ -1036,7 +1038,7 @@ void WalkTask(void)
 			case goToLoadingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-13033.14f, -4200.0f, 2500.0f , 2000.0f);
+				MoveTo(-LOAD_AREA_STOP_X, -4200.0f, 2500.0f , 2000.0f);
 
 				//接近装载区时通过光电校正坐标 红场使用右侧光电
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
@@ -1051,7 +1053,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//到达装弹位置
-				if(GetPosX()<=-13033.14f)
+				if(GetPosX()<=-LOAD_AREA_STOP_X)
 				{
 					//moveTimFlag 是用来控制是否进行走形计时的 在TIM2 中使用
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
@@ -1062,7 +1064,7 @@ void WalkTask(void)
 #endif
 				//红蓝场走形对称 实现是一样的
 #ifdef BLUE_FIELD
-				MoveTo(13033.14f, 4200.0f, 2500.0f, 2000.0f);
+				MoveTo(LOAD_AREA_STOP_X, 4200.0f, 2500.0f, 2000.0f);
 				//接近装载区时通过光电校正坐标
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
@@ -1074,7 +1076,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//到达装弹位置
-				if(GetPosX()>=13033.14f)
+				if(GetPosX() >= LOAD_AREA_STOP_X)
 				{
 					moveTimFlag = 0;
 					status = load;
@@ -1139,9 +1141,9 @@ void WalkTask(void)
 			{
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
-				MoveTo(-6500.14f, 3000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X, 3000.0f, 2000.0f , 2000.0f);
 				//				if (GetPosX() >= -6459.14f)
-				if (GetPosX() >= -6500.14f)
+				if (GetPosX() >= -LAUNCH_STOP_X)
 				{
 					//翻弹匣的气缸恢复
 					ClampReset();
@@ -1153,11 +1155,11 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
-				MoveTo(6500.14f, -3000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X, -3000.0f, 2000.0f , 2000.0f);
 				//到位后给靠墙速度
 
 				//				if (GetPosX() <= 6459.14f)
-				if (GetPosX() <= 6500.14f)
+				if (GetPosX() <= LAUNCH_STOP_X)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -1319,10 +1321,10 @@ void WalkTask(void)
 				
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				//由于重试后陀螺仪零漂较严重，矫正角度后也位置也有偏差
-				MoveTo((-6500.14f/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
+				MoveTo((-LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
-				if (GetPosX() <= -6500.14f)
+				if (GetPosX() <= -LAUNCH_STOP_X)
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1332,10 +1334,10 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
-				MoveTo((6500.14f/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
+				MoveTo((LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
-				if (GetPosX() >= 6500.14f)
+				if (GetPosX() >= LAUNCH_STOP_X)
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
