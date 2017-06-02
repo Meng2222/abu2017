@@ -338,8 +338,8 @@ status_t ROBOT_Init(void)
 	}
 	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 3;
-	gRobot.autoCommand[PLANT3].plate = 1;
+	gRobot.autoCommand[PLANT6].plate = 4;
+	gRobot.autoCommand[PLANT3].plate = 0;
 
 #ifdef AUTO_MODE	
 	InitQueue();

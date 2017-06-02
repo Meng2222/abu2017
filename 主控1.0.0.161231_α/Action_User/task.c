@@ -1322,7 +1322,7 @@ void WalkTask(void)
 				MoveTo((-6500.14f/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
-				if (GetPosX() <= -6500.14f)
+				if (GetPosX() <= (-6500.14f/cosf(ANGTORAD(gyroAngleErr))))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1335,7 +1335,7 @@ void WalkTask(void)
 				MoveTo((6500.14f/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
-				if (GetPosX() >= 6500.14f)
+				if (GetPosX() >= (6500.14f/cosf(ANGTORAD(gyroAngleErr))))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;

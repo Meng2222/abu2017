@@ -112,7 +112,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {6.0f, 25.4f,6.0f,16.0f,77.0f}},
 		//第二类参数，对应新盘自动落盘参数
 		{//1#着陆台
-		  {-31.2f, 14.2f, 18.7f, 17.0f, 86.0f},
+		  {-32.5f, 14.2f, 18.7f, 17.0f, 86.0f},
 		 //2#着陆台
 		 {-16.5f, 22.4f, 11.1f, 13.0f, 91.0f},
 		 //3#着陆台
@@ -143,7 +143,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {6.0f, 25.4f,6.0f,16.0f,77.0f}},
 		//第四类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		  {-31.7f, 15.7f, 18.7f, 20.0f, 84.0f},
+		  {-32.5f, 15.7f, 18.7f, 20.0f, 84.0f},
 		 //2#着陆台
 		 {-16.5f, 22.4f, 11.1f, 13.0f, 91.0f},
 		 //3#着陆台
@@ -750,7 +750,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球落盘
 		{
-			{0.3f,10.3f,0.0f,109.0f,0.0f},
+			{-0.6f,8.3f,0.0f,126.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -759,7 +759,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{8.0f,20.4f,0.0f,99.0f,0.0f},
+			{6.9f,22.8f,0.0f,104.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -777,7 +777,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第四种参数类型对应补弹打球
 		{
-			{2.3f,10.3f,0.0f,109.0f,0.0f},
+			{-0.6f,8.1f,0.0f,124.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -786,7 +786,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第五种参数类型对应补弹落盘
 		{
-			{10.0f,22.6f,0.0f,96.0f,0.0f},
+			{6.9f,22.8f,0.0f,104.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -894,7 +894,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球
 		{
-			{11.2f,16.0f,0.0f,125.0f,0.0f},
+			{8.7f,12.9f,0.0f,127.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -903,7 +903,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{8.3f,12.0f,0.0f,126.0f,0.0f},
+			{8.7f,12.9f,0.0f,127.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -921,7 +921,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第四种参数类型对应补弹打球
 		{
-			{11.2f,16.0f,0.0f,125.0f,0.0f},
+			{8.7f,12.9f,0.0f,127.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -930,7 +930,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第五种参数类型对应补弹落盘
 		{
-			{7.3f,12.0f,0.0f,125.0f,0.0f},
+			{8.7f,12.9f,0.0f,127.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -942,7 +942,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球同时落盘
 		{
-			{3.0f, 1.4f, 0.0f, 70.0f, 0.0f},
+			{3.0f, 4.0f, 0.0f, 77.0f, 0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
@@ -960,16 +960,16 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第三种参数类型对应打盘
 		{
-			{-5.0f, -4.5f, 0.0f, 130.0f, 0.0f},
-			{-4.2f, -4.8f, 0.0f, 130.0f, 0.0f},
-			{-1.6f, -4.3f, 0.0f, 130.0f, 0.0f},			
-			{1.2f, -4.6f, 0.0f, 130.0f, 0.0f},
-			{2.8f, -4.5f, 0.0f, 130.0f, 0.0f},
-			{3.0f, -4.8f, 0.0f, 130.0f, 0.0f}
+			{-5.0f, -2.7f, 0.0f, 130.0f, 0.0f},
+			{-4.4f, -4.2f, 0.0f, 130.0f, 0.0f},
+			{-1.6f, -3.5f, 0.0f, 130.0f, 0.0f},			
+			{0.0f, -3.7f, 0.0f, 130.0f, 0.0f},
+			{2.8f, -2.9f, 0.0f, 130.0f, 0.0f},
+			{3.0f, -4.0f, 0.0f, 130.0f, 0.0f}
 		},
 		//第四种参数类型对应补弹打球
 		{
-			{0.8f, 1.3f, 0.0f, 114.0f, 0.0f},
+			{3.0f, 4.0f, 0.0f, 75.0f, 0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
