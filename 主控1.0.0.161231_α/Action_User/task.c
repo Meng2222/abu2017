@@ -24,6 +24,9 @@
 #define NO_COMMAND_COUNTER 250			//0.25s
 /*重试时记录角度和x y方向 角度的误差*/
 float gyroAngleErr = 0.0f;
+	//此变量记录离开出发区时 在前方的光电不触发时的X方向的坐标
+	float startLeaveX = 0.0f;
+
 float gyroXErr = 0.0f;
 float gyroYErr = 0.0f;
 
@@ -135,7 +138,7 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
-	UART5_OUT((uint8_t *)"\t%d\t%d", (int)gyroXErr*10.0f, (int)gyroXErr*10.0f);
+	UART5_OUT((uint8_t *)"\t%d\t%d\t%d", (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f, (int)startLeaveX);
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
@@ -943,8 +946,6 @@ void WalkTask(void)
 #define LOAD_AREA_STOP_X 13033.14f
 #define LAUNCH_STOP_X 6500.14f
 	/*供重试时矫正原点的偏移使用*/
-	//此变量记录离开出发区时 在前方的光电不触发时的X方向的坐标
-	float startLeaveX = 0.0f;
 	//记录光电没有出发的次数 10ms 一次
 	uint8_t startLeaveCnt = 0u;
 	
@@ -1102,7 +1103,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//离开出发区时通过光电记录坐标为重试时使用 蓝场使用右侧光电（处于行进方向前方的光电）
-				if(GetPosX() < 500.0f && !PHOTOSENSORRIGHT)
+				if(GetPosX() < 900.0f && !PHOTOSENSORRIGHT)
 				{
 					//有3次没有触发才记录
 					if(startLeaveCnt < 3u)
@@ -1112,7 +1113,7 @@ void WalkTask(void)
 					else if(startLeaveCnt == 3u)
 					{
 						startLeaveX = GetPosX();
-						startLeaveX++;
+						startLeaveCnt++;
 					}
 				}
 				//到达装弹位置
