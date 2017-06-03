@@ -2113,7 +2113,10 @@ void UpperGunShootTask(void)
 						}
 						OSTimeDly(5);
 					}
-					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					if (diskNum == one)
+					{
+						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					}
 				}
 
 				if (diskNum == twoAndMore)
