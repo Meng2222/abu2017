@@ -1,4 +1,4 @@
-#include <includes.h>
+#include "includes.h"
 #include <app_cfg.h>
 #include "robot.h"
 #include "misc.h"
@@ -18,11 +18,20 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250			//0.25s
+/*重试时记录角度和x y方向 角度的误差*/
 float gyroAngleErr = 0.0f;
+	//此变量记录离开出发区时 在前方的光电不触发时的X方向的坐标
+	float startLeaveX = 0.0f;
+	/*供重试时矫正原点的偏移使用*/
+	//记录光电没有出发的次数 10ms 一次
+	uint8_t startLeaveCnt = 0u;
+float gyroXErr = 0.0f;
+float gyroYErr = 0.0f;
+
 extern uint8_t receive_data;
 extern uint8_t receiveDataTrust;
 /*
@@ -131,6 +140,7 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
+	UART5_OUT((uint8_t *)"X\t%d\t%d\t%d\t%d\t%d\t%d",(int)PHOTOSENSORLEFT, (int)PHOTOSENSORRIGHT, (int)startLeaveX, (int)startLeaveCnt, (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f);
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
@@ -481,7 +491,7 @@ void ConfigTask(void)
 #ifndef NO_WALK_TASK
 //	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 #endif
-	OSTaskSuspend(DEBUG_TASK_PRIO);
+//	OSTaskSuspend(DEBUG_TASK_PRIO);
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
@@ -936,6 +946,10 @@ uint8_t moveTimFlag = 0;
 
 void WalkTask(void)
 {
+#define LOAD_AREA_STOP_X 13033.14f
+#define LAUNCH_STOP_X 6500.14f
+
+	
 	//仅在 load 中使用 计时400ms
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
@@ -1044,9 +1058,9 @@ void WalkTask(void)
 			case goToLoadingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-13033.14f, -4200.0f, 2500.0f , 2000.0f);
+				MoveTo(-LOAD_AREA_STOP_X, -4200.0f, 2500.0f , 2000.0f);
 
-				//接近装载区时通过光电校正坐标 红场使用右侧光电
+				//接近装载区时通过光电校正坐标 红场使用右侧光电（处于行进方向后方的光电）
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
 				{
 					//为了防止一直进入矫正环节 设置amendFlag 仅矫正1次
@@ -1058,8 +1072,22 @@ void WalkTask(void)
 					//矫正的那一瞬间蜂鸣器开始响  直到到达目的地停止下来轮子锁死 蜂鸣器灭
 					BEEP_ON;
 				}
+				//离开出发区时通过光电记录坐标为重试时使用 红场使用左侧光电（处于行进方向前方的光电）
+				if(GetPosX() > -500.0f && !PHOTOSENSORLEFT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						startLeaveX = GetPosX();
+						startLeaveCnt++;
+					}
+				}
 				//到达装弹位置
-				if(GetPosX()<=-13033.14f)
+				if(GetPosX()<=-LOAD_AREA_STOP_X)
 				{
 					//moveTimFlag 是用来控制是否进行走形计时的 在TIM2 中使用
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
@@ -1070,8 +1098,8 @@ void WalkTask(void)
 #endif
 				//红蓝场走形对称 实现是一样的
 #ifdef BLUE_FIELD
-				MoveTo(13033.14f, 4200.0f, 2500.0f, 2000.0f);
-				//接近装载区时通过光电校正坐标
+				MoveTo(LOAD_AREA_STOP_X, 4200.0f, 2500.0f, 2000.0f);
+				//接近装载区时通过光电校正坐标 蓝场使用左侧光电（处于行进方向后方的光电）
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
 					if (amendXFlag == 0)
@@ -1081,8 +1109,22 @@ void WalkTask(void)
 					}
 					BEEP_ON;
 				}
+				//离开出发区时通过光电记录坐标为重试时使用 蓝场使用右侧光电（处于行进方向前方的光电）
+				if(GetPosX() < 900.0f && !PHOTOSENSORRIGHT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						startLeaveX = GetPosX();
+						startLeaveCnt++;
+					}
+				}
 				//到达装弹位置
-				if(GetPosX()>=13033.14f)
+				if(GetPosX() >= LOAD_AREA_STOP_X)
 				{
 					moveTimFlag = 0;
 					status = load;
@@ -1147,9 +1189,10 @@ void WalkTask(void)
 			{
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
-				MoveTo(-6500.14f, 3000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X, 3000.0f, 2000.0f , 2000.0f);
+
 				//				if (GetPosX() >= -6459.14f)
-				if (GetPosX() >= -6500.14f)
+				if (GetPosX() >= -LAUNCH_STOP_X)
 				{
 					//翻弹匣的气缸恢复
 					ClampReset();
@@ -1161,11 +1204,11 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
-				MoveTo(6500.14f, -3000.0f, 2000.0f , 2000.0f);
-				//到位后给靠墙速度
+				MoveTo(LAUNCH_STOP_X, -3000.0f, 2000.0f , 2000.0f);
 
+				//到位后给靠墙速度
 				//				if (GetPosX() <= 6459.14f)
-				if (GetPosX() <= 6500.14f)
+				if (GetPosX() <= LAUNCH_STOP_X)
 				{
 					ClampReset();
 					MoveY(50.0f);
@@ -1314,16 +1357,21 @@ void WalkTask(void)
 			/*重试*/
 			case reset:
 			{
-				//等待按下重试开关 
+				//清空计数 ResetRunRoLaunch 中将再次使用
+				startLeaveCnt = 0u;
+				/*等待按下重试开关 */
 				if(RESET_SWITCH)
 				{
 					gyroAngleErr = gRobot.moveBase.actualAngle;
+					//Err = 理想-实际
+					gyroYErr = gRobot.moveBase.actualYPos;
 					status = resetConfig;
 				}
 				break;
 			}
 			case resetConfig:
 			{
+				elmo_Init(CAN2);
 				elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 				TIM_Delayms(TIM5,50);
 				setLaunchPosFlag = 1;
@@ -1343,10 +1391,27 @@ void WalkTask(void)
 				
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				//由于重试后陀螺仪零漂较严重，矫正角度后也位置也有偏差
-				MoveTo((-6500.14f/cosf(ANGTORAD(gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
+				MoveTo((-LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr))), -3000.0f, 2000.0f, 2000.0f);
+
+				//离开出发区时通过光电矫正X方向坐标 红场使用左侧光电（处于行进方向前方的光电）
+				if(GetPosX() > -500.0f && !PHOTOSENSORLEFT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						//Err = Err = 实际-标准
+						gyroXErr = GetPosX() - startLeaveX;
+						startLeaveCnt++;
+					}
+				}
+
 				//到位后给靠墙速度
 				//				if (GetPosX() <= -6459.14f)
-				if (GetPosX() <= (-6500.14f/cosf(ANGTORAD(gyroAngleErr))))
+				if ((GetPosX() <= -LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr)))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1356,10 +1421,27 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
-				MoveTo((6500.14f/cosf(ANGTORAD(gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
+				MoveTo((LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr))), 3000.0f, 2000.0f, 2000.0f);
+				
+				//离开出发区时通过光电矫正X方向坐标 蓝场使用右侧光电（处于行进方向前方的光电）
+				if(GetPosX() < 500.0f && !PHOTOSENSORRIGHT)
+				{
+					//有3次没有触发才记录
+					if(startLeaveCnt < 3u)
+					{
+						startLeaveCnt++;
+					}
+					else if(startLeaveCnt == 3u)
+					{
+						//Err = 实际-标准
+						gyroXErr = GetPosX() - startLeaveX;
+						startLeaveCnt++;
+					}
+				}
+				
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
-				if (GetPosX() >= (6500.14f/cosf(ANGTORAD(gyroAngleErr))))
+				if (GetPosX() >= LAUNCH_STOP_X/cosf(ANGTORAD(gyroAngleErr)) + gyroYErr * tan(ANGTORAD(-gyroAngleErr)))
 				{
 					MoveY(50.0f);
 					moveTimFlag = 0;
@@ -1936,6 +2018,7 @@ void UpperGunShootTask(void)
 				}
 				else
 				{
+					OSTimeDly(2);
 					continue;
 				}
 				//副防守区
@@ -1951,6 +2034,7 @@ void UpperGunShootTask(void)
 				else
 				{
 					//如果发过来其他值 传输可能错误
+					OSTimeDly(2);
 					continue;
 				}
 				
@@ -2003,6 +2087,8 @@ void UpperGunShootTask(void)
 				}
 				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
 				{
+					//防止不断进入循环占用大量CPU
+					OSTimeDly(2);
 					continue;
 				}
 				
@@ -2065,7 +2151,6 @@ void UpperGunShootTask(void)
 				{
 					upperGunShootFlag = 0;
 				}
-				UpperGunSendDebugInfo();
 			}
 			else
 			{
@@ -2163,6 +2248,7 @@ void UpperGunShootTask(void)
 				UART5_OUT((uint8_t *)"Upper Gun Mode Error!!!!!!!!!\r\n");
 			}
 		}
+		UpperGunSendDebugInfo();
 	}
 }
 void DebugTask(void)
@@ -2173,6 +2259,7 @@ void DebugTask(void)
 	while(1)
 	{
 		OSSemPend(DebugPeriodSem, 0, &os_err);
+		UART5_OUT((uint8_t *)"CPU%d\r\n", OSCPUUsage);
 		//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		//			OSTimeDly(10);
 		//			GPIO_SetBits(GPIOE, GPIO_Pin_2);

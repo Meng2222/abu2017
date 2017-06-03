@@ -1730,7 +1730,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 			}
 		}
 		OSTimeDly(LEFT_SAMPLIING_PERIOD);
-		LeftGunSendDebugInfo();
+		//减少了发送的数据
+//		LeftGunSendDebugInfo();
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 		if(gRobot.leftGun.actualPose.pitch > gRobot.leftGun.targetPose.pitch + 0.5f ||\
 			gRobot.leftGun.actualPose.pitch < gRobot.leftGun.targetPose.pitch - 0.5f)
@@ -1894,7 +1895,8 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 			}
 		}
 		OSTimeDly(RIGHT_SAMPLIING_PERIOD);
-		RightGunSendDebugInfo();
+		//减少了发送的数据
+//		RightGunSendDebugInfo();
 		//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 		if(gRobot.rightGun.actualPose.pitch > gRobot.rightGun.targetPose.pitch + 0.5f ||\
 			gRobot.rightGun.actualPose.pitch < gRobot.rightGun.targetPose.pitch - 0.5f)
@@ -2048,7 +2050,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			ReadActualPos(CAN1, UPPER_GUN_GROUP_ID);
 			ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-			UpperGunSendDebugInfo();
+			//减少了瞄准时发送的数据
+//			UpperGunSendDebugInfo();
 
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f ||\
