@@ -1410,6 +1410,7 @@ status_t ROBOT_LeftGunReload(void)
 		if(gRobot.leftGun.lastPlant == PLANT7)
 		{
 			LeftPush();
+			OSTimeDly(6);
 		}
 		if(gRobot.leftGun.shootTimes == 0)
 		{
@@ -1455,6 +1456,7 @@ status_t ROBOT_RightGunReload(void)
 		if(gRobot.rightGun.lastPlant ==PLANT7)
 		{
 			RightPush();
+			OSTimeDly(6);
 		}
 		if(gRobot.rightGun.shootTimes == 0)
 		{
