@@ -198,6 +198,7 @@
 #define PLANT6 5
 #define PLANT7 6
 
+
 //发射参数模式，对应打球和落盘
 #define INVALID_SHOOT_METHOD 8
 //打球模式
@@ -236,6 +237,9 @@
 #define ZONE5 4u
 //7#着陆台右前区域
 #define ZONE6 5u
+
+//防守台没有敌盘
+#define NO_ENEMY_DISK 0x00
 
 //7#需要落盘
 #define SELF_EMPTY 1
@@ -339,10 +343,9 @@ typedef struct
 	shoot_command_t *shootCommand;
 	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
-	//防守台数据，用于上枪打盘收摄像头数据，有两种
-	//defendData1：00+副防守台三位+主防守台三位    defendData2：11+六个台状态6位
-	int defendData1;
-	int defendData2;
+	//防守台分区，用于上枪打盘收摄像头数据,包括先后落上的两个盘
+	int defendZone1;
+	int defendZone2;
 	//当前防守台分区号
 	int presentDefendZoneId;
 	//上一个防守台分区号

@@ -81,9 +81,9 @@ static void LeftGunInit(void)
 	gRobot.leftGun.shootCommand = (shoot_command_t *)gLeftGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
-	//防守区设置为无敌盘
-	gRobot.leftGun.defendData1 = 0x00;
-	gRobot.leftGun.defendData2 = 0x00;
+	//防守区设置为无敌方盘
+	gRobot.leftGun.defendZone1 = 0x00;
+	gRobot.leftGun.defendZone2 = 0x00;
 	//当前打盘区设为无效区
 	gRobot.leftGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
 	//上一打盘区设为无效区
@@ -169,9 +169,9 @@ static void RightGunInit(void)
 	gRobot.rightGun.shootCommand = (shoot_command_t *)gRightGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
-	//防守区设置为无敌盘
-	gRobot.rightGun.defendData1 = 0x00;
-	gRobot.rightGun.defendData2 = 0x00;
+	//防守区设置为无敌方盘
+	gRobot.rightGun.defendZone1 = 0x00;
+	gRobot.rightGun.defendZone2 = 0x00;
 	//当前打盘区设为无效区
 	gRobot.rightGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
 	//上一打盘区设为无效区
@@ -247,9 +247,9 @@ static void UpperGunInit(void)
 	gRobot.upperGun.shootCommand = (shoot_command_t *)gUpperGunShootCmds;
 	//目标着陆台设置为无效台
 	gRobot.upperGun.targetPlant = INVALID_PLANT_NUMBER;
-	//防守区设置为无敌盘
-	gRobot.upperGun.defendData1 = 0x00;
-	gRobot.upperGun.defendData2 = 0x00;
+	//防守区设置为无敌方盘
+	gRobot.upperGun.defendZone1 = 0x00;
+	gRobot.upperGun.defendZone2 = 0x00;
 	//当前打盘区设为无效区
 	gRobot.upperGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
 	//上一打盘区设为无效区
@@ -2027,17 +2027,15 @@ status_t ROBOT_UpperGunCheckAim(void)
 			//fix me 耦合太高
 			if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
 			{
-				if(gRobot.upperGun.defendData1 != 0x00 || gRobot.upperGun.defendData2 != 0x00)
+				if(gRobot.upperGun.defendZone1 & 0x0f)
 				{
 					break;
 				}
 			}
 			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 			{
-				//如果只有一或两个盘 且当前指令在两个指令中都没有 Stop shoot
-				if (gRobot.upperGun.defendData2 == 0 &&
-					gRobot.upperGun.presentDefendZoneId != (gRobot.upperGun.defendData1 & 0x07) - 0x01 &&
-					gRobot.upperGun.presentDefendZoneId != ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) - 0x01)
+				if (gRobot.upperGun.presentDefendZoneId != gRobot.upperGun.defendZone1 - 0x01 &&
+					gRobot.upperGun.presentDefendZoneId != gRobot.upperGun.defendZone2 - 0x01)
 				{
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					return GUN_NO_READY_ERROR;
