@@ -977,6 +977,8 @@ void WalkTask(void)
 		{
 			if(gRobot.isReset == ROBOT_RESET||RESET_SWITCH)
 			{
+				//失能电机，中断发射任务
+				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				if(RESET_SWITCH)
 				{
 					elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
@@ -1354,8 +1356,6 @@ void WalkTask(void)
 			/*重试*/
 			case reset:
 			{
-				//失能电机，中断发射任务
-				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				//清空计数 ResetRunRoLaunch 中将再次使用
 				startLeaveCnt = 0u;
 				/*等待按下重试开关 */
