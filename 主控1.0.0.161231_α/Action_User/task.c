@@ -963,11 +963,15 @@ void WalkTask(void)
 		{
 			if(gRobot.isReset == ROBOT_RESET||RESET_SWITCH)
 			{
+				//失能电机，中断发射任务
+				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				if(RESET_SWITCH)
 				{
 					//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
 					gRobot.isReset = ROBOT_RESET;
+					BEEP_ON;
 					TIM_Delayms(TIM5, 1000);
+					BEEP_OFF;
 					OSSemSet(PeriodSem,0,&os_err);
 				}
 				status = reset;
@@ -1310,8 +1314,6 @@ void WalkTask(void)
 			/*重试*/
 			case reset:
 			{
-				//失能电机，中断发射任务
-				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 				//等待按下重试开关 
 				if(RESET_SWITCH)
 				{
