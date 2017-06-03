@@ -491,7 +491,7 @@ void ConfigTask(void)
 #ifndef NO_WALK_TASK
 //	OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
 #endif
-	OSTaskSuspend(DEBUG_TASK_PRIO);
+//	OSTaskSuspend(DEBUG_TASK_PRIO);
 	OSTaskSuspend(OS_PRIO_SELF);
 }
 
@@ -2282,6 +2282,7 @@ void DebugTask(void)
 	while(1)
 	{
 		OSSemPend(DebugPeriodSem, 0, &os_err);
+		UART5_OUT((uint8_t *)"\r\nCPU%d\r\n", OSCPUUsage);
 		//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		//			OSTimeDly(10);
 		//			GPIO_SetBits(GPIOE, GPIO_Pin_2);
