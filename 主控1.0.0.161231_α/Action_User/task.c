@@ -984,7 +984,9 @@ void WalkTask(void)
 					elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 					//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
 					gRobot.isReset = ROBOT_RESET;
+					BEEP_ON;
 					TIM_Delayms(TIM5, 1000);
+					BEEP_OFF;
 					OSSemSet(PeriodSem,0,&os_err);
 				}
 				status = reset;
@@ -1978,7 +1980,6 @@ void UpperGunShootTask(void)
 				else
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
-					OSTimeDly(1);
 				}
 			}
 		}
@@ -2087,6 +2088,7 @@ void UpperGunShootTask(void)
 				}
 				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
 				{
+					//防止不断进入循环占用大量CPU
 					OSTimeDly(2);
 					continue;
 				}
@@ -2258,7 +2260,7 @@ void DebugTask(void)
 	while(1)
 	{
 		OSSemPend(DebugPeriodSem, 0, &os_err);
-		UART5_OUT((uint8_t *)"\r\nCPU%d\r\n", OSCPUUsage);
+		UART5_OUT((uint8_t *)"CPU%d\r\n", OSCPUUsage);
 		//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		//			OSTimeDly(10);
 		//			GPIO_SetBits(GPIOE, GPIO_Pin_2);
