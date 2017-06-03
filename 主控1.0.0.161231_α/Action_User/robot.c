@@ -2049,7 +2049,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 			ReadActualPos(CAN1, UPPER_GUN_GROUP_ID);
 			ReadActualVel(CAN1, UPPER_GUN_VEL_GROUP_ID);
 			OSTimeDly(5);
-			UpperGunSendDebugInfo();
+			//减少了瞄准时发送的数据
+//			UpperGunSendDebugInfo();
 
 			//fix me,检查枪位姿是否到位，后面需要在枪结构体中增加可容忍误差，然后封装成函数检测
 			if(gRobot.upperGun.actualPose.pitch > gRobot.upperGun.targetPose.pitch + 0.5f ||\

@@ -26,7 +26,9 @@
 float gyroAngleErr = 0.0f;
 	//此变量记录离开出发区时 在前方的光电不触发时的X方向的坐标
 	float startLeaveX = 0.0f;
-
+	/*供重试时矫正原点的偏移使用*/
+	//记录光电没有出发的次数 10ms 一次
+	uint8_t startLeaveCnt = 0u;
 float gyroXErr = 0.0f;
 float gyroYErr = 0.0f;
 
@@ -138,7 +140,7 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
-	UART5_OUT((uint8_t *)"\t%d\t%d\t%d", (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f, (int)startLeaveX);
+	UART5_OUT((uint8_t *)"\t%d\t%d\t%d\t%d", (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f, (int)startLeaveX, (int)startLeaveCnt);
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
@@ -946,9 +948,7 @@ void WalkTask(void)
 {
 #define LOAD_AREA_STOP_X 13033.14f
 #define LAUNCH_STOP_X 6500.14f
-	/*供重试时矫正原点的偏移使用*/
-	//记录光电没有出发的次数 10ms 一次
-	uint8_t startLeaveCnt = 0u;
+
 	
 	//仅在 load 中使用 计时400ms
 	static uint16_t timeCounter = 0;
