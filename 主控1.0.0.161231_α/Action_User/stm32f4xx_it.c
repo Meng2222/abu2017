@@ -1100,7 +1100,7 @@ void UART4_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.defendZone1 = id - 40;
+						gRobot.upperGun.defendZone1 = id - 40 + 1;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
@@ -1652,7 +1652,7 @@ void USART1_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.defendZone1 = id - 40;
+						gRobot.upperGun.defendZone1 = id - 40 + 1;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
@@ -2204,7 +2204,7 @@ void USART2_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.defendZone1 = id - 40;
+						gRobot.upperGun.defendZone1 = id - 40 + 1;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}
@@ -3264,7 +3264,7 @@ void UART5_IRQHandler(void)
 					//40~45对应6个防守分区
 					if(id >= 40)
 					{
-						gRobot.upperGun.defendZone1 = id - 40;
+						gRobot.upperGun.defendZone1 = id - 40 + 1;
 						gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
 						OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 					}

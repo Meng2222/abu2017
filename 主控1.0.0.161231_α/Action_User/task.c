@@ -140,7 +140,8 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
-	UART5_OUT((uint8_t *)"X\t%d\t%d\t%d\t%d\t%d\t%d",(int)PHOTOSENSORLEFT, (int)PHOTOSENSORRIGHT, (int)startLeaveX, (int)startLeaveCnt, (int)(gyroXErr*10u), (int)(gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f));
+
+	UART5_OUT((uint8_t *)"X\t%d\t%d\t%d\t%d\t%d\t%d",(int)PHOTOSENSORLEFT, (int)PHOTOSENSORRIGHT, (int)startLeaveX, (int)startLeaveCnt, (int)(gyroXErr*10.0f), (int)(gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f));
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
@@ -164,7 +165,7 @@ void LeftGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.leftGun.targetPose.speed2),\
 		(int)(gRobot.leftGun.actualPose.speed2));
 
-	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust,\
+	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)gRobot.upperGun.defendZone1,(int)gRobot.upperGun.defendZone2,\
 		(int)(gRobot.leftGun.gunCommand == (plant_t *)gRobot.plantState));
 
 
@@ -192,7 +193,7 @@ void RightGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.rightGun.targetPose.speed2),\
 		(int)(gRobot.rightGun.actualPose.speed2));
 
-	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)receive_data, (int)receiveDataTrust,\
+	UART5_OUT((uint8_t *)"su%d\t%d\t%d",(int)gRobot.upperGun.defendZone1,(int)gRobot.upperGun.defendZone2,\
 		(int)(gRobot.rightGun.gunCommand == (plant_t *)gRobot.plantState));
 
 	UART5BufPut('\r');
@@ -201,9 +202,8 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
 		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.presentDefendZoneId,(int)gRobot.upperGun.lastDefendZoneId,\
-		(int)gRobot.upperGun.defendZone1,(int)gRobot.upperGun.defendZone2,\
 		(int)gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
 
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.yaw*10.0f),\
@@ -215,6 +215,7 @@ void UpperGunSendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t%d\t",(int)(gRobot.upperGun.targetPose.speed1),\
 		(int)(gRobot.upperGun.actualPose.speed1));
 
+	UART5_OUT((uint8_t *)"su%d\t%d\t",(int)gRobot.upperGun.defendZone1,(int)gRobot.upperGun.defendZone2);
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 
@@ -1242,6 +1243,8 @@ void WalkTask(void)
 			case stopRobot:
 			{
 				//通知摄像头开始工作
+				SendStop2Camera();
+				SendStop2Camera();				
 				SendStop2Camera();
 				//靠墙一段时间 0.5s 后抱死
 				OSTimeDly(20);
