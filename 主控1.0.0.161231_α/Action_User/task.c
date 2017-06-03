@@ -140,7 +140,7 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
-	UART5_OUT((uint8_t *)"\t%d\t%d\t%d\t%d", (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f, (int)startLeaveX, (int)startLeaveCnt);
+	UART5_OUT((uint8_t *)"X\t%d\t%d\t%d\t%d\t%d\t%d",(int)PHOTOSENSORLEFT, (int)PHOTOSENSORRIGHT, (int)startLeaveX, (int)startLeaveCnt, (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f);
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
