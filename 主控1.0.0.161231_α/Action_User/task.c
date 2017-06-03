@@ -1977,6 +1977,7 @@ void UpperGunShootTask(void)
 				else
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+					OSTimeDly(1);
 				}
 			}
 		}
@@ -2016,6 +2017,7 @@ void UpperGunShootTask(void)
 				}
 				else
 				{
+					OSTimeDly(2);
 					continue;
 				}
 				//副防守区
@@ -2031,6 +2033,7 @@ void UpperGunShootTask(void)
 				else
 				{
 					//如果发过来其他值 传输可能错误
+					OSTimeDly(2);
 					continue;
 				}
 				
@@ -2083,6 +2086,7 @@ void UpperGunShootTask(void)
 				}
 				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
 				{
+					OSTimeDly(2);
 					continue;
 				}
 				
