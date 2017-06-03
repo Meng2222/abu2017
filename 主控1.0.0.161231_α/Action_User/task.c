@@ -1977,7 +1977,6 @@ void UpperGunShootTask(void)
 				else
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
-					OSTimeDly(1);
 				}
 			}
 		}
@@ -2086,6 +2085,7 @@ void UpperGunShootTask(void)
 				}
 				else if (gRobot.upperGun.shoot == GUN_STOP_SHOOT)
 				{
+					//防止不断进入循环占用大量CPU
 					OSTimeDly(2);
 					continue;
 				}
@@ -2257,7 +2257,7 @@ void DebugTask(void)
 	while(1)
 	{
 		OSSemPend(DebugPeriodSem, 0, &os_err);
-		UART5_OUT((uint8_t *)"\r\nCPU%d\r\n", OSCPUUsage);
+		UART5_OUT((uint8_t *)"CPU%d\r\n", OSCPUUsage);
 		//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		//			OSTimeDly(10);
 		//			GPIO_SetBits(GPIOE, GPIO_Pin_2);
