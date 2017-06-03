@@ -97,9 +97,9 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 #ifdef BLUE_FIELD
 		//第一类参数，对应打球同时落盘参数
 		{//1#着陆台
-		 {-27.7f, 8.4f, 13.9f, 5.0f, 118.0f},
+		 {-27.7f, 8.4f, 13.9f, 5.0f, 116.0f},
 		 //2#着陆台
-		 {-9.4f, 16.2f, 16.4f, 3.0f, 111.0f},
+		 {-9.4f, 16.2f, 16.4f, 4.0f, 112.0f},
 		 //3#着陆台
 		 {2.0f, 22.8f, 0.9f, 9.0f, 103.0f},
 		 //4#着陆台
@@ -112,7 +112,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {6.0f, 25.4f,6.0f,16.0f,77.0f}},
 		//第二类参数，对应新盘自动落盘参数
 		{//1#着陆台
-		 {-33.2f, 13.7f, 20.2f, 21.0f, 85.0f},
+		 {-30.7f, 14.2f, 18.2f, 17.0f, 87.0f},
 		 //2#着陆台
 		 {-18.0f, 20.4f, 11.1f, 16.0f, 88.0f},
 		 //3#着陆台
@@ -128,9 +128,9 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		
 		//第三类参数，对应新盘补弹打球参数
 		{//1#着陆台
-		 {-27.7f, 8.4f, 13.9f, 5.0f, 118.0f},
+		 {-27.7f, 8.4f, 13.9f, 5.0f, 116.0f},
 		 //2#着陆台
-		 {-9.4f, 16.2f, 16.4f, 3.0f, 111.0f},
+		 {-9.4f, 16.2f, 16.4f, 4.0f, 112.0f},
 		 //3#着陆台
 		 {2.0f, 22.8f, 0.9f, 9.0f, 103.0f},
 		 //4#着陆台
@@ -143,7 +143,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_METHOD_NUMBER][LAND_NUMBER] = \
 		 {6.0f, 25.4f,6.0f,16.0f,77.0f}},
 		//第四类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		 {-33.2f, 13.7f, 20.2f, 21.0f, 85.0f},
+		 {-30.7f, 14.2f, 18.2f, 17.0f, 87.0f},
 		 //2#着陆台
 		 {-18.0f, 20.4f, 11.1f, 16.0f, 88.0f},
 		 //3#着陆台
@@ -750,7 +750,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球落盘
 		{
-			{0.3f,8.4f,0.0f,126.0f,0.0f},
+			{-0.4f,12.1f,0.0f,114.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -759,7 +759,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{5.9f,18.9f,0.0f,106.0f,0.0f},
+			{5.9f,22.8f,0.0f,104.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -942,12 +942,12 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球同时落盘
 		{
-			{1.8f, 1.3f, 0.0f, 83.0f, 0.0f},
+			{1.4f, 2.9f, 0.0f, 82.0f, 0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
-			{0.4f, -2.3f, 0.0f, 121.0f, 0.0f},
-			{-1.4f, -3.0f, 0.0f, 121.0f, 0.0f},
-			{4.6f, -2.4f, 0.0f, 121.0f, 0.0f}
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f},
+			{0.0f,0.0f,0.0f,0.0f,0.0f}
 		},
 		//第二种参数类型对应落盘
 		{
