@@ -979,6 +979,7 @@ void WalkTask(void)
 			{
 				if(RESET_SWITCH)
 				{
+					elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
 					//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
 					gRobot.isReset = ROBOT_RESET;
 					TIM_Delayms(TIM5, 1000);
