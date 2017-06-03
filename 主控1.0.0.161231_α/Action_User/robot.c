@@ -2037,7 +2037,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 			{
 				//如果只有一或两个盘 且当前指令在两个指令中都没有 Stop shoot
-				if (gRobot.upperGun.defendData1 != 0 && gRobot.upperGun.defendData2 == 0 &&
+				if (gRobot.upperGun.defendData2 == 0 &&
 					gRobot.upperGun.presentDefendZoneId != (gRobot.upperGun.defendData1 & 0x07) - 0x01 &&
 					gRobot.upperGun.presentDefendZoneId != ((gRobot.upperGun.defendData1 & 0x38) >> 0x03) - 0x01)
 				{

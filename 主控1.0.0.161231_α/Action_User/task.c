@@ -2057,8 +2057,9 @@ void UpperGunShootTask(void)
 				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
 				
-				//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
-				if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
+				//如果台上敌盘数为2，且和上次射击位置相同（无需CheckAim），延时700ms
+				if (gRobot.upperGun.defendData1 != 0x00 && gRobot.upperGun.defendData2 == 0x00 &&
+					gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 					gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 				{
 					OSTimeDly(70);
@@ -2132,7 +2133,7 @@ void UpperGunShootTask(void)
 					//当前防守分区为副防守分区
 					gRobot.upperGun.presentDefendZoneId = viceZoneId;
 					
-					//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
+					//如果台上敌盘数为2，且和上次射击位置相同（无需CheckAim），延时700ms
 					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 					{
