@@ -942,7 +942,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球同时落盘
 		{
-			{1.4f, 2.9f, 0.0f, 82.0f, 0.0f},
+			{1.4f, 2.9f, 0.0f, 83.0f, 0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -963,7 +963,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 			{-5.9f, -1.0f, 0.0f, 130.0f, 0.0f},
 			{-4.8f, -1.6f, 0.0f, 130.0f, 0.0f},
 			{-1.9f, -0.9f, 0.0f, 130.0f, 0.0f},			
-			{-0.2f, -1.6f, 0.0f, 130.0f, 0.0f},
+			{-0.2f, -1.5f, 0.0f, 130.0f, 0.0f},
 			{2.8f, -1.1f, 0.0f, 130.0f, 0.0f},
 			{3.0f, -1.6f, 0.0f, 130.0f, 0.0f}
 		},
@@ -1007,7 +1007,7 @@ uint8_t LeftGunPriority[7] = {PLANT2,PLANT1,PLANT3,PLANT6,PLANT7,PLANT4,PLANT5};
 uint8_t RightGunPriority[7] = {PLANT4,PLANT5,PLANT3,PLANT6,PLANT7,PLANT2,PLANT1};
 
 
-uint8_t UpperGunPriority[7] = {PLANT7,PLANT3,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
+uint8_t UpperGunPriority[7] = {PLANT3,PLANT7,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
 /** @defgroup Gun_Shoot_Command
   * @brief
   * @{
