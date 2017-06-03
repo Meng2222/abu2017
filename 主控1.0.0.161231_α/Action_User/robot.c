@@ -82,8 +82,8 @@ static void LeftGunInit(void)
 	//目标着陆台设置为无效台
 	gRobot.leftGun.targetPlant = INVALID_PLANT_NUMBER;
 	//防守区设置为无敌方盘
-	gRobot.leftGun.defendZone1 = 0x00;
-	gRobot.leftGun.defendZone2 = 0x00;
+	gRobot.leftGun.defendZone1 = NO_ENEMY_DISK;
+	gRobot.leftGun.defendZone2 = NO_ENEMY_DISK;
 	//当前打盘区设为无效区
 	gRobot.leftGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
 	//上一打盘区设为无效区
@@ -170,8 +170,8 @@ static void RightGunInit(void)
 	//目标着陆台设置为无效台
 	gRobot.rightGun.targetPlant = INVALID_PLANT_NUMBER;
 	//防守区设置为无敌方盘
-	gRobot.rightGun.defendZone1 = 0x00;
-	gRobot.rightGun.defendZone2 = 0x00;
+	gRobot.rightGun.defendZone1 = NO_ENEMY_DISK;
+	gRobot.rightGun.defendZone2 = NO_ENEMY_DISK;
 	//当前打盘区设为无效区
 	gRobot.rightGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
 	//上一打盘区设为无效区
@@ -248,8 +248,8 @@ static void UpperGunInit(void)
 	//目标着陆台设置为无效台
 	gRobot.upperGun.targetPlant = INVALID_PLANT_NUMBER;
 	//防守区设置为无敌方盘
-	gRobot.upperGun.defendZone1 = 0x00;
-	gRobot.upperGun.defendZone2 = 0x00;
+	gRobot.upperGun.defendZone1 = NO_ENEMY_DISK;
+	gRobot.upperGun.defendZone2 = NO_ENEMY_DISK;
 	//当前打盘区设为无效区
 	gRobot.upperGun.presentDefendZoneId = INVALID_ZONE_NUMBER;
 	//上一打盘区设为无效区
@@ -2034,6 +2034,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 			}
 			if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 			{
+				//可能有问题，试一下车
 				if (gRobot.upperGun.presentDefendZoneId != gRobot.upperGun.defendZone1 - 0x01 &&
 					gRobot.upperGun.presentDefendZoneId != gRobot.upperGun.defendZone2 - 0x01)
 				{

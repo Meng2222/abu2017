@@ -1832,7 +1832,7 @@ void UpperGunShootTask(void)
 		ROBOT_UpperGunCheckShootPoint();
 #endif
 		//如果接收到防守命令进入防守模式
-		if(gRobot.upperGun.defendZone1)
+		if(gRobot.upperGun.defendZone1 & 0x0f)
 		{
 			gRobot.upperGun.mode = GUN_DEFEND_MODE;
 		}
@@ -1847,15 +1847,14 @@ void UpperGunShootTask(void)
 				while(checkGap--)
 				{
 					/*等待过程中如果视觉模块告知需要防守 进入防守模式*/
-					if(gRobot.upperGun.defendZone1)
+					if(gRobot.upperGun.defendZone1 & 0x0f)
 					{
-						gRobot.upperGun.mode = GUN_DEFEND_MODE; //fix me 不一定需要
 						break;
 					}
 					OSTimeDly(5);
 				}
 				//如果进入防守模式则不补7#
-				if(gRobot.upperGun.defendZone1)
+				if((gRobot.upperGun.defendZone1 & 0x0f) == 0x00)
 				{
 					//对7#落盘命令进行置位
 					if(gRobot.upperGun.isSelfEmpty == SELF_EMPTY)
@@ -1905,7 +1904,7 @@ void UpperGunShootTask(void)
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)
 		{
 			//fix me,此处应该检查目标区域是否合法
-			if(gRobot.upperGun.defendZone1)
+			if(gRobot.upperGun.defendZone1 & 0x0f)
 			{
 				upperGunShootFlag = 1;
 			}
@@ -2093,7 +2092,7 @@ void UpperGunShootTask(void)
 				ROBOT_UpperGunAim();
 				//检查是否到位
 				ROBOT_UpperGunCheckAim();
-				if(gRobot.upperGun.defendZone1)
+				if(gRobot.upperGun.defendZone1 & 0x0f)
 				{
 					gRobot.upperGun.mode = GUN_DEFEND_MODE;
 					//执行命令过程中若切到防守模式将命令状态复位
