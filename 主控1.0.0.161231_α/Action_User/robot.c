@@ -1425,7 +1425,7 @@ status_t ROBOT_LeftGunReload(void)
 		}
 		else
 		{
-			OSTimeDly(15);
+			OSTimeDly(24);
 		}
 //		if(gRobot.leftGun.shootTimes == 0)
 //		{
@@ -1471,7 +1471,7 @@ status_t ROBOT_RightGunReload(void)
 		}
 		else
 		{
-			OSTimeDly(15);
+			OSTimeDly(24);
 		}
 
 		RightBack();
