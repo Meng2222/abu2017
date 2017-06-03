@@ -140,7 +140,7 @@ void sendDebugInfo(void)
 
 	UART5_OUT((uint8_t *)"%d",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
-	UART5_OUT((uint8_t *)"X\t%d\t%d\t%d\t%d\t%d\t%d",(int)PHOTOSENSORLEFT, (int)PHOTOSENSORRIGHT, (int)startLeaveX, (int)startLeaveCnt, (int)gyroXErr*10.0f, (int)gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f);
+	UART5_OUT((uint8_t *)"X\t%d\t%d\t%d\t%d\t%d\t%d",(int)PHOTOSENSORLEFT, (int)PHOTOSENSORRIGHT, (int)startLeaveX, (int)startLeaveCnt, (int)(gyroXErr*10.0f), (int)(gyroYErr * tan(ANGTORAD(-gyroAngleErr))*10.0f));
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
@@ -1242,6 +1242,8 @@ void WalkTask(void)
 			case stopRobot:
 			{
 				//通知摄像头开始工作
+				SendStop2Camera();
+				SendStop2Camera();				
 				SendStop2Camera();
 				//靠墙一段时间 0.5s 后抱死
 				OSTimeDly(20);
