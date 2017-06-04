@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250			//0.25s
@@ -2045,11 +2045,11 @@ void UpperGunShootTask(void)
 				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
 				
-				//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
+				//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时500ms
 				if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 					gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 				{
-					OSTimeDly(70);
+					OSTimeDly(50);
 					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 				}
 				
@@ -2124,11 +2124,11 @@ void UpperGunShootTask(void)
 					//当前防守分区为副防守分区
 					gRobot.upperGun.presentDefendZoneId = viceZoneId;
 					
-					//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时700ms
+					//如果台上敌盘数为2+，且和上次射击位置相同（无需CheckAim），延时500ms
 					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 					{
-						OSTimeDly(70);
+						OSTimeDly(50);
 						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					}
 					
