@@ -1007,7 +1007,7 @@ uint8_t LeftGunPriority[7] = {PLANT2,PLANT1,PLANT3,PLANT6,PLANT7,PLANT4,PLANT5};
 uint8_t RightGunPriority[7] = {PLANT4,PLANT5,PLANT3,PLANT6,PLANT7,PLANT2,PLANT1};
 
 
-uint8_t UpperGunPriority[7] = {PLANT3,PLANT7,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
+uint8_t UpperGunPriority[7] = {PLANT7,PLANT3,PLANT6/*,PLANT3,PLANT7,PLANT2,PLANT1*/};
 /** @defgroup Gun_Shoot_Command
   * @brief
   * @{
