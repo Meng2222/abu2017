@@ -942,7 +942,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球同时落盘
 		{
-			{1.4f, 2.9f, 0.0f, 83.0f, 0.0f},
+			{2.8f, 1.9f, 0.0f, 77.0f, 0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},

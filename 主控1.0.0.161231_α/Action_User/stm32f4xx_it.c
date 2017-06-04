@@ -2965,8 +2965,8 @@ void UART5_IRQHandler(void)
 				{
 					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 					{
-						gRobot.isBleOk.bleHeartBeat++;
-						gRobot.isBleOk.noBleFlag = BLE_OK;
+//						gRobot.isBleOk.bleHeartBeat++;
+//						gRobot.isBleOk.noBleFlag = BLE_OK;
 					}
 					cmdFlag = 0;
 					status++;
@@ -3314,7 +3314,7 @@ void UART5_IRQHandler(void)
 				{
 					if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
 					{
-						gRobot.isBleOk.bleHeartBeat++;
+//						gRobot.isBleOk.bleHeartBeat++;
 					}
 					status = 22;
 				}
