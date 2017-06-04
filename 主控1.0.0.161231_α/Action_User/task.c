@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 
 //宏定义标记左右枪没有命令时收回气缸的时间
 #define NO_COMMAND_COUNTER 250			//0.25s
@@ -2071,6 +2071,8 @@ void UpperGunShootTask(void)
 				{
 					//发射
 					ROBOT_UpperGunShoot();
+					UART5_OUT((uint8_t *)"mainDefend");
+					UpperGunSendDebugInfo();
 					//标志位复位
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					//记录所打区域
@@ -2086,6 +2088,7 @@ void UpperGunShootTask(void)
 					{
 						gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
 					}
+					
 					
 					OSTimeDly(10);
 				}
@@ -2110,7 +2113,10 @@ void UpperGunShootTask(void)
 						}
 						OSTimeDly(5);
 					}
-					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					if (diskNum == one)
+					{
+						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
+					}
 				}
 
 				if (diskNum == twoAndMore)
@@ -2142,6 +2148,8 @@ void UpperGunShootTask(void)
 					if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 					{
 						ROBOT_UpperGunShoot();
+						UART5_OUT((uint8_t *)"viceDefend");
+						UpperGunSendDebugInfo();
 						gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 						gRobot.upperGun.lastDefendZoneId = gRobot.upperGun.presentDefendZoneId;
 						gRobot.upperGun.defendZone2 = NO_ENEMY_DISK;
@@ -2213,6 +2221,8 @@ void UpperGunShootTask(void)
 					{
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
 					}
+					UART5_OUT((uint8_t *)"Attack");
+					UpperGunSendDebugInfo();
 				}
 				gRobot.upperGun.commandState = GUN_NO_COMMAND;
 			}
@@ -2236,6 +2246,8 @@ void UpperGunShootTask(void)
 			{
 				ROBOT_UpperGunCheckAim();
 				ROBOT_UpperGunShoot();
+				UART5_OUT((uint8_t *)"Manual");
+				UpperGunSendDebugInfo();
 				//更改射击命令标记，此标记在接收到对端设备发生命令时更新
 				gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 			}
