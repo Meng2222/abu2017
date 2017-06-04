@@ -1695,6 +1695,8 @@ status_t ROBOT_LeftGunCheckAim(void)
 	//超时时间为50*4*10ms，2秒
 	int timeout = LEFT_TIME_OUT;
 	uint8_t leftGunReadyTimes = 0;
+	
+	BEEP_OFF;
 	while(timeout--)
 	{
 		//每次检测前对之前的数据复位
@@ -1770,6 +1772,7 @@ status_t ROBOT_LeftGunCheckAim(void)
 	checkTime = (LEFT_TIME_OUT-timeout)*LEFT_SAMPLIING_PERIOD;
 	if(checkTime > (LEFT_TIME_OUT * LEFT_SAMPLIING_PERIOD))
 	{
+		BEEP_ON;
 		UART5_OUT((uint8_t *)"Left Gun Check Time Out !!!\r\n");
 	}
 	gRobot.leftGun.checkTimeUsage = checkTime;
@@ -1860,6 +1863,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 	int timeout = RIGHT_TIME_OUT;
 	uint8_t rightGunReadyTimes = 0;
 
+	BEEP_OFF;
 	while(timeout--)
 	{
 		//每次检测前对之前的数据复位
@@ -1935,6 +1939,7 @@ status_t ROBOT_LeftGunCheckReloadAim(void)
 	checkTime = (RIGHT_TIME_OUT-timeout)*RIGHT_SAMPLIING_PERIOD;
 	if(checkTime > (RIGHT_TIME_OUT * RIGHT_SAMPLIING_PERIOD))
 	{
+		BEEP_ON;
 		UART5_OUT((uint8_t *)"Right Gun Check Time Out !!!\r\n");
 	}
 	gRobot.rightGun.checkTimeUsage = checkTime;
@@ -2016,6 +2021,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 
 	uint8_t checkTimes = 5;
 	int checkTime = 0;
+	BEEP_OFF;
 	if(gRobot.upperGun.mode==GUN_DEFEND_MODE)checkTimes = 1;
 	if(gRobot.upperGun.targetPlant == PLANT6)
 	{
@@ -2079,6 +2085,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	{
 		if(checkTime > 100)
 		{
+			BEEP_ON;
 			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
 		}
 	}
@@ -2086,6 +2093,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	{
 		if(checkTime >= 500)
 		{
+			BEEP_ON;
 			UART5_OUT((uint8_t *)"Upper Gun Check Time Out !!!\r\n");
 		}
 	}
