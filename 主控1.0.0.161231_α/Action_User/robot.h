@@ -1,20 +1,26 @@
 #ifndef __ROBOT_H
 #define __ROBOT_H
 #include "stdint.h"
+#include "queue.h"
 #include "movebase.h"
 /**************************************************************************************
  宏定义
 **************************************************************************************/
 
 //红蓝场宏定义
-//#define RED_FIELD
-#define BLUE_FIELD
+#define RED_FIELD
+//#define BLUE_FIELD
+
+#define AUTO_MODE
 
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
 
-#define LEFT_BULLET_NUM 20u
-#define RIGHT_BULLET_NUM 20u
+#define BLE_STOP_DEFEND (1)
+#define BLE_START_DEFEND (0)
+
+#define LEFT_BULLET_NUM 200u
+#define RIGHT_BULLET_NUM 200u
 //着陆台个数
 #define LAND_NUMBER 7
 //机器人枪的个数
@@ -22,7 +28,7 @@
 //子弹在枪膛里状态种类，由光线传感器
 #define BULLET_TYPE_NUMBER 10
 //参数种类，打球，落盘
-#define SHOOT_METHOD_NUMBER		6
+#define SHOOT_METHOD_NUMBER		4
 //上枪参数种类
 #define UPPER_SHOOT_METHOD_NUMBER  5
 
@@ -30,6 +36,7 @@
 #define ROBOT_RESET 1
 //不进入重启
 #define ROBOT_NOT_RESET 0
+
 //上枪自动防御
 #define UPPER_AUTO_DEFEND 0
 //上枪手动防御
@@ -118,9 +125,9 @@
 #define GUN_OPEN_SAFETY_ERROR -5
 
 //枪最大子弹数
-#define MAX_BULLET_NUMBER_LEFT 25
-#define MAX_BULLET_NUMBER_RIGHT 25
-#define MAX_BULLET_NUMBER_UPPER 14
+#define MAX_BULLET_NUMBER_LEFT 200
+#define MAX_BULLET_NUMBER_RIGHT 200
+#define MAX_BULLET_NUMBER_UPPER 20
 //枪最大自动发射子弹发数
 #define MAX_AUTO_BULLET_NUMBER 12
 
@@ -195,6 +202,7 @@
 #define PLANT6 5
 #define PLANT7 6
 
+
 //发射参数模式，对应打球和落盘
 #define INVALID_SHOOT_METHOD 8
 //打球模式
@@ -219,7 +227,8 @@
 
 //防守台分区数
 #define ZONE_NUMBER 6
-#define INVALID_ZONE_NUMBER 0u
+//不可到达分区
+#define INVALID_ZONE_NUMBER 6u
 //7#着陆台左后侧区域
 #define ZONE1 0u
 //7#着陆台左前区域
@@ -232,6 +241,9 @@
 #define ZONE5 4u
 //7#着陆台右前区域
 #define ZONE6 5u
+
+//防守台没有敌盘
+#define NO_ENEMY_DISK 0x00
 
 //7#需要落盘
 #define SELF_EMPTY 1
@@ -316,7 +328,7 @@ typedef struct
 	unsigned char shootParaMode;
 	
 	//弹夹内子弹数，因为最多23发，所以用8位
-	signed char bulletNumber;
+	signed short bulletNumber;
 	
 	//枪膛是否卡弹:1卡弹，0正常
 	signed char champerErrerState;
@@ -335,8 +347,13 @@ typedef struct
 	shoot_command_t *shootCommand;
 	//目标着陆台号，只有在手动模式下才生效，自动模式下忽略
 	int targetPlant;
-	//防守台分区，用于上枪打盘
-	int targetZone;
+	//防守台分区，用于上枪打盘收摄像头数据,包括先后落上的两个盘
+	int defendZone1;
+	int defendZone2;
+	//当前防守台分区号
+	int presentDefendZoneId;
+	//上一个防守台分区号
+	int lastDefendZoneId;
 	//射击次数
 	int shootTimes;
 	//检查到位使用的时间
@@ -378,11 +395,14 @@ typedef struct
 	uint8_t bleCheckStartFlag;
 	//蓝牙通信是否正常标志位
 	uint8_t noBleFlag;
+	//指示平板是否停止防守
+	uint8_t isStopDefend;
 	//心跳包
-	int16_t bleHeartBeat;
+	int bleHeartBeat;
 	//记录蓝牙命令时间间隔
 	int noBleTimer;
 }ble_t;
+
 
 //机器人结构体封装了机器的关键数据，为全局数据，此结构体暂时放在此处
 typedef struct 
@@ -402,18 +422,30 @@ typedef struct
 	//机器人状态，是否正常：低压、过流、过温、
 	int status;
 	//着陆台状态
-	plant_t plantState[7];
+	plant_t plantState[LAND_NUMBER];
 	//自动发射命令
-	plant_t autoCommand[7];
+	plant_t autoCommand[LAND_NUMBER];
+	//摄像头反馈着陆台状态
+	plant_t cameraInfo[LAND_NUMBER];
 
+	//全手动命令环状数组
+	cmdBuffer_t manualCmdQueue;
+	
 	//蓝牙通信状态
 	ble_t isBleOk;
 
+	// 上弹计时变量
+	unsigned short reloadTimer;
+	//发射计时变量
+	unsigned short shootTimer;
 	//每个柱子已经发射的次数
 	uint8_t plateShootTimes[LAND_NUMBER];
 	
 	//是否重启
 	unsigned char isReset;
+	//发射点坐标
+	float launchPosX;
+	float launchPosY;
 
 }robot_t;
 
@@ -579,7 +611,15 @@ status_t ROBOT_RightGunCheckReloadAim(void);
 */
 status_t ROBOT_RightGunCheckShootPoint(void);
 
-
+/*
+*名称：ROBOT_UpperGunCheckShootPoint
+*功能：检查底盘是否走到位
+*参数：
+*none
+*status:
+*注意：
+*/
+ status_t ROBOT_UpperGunCheckShootPoint(void);
 /*
 *名称：ROBOT_LeftGunCheckAim
 *功能：检查瞄准是否已完成
@@ -681,6 +721,9 @@ status_t ROBOT_RightGunCheckConflict(void);
 
 status_t ROBOT_LeftGunReturn(void);
 status_t ROBOT_RightGunReturn(void);
+
+shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void);
+shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void);
 
 
 /*

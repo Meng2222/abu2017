@@ -103,7 +103,24 @@ void KeyInit(void)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);	
-	
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);	
+}
+
+//LED
+void LEDInit(void)
+{
+//	GPIO_Init_Pins(GPIOC,GPIO_Pin_9,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOE,GPIO_Pin_6,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOC,GPIO_Pin_0,GPIO_Mode_OUT);
+	GPIO_SetBits(GPIOE, GPIO_Pin_6);
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 }
 
 //蜂鸣器PE7

@@ -254,9 +254,9 @@ void UpdateKenimaticInfo(void)
 //	for(;;)
 //	{
 //		BEEP_ON;
-//		TIM_Delayms(TIM5, 500);
+//		delay_ms(500);
 //		BEEP_OFF;
-//		TIM_Delayms(TIM5, 500);
+//		delay_ms(500);
 //	}
 //}
 

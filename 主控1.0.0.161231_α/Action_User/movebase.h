@@ -297,7 +297,8 @@ void ThreeWheelVelControlSelfCheck(int direction);
 */
 
 //姿态修正PID
-#define PPOSE (7.0f)
+#define PPOSE (5.0f)
+#define DPOSE (4.0f)
 //速度闭环PID
 #define PVEL (5.0f)
 
@@ -343,6 +344,7 @@ typedef struct
 //速度规划的理论值结构体
 typedef struct
 {
+	//当前理想位置距离目标点之间的距离
 	float dist;
 	float speed;
 	float pos;

@@ -454,6 +454,16 @@
               <FileType>1</FileType>
               <FilePath>..\Action_User\dma.c</FilePath>
             </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Action_User\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>rng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Action_User\rng.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -628,6 +638,11 @@
               <FileName>stm32f4xx_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_rng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rng.c</FilePath>
             </File>
           </Files>
         </Group>
