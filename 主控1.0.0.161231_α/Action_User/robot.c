@@ -353,7 +353,7 @@ status_t ROBOT_Init(void)
 	}
 	gRobot.plantState[PLANT6].plate = 0;
 	gRobot.autoCommand[PLANT7].plate = 0;
-	gRobot.autoCommand[PLANT6].plate = 2;
+	gRobot.autoCommand[PLANT6].plate = 4;
 	gRobot.autoCommand[PLANT3].plate = 1;
 
 #ifdef AUTO_MODE	
@@ -827,7 +827,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 5u
+	#define UPPER_AUTO_NUM 7u
 	uint8_t i = 0u;
 	uint8_t searchRange = 3;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
