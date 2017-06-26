@@ -218,7 +218,7 @@ static void UpperGunInit(void)
 	gRobot.upperGun.maxPoseLimit.yaw = 20.0f;
 	gRobot.upperGun.maxPoseLimit.roll = 0.0f;
 	gRobot.upperGun.maxPoseLimit.speed1=200.0f;
-	gRobot.upperGun.maxPoseLimit.speed2=0.0f;
+	gRobot.upperGun.maxPoseLimit.speed2=200.0f;
 
 	gRobot.upperGun.minPoseLimit.pitch = -10.0f;
 	gRobot.upperGun.minPoseLimit.yaw = -20.0f;
@@ -263,16 +263,20 @@ static void UpperGunInit(void)
 	gRobot.upperGun.lastParaMode = INVALID_SHOOT_METHOD;
 
 	elmo_Enable(CAN1, UPPER_GUN_LEFT_ID);
+	elmo_Enable(CAN1, UPPER_GUN_RIGHT_ID);
 	elmo_Enable(CAN1, UPPER_GUN_YAW_ID);
 	elmo_Enable(CAN1, UPPER_GUN_PITCH_ID);
+	
 
 	Vel_cfg(CAN1, UPPER_GUN_LEFT_ID,350000,350000);
+	Vel_cfg(CAN1, UPPER_GUN_RIGHT_ID,350000,350000);
 	Pos_cfg(CAN1, UPPER_GUN_YAW_ID,50000,50000,80000);//航向
 	Pos_cfg(CAN1, UPPER_GUN_PITCH_ID,50000,50000,80000);//俯仰
 
 //	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(0.0f));
 //	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-10.0f));
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
+	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(0.0f));
 }
 /*
 *名称：ROBOT_Init
@@ -1341,7 +1345,39 @@ float UpperGunLeftSpeedInverseTransform(int32_t speed)
 {
 	return -(float)speed/4096;
 }
+/*
+*名称：UpperGunRightSpeedTransform
+*功能：上枪左传送带速度转化函数
+*参数：
+*
+*注意：
+*/
+int32_t UpperGunRightSpeedTransform(float speed)
+{
+	if(speed > gRobot.upperGun.maxPoseLimit.speed2)
+	{
+		gRobot.upperGun.targetPose.speed2 = gRobot.upperGun.maxPoseLimit.speed2;
+		speed = gRobot.upperGun.maxPoseLimit.speed2;
+	}
+	if(speed < gRobot.upperGun.minPoseLimit.speed2)
+	{
+		gRobot.upperGun.targetPose.speed2 = gRobot.upperGun.minPoseLimit.speed2;
+		speed = gRobot.upperGun.minPoseLimit.speed2;
+	}
+	return 4096*(int32_t)speed;
+}
 
+/*
+*名称：UpperGunRightSpeedInverseTransform
+*功能：上枪左传送带速度逆变换，pulse/s到m/s
+*参数：
+*
+*注意：
+*/
+float UpperGunRightSpeedInverseTransform(int32_t speed)
+{
+	return (float)speed/4096;
+}
 /*
 ============================================================
 				   机器人动作流程函数
@@ -1710,7 +1746,7 @@ status_t ROBOT_UpperGunAim(void)
 	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gRobot.upperGun.targetPose.pitch));
 
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(gRobot.upperGun.targetPose.speed1));
-
+//	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(gRobot.upperGun.targetPose.speed2));
 	return GUN_NO_ERROR;
 }
 
@@ -2115,7 +2151,11 @@ status_t ROBOT_UpperGunCheckAim(void)
 			{
 				continue;
 			}
-			
+//			if(gRobot.upperGun.actualPose.speed2 > gRobot.upperGun.targetPose.speed2 +1.5f ||\
+//				gRobot.upperGun.actualPose.speed2 < gRobot.upperGun.targetPose.speed2 -1.5f)
+//			{
+//				continue;
+//			}			
 			break;
 		}
 		checkTime += (20 - timeout) * 5;

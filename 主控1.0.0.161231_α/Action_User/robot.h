@@ -11,7 +11,7 @@
 //#define RED_FIELD
 #define BLUE_FIELD
 
-//#define AUTO_MODE
+#define AUTO_MODE
 
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
@@ -108,6 +108,8 @@
 #define UPPER_GUN_YAW_ID 10
 //上面枪左侧传送带轴CAN ID
 #define UPPER_GUN_LEFT_ID 19
+//上枪右侧传送带CAN ID
+#define UPPER_GUN_RIGHT_ID 20
 
 //上弹成功
 #define GUN_RELOAD_OK 1
@@ -760,10 +762,13 @@ float RightGunRightSpeedInverseTransform(int32_t speed);
 int32_t UpperGunYawTransform(float yaw);
 int32_t UpperGunPitchTransform(float pitch);
 int32_t UpperGunLeftSpeedTransform(float speed);
+int32_t UpperGunRightSpeedTransform(float speed);
+
 
 float UpperGunYawInverseTransform(int32_t position);
 float UpperGunPitchInverseTransform(int32_t position);
 float UpperGunLeftSpeedInverseTransform(int32_t speed);
+float UpperGunRightSpeedInverseTransform(int32_t speed);
 
 
 

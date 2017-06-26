@@ -196,7 +196,7 @@ void CAN1_RX0_IRQHandler(void)
 		//枪上传送带速度
 	if(canNodeId == LEFT_GUN_LEFT_ID ||canNodeId == LEFT_GUN_RIGHT_ID || \
 		canNodeId == RIGHT_GUN_LEFT_ID ||canNodeId == RIGHT_GUN_RIGHT_ID  || \
-		canNodeId == UPPER_GUN_LEFT_ID)
+		canNodeId == UPPER_GUN_LEFT_ID || canNodeId == UPPER_GUN_RIGHT_ID)
 	{
 		for(i = 0; i < 8; i++)
 		{
@@ -223,6 +223,10 @@ void CAN1_RX0_IRQHandler(void)
 			if(canNodeId == UPPER_GUN_LEFT_ID)
 			{
 				gRobot.upperGun.actualPose.speed1 = UpperGunLeftSpeedInverseTransform(msg.data32[1]);
+			}
+			if(canNodeId == UPPER_GUN_RIGHT_ID)
+			{
+				gRobot.upperGun.actualPose.speed2 = UpperGunRightSpeedInverseTransform(msg.data32[1]);
 			}
 		}
 	}
@@ -981,6 +985,7 @@ void UART4_IRQHandler(void)
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
+								gRobot.upperGun.targetPose.speed2 = data.data32;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -1549,6 +1554,7 @@ void USART1_IRQHandler(void)
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
+								gRobot.upperGun.targetPose.speed2 = data.data32;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -2117,6 +2123,7 @@ void USART2_IRQHandler(void)
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
+								gRobot.upperGun.targetPose.speed2 = data.data32;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -3253,6 +3260,7 @@ void UART5_IRQHandler(void)
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
+								gRobot.upperGun.targetPose.speed2 = data.data32;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);

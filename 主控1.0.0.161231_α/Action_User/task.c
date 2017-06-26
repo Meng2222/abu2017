@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -1997,8 +1997,12 @@ void UpperGunShootTask(void)
 	os_err = os_err;
 
 	//fix me, if camera send data, this flag = 1
+//	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(15.0f));
 	uint8_t upperGunShootFlag = 0;
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
+#ifdef NO_WALK_TASK
+	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
+#endif
 	while(1)
 	{
 #ifndef NO_WALK_TASK
