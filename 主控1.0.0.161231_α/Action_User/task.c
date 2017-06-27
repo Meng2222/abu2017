@@ -618,6 +618,7 @@ void SelfCheckTask(void)
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(100.0f));
 				/************上枪*********/
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(100.0f));
+				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(100.0f));
 				
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
@@ -686,6 +687,7 @@ void SelfCheckTask(void)
 
 				PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(-8.0f));
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
+				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(0.0f));
 
 				status_check++;
 				BEEP_ON;delay_ms(700);BEEP_OFF;delay_ms(70);
