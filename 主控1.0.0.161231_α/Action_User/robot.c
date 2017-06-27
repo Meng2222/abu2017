@@ -1746,7 +1746,7 @@ status_t ROBOT_UpperGunAim(void)
 	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gRobot.upperGun.targetPose.pitch));
 
 	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(gRobot.upperGun.targetPose.speed1));
-//	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(gRobot.upperGun.targetPose.speed2));
+	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(gRobot.upperGun.targetPose.speed2));
 	return GUN_NO_ERROR;
 }
 
@@ -2151,11 +2151,11 @@ status_t ROBOT_UpperGunCheckAim(void)
 			{
 				continue;
 			}
-//			if(gRobot.upperGun.actualPose.speed2 > gRobot.upperGun.targetPose.speed2 +1.5f ||\
-//				gRobot.upperGun.actualPose.speed2 < gRobot.upperGun.targetPose.speed2 -1.5f)
-//			{
-//				continue;
-//			}			
+			if(gRobot.upperGun.actualPose.speed2 > gRobot.upperGun.targetPose.speed2 +1.5f ||\
+				gRobot.upperGun.actualPose.speed2 < gRobot.upperGun.targetPose.speed2 -1.5f)
+			{
+				continue;
+			}			
 			break;
 		}
 		checkTime += (20 - timeout) * 5;

@@ -746,7 +746,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球落盘
 		{
-			{-1.4f,10.3f,0.0f,123.0f,0.0f},
+			{-1.4f,8.6f,0.0f,135.0f,10.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -755,7 +755,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{6.5f,23.2f,0.0f,93.0f,0.0f},
+			{5.3f,17.9f,0.0f,73.0f,18.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -899,7 +899,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{10.2f,16.4f,0.0f,127.0f,0.0f},
+			{9.4f,13.8f,0.0f,92.0f,23.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -938,7 +938,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 	{
 		//第一种参数类型对应打球同时落盘
 		{
-			{2.1f, -1.3f, 0.0f,80.0f,0.0f},
+			{-1.1f, -1.3f, 0.0f,80.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -947,7 +947,7 @@ gun_pose_t gUpperGunPosDatabase[LAND_NUMBER][UPPER_SHOOT_METHOD_NUMBER][ZONE_NUM
 		},
 		//第二种参数类型对应落盘
 		{
-			{8.5f,24.7f,0.0f,49.0f,0.0f},
+			{8.5f,24.7f,0.0f,48.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f,0.0f,0.0f},
