@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
