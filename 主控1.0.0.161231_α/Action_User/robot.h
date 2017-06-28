@@ -37,6 +37,16 @@
 //不进入重启
 #define ROBOT_NOT_RESET 0
 
+//重新装载
+#define ROBOT_RELOAD 1
+//重新装载完成
+#define ROBOT_RELOAD_FINISH 0
+
+//离开装载区
+#define ROBOT_LEAVE_LA 1
+//已经离开装载区
+#define ROBOT_OUT_LA 0
+
 //上枪自动防御
 #define UPPER_AUTO_DEFEND 0
 //上枪手动防御
@@ -448,6 +458,12 @@ typedef struct
 	//发射点坐标
 	float launchPosX;
 	float launchPosY;
+	
+	//是否重装
+	unsigned char isReload;
+	
+	//是否从装载区出发
+	unsigned char isLeaveLA;
 
 }robot_t;
 

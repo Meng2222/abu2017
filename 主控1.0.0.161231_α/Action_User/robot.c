@@ -2204,7 +2204,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
-		||gRobot.isReset == ROBOT_RESET)
+		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);
@@ -2226,7 +2226,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 
-	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)||gRobot.isReset == ROBOT_RESET)
+	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)\
+		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);
@@ -2247,7 +2248,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 
-	if(((gRobot.upperGun.shootTimes == 0)&&(gRobot.upperGun.mode != GUN_MANUAL_MODE))||(gRobot.isReset == ROBOT_RESET))
+	if(((gRobot.upperGun.shootTimes == 0)&&(gRobot.upperGun.mode != GUN_MANUAL_MODE))||(gRobot.isReset == ROBOT_RESET)||(gRobot.isReload == ROBOT_RELOAD))
 	{
 		OSMboxPend(UpperGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);

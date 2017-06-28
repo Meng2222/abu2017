@@ -1235,6 +1235,24 @@ void UART4_IRQHandler(void)
 	//					CheckCmdQueueState();
 					}
 				}
+				else
+				{
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
+					{
+						//ID == 70 从装载区出发
+						if(id == 70)
+						{
+							gRobot.isLeaveLA = ROBOT_LEAVE_LA;
+						}
+						//ID == 71 重新装弹
+						if(id == 71)
+						{
+							gRobot.isReload = ROBOT_RELOAD;
+						}						
+						msgId = ch;
+					}				
+				}
 				status = 0;
 				break;
 			case 22:
@@ -1804,6 +1822,24 @@ void USART1_IRQHandler(void)
 	//					CheckCmdQueueState();
 					}
 				}
+				else
+				{
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
+					{
+						//ID == 70 从装载区出发
+						if(id == 70)
+						{
+							gRobot.isLeaveLA = ROBOT_LEAVE_LA;
+						}
+						//ID == 71 重新装弹
+						if(id == 71)
+						{
+							gRobot.isReload = ROBOT_RELOAD;
+						}						
+						msgId = ch;
+					}				
+				}
 				status = 0;
 				break;
 			case 22:
@@ -2372,6 +2408,24 @@ void USART2_IRQHandler(void)
 	//					DelTailQueue();
 	//					CheckCmdQueueState();
 					}
+				}
+				else
+				{
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
+					{
+						//ID == 70 从装载区出发
+						if(id == 70)
+						{
+							gRobot.isLeaveLA = ROBOT_LEAVE_LA;
+						}
+						//ID == 71 重新装弹
+						if(id == 71)
+						{
+							gRobot.isReload = ROBOT_RELOAD;
+						}						
+						msgId = ch;
+					}				
 				}
 				status = 0;
 				break;
@@ -3510,6 +3564,24 @@ void UART5_IRQHandler(void)
 	//					DelTailQueue();
 	//					CheckCmdQueueState();
 					}
+				}
+				else
+				{
+					if((ch - msgId < 10u && ch - msgId > 0u)
+						|| (msgId - ch > 90u))
+					{
+						//ID == 70 从装载区出发
+						if(id == 70)
+						{
+							gRobot.isLeaveLA = ROBOT_LEAVE_LA;
+						}
+						//ID == 71 重新装弹
+						if(id == 71)
+						{
+							gRobot.isReload = ROBOT_RELOAD;
+						}						
+						msgId = ch;
+					}				
 				}
 				status = 0;
 				break;
