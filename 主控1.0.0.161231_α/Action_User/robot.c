@@ -215,13 +215,13 @@ static void UpperGunInit(void)
 	gRobot.upperGun.targetPose.roll = 0.0f;
 
 	gRobot.upperGun.maxPoseLimit.pitch = 40.0f;
-	gRobot.upperGun.maxPoseLimit.yaw = 20.0f;
+	gRobot.upperGun.maxPoseLimit.yaw = 50.0f;
 	gRobot.upperGun.maxPoseLimit.roll = 0.0f;
 	gRobot.upperGun.maxPoseLimit.speed1=200.0f;
 	gRobot.upperGun.maxPoseLimit.speed2=200.0f;
 
 	gRobot.upperGun.minPoseLimit.pitch = -10.0f;
-	gRobot.upperGun.minPoseLimit.yaw = -20.0f;
+	gRobot.upperGun.minPoseLimit.yaw = -50.0f;
 	gRobot.upperGun.minPoseLimit.roll = 0.0f;
 	gRobot.upperGun.minPoseLimit.speed1=0.0f;
 	gRobot.upperGun.minPoseLimit.speed2=0.0f;
@@ -1263,7 +1263,7 @@ int32_t UpperGunYawTransform(float yaw)
 		gRobot.upperGun.targetPose.yaw =  gRobot.upperGun.minPoseLimit.yaw;
 		yaw = gRobot.upperGun.minPoseLimit.yaw;
 	}
-	return (int32_t)((20.0f + yaw) * 102.4f);
+	return (int32_t)((50.0f + yaw) * 102.4f);
 }
 
 /*
@@ -1275,7 +1275,7 @@ int32_t UpperGunYawTransform(float yaw)
 */
 float UpperGunYawInverseTransform(int32_t position)
 {
-	return (float)position / 102.4f - 20.0f;
+	return (float)position / 102.4f - 50.0f;
 }
 
 /*
