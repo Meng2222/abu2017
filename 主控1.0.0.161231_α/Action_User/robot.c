@@ -2203,7 +2203,7 @@ status_t ROBOT_UpperGunCheckAim(void)
  status_t ROBOT_LeftGunCheckShootPoint(void)
 {
 	CPU_INT08U  os_err;
-	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)
+	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)\
 		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
