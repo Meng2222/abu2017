@@ -615,11 +615,11 @@ void SelfCheckTask(void)
 				}
 
 				/************下枪左*********/
-				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(40.0f));
+				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(30.0f));
 				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(100.0f));
 				/************下枪右*********/
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(100.0f));
-				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(40.0f));
+				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(30.0f));
 				/************上枪*********/
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(100.0f));
 				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(100.0f));
