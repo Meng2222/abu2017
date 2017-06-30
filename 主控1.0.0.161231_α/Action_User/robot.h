@@ -237,6 +237,8 @@
 #define SHOOT_POINT2 1
 //场地中央发射点
 #define SHOOT_POINT3 2
+//移动中
+#define SHOOT_POINT_MOVING 3
 
 //防守台分区数
 #define ZONE_NUMBER 6
