@@ -1248,7 +1248,7 @@ void UART4_IRQHandler(void)
 							case 81:
 								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
 							break;
-							case 83:
+							case 82:
 								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
 							break;
 							default:break;
@@ -1838,7 +1838,7 @@ void USART1_IRQHandler(void)
 							case 81:
 								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
 							break;
-							case 83:
+							case 82:
 								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
 							break;
 							default:break;
@@ -2428,7 +2428,7 @@ void USART2_IRQHandler(void)
 							case 81:
 								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
 							break;
-							case 83:
+							case 82:
 								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
 							break;
 							default:break;
@@ -3587,7 +3587,7 @@ void UART5_IRQHandler(void)
 							case 81:
 								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
 							break;
-							case 83:
+							case 82:
 								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
 							break;
 							default:break;

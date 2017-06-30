@@ -1247,9 +1247,9 @@ void WalkTask(void)
 			case goToLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X, 3000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X, 1000.0f, 2000.0f , 2000.0f);
 
-				if (GetPosX() >= -LAUNCH_STOP_X)
+				if (fabs(GetPosX() - (-LAUNCH_STOP_X)) < 10.0f)
 				{
 					//翻弹匣的气缸恢复
 					ClampReset();
@@ -1257,21 +1257,23 @@ void WalkTask(void)
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
+					setLaunchPosFlag = 1;
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT2;
 				}
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
-				MoveTo(LAUNCH_STOP_X, -3000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X, -1000.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
-				if (GetPosX() <= LAUNCH_STOP_X)
+				if (fabs(GetPosX() - LAUNCH_STOP_X) < 10.0f)
 				{
 					ClampReset();
 					MoveY(50.0f);
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
 					moveTimFlag = 0;
 					status = stopRobot;
+					setLaunchPosFlag = 1;
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT2;
 				}
 #endif
@@ -1283,7 +1285,7 @@ void WalkTask(void)
 #ifdef RED_FIELD
 				MoveTo(-LAUNCH_STOP_X + SIDE_DISTANCE, 2000.0f, 2000.0f , 2000.0f);
 
-				if (GetPosX() >= -LAUNCH_STOP_X + SIDE_DISTANCE)
+				if (fabs(GetPosX() - (-LAUNCH_STOP_X + SIDE_DISTANCE)) < 10.0f)
 				{
 					//翻弹匣的气缸恢复
 					ClampReset();
@@ -1291,6 +1293,7 @@ void WalkTask(void)
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
+					setLaunchPosFlag = 1;
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT3;
 				}
 #endif
@@ -1298,13 +1301,14 @@ void WalkTask(void)
 				MoveTo(LAUNCH_STOP_X + SIDE_DISTANCE, -1000.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
-				if (GetPosX() <= LAUNCH_STOP_X + SIDE_DISTANCE)
+				if (fabs(GetPosX() - (LAUNCH_STOP_X + SIDE_DISTANCE)) < 10.0f)
 				{
 					ClampReset();
 					MoveY(50.0f);
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
 					moveTimFlag = 0;
 					status = stopRobot;
+					setLaunchPosFlag = 1;
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT3;
 				}
 #endif
@@ -1316,7 +1320,7 @@ void WalkTask(void)
 				MoveTo(-LAUNCH_STOP_X - SIDE_DISTANCE, 1000.0f, 2000.0f , 2000.0f);
 
 				//				if (GetPosX() >= -6459.14f)
-				if (GetPosX() >= -LAUNCH_STOP_X - SIDE_DISTANCE)
+				if (fabs(GetPosX() - (-LAUNCH_STOP_X - SIDE_DISTANCE)) < 10.0f)
 				{
 					//翻弹匣的气缸恢复
 					ClampReset();
@@ -1324,6 +1328,7 @@ void WalkTask(void)
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
+					setLaunchPosFlag = 1;
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT1;
 				}
 #endif
@@ -1331,13 +1336,14 @@ void WalkTask(void)
 				MoveTo(LAUNCH_STOP_X - SIDE_DISTANCE, -2000.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
-				if (GetPosX() <= LAUNCH_STOP_X - SIDE_DISTANCE)
+				if (fabs(GetPosX() - (LAUNCH_STOP_X - SIDE_DISTANCE)) < 10.0f)
 				{
 					ClampReset();
 					MoveY(50.0f);
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
 					moveTimFlag = 0;
 					status = stopRobot;
+					setLaunchPosFlag = 1;
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT1;
 				}
 #endif
