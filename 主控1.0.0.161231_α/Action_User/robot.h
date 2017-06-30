@@ -231,12 +231,14 @@
 //补弹落盘参数
 #define SHOOT_METHOD6  5
 //发射点位置
-//靠近装载区发射点
+//左发射点
 #define SHOOT_POINT1 0
-//靠近出发区发射点
+//靠近右发射点
 #define SHOOT_POINT2 1
 //场地中央发射点
 #define SHOOT_POINT3 2
+//移动中
+#define SHOOT_POINT_MOVING 3
 
 //防守台分区数
 #define ZONE_NUMBER 6

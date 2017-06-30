@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -66,6 +66,8 @@ typedef enum
 	load,
 	beginToGo1,
 	goToLaunchingArea,
+	goToLeftLaunchingArea,
+	goToRightLaunchingArea,
 	stopRobot,
 	launch,
 	reset,
@@ -271,7 +273,7 @@ void CameraSelfCheck(void)
 {
 	USART_SendData(USART3, 'z');
 	USART_SendData(USART3, 'z');
-	USART_SendData(USART3, 'z');	
+	USART_SendData(USART3, 'z');
 }
 void App_Task()
 {
@@ -339,7 +341,7 @@ void ConfigTask(void)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
 
-	
+
 //	while(!KEYSWITCH)
 //	{
 //		//等待给摄像头发送初始化命令
@@ -356,7 +358,7 @@ void ConfigTask(void)
 	PhotoelectricityInit();
 	BeepInit();
 	KeyInit();
-	
+
 	//串口初始化
 	UART4_Init(115200);	 //蓝牙手柄
 	USART1_Init(115200);
@@ -368,22 +370,22 @@ void ConfigTask(void)
 	//	FlashInit();
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
-	
+
 //	while(!RESET_SWITCH)
 //	{
 //		//等待初始化
-//	} 
+//	}
 	delay_ms(700);
 
 	ROBOT_Init();
-	
+
 	ClampClose();
 	//	LeftBack();
 	//	RightBack();
 	LeftPush();
 	RightPush();
 	ClampReset();
-	
+
 #ifndef NO_WALK_TASK
 #ifdef BLUE_FIELD
 	BLUE_LED_ON;
@@ -564,7 +566,7 @@ void SelfCheckTask(void)
 				delay_ms(2900);
 				ThreeWheelVelControlSelfCheck(3);
 				delay_ms(700);
-				
+
 				status_check++;
 
 				BEEP_ON;delay_ms(70);BEEP_OFF;delay_ms(70);
@@ -623,13 +625,13 @@ void SelfCheckTask(void)
 				/************上枪*********/
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(100.0f));
 				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(100.0f));
-				
+
 				for(self_circle=0;self_circle<self_circle_end;self_circle++)
 				{
 					//横滚向一侧一定角度
 					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(40.0f));
 					//横滚向一侧一定角度
-					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));					
+					PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(40.0f));
 					delay_ms(1000);
 					//横滚向另一侧一定角度
 					PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(0.0f));
@@ -647,7 +649,7 @@ void SelfCheckTask(void)
 					PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(20.0f));
 					//左转一定角度
 					PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(20.0f));
-					delay_ms(700);					
+					delay_ms(700);
 					//右转一定角度
 					PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(-20.0f));
 					//右转一定角度
@@ -703,7 +705,7 @@ void SelfCheckTask(void)
 
 				UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.defendZone1);
 				UART5_OUT((uint8_t *)"%d\r\n",(int)gRobot.upperGun.defendZone2);
-				delay_ms(15);			
+				delay_ms(15);
 				Sendfloat(gRobot.moveBase.actualYPos);
 				if(RESET_SWITCH==1)
 				{
@@ -723,7 +725,7 @@ void SelfCheckTask(void)
 				uint8_t photoSensorLeftGun = PHOTOSENSORLEFTGUN;
 				uint8_t photoSensorRightGun = PHOTOSENSORRIGHTGUN;
 				uint8_t keySwitch = KEYSWITCH;
-				
+
 				if(photoSensorLeft ||photoSensorRight||photoSensorUpGun||photoSensorLeftGun||photoSensorRightGun||keySwitch)
 				{
 					if(keySwitch)
@@ -737,15 +739,15 @@ void SelfCheckTask(void)
 					if(photoSensorRight)
 					{
 						UART5_OUT((uint8_t *)"PhotoSensorRight\r\n");
-					}					
+					}
 					if(photoSensorUpGun)
 					{
 						UART5_OUT((uint8_t *)"PhotoSensorUpperGun\r\n");
-					}					
+					}
 					if(photoSensorLeftGun)
 					{
 						UART5_OUT((uint8_t *)"PhotoSensorLeftGun\r\n");
-					}					
+					}
 					if(photoSensorRightGun)
 					{
 						UART5_OUT((uint8_t *)"PhotoSensorRightGun\r\n");
@@ -976,8 +978,7 @@ void WalkTask(void)
 {
 #define LOAD_AREA_STOP_X 13033.14f
 #define LAUNCH_STOP_X 6500.14f
-
-	
+#define SIDE_DISTANCE 4000.0f
 	//仅在 load 中使用 计时400ms
 	static uint16_t timeCounter = 0;
 	CPU_INT08U  os_err;
@@ -1189,7 +1190,7 @@ void WalkTask(void)
 				}
 				break;
 			}
-			
+
 				//装载飞盘
 			case load:
 			{
@@ -1215,7 +1216,7 @@ void WalkTask(void)
 				}
 				break;
 			}
-			
+
 			case beginToGo1:
 			{
 				//检测上枪光电
@@ -1232,7 +1233,12 @@ void WalkTask(void)
 						ROBOT_UpperGunAim();
 						gRobot.isReload = ROBOT_RELOAD_FINISH;
 						gRobot.isLeaveLA = ROBOT_OUT_LA;
-						status=goToLaunchingArea;
+#ifdef RED_FIELD
+						status = goToLeftLaunchingArea;
+#endif
+#ifdef BLUE_FIELD
+						status = goToRightLaunchingArea;
+#endif
 					}
 				}
 				break;
@@ -1241,10 +1247,8 @@ void WalkTask(void)
 			case goToLaunchingArea:
 			{
 #ifdef RED_FIELD
-				//				MoveTo(-6459.14f, 3000.0f, 2500.0f , 2000.0f);
 				MoveTo(-LAUNCH_STOP_X, 3000.0f, 2000.0f , 2000.0f);
 
-				//				if (GetPosX() >= -6459.14f)
 				if (GetPosX() >= -LAUNCH_STOP_X)
 				{
 					//翻弹匣的气缸恢复
@@ -1253,6 +1257,7 @@ void WalkTask(void)
 					MoveY(50.0f);
 					moveTimFlag = 0;
 					status = stopRobot;
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT2;
 				}
 #endif
 #ifdef BLUE_FIELD
@@ -1260,7 +1265,6 @@ void WalkTask(void)
 				MoveTo(LAUNCH_STOP_X, -3000.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
-				//				if (GetPosX() <= 6459.14f)
 				if (GetPosX() <= LAUNCH_STOP_X)
 				{
 					ClampReset();
@@ -1268,6 +1272,73 @@ void WalkTask(void)
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
 					moveTimFlag = 0;
 					status = stopRobot;
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT2;
+				}
+#endif
+				break;
+			}
+			//从装载区走向发射区
+			case goToRightLaunchingArea:
+			{
+#ifdef RED_FIELD
+				MoveTo(-LAUNCH_STOP_X + SIDE_DISTANCE, 2000.0f, 2000.0f , 2000.0f);
+
+				if (GetPosX() >= -LAUNCH_STOP_X + SIDE_DISTANCE)
+				{
+					//翻弹匣的气缸恢复
+					ClampReset();
+					//停下以后给y方向向前50mm/s的速度向前拱 保证贴墙
+					MoveY(50.0f);
+					moveTimFlag = 0;
+					status = stopRobot;
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT3;
+				}
+#endif
+#ifdef BLUE_FIELD
+				MoveTo(LAUNCH_STOP_X + SIDE_DISTANCE, -1000.0f, 2000.0f , 2000.0f);
+
+				//到位后给靠墙速度
+				if (GetPosX() <= LAUNCH_STOP_X + SIDE_DISTANCE)
+				{
+					ClampReset();
+					MoveY(50.0f);
+					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
+					moveTimFlag = 0;
+					status = stopRobot;
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT3;
+				}
+#endif
+				break;
+			}
+			case goToLeftLaunchingArea:
+			{
+#ifdef RED_FIELD
+				MoveTo(-LAUNCH_STOP_X - SIDE_DISTANCE, 1000.0f, 2000.0f , 2000.0f);
+
+				//				if (GetPosX() >= -6459.14f)
+				if (GetPosX() >= -LAUNCH_STOP_X - SIDE_DISTANCE)
+				{
+					//翻弹匣的气缸恢复
+					ClampReset();
+					//停下以后给y方向向前50mm/s的速度向前拱 保证贴墙
+					MoveY(50.0f);
+					moveTimFlag = 0;
+					status = stopRobot;
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT1;
+				}
+#endif
+#ifdef BLUE_FIELD
+				MoveTo(LAUNCH_STOP_X - SIDE_DISTANCE, -2000.0f, 2000.0f , 2000.0f);
+
+				//到位后给靠墙速度
+				if (GetPosX() <= LAUNCH_STOP_X - SIDE_DISTANCE)
+				{
+					ClampReset();
+					MoveY(50.0f);
+					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
+					moveTimFlag = 0;
+					status = stopRobot;
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT1;
 				}
 #endif
 				break;
@@ -1277,7 +1348,7 @@ void WalkTask(void)
 			{
 				//通知摄像头开始工作
 				SendStop2Camera();
-				SendStop2Camera();				
+				SendStop2Camera();
 				SendStop2Camera();
 				//靠墙一段时间 0.5s 后抱死
 				OSTimeDly(20);
@@ -1292,7 +1363,7 @@ void WalkTask(void)
 				{
 					gRobot.launchPosX = gRobot.moveBase.actualXPos;
 					gRobot.launchPosY = gRobot.moveBase.actualYPos;
-					setLaunchPosFlag-=1;
+					setLaunchPosFlag -= 1;
 				}
 				//				CameraInit();
 				status = launch;
@@ -1313,13 +1384,13 @@ void WalkTask(void)
 				/*对蓝牙是否断开的检测*/
 				//把检查ble的Flag 置位
 				gRobot.isBleOk.bleCheckStartFlag = BLE_CHECK_START;
-				
+
 				//重新装弹
 				if(gRobot.isReload == ROBOT_RELOAD)
 				{
 					status = readyForReload;
 				}
-				
+
 				/*对于蓝牙失联的处理*/
 				if(gRobot.isBleOk.noBleFlag == BLE_LOST)
 				{
@@ -1353,16 +1424,16 @@ void WalkTask(void)
 						InCmdQueue(cmd);
 						cmd.plantNum = PLANT1;
 						cmd.method = SHOOT_METHOD4;
-						InCmdQueue(cmd);						
+						InCmdQueue(cmd);
 						cmd.plantNum = PLANT2;
 						cmd.method = SHOOT_METHOD4;
-						InCmdQueue(cmd);						
+						InCmdQueue(cmd);
 						cmd.plantNum = PLANT4;
 						cmd.method = SHOOT_METHOD4;
-						InCmdQueue(cmd);						
+						InCmdQueue(cmd);
 						cmd.plantNum = PLANT5;
 						cmd.method = SHOOT_METHOD4;
-						InCmdQueue(cmd);						
+						InCmdQueue(cmd);
 					}
 					//视觉模块只能看12457台，如果视觉反馈这些台上都没有需要打球或补盘则落3台和6台
 					//这一部分现在实际上没有使用
@@ -1397,8 +1468,28 @@ void WalkTask(void)
 						sendSignal=0;
 					}
 				}
+				if(gRobot.moveBase.targetPoint != gRobot.moveBase.actualStopPoint)
+				{
+					gyroAngleErr = gRobot.moveBase.actualAngle;
+					switch(gRobot.moveBase.targetPoint)
+					{
+						case SHOOT_POINT1:
+							status = goToLeftLaunchingArea;
+							break;
+						case SHOOT_POINT2:
+							status = goToLaunchingArea;
+							break;
+						case SHOOT_POINT3:
+							status = goToRightLaunchingArea;
+							break;
+
+						default:break;
+					}
+					gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
+				}
 				break;
 			}
+
 			/*重试*/
 			case reset:
 			{
@@ -1484,7 +1575,7 @@ void WalkTask(void)
 					status = beginToGo1;
 					BEEP_OFF;
 				}
-#endif				
+#endif
 				break;
 			}
 			case resetRunToLaunch:
@@ -1523,7 +1614,7 @@ void WalkTask(void)
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
 				MoveTo(LAUNCH_STOP_X * cosf(ANGTORAD(gyroAngleErr)), 3000.0f, 2000.0f, 2000.0f);
-				
+
 				//离开出发区时通过光电矫正X方向坐标 蓝场使用右侧光电（处于行进方向前方的光电）
 				if(GetPosX() < 500.0f && !PHOTOSENSORRIGHT)
 				{
@@ -1539,7 +1630,7 @@ void WalkTask(void)
 						startLeaveCnt++;
 					}
 				}
-				
+
 				//到位后给靠墙速度
 				//				if (GetPosX() >= 6459.14f)
 				if (GetPosX() >= LAUNCH_STOP_X * cosf(ANGTORAD(gyroAngleErr)))
@@ -1570,7 +1661,7 @@ void LeftGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 #ifndef NO_WALK_TASK
-	//此处等待邮箱 此邮箱在walktask 中 states >= load 且行程开关触发后 立刻发送 
+	//此处等待邮箱 此邮箱在walktask 中 states >= load 且行程开关触发后 立刻发送
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 	//然后延时0.2s以后 弹匣推弹收回
@@ -1586,9 +1677,9 @@ void LeftGunShootTask(void)
 //	ROBOT_LeftGunReturn();
 //	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(24.0f));
 	//再等0.5s 上第一发弹
-#ifndef NO_WALK_TASK	
+#ifndef NO_WALK_TASK
 	OSTimeDly(50);
-	ROBOT_LeftGunCheckAim();	
+	ROBOT_LeftGunCheckAim();
 	LeftPush();
 #endif
 	//0.5s 后 气缸收回
@@ -1652,7 +1743,7 @@ void LeftGunShootTask(void)
 													[PLANT6];
 
 						ROBOT_LeftGunAim();
-						ROBOT_LeftGunCheckAim();					
+						ROBOT_LeftGunCheckAim();
 					}
 				}
 				else/* if(gRobot.leftGun.shootTimes == 0)*/
@@ -1811,7 +1902,7 @@ void RightGunShootTask(void)
 	CPU_INT08U  os_err;
 	os_err = os_err;
 #ifndef NO_WALK_TASK
-	//此处等待邮箱 此邮箱在walktask 中 states >= load 且行程开关触发后 立刻发送 
+	//此处等待邮箱 此邮箱在walktask 中 states >= load 且行程开关触发后 立刻发送
 	OSMboxPend(OpenSaftyMbox, 0, &os_err);
 #endif
 	//然后延时0.2s以后 弹匣推弹收回
@@ -1895,7 +1986,7 @@ void RightGunShootTask(void)
 
 						//调整枪姿为上弹姿态 need some time
 						ROBOT_RightGunAim();
-						ROBOT_RightGunCheckAim();						
+						ROBOT_RightGunCheckAim();
 					}
 				}
 				else/*if(gRobot.rightGun.shootTimes == 0)*/
@@ -2150,7 +2241,7 @@ void UpperGunShootTask(void)
 			{
 				upperGunShootFlag = 1;
 			}
-			
+
 			if(upperGunShootFlag == 1)
 			{
 				gRobot.upperGun.targetPlant = PLANT7;
@@ -2158,7 +2249,7 @@ void UpperGunShootTask(void)
 				//主副防守区Id
 				int mainZoneId = INVALID_ZONE_NUMBER;
 				int viceZoneId = INVALID_ZONE_NUMBER;
-				
+
 				//7号台敌方落盘状况枚举：有一个盘，有两个以上的盘
 				typedef enum
 				{
@@ -2168,7 +2259,7 @@ void UpperGunShootTask(void)
 					twoAndMore,
 				}DiskNum_t;
 				DiskNum_t diskNum = one;
-				
+
 				//主防守区
 				if (gRobot.upperGun.defendZone1 >= 0x01 && gRobot.upperGun.defendZone1 <= 0x06)
 				{
@@ -2195,17 +2286,17 @@ void UpperGunShootTask(void)
 					OSTimeDly(2);
 					continue;
 				}
-				
+
 				//当前防守分区为主防守分区
 				gRobot.upperGun.presentDefendZoneId = mainZoneId;
-				
+
 				//如果台上敌盘数为2+，且和上次射击位置相同（CheckAim基本不耗时），延时400ms
 				if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 					gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
 				{
 					OSTimeDly(40);
 					gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
-				}			
+				}
 				//如果满足以下防守区组合，延时600ms：0+1，2+3，4+5
 				if ((gRobot.upperGun.presentDefendZoneId == 0 && gRobot.upperGun.lastDefendZoneId == 1) ||
 					(gRobot.upperGun.presentDefendZoneId == 1 && gRobot.upperGun.lastDefendZoneId == 0) ||
@@ -2216,7 +2307,7 @@ void UpperGunShootTask(void)
 				{
 					OSTimeDly(60);
 				}
-				
+
 				//获取目标位姿
 				gun_pose_t pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][mainZoneId];
 				//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
@@ -2230,7 +2321,7 @@ void UpperGunShootTask(void)
 				//瞄准，此函数最好瞄准完成后再返回
 				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
-				
+
 				//gRobot.upperGun.shoot 在 ROBOT_UpperGunCheckAim() 中置位
 				if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 				{
@@ -2239,7 +2330,7 @@ void UpperGunShootTask(void)
 					UpperGunSendDebugInfo();
 					gRobot.upperGun.shoot = GUN_STOP_SHOOT;
 					gRobot.upperGun.lastDefendZoneId = gRobot.upperGun.presentDefendZoneId;
-					gRobot.upperGun.defendZone1 = NO_ENEMY_DISK;		
+					gRobot.upperGun.defendZone1 = NO_ENEMY_DISK;
 					mainZoneId = INVALID_ZONE_NUMBER;
 					upperGunShootFlag = 0;
 					OSTimeDly(20);
@@ -2250,7 +2341,7 @@ void UpperGunShootTask(void)
 					OSTimeDly(2);
 					continue;
 				}
-				
+
 				//分两种情况：7号台一个敌盘，两个及以上敌盘
 				if (diskNum == one)
 				{
@@ -2263,12 +2354,12 @@ void UpperGunShootTask(void)
 							viceZoneId = gRobot.upperGun.defendZone2 - 0x01;
 							break;
 						}
-						
+
 						if (gRobot.upperGun.isManualDefend == UPPER_MANUAL_DEFEND)
 						{
 							break;
 						}
-						
+
 						OSTimeDly(5);
 					}
 					//延时延满0.6s
@@ -2276,7 +2367,7 @@ void UpperGunShootTask(void)
 					{
 						gRobot.upperGun.lastDefendZoneId = INVALID_ZONE_NUMBER;
 					}
-					
+
 					if (gRobot.upperGun.isManualDefend == UPPER_MANUAL_DEFEND)
 					{
 						if(gRobot.isBleOk.isStopDefend != BLE_STOP_DEFEND)
@@ -2290,7 +2381,7 @@ void UpperGunShootTask(void)
 				{
 					//当前防守分区为副防守分区
 					gRobot.upperGun.presentDefendZoneId = viceZoneId;
-					
+
 					//如果台上敌盘数为2+，且和上次射击位置相同（CheckAim基本不耗时），延时400ms
 					if (gRobot.upperGun.presentDefendZoneId == gRobot.upperGun.lastDefendZoneId &&
 						gRobot.upperGun.lastDefendZoneId != INVALID_ZONE_NUMBER)
@@ -2308,7 +2399,7 @@ void UpperGunShootTask(void)
 					{
 						OSTimeDly(60);
 					}
-				
+
 					//获取目标位姿
 					pose = gUpperGunPosDatabase[gRobot.upperGun.targetPlant][gRobot.upperGun.shootParaMode][viceZoneId];
 					//fix me,这里存在的风险是，自动过程中，手动修改柱子命令，这时候有可能结果不一致，要改
@@ -2319,10 +2410,10 @@ void UpperGunShootTask(void)
 					gRobot.upperGun.targetPose.speed1 = pose.speed1;
 					gRobot.upperGun.targetPose.speed2 = pose.speed2;
 
-					//瞄准，此函数最好瞄准完成后再返回 
+					//瞄准，此函数最好瞄准完成后再返回
 					ROBOT_UpperGunAim();
 					ROBOT_UpperGunCheckAim();
-					
+
 					if (gRobot.upperGun.shoot == GUN_START_SHOOT)
 					{
 						ROBOT_UpperGunShoot();
@@ -2335,7 +2426,7 @@ void UpperGunShootTask(void)
 						upperGunShootFlag = 0;
 						OSTimeDly(20);
 					}
-					
+
 					if (gRobot.upperGun.isManualDefend == UPPER_MANUAL_DEFEND)
 					{
 						if(gRobot.isBleOk.isStopDefend != BLE_STOP_DEFEND)
@@ -2344,7 +2435,7 @@ void UpperGunShootTask(void)
 						}
 					}
 				}
-				
+
 				if(gRobot.upperGun.defendZone1 == NO_ENEMY_DISK)
 				{
 					upperGunShootFlag = 0;

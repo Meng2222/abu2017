@@ -222,9 +222,9 @@ typedef struct
 	
 	motorFailure_t motorFailure;
 
-	//机器人目标停止位置，范围1、2、3，对应中点，靠近发射区，靠近出发区点
+	//机器人目标停止位置，范围1、2、3，对应左方,中点，右方
 	unsigned char targetPoint;
-	//机器人实际停止位置，范围1、2、3，对应靠近发射区，靠近出发区点，中点
+	//机器人实际停止位置，范围1、2、3，对应左方,中点，右方
 	unsigned char actualStopPoint;
 	//机器人目标角度，逆时针为正，范围【-180，180】，单位度
 	float targetAngle;
