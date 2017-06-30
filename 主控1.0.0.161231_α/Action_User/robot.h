@@ -11,7 +11,8 @@
 //#define RED_FIELD
 #define BLUE_FIELD
 
-#define AUTO_MODE
+
+//#define AUTO_MODE
 
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
