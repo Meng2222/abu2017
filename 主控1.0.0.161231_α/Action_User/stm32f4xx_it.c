@@ -858,16 +858,6 @@ void UART4_IRQHandler(void)
 				break;
 			case 5:
 				id2 = ch;				//左   打球0 打盘3 扔6  右 打球1 打盘4 扔7  上 打球2 打盘5 扔8
-				//判断目标停车点位置
-				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
-				{
-					gRobot.moveBase.targetPoint = id2 / 80 + 1;
-//					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-//					OSTaskResume(Walk_TASK_PRIO);
-					status = 0;
-				}
 				id2 = id2 % 80;
 				status++;
 			break;
@@ -1249,9 +1239,22 @@ void UART4_IRQHandler(void)
 						if(id == 71)
 						{
 							gRobot.isReload = ROBOT_RELOAD;
-						}						
+						}
+						switch(id)
+						{
+							case 80:
+								gRobot.moveBase.targetPoint = SHOOT_POINT1;//Left
+							break;
+							case 81:
+								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
+							break;
+							case 83:
+								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
+							break;
+							default:break;
+						}
 						msgId = ch;
-					}				
+					}
 				}
 				status = 0;
 				break;
@@ -1445,16 +1448,6 @@ void USART1_IRQHandler(void)
 				break;
 			case 5:
 				id2 = ch;				//左   打球0 打盘3 扔6  右 打球1 打盘4 扔7  上 打球2 打盘5 扔8
-				//判断目标停车点位置
-				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
-				{
-					gRobot.moveBase.targetPoint = id2 / 80 + 1;
-//					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-//					OSTaskResume(Walk_TASK_PRIO);
-					status = 0;
-				}
 				id2 = id2 % 80;
 				status++;
 			break;
@@ -1836,7 +1829,20 @@ void USART1_IRQHandler(void)
 						if(id == 71)
 						{
 							gRobot.isReload = ROBOT_RELOAD;
-						}						
+						}
+						switch(id)
+						{
+							case 80:
+								gRobot.moveBase.targetPoint = SHOOT_POINT1;//Left
+							break;
+							case 81:
+								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
+							break;
+							case 83:
+								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
+							break;
+							default:break;
+						}
 						msgId = ch;
 					}				
 				}
@@ -2032,16 +2038,6 @@ void USART2_IRQHandler(void)
 				break;
 			case 5:
 				id2 = ch;				//左   打球0 打盘3 扔6  右 打球1 打盘4 扔7  上 打球2 打盘5 扔8
-				//判断目标停车点位置
-				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
-				{
-					gRobot.moveBase.targetPoint = id2 / 80 + 1;
-//					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-//					OSTaskResume(Walk_TASK_PRIO);
-					status = 0;
-				}
 				id2 = id2 % 80;
 				status++;
 			break;
@@ -2423,7 +2419,20 @@ void USART2_IRQHandler(void)
 						if(id == 71)
 						{
 							gRobot.isReload = ROBOT_RELOAD;
-						}						
+						}
+						switch(id)
+						{
+							case 80:
+								gRobot.moveBase.targetPoint = SHOOT_POINT1;//Left
+							break;
+							case 81:
+								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
+							break;
+							case 83:
+								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
+							break;
+							default:break;
+						}
 						msgId = ch;
 					}				
 				}
@@ -3187,16 +3196,6 @@ void UART5_IRQHandler(void)
 				break;
 			case 5:
 				id2 = ch;				//左   打球0 打盘3 扔6  右 打球1 打盘4 扔7  上 打球2 打盘5 扔8
-				//判断目标停车点位置
-				if(gRobot.moveBase.targetPoint != id2 / 80 + 1)
-				{
-					gRobot.moveBase.targetPoint = id2 / 80 + 1;
-//					OSTaskSuspend(LEFT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(RIGHT_GUN_SHOOT_TASK_PRIO);
-//					OSTaskSuspend(UPPER_GUN_SHOOT_TASK_PRIO);
-//					OSTaskResume(Walk_TASK_PRIO);
-					status = 0;
-				}
 				id2 = id2 % 80;
 				status++;
 			break;
@@ -3579,7 +3578,20 @@ void UART5_IRQHandler(void)
 						if(id == 71)
 						{
 							gRobot.isReload = ROBOT_RELOAD;
-						}						
+						}
+						switch(id)
+						{
+							case 80:
+								gRobot.moveBase.targetPoint = SHOOT_POINT1;//Left
+							break;
+							case 81:
+								gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
+							break;
+							case 83:
+								gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
+							break;
+							default:break;
+						}
 						msgId = ch;
 					}				
 				}
