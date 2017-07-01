@@ -1764,10 +1764,15 @@ void LeftGunShootTask(void)
 				{
 					if(gRobot.leftGun.targetPlant != PLANT5)
 					{
+						
 						//获取并更新枪上弹姿态
 						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[gRobot.moveBase.actualStopPoint][leftGunShootCommand.shootMethod]\
 													[leftGunShootCommand.plantNum];
-
+						if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+						{
+							gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[gRobot.moveBase.targetPoint][leftGunShootCommand.shootMethod]\
+													[leftGunShootCommand.plantNum];						
+						}
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
 					}
@@ -1776,6 +1781,11 @@ void LeftGunShootTask(void)
 						//获取并更新枪上弹姿态
 						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[gRobot.moveBase.actualStopPoint][SHOOT_METHOD4]\
 													[PLANT6];
+						if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+						{
+							gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[gRobot.moveBase.targetPoint][SHOOT_METHOD4]\
+														[PLANT6];
+						}
 
 						ROBOT_LeftGunAim();
 						ROBOT_LeftGunCheckAim();
@@ -1785,6 +1795,12 @@ void LeftGunShootTask(void)
 				{
 					gRobot.leftGun.targetPose = gLeftGunPosDatabase[gRobot.moveBase.actualStopPoint][leftGunShootCommand.shootMethod]\
 												[leftGunShootCommand.plantNum];
+					if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+					{
+						gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[gRobot.moveBase.targetPoint][leftGunShootCommand.shootMethod]\
+												[leftGunShootCommand.plantNum];						
+					}
+						
 					ROBOT_LeftGunAim();
 				}
 				//第一发弹先调整姿态一段时间后再上弹
@@ -1798,6 +1814,13 @@ void LeftGunShootTask(void)
 
 				gRobot.leftGun.targetPose = gLeftGunPosDatabase[gRobot.moveBase.actualStopPoint][leftGunShootCommand.shootMethod]\
 											[leftGunShootCommand.plantNum];
+										
+				if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+				{
+					gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[gRobot.moveBase.targetPoint][leftGunShootCommand.shootMethod]\
+											[leftGunShootCommand.plantNum];						
+				}
+
 				ROBOT_LeftGunAim();
 
 #ifndef NO_WALK_TASK
@@ -2005,10 +2028,15 @@ void RightGunShootTask(void)
 				{
 					if(gRobot.rightGun.targetPlant!=PLANT1)
 					{
+						
 						//获取并更新枪目标姿态  上弹姿态
 						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[gRobot.moveBase.actualStopPoint][rightGunShootCommand.shootMethod]\
 													 [rightGunShootCommand.plantNum];
-
+						if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+						{
+							gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[gRobot.moveBase.targetPoint][rightGunShootCommand.shootMethod]\
+														[rightGunShootCommand.plantNum];						
+						}
 						//调整枪姿为上弹姿态 need some time
 						ROBOT_RightGunAim();
 						ROBOT_RightGunCheckAim();
@@ -2018,7 +2046,11 @@ void RightGunShootTask(void)
 						//获取并更新枪目标姿态  上弹姿态
 						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[gRobot.moveBase.actualStopPoint][SHOOT_METHOD4]\
 													 [PLANT6];
-
+						if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+						{
+							gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[gRobot.moveBase.targetPoint][SHOOT_METHOD4]\
+														[PLANT6];						
+						}
 						//调整枪姿为上弹姿态 need some time
 						ROBOT_RightGunAim();
 						ROBOT_RightGunCheckAim();
@@ -2028,6 +2060,11 @@ void RightGunShootTask(void)
 				{
 					gRobot.rightGun.targetPose = gRightGunPosDatabase[gRobot.moveBase.actualStopPoint][rightGunShootCommand.shootMethod]\
 												 [rightGunShootCommand.plantNum];
+					if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+					{
+						gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[gRobot.moveBase.targetPoint][rightGunShootCommand.shootMethod]\
+													[rightGunShootCommand.plantNum];						
+					}
 					ROBOT_RightGunAim();
 				}
 //				//第一发弹调整姿态一段时间后开始上弹
@@ -2041,6 +2078,11 @@ void RightGunShootTask(void)
 
 				gRobot.rightGun.targetPose = gRightGunPosDatabase[gRobot.moveBase.actualStopPoint][rightGunShootCommand.shootMethod]\
 											 [rightGunShootCommand.plantNum];
+				if(gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
+				{
+					gRobot.rightGun.targetPose = gRightGunReloadPosDatabase[gRobot.moveBase.targetPoint][rightGunShootCommand.shootMethod]\
+												[rightGunShootCommand.plantNum];						
+				}
 				ROBOT_RightGunAim();
 
 #ifndef NO_WALK_TASK

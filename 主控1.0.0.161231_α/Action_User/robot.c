@@ -865,9 +865,10 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 8u
+	#define UPPER_AUTO_NUM 7u
 	uint8_t i = 0u;
 	uint8_t searchRange = 3;
+	gRobot.upperGun.gunCommand = (plant_t *)gRobot.autoCommand;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	//为使上枪接收命令更难
 	OSTimeDly(5);
@@ -895,7 +896,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			shootCommand.shootMethod = SHOOT_METHOD1;
 			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
 			{
-				shootCommand.shootMethod = SHOOT_METHOD4;
+				//shootCommand.shootMethod = SHOOT_METHOD4;
 			}
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].ball -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;
@@ -909,7 +910,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 			shootCommand.shootMethod = SHOOT_METHOD2;
 			if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
 			{
-				shootCommand.shootMethod = SHOOT_METHOD5;
+				//shootCommand.shootMethod = SHOOT_METHOD5;
 			}
 			gRobot.upperGun.gunCommand[UpperGunPriority[i]].plate -= 1;
 			gRobot.upperGun.commandState = GUN_HAVE_COMMAND;

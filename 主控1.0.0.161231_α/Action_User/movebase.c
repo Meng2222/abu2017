@@ -239,7 +239,7 @@ float speedDebug = 0.0f;
 void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX ,float decX)
 {
 	//三角形规划时的速度削减
-	#define TRIANGLE_VEL_REDUCE (0.6f)
+	#define TRIANGLE_VEL_REDUCE (0.85f)
 	//理论距离 单位：mm
 	float targetDist = 0.0f;
 	//加速段距离 单位：mm 加速段时间 单位：s
