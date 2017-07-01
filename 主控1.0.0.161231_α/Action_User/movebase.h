@@ -244,7 +244,7 @@ typedef struct
 	float posYSecondDerivative;
 	//摄像头返回相对场地中央位置，靠近出发区为0 范围【0，512】，场地正中间为256，单位毫米
 	unsigned short relativePos;
-		//期望位姿
+	//期望位姿
 	position_t targetPosition;
 	//实际位姿
 	position_t actualPosition;

@@ -297,12 +297,10 @@ status_t ROBOT_Init(void)
 	gRobot.stage = ROBOT_STAGE_POWER_ON;
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
-#ifdef RED_FIELD
-	gRobot.moveBase.targetPoint = SHOOT_POINT1;
-#endif
-#ifdef BLUE_FIELD
-	gRobot.moveBase.targetPoint = SHOOT_POINT3;
-#endif
+
+	gRobot.moveBase.targetPoint = SHOOT_POINT_MOVING;
+
+
 	gRobot.isReset = ROBOT_NOT_RESET;
 	//产生两个随机数
 //	RNG_Config();
@@ -373,7 +371,7 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT3].plate = 1;
 
 #ifdef AUTO_MODE	
-	InitQueue();
+//	InitQueue();
 #endif	
 	LeftGunInit();
 	RightGunInit();

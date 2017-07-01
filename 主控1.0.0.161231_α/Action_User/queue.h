@@ -119,7 +119,7 @@ void CheckCmdQueueState(void);
 uint8_t CheckCmdInQueue(cmd_t checkCmd);
 
 
-void InitQueue(void);
+void InitQueue(uint8_t stopPoint);
 
 cmd_t LeftGunOutQueue(void);
 

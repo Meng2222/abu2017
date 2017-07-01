@@ -990,7 +990,7 @@ void WalkTask(void)
 //	uint8_t clampSmallOpenFlag = 1;
 //	uint8_t clampSmallOpenCounter = 0;
 	//仅在beginToGO1中计时使用
-	uint8_t upperPhotoSensorCounter = 0;
+//	uint8_t upperPhotoSensorCounter = 0;
 	OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
 	{
@@ -1224,22 +1224,35 @@ void WalkTask(void)
 				//检测行程开关
 //				if(RESET_SWITCH)
 				//等待平板命令
-				if(gRobot.isLeaveLA == ROBOT_LEAVE_LA)
+				if(gRobot.moveBase.targetPoint != SHOOT_POINT_MOVING)
 				{
-					upperPhotoSensorCounter++;
-					//触发10次后开始走向发射区
-					if(upperPhotoSensorCounter >= 10)
-					{
+//					upperPhotoSensorCounter++;
+//					//触发10次后开始走向发射区
+//					if(upperPhotoSensorCounter >= 10)
+//					{
 						ROBOT_UpperGunAim();
 						gRobot.isReload = ROBOT_RELOAD_FINISH;
 						gRobot.isLeaveLA = ROBOT_OUT_LA;
-#ifdef RED_FIELD
-						status = goToLeftLaunchingArea;
-#endif
-#ifdef BLUE_FIELD
-						status = goToRightLaunchingArea;
-#endif
-					}
+					
+						switch(gRobot.moveBase.targetPoint)
+						{
+							case SHOOT_POINT1:
+								InitQueue(SHOOT_POINT1);
+								status = goToLeftLaunchingArea;
+								break;
+							case SHOOT_POINT2:
+								InitQueue(SHOOT_POINT2);
+								status = goToLaunchingArea;
+								break;
+							case SHOOT_POINT3:
+								InitQueue(SHOOT_POINT3);
+								status = goToRightLaunchingArea;
+								break;
+
+							default:break;
+						}
+						gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;						
+//					}
 				}
 				break;
 			}
@@ -1394,6 +1407,7 @@ void WalkTask(void)
 				//重新装弹
 				if(gRobot.isReload == ROBOT_RELOAD)
 				{
+					gRobot.moveBase.targetPoint = SHOOT_POINT_MOVING;
 					status = readyForReload;
 				}
 
