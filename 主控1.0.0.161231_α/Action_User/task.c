@@ -1491,6 +1491,7 @@ void WalkTask(void)
 				if(gRobot.moveBase.targetPoint != gRobot.moveBase.actualStopPoint)
 				{
 					gyroAngleErr = gRobot.moveBase.actualAngle;
+					ClearCmdQueue();
 					switch(gRobot.moveBase.targetPoint)
 					{
 						case SHOOT_POINT1:

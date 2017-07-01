@@ -75,7 +75,13 @@ void InCmdQueue(cmd_t inCmd);
   *			如果队列为空 则返回 {INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD}
   */
 cmd_t OutCmdQueue(void);
-
+/**
+  * @brief	ClearCmdQueue 清空队列
+  * @note	
+  * @param	None
+  * @retval 
+  */
+void ClearCmdQueue(void);
 /**
   * @}
   */

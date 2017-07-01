@@ -92,8 +92,16 @@ cmd_t OutCmdQueue(void)
 	return outCmd;
 }
 
-
-
+/**
+  * @brief	ClearCmdQueue 清空队列
+  * @note	
+  * @param	None
+  * @retval 
+  */
+void ClearCmdQueue(void)
+{
+	gRobot.manualCmdQueue.headNum = gRobot.manualCmdQueue.tailNum;
+}
 /**
   * @}
   */
