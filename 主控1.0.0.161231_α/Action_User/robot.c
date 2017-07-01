@@ -577,22 +577,24 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 				}
 			}
 		}
-		
-		//左枪优先打1#、2#;右枪优先打4#、5#
-		if(gRobot.rightGun.commandState == GUN_NO_COMMAND && gRobot.rightGun.bulletNumber > GUN_NO_BULLET_ERROR)
+		if(gRobot.moveBase.actualStopPoint == SHOOT_POINT3)
 		{
-			if((shootCommand.plantNum == PLANT5)||(shootCommand.plantNum == PLANT4))
+			//左枪优先打1#、2#;右枪优先打4#、5#
+			if(gRobot.rightGun.commandState == GUN_NO_COMMAND && gRobot.rightGun.bulletNumber > GUN_NO_BULLET_ERROR)
 			{
-				manualCmd = ReplaceHeadQueue(manualCmd);
-				if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+				if((shootCommand.plantNum == PLANT5)||(shootCommand.plantNum == PLANT4))
 				{
-					gRobot.leftGun.commandState = GUN_NO_COMMAND;		
-				}
-				else
-				{
-					shootCommand.plantNum = manualCmd.plantNum;
-					shootCommand.shootMethod = manualCmd.method;
-					gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+					manualCmd = ReplaceHeadQueue(manualCmd);
+					if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+					{
+						gRobot.leftGun.commandState = GUN_NO_COMMAND;		
+					}
+					else
+					{
+						shootCommand.plantNum = manualCmd.plantNum;
+						shootCommand.shootMethod = manualCmd.method;
+						gRobot.leftGun.commandState = GUN_HAVE_COMMAND;
+					}
 				}
 			}
 		}
@@ -795,25 +797,27 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 			}
 		}
 		
-		//左枪优先打1#、2#;右枪优先打4#、5#
-		if(gRobot.leftGun.commandState == GUN_NO_COMMAND && gRobot.leftGun.bulletNumber > GUN_NO_BULLET_ERROR)
+		if(gRobot.moveBase.actualStopPoint == SHOOT_POINT3)
 		{
-			if((shootCommand.plantNum == PLANT1)||(shootCommand.plantNum == PLANT2))
+			//左枪优先打1#、2#;右枪优先打4#、5#
+			if(gRobot.leftGun.commandState == GUN_NO_COMMAND && gRobot.leftGun.bulletNumber > GUN_NO_BULLET_ERROR)
 			{
-				manualCmd = ReplaceHeadQueue(manualCmd);
-				if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+				if((shootCommand.plantNum == PLANT1)||(shootCommand.plantNum == PLANT2))
 				{
-					gRobot.rightGun.commandState = GUN_NO_COMMAND;		
-				}
-				else
-				{
-					shootCommand.plantNum = manualCmd.plantNum;
-					shootCommand.shootMethod = manualCmd.method;
-					gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+					manualCmd = ReplaceHeadQueue(manualCmd);
+					if(manualCmd.plantNum == INVALID_PLANT_NUMBER)
+					{
+						gRobot.rightGun.commandState = GUN_NO_COMMAND;		
+					}
+					else
+					{
+						shootCommand.plantNum = manualCmd.plantNum;
+						shootCommand.shootMethod = manualCmd.method;
+						gRobot.rightGun.commandState = GUN_HAVE_COMMAND;
+					}
 				}
 			}
 		}
-
 		//标记命令开始执行
 		if(shootCommand.shootMethod%2)
 		{

@@ -149,15 +149,51 @@ cmd_t LeftGunOutQueue(void)
 	
 	outCmd2 = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum];
 	
-	if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
+	switch(gRobot.moveBase.actualStopPoint)
 	{
-		if((outCmd2.plantNum == PLANT1)||(outCmd2.plantNum == PLANT2))
+		case SHOOT_POINT1:
 		{
-			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
-			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
-			return outCmd2;
+			if(outCmd.plantNum == PLANT2)
+			{
+				if(outCmd2.plantNum == PLANT1)
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
 		}
+		case SHOOT_POINT2:
+		{
+			if(outCmd.plantNum == PLANT5)
+			{
+				if(outCmd2.plantNum == PLANT4)
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
+		}
+		case SHOOT_POINT3:
+		{
+			if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
+			{
+				if((outCmd2.plantNum == PLANT1)||(outCmd2.plantNum == PLANT2))
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
+		}
+		default:
+			break;
 	}
+
 
 	return outCmd;
 }
@@ -183,15 +219,49 @@ cmd_t RightGunOutQueue(void)
 	outCmd2.plantNum = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum;
 	outCmd2.method   = gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method;
 	
-	if((outCmd.plantNum == PLANT1)||(outCmd.plantNum == PLANT2))
+	switch(gRobot.moveBase.actualStopPoint)
 	{
-		if((outCmd2.plantNum == PLANT4)||(outCmd2.plantNum == PLANT5))
+		case SHOOT_POINT1:
 		{
-			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
-			gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
-			return outCmd2;
+			if(outCmd.plantNum == PLANT1)
+			{
+				if(outCmd2.plantNum == PLANT2)
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
+		}
+		case SHOOT_POINT2:
+		{
+			if(outCmd.plantNum == PLANT4)
+			{
+				if(outCmd2.plantNum == PLANT5)
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
+		}
+		case SHOOT_POINT3:
+		{
+			if((outCmd.plantNum == PLANT1)||(outCmd.plantNum == PLANT2))
+			{
+				if((outCmd2.plantNum == PLANT4)||(outCmd2.plantNum == PLANT5))
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
 		}
 	}
+
 
 	return outCmd;
 }
