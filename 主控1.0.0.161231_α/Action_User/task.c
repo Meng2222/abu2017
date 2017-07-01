@@ -2516,10 +2516,12 @@ void UpperGunShootTask(void)
 					//发射完成后标志任务执行完成
 					if(gRobot.upperGun.shootParaMode%3)
 					{
+						gRobot.manualCmdQueue.cmdPlateState&=(~((uint8_t)0x01<<(gRobot.upperGun.targetPlant)))&0x7f;
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
 					}
 					else
 					{
+						gRobot.manualCmdQueue.cmdBallState&=(~((uint8_t)0x01<<(gRobot.upperGun.targetPlant)))&0x7f;
 						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
 					}
 					UART5_OUT((uint8_t *)"Attack");

@@ -441,6 +441,10 @@ typedef struct
 	plant_t plantState[LAND_NUMBER];
 	//自动发射命令
 	plant_t autoCommand[LAND_NUMBER];
+	//上枪左侧发射点命令
+	plant_t upperLeftCommand[LAND_NUMBER];
+	//上枪右侧发射点命令
+	plant_t upperRightCommand[LAND_NUMBER];
 	//摄像头反馈着陆台状态
 	plant_t cameraInfo[LAND_NUMBER];
 
