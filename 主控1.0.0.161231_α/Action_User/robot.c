@@ -299,7 +299,7 @@ status_t ROBOT_Init(void)
 	gRobot.status = ROBOT_STATUS_OK;
 
 	gRobot.moveBase.targetPoint = SHOOT_POINT_MOVING;
-
+	gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
 
 	gRobot.isReset = ROBOT_NOT_RESET;
 	//产生两个随机数
@@ -2218,7 +2218,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 	if((gRobot.leftGun.shootTimes == 0 && gRobot.leftGun.champerErrerState == GUN_RELOAD_OK)\
-		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD)
+		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD||gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);
@@ -2241,7 +2241,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 	CPU_INT08U  os_err;
 
 	if((gRobot.rightGun.shootTimes == 0 && gRobot.rightGun.champerErrerState == GUN_RELOAD_OK)\
-		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD)
+		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD||gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);
@@ -2262,7 +2262,8 @@ status_t ROBOT_UpperGunCheckAim(void)
 {
 	CPU_INT08U  os_err;
 
-	if(((gRobot.upperGun.shootTimes == 0)&&(gRobot.upperGun.mode != GUN_MANUAL_MODE))||(gRobot.isReset == ROBOT_RESET)||(gRobot.isReload == ROBOT_RELOAD))
+	if(((gRobot.upperGun.shootTimes == 0)&&(gRobot.upperGun.mode != GUN_MANUAL_MODE))\
+		||(gRobot.isReset == ROBOT_RESET)||(gRobot.isReload == ROBOT_RELOAD)||gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
 	{
 		OSMboxPend(UpperGunShootPointMbox,0,&os_err);
 //		OSTimeDly(100);
