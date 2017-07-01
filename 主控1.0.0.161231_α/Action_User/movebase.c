@@ -238,6 +238,8 @@ float distDebug = 0.0f;
 float speedDebug = 0.0f;
 void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, float accX ,float decX)
 {
+	//三角形规划时的速度削减
+	#define TRIANGLE_VEL_REDUCE (0.6f)
 	//理论距离 单位：mm
 	float targetDist = 0.0f;
 	//加速段距离 单位：mm 加速段时间 单位：s
@@ -307,24 +309,34 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	/*三角形速度规划部分*/
 	else if ((distAcc + distDec) >= targetDist)
 	{
-		timeAcc = sqrtf(2.0f * targetDist * (accX + decX)) / accX;
+		timeAcc = sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE / accX;
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
-		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) / decX;
+		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE / decX;
 		distDec = 0.5f * decX * pow(timeDec, 2);
-
+		distConst = targetDist - distAcc - distDec;
+		timeConst = distConst / (sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE);
+		
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
 			pExpData->speed = accX * (moveTimer + 0.01f);
 			moveState = ACCERLATING;
 		}
-		else if (moveTimer > timeAcc && moveTimer <= (timeAcc + timeDec))    /*减速段*/
+		else if(moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))/*匀速段*/
 		{
-			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec - moveTimer, 2);
-			pExpData->speed = decX * (timeAcc + timeDec - moveTimer - 0.01f);
+			pExpData->dist = targetDist - distAcc -\
+			(sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE) * (moveTimer - timeAcc);
+			pExpData->speed = (sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE);
+			moveState = CONSTANT_SPEED;	
+		}
+		else if (moveTimer > (timeAcc + timeConst) &&
+			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
+		{
+			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec + timeConst - moveTimer, 2);
+			pExpData->speed = decX * (timeAcc + timeDec + timeConst - moveTimer - 0.01f);
 			moveState = DECELERATING;
 		}
-		else if (moveTimer > (timeAcc + timeDec))
+		else if (moveTimer > (timeAcc + timeDec + timeConst))
 		{
 			pExpData->dist = 0;
 			pExpData->speed = 0;
