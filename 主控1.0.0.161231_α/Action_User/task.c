@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -1237,6 +1237,7 @@ void WalkTask(void)
 					
 						switch(gRobot.moveBase.targetPoint)
 						{
+							//左发射点
 							case SHOOT_POINT1:
 								if(loadTimes == 0)
 								{
@@ -1244,6 +1245,7 @@ void WalkTask(void)
 								}
 								status = goToLeftLaunchingArea;
 								break;
+							//场地中央发射点
 							case SHOOT_POINT2:
 								if(loadTimes == 0)
 								{
@@ -1251,6 +1253,7 @@ void WalkTask(void)
 								}
 								status = goToLaunchingArea;
 								break;
+							//右发射点
 							case SHOOT_POINT3:
 								if(loadTimes == 0)
 								{

@@ -865,7 +865,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 7u
+	#define UPPER_AUTO_NUM 8u
 	uint8_t i = 0u;
 	uint8_t searchRange = 3;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
@@ -881,7 +881,7 @@ shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 		searchRange = 5;
 		gRobot.upperGun.gunCommand = (plant_t *)gRobot.upperLeftCommand;
 	}
-	if(gRobot.moveBase.actualStopPoint == SHOOT_POINT2)
+	if(gRobot.moveBase.actualStopPoint == SHOOT_POINT3)
 	{
 		searchRange = 5;
 		gRobot.upperGun.gunCommand = (plant_t *)gRobot.upperRightCommand;		
