@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -815,7 +815,7 @@ void SelfCheckTask(void)
 						if(gRobot.leftGun.lastPlant == PLANT7 || leftGunShootCommand.plantNum == PLANT3 )
 						{
 							//获取并更新枪上弹姿态
-							gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[SHOOT_POINT3][leftGunShootCommand.shootMethod]\
+							gRobot.leftGun.targetPose = gLeftGunReloadPosDatabase[SHOOT_POINT2][leftGunShootCommand.shootMethod]\
 														[leftGunShootCommand.plantNum];
 
 							ROBOT_LeftGunAim();
@@ -823,7 +823,7 @@ void SelfCheckTask(void)
 						}
 						else/* if(gRobot.leftGun.shootTimes == 0)*/
 						{
-							gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT3][leftGunShootCommand.shootMethod]\
+							gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT2][leftGunShootCommand.shootMethod]\
 														[leftGunShootCommand.plantNum];
 							ROBOT_LeftGunAim();
 						}
@@ -836,7 +836,7 @@ void SelfCheckTask(void)
 						//上弹
 						ROBOT_LeftGunReload();
 
-						gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT3][leftGunShootCommand.shootMethod]\
+						gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT2][leftGunShootCommand.shootMethod]\
 													[leftGunShootCommand.plantNum];
 						ROBOT_LeftGunAim();
 
@@ -929,7 +929,7 @@ void SelfCheckTask(void)
 						//7#需要先到上弹角度再上弹
 						if(gRobot.leftGun.targetPlant == PLANT7)
 						{
-							gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[SHOOT_POINT3][gRobot.leftGun.shootParaMode]\
+							gRobot.leftGun.reloadPose = gLeftGunReloadPosDatabase[SHOOT_POINT2][gRobot.leftGun.shootParaMode]\
 														[gRobot.leftGun.targetPlant];
 
 							ROBOT_LeftGunReloadAim();
@@ -1687,7 +1687,7 @@ void LeftGunShootTask(void)
 #endif
 	//然后延时0.2s以后 弹匣推弹收回
 
-	gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4]\
+	gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4]\
 								[PLANT6];
 
 //	gRobot.leftGun.targetPose.yaw +=20.0f;
@@ -1928,7 +1928,7 @@ void RightGunShootTask(void)
 #endif
 	//然后延时0.2s以后 弹匣推弹收回
 	//获取并更新枪目标姿态  上弹姿态
-	gRobot.rightGun.targetPose = gRightGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4]\
+	gRobot.rightGun.targetPose = gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4]\
 								 [PLANT6];
 
 	//调整枪姿为上弹姿态 need some time

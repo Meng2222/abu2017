@@ -12,7 +12,7 @@
 #define BLUE_FIELD
 
 
-#define AUTO_MODE
+//#define AUTO_MODE
 
 #define LEFT_AUTO_NUMBER 4u
 #define RIGHT_AUTO_NUMBER 4u
@@ -234,9 +234,9 @@
 #define SHOOT_POINT_NUM 3
 //左发射点
 #define SHOOT_POINT1 0
-//靠近右发射点
-#define SHOOT_POINT2 1
 //场地中央发射点
+#define SHOOT_POINT2 1
+//右发射点
 #define SHOOT_POINT3 2
 //移动中
 #define SHOOT_POINT_MOVING 3

@@ -175,9 +175,9 @@ cmd_t LeftGunOutQueue(void)
 		}
 		case SHOOT_POINT2:
 		{
-			if(outCmd.plantNum == PLANT5)
+			if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
 			{
-				if(outCmd2.plantNum == PLANT4)
+				if((outCmd2.plantNum == PLANT1)||(outCmd2.plantNum == PLANT2))
 				{
 					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
 					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
@@ -186,11 +186,12 @@ cmd_t LeftGunOutQueue(void)
 			}
 			break;
 		}
+
 		case SHOOT_POINT3:
 		{
-			if((outCmd.plantNum == PLANT4)||(outCmd.plantNum == PLANT5))
+			if(outCmd.plantNum == PLANT5)
 			{
-				if((outCmd2.plantNum == PLANT1)||(outCmd2.plantNum == PLANT2))
+				if(outCmd2.plantNum == PLANT4)
 				{
 					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
 					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
@@ -245,19 +246,6 @@ cmd_t RightGunOutQueue(void)
 		}
 		case SHOOT_POINT2:
 		{
-			if(outCmd.plantNum == PLANT4)
-			{
-				if(outCmd2.plantNum == PLANT5)
-				{
-					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
-					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
-					return outCmd2;
-				}
-			}
-			break;
-		}
-		case SHOOT_POINT3:
-		{
 			if((outCmd.plantNum == PLANT1)||(outCmd.plantNum == PLANT2))
 			{
 				if((outCmd2.plantNum == PLANT4)||(outCmd2.plantNum == PLANT5))
@@ -269,6 +257,21 @@ cmd_t RightGunOutQueue(void)
 			}
 			break;
 		}
+		case SHOOT_POINT3:
+		{
+			if(outCmd.plantNum == PLANT4)
+			{
+				if(outCmd2.plantNum == PLANT5)
+				{
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].plantNum = outCmd.plantNum;
+					gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.headNum].method   = outCmd.method;
+					return outCmd2;
+				}
+			}
+			break;
+		}
+		default:
+			break;
 	}
 
 
@@ -385,22 +388,18 @@ void InitQueue(unsigned char stopPoint)
 	uint8_t randCmd;
 	cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
 	switch(stopPoint)
-	{			
+	{		
+		//场地左侧发射点
 		case SHOOT_POINT1:
 		{
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
 			break;
 		}
+		//场地中央发射点
 		case SHOOT_POINT2:
 		{
-			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);			
-			break;
-		}
-		case SHOOT_POINT3:
-		{
-			RNG_Config();
+						RNG_Config();
 			
 			rand0 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
 			rand1 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
@@ -454,6 +453,14 @@ void InitQueue(unsigned char stopPoint)
 					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 				break;
 			}
+			break;
+		}
+		//场地右侧发射点
+		case SHOOT_POINT3:
+		{
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);			
+
 			break;
 		}
 		default:

@@ -44,14 +44,14 @@ static void LeftGunInit(void)
 		}
 	}
 	//特殊上弹角度
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
-	gLeftGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
+	gLeftGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT7].pitch = 20.0f;
 
 
 	gRobot.leftGun.maxPoseLimit.pitch = 40.0f;
@@ -136,14 +136,14 @@ static void RightGunInit(void)
 			}
 		}
 	}
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
-	gRightGunReloadPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD1][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD2][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD3][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT3].pitch = 26.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD1][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD2][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD3][PLANT7].pitch = 20.0f;
+	gRightGunReloadPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT7].pitch = 20.0f;
 
 	gRobot.rightGun.maxPoseLimit.pitch = 40.0f;
 	gRobot.rightGun.maxPoseLimit.yaw = 50.0f;
@@ -230,11 +230,11 @@ static void UpperGunInit(void)
 	gRobot.upperGun.minPoseLimit.speed1=0.0f;
 	gRobot.upperGun.minPoseLimit.speed2=0.0f;
 
-	gRobot.upperGun.targetPose.pitch = gUpperGunPosDatabase[SHOOT_POINT3][gUpperGunShootCmds[0].plantNum]\
+	gRobot.upperGun.targetPose.pitch = gUpperGunPosDatabase[SHOOT_POINT2][gUpperGunShootCmds[0].plantNum]\
 															[gUpperGunShootCmds[0].shootMethod][ZONE1].pitch;
-	gRobot.upperGun.targetPose.yaw = gUpperGunPosDatabase[SHOOT_POINT3][gUpperGunShootCmds[0].plantNum]\
+	gRobot.upperGun.targetPose.yaw = gUpperGunPosDatabase[SHOOT_POINT2][gUpperGunShootCmds[0].plantNum]\
 														[gUpperGunShootCmds[0].shootMethod][ZONE1].yaw;
-	gRobot.upperGun.targetPose.speed1 = gUpperGunPosDatabase[SHOOT_POINT3][gUpperGunShootCmds[0].plantNum]\
+	gRobot.upperGun.targetPose.speed1 = gUpperGunPosDatabase[SHOOT_POINT2][gUpperGunShootCmds[0].plantNum]\
 														[gUpperGunShootCmds[0].shootMethod][ZONE1].speed1;
 
 
@@ -387,8 +387,8 @@ status_t ROBOT_Init(void)
 	gRobot.autoCommand[PLANT6].plate = 4;
 	gRobot.autoCommand[PLANT3].plate = 1;
 	
-	gRobot.upperLeftCommand[PLANT2].ball = 1;
-	gRobot.upperRightCommand[PLANT4].ball = 1;
+//	gRobot.upperLeftCommand[PLANT2].ball = 1;
+//	gRobot.upperRightCommand[PLANT4].ball = 1;
 
 #ifdef AUTO_MODE	
 //	InitQueue();
@@ -556,7 +556,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 {
 
 	#define LEFT_NEW_PLATE_NUM 10u
-	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	shoot_command_t shootCommand = {SHOOT_POINT2, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	cmd_t manualCmd;
 	//防止同一个枪连续执行命令
 	OSTimeDly(1);
@@ -597,7 +597,7 @@ shoot_command_t ROBOT_LeftGunGetShootCommandFIFO(void)
 				}
 			}
 		}
-		if(gRobot.moveBase.actualStopPoint == SHOOT_POINT3)
+		if(gRobot.moveBase.actualStopPoint == SHOOT_POINT2)
 		{
 			//左枪优先打1#、2#;右枪优先打4#、5#
 			if(gRobot.rightGun.commandState == GUN_NO_COMMAND && gRobot.rightGun.bulletNumber > GUN_NO_BULLET_ERROR)
@@ -817,7 +817,7 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 			}
 		}
 		
-		if(gRobot.moveBase.actualStopPoint == SHOOT_POINT3)
+		if(gRobot.moveBase.actualStopPoint == SHOOT_POINT2)
 		{
 			//左枪优先打1#、2#;右枪优先打4#、5#
 			if(gRobot.leftGun.commandState == GUN_NO_COMMAND && gRobot.leftGun.bulletNumber > GUN_NO_BULLET_ERROR)
@@ -2487,9 +2487,9 @@ status_t ROBOT_RightGunHome(void)
 */
 status_t ROBOT_UpperGunHome(void)
 {
-	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(gUpperGunPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD3][ZONE3].yaw));
-	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gUpperGunPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD3][ZONE3].pitch));
-	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(gUpperGunPosDatabase[SHOOT_POINT3][PLANT7][SHOOT_METHOD3][ZONE3].speed1));
+	PosCrl(CAN1, UPPER_GUN_YAW_ID, POS_ABS, UpperGunYawTransform(gUpperGunPosDatabase[SHOOT_POINT2][PLANT7][SHOOT_METHOD3][ZONE3].yaw));
+	PosCrl(CAN1, UPPER_GUN_PITCH_ID, POS_ABS, UpperGunPitchTransform(gUpperGunPosDatabase[SHOOT_POINT2][PLANT7][SHOOT_METHOD3][ZONE3].pitch));
+	VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(gUpperGunPosDatabase[SHOOT_POINT2][PLANT7][SHOOT_METHOD3][ZONE3].speed1));
 	return GUN_NO_ERROR;
 }
 
@@ -2606,12 +2606,12 @@ status_t ROBOT_RightGunCheckConflict(void)
 */
 status_t ROBOT_LeftGunReturn(void)
 {
-	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].yaw));
-	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].pitch));
-	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].roll));
+	PosCrl(CAN1, LEFT_GUN_YAW_ID, POS_ABS, LeftGunYawTransform(gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].yaw));
+	PosCrl(CAN1, LEFT_GUN_PITCH_ID, POS_ABS, LeftGunPitchTransform(gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].pitch));
+	PosCrl(CAN1, LEFT_GUN_ROLL_ID, POS_ABS, LeftGunRollTransform(gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].roll));
 
-	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gLeftGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].speed1));
-	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gLeftGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].speed2));
+	VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].speed1));
+	VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].speed2));
 
 	return GUN_NO_ERROR;
 }
@@ -2624,12 +2624,12 @@ status_t ROBOT_LeftGunReturn(void)
 */
 status_t ROBOT_RightGunReturn(void)
 {
-	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].yaw));
-	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].pitch));
-	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].roll));
+	PosCrl(CAN1, RIGHT_GUN_YAW_ID, POS_ABS, RightGunYawTransform(gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].yaw));
+	PosCrl(CAN1, RIGHT_GUN_PITCH_ID, POS_ABS, RightGunPitchTransform(gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].pitch));
+	PosCrl(CAN1, RIGHT_GUN_ROLL_ID, POS_ABS, RightGunRollTransform(gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].roll));
 
-	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRightGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].speed1));
-	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_POINT3][SHOOT_METHOD4][PLANT6].speed2));
+	VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].speed1));
+	VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4][PLANT6].speed2));
 
 	return GUN_NO_ERROR;
 
