@@ -987,6 +987,7 @@ void WalkTask(void)
 	uint8_t setLaunchPosFlag = 1;
 	uint8_t sendSignal = 1;
 	uint8_t sendSignal2Camera = 1;
+	uint8_t loadTimes = 0;
 //	uint8_t clampSmallOpenFlag = 1;
 //	uint8_t clampSmallOpenCounter = 0;
 	//仅在beginToGO1中计时使用
@@ -1237,20 +1238,30 @@ void WalkTask(void)
 						switch(gRobot.moveBase.targetPoint)
 						{
 							case SHOOT_POINT1:
-								InitQueue(SHOOT_POINT1);
+								if(loadTimes == 0)
+								{
+									InitQueue(SHOOT_POINT1);
+								}
 								status = goToLeftLaunchingArea;
 								break;
 							case SHOOT_POINT2:
-								InitQueue(SHOOT_POINT2);
+								if(loadTimes == 0)
+								{
+									InitQueue(SHOOT_POINT2);
+								}
 								status = goToLaunchingArea;
 								break;
 							case SHOOT_POINT3:
-								InitQueue(SHOOT_POINT3);
+								if(loadTimes == 0)
+								{
+									InitQueue(SHOOT_POINT3);
+								}
 								status = goToRightLaunchingArea;
 								break;
 
 							default:break;
 						}
+						loadTimes++;
 						gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;						
 //					}
 				}
