@@ -582,6 +582,14 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		moveTimFlag = 1;
 	}
 
+	if(startPos >= targetPos)
+	{
+		velX = -fabs(velX);
+	}
+	else
+	{
+		velX = fabs(velX);
+	}
 	//轨迹计算
 	CalcPath(&expData, velX, startPos, targetPos, accX , decX);
 
