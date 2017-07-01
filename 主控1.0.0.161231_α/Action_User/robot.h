@@ -231,6 +231,7 @@
 //补弹落盘参数
 #define SHOOT_METHOD6  5
 //发射点位置
+#define SHOOT_POINT_NUM 3
 //左发射点
 #define SHOOT_POINT1 0
 //靠近右发射点
