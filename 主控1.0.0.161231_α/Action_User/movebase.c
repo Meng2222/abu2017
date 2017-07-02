@@ -309,12 +309,12 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	/*三角形速度规划部分*/
 	else if ((distAcc + distDec) >= targetDist)
 	{
-		timeAcc = sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE / accX;
+		timeAcc = sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE / accX;
 		distAcc = 0.5f * accX * pow(timeAcc, 2);
-		timeDec = sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE / decX;
+		timeDec = sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE / decX;
 		distDec = 0.5f * decX * pow(timeDec, 2);
 		distConst = targetDist - distAcc - distDec;
-		timeConst = distConst / (sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE);
+		timeConst = distConst / (sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE);
 		
 		if (moveTimer <= timeAcc)    /*加速段*/
 		{
@@ -325,8 +325,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		else if(moveTimer > timeAcc && moveTimer <= (timeAcc + timeConst))/*匀速段*/
 		{
 			pExpData->dist = targetDist - distAcc -\
-			(sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE) * (moveTimer - timeAcc);
-			pExpData->speed = (sqrtf(2.0f * targetDist * (accX + decX)) * TRIANGLE_VEL_REDUCE);
+			(sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE) * (moveTimer - timeAcc);
+			pExpData->speed = (sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE);
 			moveState = CONSTANT_SPEED;	
 		}
 		else if (moveTimer > (timeAcc + timeConst) &&
