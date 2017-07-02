@@ -2288,7 +2288,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 		{
 			//第一种参数类型对应打球落盘
 			{
-				{-1.0f,6.9f,0.0f,135.0f,10.0f},
+				{-1.0f,5.6f,0.0f,135.0f,10.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -2441,7 +2441,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第二种参数类型对应落盘
 			{
-				{6.2f,13.6f,0.0f,99.0f,18.0f},
+				{10.0f,13.4f,0.0f,99.0f,14.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -2480,7 +2480,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 		{
 			//第一种参数类型对应打球同时落盘
 			{
-				{-1.1f, -1.3f, 0.0f,80.0f,0.0f},
+				{-1.1f, -2.4f, 0.0f,78.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
