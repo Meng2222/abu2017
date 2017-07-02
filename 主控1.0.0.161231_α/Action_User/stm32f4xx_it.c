@@ -1208,7 +1208,7 @@ void UART4_IRQHandler(void)
 						|| (msgId - ch > 90u))
 					{
 						UART5_OUT((uint8_t *)"BLE");
-						if(manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)
+						if((manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
 						{
 							InCmdQueue(manualCmd);
 							UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
@@ -1230,15 +1230,21 @@ void UART4_IRQHandler(void)
 								{
 									if(manualCmd.method == SHOOT_METHOD3)
 									{
-										gRobot.plantState[PLANT3].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										if(gRobot.plantState[PLANT3].ballState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT3].ball = 1;
+											gRobot.manualCmdQueue.cmdBallState |= 0x04;
+											UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										}
 									}
 									else if(manualCmd.method == SHOOT_METHOD4)
 									{
-										gRobot.plantState[PLANT3].plate = 1;
-										gRobot.manualCmdQueue.cmdPlateState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										if(gRobot.plantState[PLANT3].plateState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT3].plate = 1;
+											gRobot.manualCmdQueue.cmdPlateState |= 0x04;
+											UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										}
 									}
 									break;
 								}
@@ -1246,12 +1252,16 @@ void UART4_IRQHandler(void)
 								{
 									if(manualCmd.method == SHOOT_METHOD3)
 									{
-										gRobot.plantState[PLANT7].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x40;
-										UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+										if(gRobot.plantState[PLANT7].ballState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT7].ball = 1;
+											gRobot.manualCmdQueue.cmdBallState |= 0x40;
+											UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+										}
 									}
 									else if(manualCmd.method == SHOOT_METHOD4)
 									{
+										if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 										gRobot.plantState[PLANT7].plate = 1;
 										gRobot.manualCmdQueue.cmdPlateState |= 0x40;
 										UART5_OUT((uint8_t *)"upperplant7method4\r\n");
@@ -1843,62 +1853,76 @@ void USART1_IRQHandler(void)
 						UART5_OUT((uint8_t *)"BLE");
 						if(manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)
 						{
-							InCmdQueue(manualCmd);
-							UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
-							gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method);
-							if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method%2)
+							UART5_OUT((uint8_t *)"BLE");
+							if((manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
 							{
-								gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);
+								InCmdQueue(manualCmd);
+								UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
+								gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method);
+								if(gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].method%2)
+								{
+									gRobot.manualCmdQueue.cmdPlateState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);
+								}
+								else
+								{
+									gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);			
+								}
 							}
 							else
 							{
-								gRobot.manualCmdQueue.cmdBallState |= (0x01<<gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum);			
-							}
-						}
-						else
-						{
-							switch(manualCmd.plantNum)
-							{
-								case PLANT3:
+								switch(manualCmd.plantNum)
 								{
-									if(manualCmd.method == SHOOT_METHOD3)
+									case PLANT3:
 									{
-										gRobot.plantState[PLANT3].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										if(manualCmd.method == SHOOT_METHOD3)
+										{
+											if(gRobot.plantState[PLANT3].ballState == COMMAND_DONE)
+											{
+												gRobot.plantState[PLANT3].ball = 1;
+												gRobot.manualCmdQueue.cmdBallState |= 0x04;
+												UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+											}
+										}
+										else if(manualCmd.method == SHOOT_METHOD4)
+										{
+											if(gRobot.plantState[PLANT3].plateState == COMMAND_DONE)
+											{
+												gRobot.plantState[PLANT3].plate = 1;
+												gRobot.manualCmdQueue.cmdPlateState |= 0x04;
+												UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+											}
+										}
+										break;
 									}
-									else if(manualCmd.method == SHOOT_METHOD4)
+									case PLANT7:
 									{
-										gRobot.plantState[PLANT3].plate = 1;
-										gRobot.manualCmdQueue.cmdPlateState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										if(manualCmd.method == SHOOT_METHOD3)
+										{
+											if(gRobot.plantState[PLANT7].ballState == COMMAND_DONE)
+											{
+												gRobot.plantState[PLANT7].ball = 1;
+												gRobot.manualCmdQueue.cmdBallState |= 0x40;
+												UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+											}
+										}
+										else if(manualCmd.method == SHOOT_METHOD4)
+										{
+											if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
+											gRobot.plantState[PLANT7].plate = 1;
+											gRobot.manualCmdQueue.cmdPlateState |= 0x40;
+											UART5_OUT((uint8_t *)"upperplant7method4\r\n");
+										}
+										break;
 									}
-									break;
+									default:
+										break;
 								}
-								case PLANT7:
-								{
-									if(manualCmd.method == SHOOT_METHOD3)
-									{
-										gRobot.plantState[PLANT7].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x40;
-										UART5_OUT((uint8_t *)"upperplant7method3\r\n");
-									}
-									else if(manualCmd.method == SHOOT_METHOD4)
-									{
-										gRobot.plantState[PLANT7].plate = 1;
-										gRobot.manualCmdQueue.cmdPlateState |= 0x40;
-										UART5_OUT((uint8_t *)"upperplant7method4\r\n");
-									}
-									break;
-								}
-								default:
-									break;
 							}
+							msgId = ch;
+		//					CheckCmdQueueState();
+		//					DelTailQueue();
+		//					CheckCmdQueueState();
 						}
-						msgId = ch;
-	//					CheckCmdQueueState();
-	//					DelTailQueue();
-	//					CheckCmdQueueState();
 					}
 				}
 				else
@@ -2474,7 +2498,7 @@ void USART2_IRQHandler(void)
 						|| (msgId - ch > 90u))
 					{
 						UART5_OUT((uint8_t *)"BLE");
-						if(manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)
+						if((manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
 						{
 							InCmdQueue(manualCmd);
 							UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
@@ -2496,15 +2520,21 @@ void USART2_IRQHandler(void)
 								{
 									if(manualCmd.method == SHOOT_METHOD3)
 									{
-										gRobot.plantState[PLANT3].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										if(gRobot.plantState[PLANT3].ballState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT3].ball = 1;
+											gRobot.manualCmdQueue.cmdBallState |= 0x04;
+											UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										}
 									}
 									else if(manualCmd.method == SHOOT_METHOD4)
 									{
-										gRobot.plantState[PLANT3].plate = 1;
-										gRobot.manualCmdQueue.cmdPlateState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										if(gRobot.plantState[PLANT3].plateState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT3].plate = 1;
+											gRobot.manualCmdQueue.cmdPlateState |= 0x04;
+											UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										}
 									}
 									break;
 								}
@@ -2512,12 +2542,16 @@ void USART2_IRQHandler(void)
 								{
 									if(manualCmd.method == SHOOT_METHOD3)
 									{
-										gRobot.plantState[PLANT7].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x40;
-										UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+										if(gRobot.plantState[PLANT7].ballState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT7].ball = 1;
+											gRobot.manualCmdQueue.cmdBallState |= 0x40;
+											UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+										}
 									}
 									else if(manualCmd.method == SHOOT_METHOD4)
 									{
+										if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 										gRobot.plantState[PLANT7].plate = 1;
 										gRobot.manualCmdQueue.cmdPlateState |= 0x40;
 										UART5_OUT((uint8_t *)"upperplant7method4\r\n");
@@ -3675,8 +3709,8 @@ void UART5_IRQHandler(void)
 					if((ch - msgId < 10u && ch - msgId > 0u)
 						|| (msgId - ch > 90u))
 					{
-						UART5_OUT((uint8_t *)"Wifi");
-						if(manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)
+						UART5_OUT((uint8_t *)"BLE");
+						if((manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
 						{
 							InCmdQueue(manualCmd);
 							UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
@@ -3698,15 +3732,21 @@ void UART5_IRQHandler(void)
 								{
 									if(manualCmd.method == SHOOT_METHOD3)
 									{
-										gRobot.plantState[PLANT3].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										if(gRobot.plantState[PLANT3].ballState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT3].ball = 1;
+											gRobot.manualCmdQueue.cmdBallState |= 0x04;
+											UART5_OUT((uint8_t *)"upperplant3method3\r\n");
+										}
 									}
 									else if(manualCmd.method == SHOOT_METHOD4)
 									{
-										gRobot.plantState[PLANT3].plate = 1;
-										gRobot.manualCmdQueue.cmdPlateState |= 0x04;
-										UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										if(gRobot.plantState[PLANT3].plateState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT3].plate = 1;
+											gRobot.manualCmdQueue.cmdPlateState |= 0x04;
+											UART5_OUT((uint8_t *)"upperplant3method4\r\n");
+										}
 									}
 									break;
 								}
@@ -3714,12 +3754,16 @@ void UART5_IRQHandler(void)
 								{
 									if(manualCmd.method == SHOOT_METHOD3)
 									{
-										gRobot.plantState[PLANT7].ball = 1;
-										gRobot.manualCmdQueue.cmdBallState |= 0x40;
-										UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+										if(gRobot.plantState[PLANT7].ballState == COMMAND_DONE)
+										{
+											gRobot.plantState[PLANT7].ball = 1;
+											gRobot.manualCmdQueue.cmdBallState |= 0x40;
+											UART5_OUT((uint8_t *)"upperplant7method3\r\n");
+										}
 									}
 									else if(manualCmd.method == SHOOT_METHOD4)
 									{
+										if(gRobot.plantState[PLANT7].plateState == COMMAND_DONE)
 										gRobot.plantState[PLANT7].plate = 1;
 										gRobot.manualCmdQueue.cmdPlateState |= 0x40;
 										UART5_OUT((uint8_t *)"upperplant7method4\r\n");
