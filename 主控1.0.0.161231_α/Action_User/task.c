@@ -1274,7 +1274,7 @@ void WalkTask(void)
 			case goToLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X, 1000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X, 3200.0f, 2000.0f , 2000.0f);
 
 				if (fabs(GetPosX() - (-LAUNCH_STOP_X)) < 10.0f)
 				{
@@ -1290,7 +1290,7 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
-				MoveTo(LAUNCH_STOP_X, -1000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X, -3200.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
 				if (fabs(GetPosX() - LAUNCH_STOP_X) < 10.0f)
@@ -1310,7 +1310,7 @@ void WalkTask(void)
 			case goToRightLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X + SIDE_DISTANCE, 2000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X + SIDE_DISTANCE, 3000.0f, 2000.0f , 2000.0f);
 
 				if (fabs(GetPosX() - (-LAUNCH_STOP_X + SIDE_DISTANCE)) < 10.0f)
 				{
@@ -1325,7 +1325,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-				MoveTo(LAUNCH_STOP_X + SIDE_DISTANCE, -1000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X + SIDE_DISTANCE, -3000.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
 				if (fabs(GetPosX() - (LAUNCH_STOP_X + SIDE_DISTANCE)) < 10.0f)
@@ -1344,7 +1344,7 @@ void WalkTask(void)
 			case goToLeftLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X - SIDE_DISTANCE, 1000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X - SIDE_DISTANCE, 3000.0f, 2000.0f , 2000.0f);
 
 				//				if (GetPosX() >= -6459.14f)
 				if (fabs(GetPosX() - (-LAUNCH_STOP_X - SIDE_DISTANCE)) < 10.0f)
@@ -1360,7 +1360,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-				MoveTo(LAUNCH_STOP_X - SIDE_DISTANCE, -2000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X - SIDE_DISTANCE, -3000.0f, 2000.0f , 2000.0f);
 
 				//到位后给靠墙速度
 				if (fabs(GetPosX() - (LAUNCH_STOP_X - SIDE_DISTANCE)) < 10.0f)
