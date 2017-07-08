@@ -102,6 +102,8 @@ void ClearCmdQueue(void)
 {
 	gRobot.manualCmdQueue.headNum = gRobot.manualCmdQueue.tailNum;
 	gRobot.manualCmdQueue.elementNum = 0;
+	gRobot.manualCmdQueue.cmdPlateState = 0;
+	gRobot.manualCmdQueue.cmdPlateState = 0;
 }
 /**
   * @}
