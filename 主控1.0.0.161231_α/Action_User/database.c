@@ -745,7 +745,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		 //5#着陆台
 		 {33.6f,18.5f,16.4f,77.0f,18.0f},
 		 //6#着陆台
-		 {6.4f ,20.6f,1.4f,107.0f,17.0f},
+		 {5.9f ,20.6f,1.4f,107.0f,16.0f},
 		 //7#着陆台
 		 {-3.5f,35.9f, 0.0f,45.0f,14.0f}}
 	 },
