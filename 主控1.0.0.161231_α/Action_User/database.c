@@ -272,7 +272,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBER
 		 {7.0f, 24.9f,6.0f,16.0f,77.0f}},
 		//第四类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		 {2.5f, 18.2f, 11.2f, 16.0f, 71.0f},
+		 {1.5f, 17.9f, 10.7f, 17.0f, 67.0f},
 		 //2#着陆台
 		 {-15.1f, 24.6f, 14.4f, 21.0f, 77.0f},
 		 //3#着陆台
@@ -335,9 +335,9 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBER
 		 {7.0f, 24.9f,6.0f,16.0f,77.0f}},
 		//第四类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		 {-33.7f, 18.1f, 15.9f, 21.0f, 75.0f},
+		 {-33.7f, 17.6f, 15.9f, 18.0f, 76.0f},
 		 //2#着陆台
-		 {-13.8f, 25.5f, 14.1f, 22.0f, 75.0f},
+		 {-16.3f, 24.0f, 14.1f, 20.0f, 72.0f},
 		 //3#着陆台
 		 {-0.3f, 30.9f, 0.6f, 16.0f, 88.0f},
 		 //4#着陆台
@@ -406,7 +406,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBER
 		 //4#着陆台
 		 {22.1f, 25.2f, 6.5f, 20.0f,82.0f},
 		 //5#着陆台
-		 {2.5f,18.2f,11.2f,16.0f,71.0f},
+		 {1.5f,17.9f,10.7f,17.0f,67.0f},
 		 //6#着陆台
 		 {-4.1f,20.4f,1.1f,15.0f,108.0f},
 		 //7#着陆台
@@ -671,7 +671,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		 {-5.5f,26.9f, 7.5f,10.0f,70.0f}},
 		//第四类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		 {-1.0f, 18.3f, 13.6f, 67.0f, 18.0f},
+		 {-1.0f, 18.3f, 13.6f, 67.0f, 17.0f},
 		 //2#着陆台
 		 {-22.5f, 24.9f, 12.6f, 83.0f, 14.0f},
 		 //3#着陆台
@@ -735,9 +735,9 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		 {-5.5f,26.9f, 7.5f,10.0f,70.0f}},
 		//第四类参数，对应新盘补弹落盘参数
 		{//1#着陆台
-		 {-35.4f, 16.9f, 12.7f, 81.0f, 20.0f},
+		 {-38.4f, 17.9f, 12.7f, 80.0f, 18.0f},
 		 //2#着陆台
-		 {-22.5f, 24.4f, 12.1f, 79.0f, 20.0f},
+		 {-23.5f, 24.4f, 12.1f, 77.0f, 19.0f},
 		 //3#着陆台
 		 {6.1f, 27.7f, 0.8f, 81.0f, 21.0f},
 		 //4#着陆台
@@ -807,7 +807,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		 //4#着陆台
 		 {16.5f,25.6f,17.0f,76.0f,22.0f},
 		 //5#着陆台
-		 {-1.0f,18.3f,13.6f,67.0f,18.0f},
+		 {-1.0f,18.3f,13.6f,67.0f,17.0f},
 		 //6#着陆台
 		 {6.1f,19.1f,1.3f,103.0f,20.0f},
 		 //7#着陆台
