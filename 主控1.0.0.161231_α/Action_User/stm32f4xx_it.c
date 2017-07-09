@@ -946,13 +946,13 @@ void UART4_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed1 = data.data32;
+								gRobot.leftGun.targetPose.speed1 = data.dataf;
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed1 = data.data32;
+								gRobot.rightGun.targetPose.speed1 = data.dataf;
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed1 = data.data32;
+								gRobot.upperGun.targetPose.speed1 = data.dataf;
 							break;
 							default:
 								id2 = 0xff;
@@ -963,19 +963,19 @@ void UART4_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed2 = data.data32;
+								gRobot.leftGun.targetPose.speed2 = data.dataf;
 								gRobot.leftGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed2 = data.data32;
+								gRobot.rightGun.targetPose.speed2 = data.dataf;
 								gRobot.rightGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed2 = data.data32;
+								gRobot.upperGun.targetPose.speed2 = data.dataf;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -1589,13 +1589,13 @@ void USART1_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed1 = data.data32;
+								gRobot.leftGun.targetPose.speed1 = data.dataf;
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed1 = data.data32;
+								gRobot.rightGun.targetPose.speed1 = data.dataf;
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed1 = data.data32;
+								gRobot.upperGun.targetPose.speed1 = data.dataf;
 							break;
 							default:
 								id2 = 0xff;
@@ -1606,19 +1606,19 @@ void USART1_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed2 = data.data32;
+								gRobot.leftGun.targetPose.speed2 = data.dataf;
 								gRobot.leftGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed2 = data.data32;
+								gRobot.rightGun.targetPose.speed2 = data.dataf;
 								gRobot.rightGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed2 = data.data32;
+								gRobot.upperGun.targetPose.speed2 = data.dataf;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -2236,13 +2236,13 @@ void USART2_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed1 = data.data32;
+								gRobot.leftGun.targetPose.speed1 = data.dataf;
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed1 = data.data32;
+								gRobot.rightGun.targetPose.speed1 = data.dataf;
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed1 = data.data32;
+								gRobot.upperGun.targetPose.speed1 = data.dataf;
 							break;
 							default:
 								id2 = 0xff;
@@ -2253,19 +2253,19 @@ void USART2_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed2 = data.data32;
+								gRobot.leftGun.targetPose.speed2 = data.dataf;
 								gRobot.leftGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed2 = data.data32;
+								gRobot.rightGun.targetPose.speed2 = data.dataf;
 								gRobot.rightGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed2 = data.data32;
+								gRobot.upperGun.targetPose.speed2 = data.dataf;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
@@ -3450,13 +3450,13 @@ void UART5_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed1 = data.data32;
+								gRobot.leftGun.targetPose.speed1 = data.dataf;
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed1 = data.data32;
+								gRobot.rightGun.targetPose.speed1 = data.dataf;
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed1 = data.data32;
+								gRobot.upperGun.targetPose.speed1 = data.dataf;
 							break;
 							default:
 								id2 = 0xff;
@@ -3467,19 +3467,19 @@ void UART5_IRQHandler(void)
  						switch(id2 % 3)
 						{
 							case 0:
-								gRobot.leftGun.targetPose.speed2 = data.data32;
+								gRobot.leftGun.targetPose.speed2 = data.dataf;
 								gRobot.leftGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 1:
-								gRobot.rightGun.targetPose.speed2 = data.data32;
+								gRobot.rightGun.targetPose.speed2 = data.dataf;
 								gRobot.rightGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
 							break;
 							case 2:
-								gRobot.upperGun.targetPose.speed2 = data.data32;
+								gRobot.upperGun.targetPose.speed2 = data.dataf;
 								gRobot.upperGun.aim = GUN_START_AIM;
 //								OSTaskSuspend(Walk_TASK_PRIO);
 								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
