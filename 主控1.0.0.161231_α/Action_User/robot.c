@@ -64,8 +64,8 @@ static void LeftGunInit(void)
 	gRobot.leftGun.minPoseLimit.pitch = 7.0f;
 	gRobot.leftGun.minPoseLimit.yaw = -50.0f;
 	gRobot.leftGun.minPoseLimit.roll = -43.46f;
-	gRobot.leftGun.minPoseLimit.speed1=0.0f;
-	gRobot.leftGun.minPoseLimit.speed2=0.0f;
+	gRobot.leftGun.minPoseLimit.speed1=-200.0f;
+	gRobot.leftGun.minPoseLimit.speed2=-200.0f;
 
 	//枪未进行瞄准
 	gRobot.leftGun.ready = GUN_AIM_IN_PROCESS;
@@ -154,8 +154,8 @@ static void RightGunInit(void)
 	gRobot.rightGun.minPoseLimit.pitch = 7.0f;
 	gRobot.rightGun.minPoseLimit.yaw = -50.0f;
 	gRobot.rightGun.minPoseLimit.roll = -43.46f;
-	gRobot.rightGun.minPoseLimit.speed1=0.0f;
-	gRobot.rightGun.minPoseLimit.speed2=0.0f;
+	gRobot.rightGun.minPoseLimit.speed1=-200.0f;
+	gRobot.rightGun.minPoseLimit.speed2=-200.0f;
 
 	//枪未进行瞄准
 	gRobot.rightGun.ready = GUN_AIM_IN_PROCESS;
@@ -227,8 +227,8 @@ static void UpperGunInit(void)
 	gRobot.upperGun.minPoseLimit.pitch = -10.0f;
 	gRobot.upperGun.minPoseLimit.yaw = -50.0f;
 	gRobot.upperGun.minPoseLimit.roll = 0.0f;
-	gRobot.upperGun.minPoseLimit.speed1=0.0f;
-	gRobot.upperGun.minPoseLimit.speed2=0.0f;
+	gRobot.upperGun.minPoseLimit.speed1=-200.0f;
+	gRobot.upperGun.minPoseLimit.speed2=-200.0f;
 
 	gRobot.upperGun.targetPose.pitch = gUpperGunPosDatabase[SHOOT_POINT2][gUpperGunShootCmds[0].plantNum]\
 															[gUpperGunShootCmds[0].shootMethod][ZONE1].pitch;
