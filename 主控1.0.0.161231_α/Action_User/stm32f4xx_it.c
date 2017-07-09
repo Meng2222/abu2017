@@ -2922,10 +2922,13 @@ void USART3_IRQHandler(void)
 					{
 						if(gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
 						{
-							if ((data & 0x0f) <= 0x06 && ((data & 0xf0) >> 4) <= 0x06)
+							if(gRobot.moveBase.actualStopPoint == SHOOT_POINT2)
 							{
-								gRobot.upperGun.defendZone1 = ((data & 0x0f)     );
-								gRobot.upperGun.defendZone2 = ((data & 0xf0) >> 4);
+								if ((data & 0x0f) <= 0x06 && ((data & 0xf0) >> 4) <= 0x06)
+								{
+									gRobot.upperGun.defendZone1 = ((data & 0x0f)     );
+									gRobot.upperGun.defendZone2 = ((data & 0xf0) >> 4);
+								}
 							}
 						}
 						if(data != 0x00)
