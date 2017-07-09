@@ -705,9 +705,9 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		
 		//第二类参数，对应新盘自动落盘参数
 		{//1#着陆台
-		 {-35.4f, 16.9f, 12.7f, 81.0f, 20.0f},
+		 {-38.4f, 17.9f, 12.7f, 80.0f, 18.0f},
 		 //2#着陆台
-		 {-22.5f, 24.4f, 12.1f, 79.0f, 20.0f},
+		 {-23.5f, 24.4f, 12.1f, 77.0f, 19.0f},
 		 //3#着陆台
 		 {6.1f, 27.7f, 0.8f, 81.0f, 21.0f},
 		 //4#着陆台
@@ -2499,7 +2499,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			//第三种参数类型对应打盘
 			{
 				{-3.8f, -6.4f, 0.0f, 135.0f, 10.0f},
-				{-3.8f, -6.1f, 0.0f, 135.0f, 10.0f},
+				{-3.8f, -6.3f, 0.0f, 135.0f, 10.0f},
 				{-1.0f, -6.4f, 0.0f, 135.0f, 10.0f},
 				{-1.0f, -6.1f, 0.0f, 135.0f, 10.0f},
 				{2.2f, -6.4f, 0.0f, 135.0f, 10.0f},
