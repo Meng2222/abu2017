@@ -970,7 +970,7 @@ extern float moveTimer;
 
 void WalkTask(void)
 {
-#define LOAD_AREA_STOP_X (13033.14f + 15.0000f)
+#define LOAD_AREA_STOP_X (13033.14f + 20.0000f)
 #define LAUNCH_STOP_X 6500.14f
 #define SIDE_DISTANCE 4000.0f
 	//仅在 load 中使用 计时400ms

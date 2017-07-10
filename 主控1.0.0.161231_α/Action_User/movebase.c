@@ -1,13 +1,13 @@
 /**
   ******************************************************************************
-  * @file      movebase.c
-  * @author    ST42 & Meng22
+  * @file	  movebase.c
+  * @author	ST42 & Meng22
   * @version   V2.0.0
-  * @date      2017/03/13
-  * @brief     Robocon2017运动控制
+  * @date	  2017/03/13
+  * @brief	 Robocon2017运动控制
   ******************************************************************************
   * @attention
-  *            None
+  *			None
   ******************************************************************************
   */
 
@@ -37,7 +37,7 @@ float GetAngle(void)
 }
 /*
 ============================================================
-         车速（mm/s）与电机转速（脉冲/s）的转换
+		 车速（mm/s）与电机转速（脉冲/s）的转换
 ============================================================
 */
 
@@ -76,7 +76,7 @@ float Vel2Pulse(float vel)
 void MOVEBASE_Init(void)
 {
 
-    //电机初始化及使能
+	//电机初始化及使能
 	elmo_Init(CAN2);
 
 	elmo_Enable(CAN2,1);
@@ -137,7 +137,7 @@ void ThreeWheelVelControlSelfCheck(int direction)
 
 /*
 ============================================================
-                       电机配置
+					   电机配置
 ============================================================
 */
 
@@ -149,7 +149,7 @@ void ThreeWheelVelControlSelfCheck(int direction)
   */
 motorAcc_t CalcMotorAcc(float carAcc, float angle)
 {
-    motorAcc_t motorAcc;
+	motorAcc_t motorAcc;
 
 	motorAcc.wheel3 = carAcc * fabs(cosf(ANGTORAD(150 - RADTOANG(angle))));
 	motorAcc.wheel2 = carAcc * fabs(cosf(ANGTORAD(90  - RADTOANG(angle))));
@@ -166,7 +166,7 @@ motorAcc_t CalcMotorAcc(float carAcc, float angle)
 void SetMotorAcc(motorAcc_t motorAcc)
 {
 	Vel_cfg(CAN2, 1,motorAcc.wheel1,motorAcc.wheel1);
-    Vel_cfg(CAN2, 2,motorAcc.wheel2,motorAcc.wheel2);
+	Vel_cfg(CAN2, 2,motorAcc.wheel2,motorAcc.wheel2);
 	Vel_cfg(CAN2, 3,motorAcc.wheel3,motorAcc.wheel3);
 }
 
@@ -208,7 +208,7 @@ wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
 
 /*
 ============================================================
-                     过程量控制与调节
+					 过程量控制与调节
 ============================================================
 */
 /**
@@ -221,7 +221,7 @@ wheelSpeed_t SeperateVelToThreeMotor(float carVel , float velAngle)
   * @param	decX:x方向减速度		必须是正数		Unit:mm/s^2
   * @retval None
   * @attention
-  *         None
+  *		 None
   */
 extern float moveTimer;
 extern uint8_t moveTimFlag;
@@ -251,7 +251,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 
 	//计算起点到终点之间的距离 取绝对值作为理论距离 单位：mm
 	targetDist = fabs(targetPos - startPos);
-	
+
 	//计算以目标加速度到达目标速度所需的时间作为加速段时间 单位：s
 	timeAcc = fabs(velX) / accX;
 	//根据公式0.5*a*t^2计算出加速段的长度 单位： mm
@@ -261,12 +261,12 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 	/*梯形速度规划部分*/
 	if ((distAcc + distDec) < targetDist)//如果起始点与终点之间的距离大于加速段减速段所需的路程 判断速度曲线为梯形
 	{
-		//用 起始点与终点之间的距离 减去 加减速段的长度之和 得到 匀速段的长度 
+		//用 起始点与终点之间的距离 减去 加减速段的长度之和 得到 匀速段的长度
 		distConst = targetDist - distAcc - distDec;
 		timeConst = distConst / fabs(velX);
 
 		//moveTimer 当前运动过程进行的时间  此变量在TIM2中受moveTimFlag控制累加 在MoveTo函数中 初始化新运动时清零
-		
+
 		//根据moveTimer 和计算出来的时间 判断现在是处于哪个运动阶段 （加速段 匀速段 减速段）
 		if (moveTimer <= timeAcc)												/*加速段*/
 		{
@@ -289,7 +289,7 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			moveState = CONSTANT_SPEED;
 		}
 		else if (moveTimer > (timeAcc + timeConst) &&
-			    moveTimer <= (timeAcc + timeConst + timeDec))					/*减速段*/
+				moveTimer <= (timeAcc + timeConst + timeDec))					/*减速段*/
 		{
 			//用 减速段按照0.5*a*t^2计算 得到 当前的理想位置到达目标位置的距离
 			pExpData->dist = 0.5f * decX * (pow(timeAcc + timeDec + timeConst - moveTimer, 2));
@@ -315,8 +315,8 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 		distDec = 0.5f * decX * pow(timeDec, 2);
 		distConst = targetDist - distAcc - distDec;
 		timeConst = distConst / (sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE);
-		
-		if (moveTimer <= timeAcc)    /*加速段*/
+
+		if (moveTimer <= timeAcc)	/*加速段*/
 		{
 			pExpData->dist = targetDist - 0.5f * accX * pow(moveTimer, 2);
 			pExpData->speed = accX * (moveTimer + 0.01f);
@@ -327,10 +327,10 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
 			pExpData->dist = targetDist - distAcc -\
 			(sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE) * (moveTimer - timeAcc);
 			pExpData->speed = (sqrtf(2.0f * targetDist * accX * decX/(accX + decX)) * TRIANGLE_VEL_REDUCE);
-			moveState = CONSTANT_SPEED;	
+			moveState = CONSTANT_SPEED;
 		}
 		else if (moveTimer > (timeAcc + timeConst) &&
-			    moveTimer <= (timeAcc + timeConst + timeDec))    /*减速段*/
+				moveTimer <= (timeAcc + timeConst + timeDec))	/*减速段*/
 		{
 			pExpData->dist = 0.5f * decX * pow(timeAcc + timeDec + timeConst - moveTimer, 2);
 			pExpData->speed = decX * (timeAcc + timeDec + timeConst - moveTimer - 0.01f);
@@ -362,10 +362,10 @@ void CalcPath(expData_t *pExpData, float velX, float startPos, float targetPos, 
   * @brief  速度调节函数
   * @param  pSpeedOut:实际输出速度结构体指针
   * @param  pExpData:运动理论值结构体指针
-  * @param  velX:x方向速度     mm/s
+  * @param  velX:x方向速度	 mm/s
   * @retval None
   * @attention
-  *         None
+  *		 None
   */
 void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 {
@@ -377,8 +377,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 	float angleAdjust = 0.0f;
 	static float angleErr = 0.0f;
 	//前馈调节的角度（的大小）
-	#define FEEDFORWARD_COMPENSATION_ACC_ANGLE 2.0f
-	#define FEEDFORWARD_COMPENSATION_DEC_ANGLE 2.25f
+	#define FEEDFORWARD_COMPENSATION_ACC_ANGLE 3.0f
+	#define FEEDFORWARD_COMPENSATION_DEC_ANGLE 2.5f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
@@ -508,7 +508,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 
 /*
 ============================================================
-                      机器人运动部分
+					  机器人运动部分
 ============================================================
 */
 
@@ -534,7 +534,7 @@ void LockWheel(void)
 
 //	//速度分配至各轮
 //	speedOut.backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
-//	speedOut.forwardWheelSpeed = Vel2Pulse(-velX                                             );
+//	speedOut.forwardWheelSpeed = Vel2Pulse(-velX											 );
 //	speedOut.leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
 
 
@@ -560,14 +560,14 @@ void LockWheel(void)
   * @brief
   * @note
   * @param
-  *     @arg
+  *	 @arg
   * @param
   * @retval	None
   */
 void MoveTo(float targetPos, float velX, float accX , float decX)
 {
 	//速度控制需要的过程变量
-	static float formerTargetPos = 23333.0f;                 //formerTargetPos:判断是否是不同运动过程
+	static float formerTargetPos = 23333.0f;				 //formerTargetPos:判断是否是不同运动过程
 	static float startPos = 0.0f;
 	expData_t expData = {0.0f, 0.0f, 0.0f};
 	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
@@ -584,7 +584,7 @@ void MoveTo(float targetPos, float velX, float accX , float decX)
 		moveTimer = 0.0f;
 		moveTimFlag = 1;
 	}
-	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH) //如果 处在重试中 且 重试开关触发 
+	else if(gRobot.isReset == ROBOT_RESET && RESET_SWITCH) //如果 处在重试中 且 重试开关触发
 	{
 		formerTargetPos = targetPos;
 		//把当前点作为新的起点

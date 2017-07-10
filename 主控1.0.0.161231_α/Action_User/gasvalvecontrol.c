@@ -3,6 +3,8 @@
 #include "gpio.h"
 #include "robot.h"
 #include "usart.h"
+
+#define GAS_VALVE_PRINT_LOG 0U
 extern robot_t gRobot;
 /**
 * @brief  气阀控制
@@ -59,14 +61,18 @@ void ClampReset(void)
 //左上弹
 void LeftPush(void)
 {
+#if GAS_VALVE_PRINT_LOG == 1U
 	UART5_OUT((uint8_t *)"leftPush%d\r\n",gRobot.reloadTimer);
+#endif
 	GasValveControl(LEFT_RELOAD_RESET_BOARD_ID , LEFT_RELOAD_RESET_IO_ID , 0);		
 	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 1);
 }
 //左上弹复位
 void LeftBack(void)
 {
+#if GAS_VALVE_PRINT_LOG == 1U
 	UART5_OUT((uint8_t *)"leftBack%d\r\n",gRobot.reloadTimer);
+#endif
 	GasValveControl(LEFT_RELOAD_BOARD_ID , LEFT_RELOAD_IO_ID , 0);
 	GasValveControl(LEFT_RELOAD_RESET_BOARD_ID , LEFT_RELOAD_RESET_IO_ID , 1);	
 }
@@ -79,14 +85,18 @@ void LeftHold(void)
 //右上弹
 void RightPush(void)
 {
+#if GAS_VALVE_PRINT_LOG == 1U
 	UART5_OUT((uint8_t *)"RightPush%d\r\n",gRobot.reloadTimer);
+#endif
 	GasValveControl(RIGHT_RELOAD_RESET_BOARD_ID , RIGHT_RELOAD_RESET_IO_ID , 0);		
 	GasValveControl(RIGHT_RELOAD_BOARD_ID ,RIGHT_RELOAD_IO_ID , 1);
 }
 //右上弹复位
 void RightBack(void)
 {
+#if GAS_VALVE_PRINT_LOG == 1U
 	UART5_OUT((uint8_t *)"RightBack%d\r\n",gRobot.reloadTimer);
+#endif
 	GasValveControl(RIGHT_RELOAD_BOARD_ID ,RIGHT_RELOAD_IO_ID , 0);
 	GasValveControl(RIGHT_RELOAD_RESET_BOARD_ID , RIGHT_RELOAD_RESET_IO_ID , 1);		
 }
@@ -99,13 +109,17 @@ void RightHold(void)
 //左枪发射
 void LeftShoot(void)
 {
+#if GAS_VALVE_PRINT_LOG == 1U
 	UART5_OUT((uint8_t *)"LeftShoot%d\r\n",gRobot.shootTimer);
+#endif
 	GasValveControl(LEFT_SHOOT_BOARD_ID,LEFT_SHOOT_IO_ID, 1);
 }
 //左枪发射复位
 void LeftShootReset(void)
 {
+#if GAS_VALVE_PRINT_LOG == 1U
 	UART5_OUT((uint8_t *)"LeftShootReset%d\r\n",gRobot.shootTimer);
+#endif
 	GasValveControl(LEFT_SHOOT_BOARD_ID,LEFT_SHOOT_IO_ID, 0);
 }
 //右枪发射
