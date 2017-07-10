@@ -404,7 +404,7 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float velX);
 void LockWheel(void);
 
 //x方向定速移动函数
-void MoveX(float velX);
+//void MoveX(float velX);
 
 //运动函数
 void MoveY(float velY);

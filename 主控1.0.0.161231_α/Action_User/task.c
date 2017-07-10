@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -970,7 +970,7 @@ extern float moveTimer;
 
 void WalkTask(void)
 {
-#define LOAD_AREA_STOP_X 13033.14f
+#define LOAD_AREA_STOP_X (13033.14f + 15.0000f)
 #define LAUNCH_STOP_X 6500.14f
 #define SIDE_DISTANCE 4000.0f
 	//仅在 load 中使用 计时400ms
@@ -2634,7 +2634,7 @@ void DebugTask(void)
 	while(1)
 	{
 		OSSemPend(DebugPeriodSem, 0, &os_err);
-		UART5_OUT((uint8_t *)"CPU%d\r\n", OSCPUUsage);
+//		UART5_OUT((uint8_t *)"CPU%d\r\n", OSCPUUsage);
 		//			GPIO_ResetBits(GPIOE, GPIO_Pin_2);
 		//			OSTimeDly(10);
 		//			GPIO_SetBits(GPIOE, GPIO_Pin_2);

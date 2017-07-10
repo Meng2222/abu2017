@@ -377,8 +377,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 	float angleAdjust = 0.0f;
 	static float angleErr = 0.0f;
 	//前馈调节的角度（的大小）
-	#define FEEDFORWARD_COMPENSATION_ANGLE_ACC 0.8f
-	#define FEEDFORWARD_COMPENSATION_ANGLE_DEC 2.25f
+	#define FEEDFORWARD_COMPENSATION_ACC_ANGLE 2.0f
+	#define FEEDFORWARD_COMPENSATION_DEC_ANGLE 2.25f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
@@ -462,9 +462,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 			{
 				//2#轮正转时 加速段趋向于逆时针旋转 减速段趋向于顺时针旋转
 				if(moveState == ACCERLATING)
-					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_ACC_ANGLE;
 				else if(moveState == DECELERATING)
-					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+					exPoseAngle = FEEDFORWARD_COMPENSATION_DEC_ANGLE;
 				else
 					exPoseAngle = 0.0f;
 			}
@@ -472,9 +472,9 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 			{
 				//2#轮反转时 加速段趋向于顺时针旋转 减速段趋向于逆时针旋转
 				if(moveState == ACCERLATING)
-					exPoseAngle = FEEDFORWARD_COMPENSATION_ANGLE_ACC;
+					exPoseAngle = FEEDFORWARD_COMPENSATION_ACC_ANGLE;
 				else if(moveState == DECELERATING)
-					exPoseAngle = -FEEDFORWARD_COMPENSATION_ANGLE_DEC;
+					exPoseAngle = -FEEDFORWARD_COMPENSATION_DEC_ANGLE;
 				else
 					exPoseAngle = 0.0f;
 			}
@@ -525,35 +525,35 @@ void LockWheel(void)
 }
 
 //x方向定速移动
-void MoveX(float velX)
-{
-	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
-	float velY = 0.0f;
-	velY = fabs(0.07f * velX) + 100.0f;
+//void MoveX(float velX)
+//{
+//	wheelSpeed_t speedOut = {0.0f, 0.0f, 0.0f};
+//	float velY = 0.0f;
+//	velY = fabs(0.07f * velX) + 100.0f;
 
 
-	//速度分配至各轮
-	speedOut.backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
-	speedOut.forwardWheelSpeed = Vel2Pulse(-velX                                             );
-	speedOut.leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
+//	//速度分配至各轮
+//	speedOut.backwardWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ - velY * 0.8660254f/*cos30*/);
+//	speedOut.forwardWheelSpeed = Vel2Pulse(-velX                                             );
+//	speedOut.leftWheelSpeed = Vel2Pulse( velX * 0.5f/*cos60*/ + velY * 0.8660254f/*cos30*/);
 
 
-	//姿态修正
-	if(GetAngle() > 0)
-	{
-		speedOut.backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	}
-	else if(GetAngle() < 0)
-	{
-		speedOut.backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
-	}
+//	//姿态修正
+//	if(GetAngle() > 0)
+//	{
+//		speedOut.backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+//		speedOut.forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+//		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+//	}
+//	else if(GetAngle() < 0)
+//	{
+//		speedOut.backwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+//		speedOut.forwardWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+//		speedOut.leftWheelSpeed += Vel2Pulse(ROTATERAD * ANGTORAD(PPOSE * GetAngle()));
+//	}
 
-	ThreeWheelVelControl(speedOut);
-}
+//	ThreeWheelVelControl(speedOut);
+//}
 
 
 /**
