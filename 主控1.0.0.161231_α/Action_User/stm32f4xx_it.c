@@ -1850,9 +1850,9 @@ void USART1_IRQHandler(void)
 					if((ch - msgId < 10u && ch - msgId > 0u)
 						|| (msgId - ch > 90u))
 					{
-						UART5_OUT((uint8_t *)"BLE");
-						if(manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)
-						{
+//						UART5_OUT((uint8_t *)"BLE");
+//						if(manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)
+//						{
 							UART5_OUT((uint8_t *)"BLE");
 							if((manualCmd.plantNum != PLANT3 && manualCmd.plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
 							{
@@ -1922,7 +1922,7 @@ void USART1_IRQHandler(void)
 		//					CheckCmdQueueState();
 		//					DelTailQueue();
 		//					CheckCmdQueueState();
-						}
+//						}
 					}
 				}
 				else
