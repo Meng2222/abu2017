@@ -1704,7 +1704,7 @@ void LeftGunShootTask(void)
 
 	gRobot.leftGun.targetPose = gLeftGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4]\
 								[PLANT6];
-
+	gRobot.leftGun.targetPose.roll +=10.0f;
 //	gRobot.leftGun.targetPose.yaw +=20.0f;
 	ROBOT_LeftGunAim();
 	OSTimeDly(20);
@@ -1963,7 +1963,7 @@ void RightGunShootTask(void)
 	//获取并更新枪目标姿态  上弹姿态
 	gRobot.rightGun.targetPose = gRightGunPosDatabase[SHOOT_POINT2][SHOOT_METHOD4]\
 								 [PLANT6];
-
+	gRobot.rightGun.targetPose.roll += 10.0f;
 	//调整枪姿为上弹姿态 need some time
 	ROBOT_RightGunAim();
 	OSTimeDly(20);
