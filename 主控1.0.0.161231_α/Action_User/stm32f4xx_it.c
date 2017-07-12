@@ -1454,6 +1454,111 @@ void USART1_IRQHandler(void)
 		}
 		gRobot.isBleOk.noBleTimer = 0;
 		ActionCommunicate(&ch, &status, &cmdFlag, &id, &id2, &data, &manualCmd);
+		USART_SendData(USART1, ch);
+	 }
+	else
+	{
+		//虽然没有使能其他中断，但是查看是否有其他中断
+		if(USART_GetITStatus(USART1, USART_IT_PE) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_PE);
+			UART5_OUT((uint8_t*)"USART_IT_PE");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_TXE) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_TXE);
+			UART5_OUT((uint8_t*)"USART_IT_TXE");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_TC) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_TC);
+			UART5_OUT((uint8_t*)"USART_IT_TC");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_ORE_RX) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_ORE_RX);
+			UART5_OUT((uint8_t*)"USART_IT_ORE_RX");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_IDLE) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_IDLE);
+			UART5_OUT((uint8_t*)"USART_IT_IDLE");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_LBD) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_LBD);
+			UART5_OUT((uint8_t*)"USART_IT_LBD");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_CTS) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_CTS);
+			UART5_OUT((uint8_t*)"USART_IT_CTS");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_ERR) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_ERR);
+			UART5_OUT((uint8_t*)"USART_IT_ERR");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_ORE_ER) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_ORE_ER);
+			UART5_OUT((uint8_t*)"USART_IT_ORE_ER");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_NE) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_NE);
+			UART5_OUT((uint8_t*)"USART_IT_NE");
+		}
+		if(USART_GetITStatus(USART1, USART_IT_FE) == SET)
+		{
+			USART_ClearITPendingBit( USART1,USART_IT_FE);
+			UART5_OUT((uint8_t*)"USART_IT_FE");
+		}
+
+		USART_ReceiveData(USART1);
+		UART5_OUT((uint8_t*)"USART1_Err");
+	}
+	OSIntExit();
+}
+
+void USART2_IRQHandler(void)
+{
+	static int	status = 0;
+	static uint8_t id = 0xff ,id2 = 0xff;
+	static uint8_t bleNumCountFlag = 1;
+	static uint8_t cmdFlag = 0;
+	static cmd_t manualCmd = {INVALID_PLANT_NUMBER , INVALID_SHOOT_METHOD};
+	static uint8_t bleMsg[12]={0};
+	static uint8_t bleMsgCounter = 0;
+	static data_32bit_t data;
+
+
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();/* Tell uC/OS-II that we are starting an ISR*/
+	OSIntNesting++;
+	OS_EXIT_CRITICAL();
+
+	if(USART_GetITStatus(USART2, USART_IT_RXNE) == SET)
+	{
+		uint8_t ch;
+		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+		ch = USART_ReceiveData(USART2);
+		bleMsg[bleMsgCounter]=ch;
+		if(bleMsgCounter == 11)
+		{
+			UART5_OUT((uint8_t *)"USART1%d %d %d %d %d %d %d %d %d %d %d %d\r\n",bleMsg[0],\
+			bleMsg[1],bleMsg[2],bleMsg[3],bleMsg[4],bleMsg[5],bleMsg[6],bleMsg[7],\
+			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
+		}			
+		bleMsgCounter = (bleMsgCounter + 1)%12;
+
+		if(bleNumCountFlag == 1)
+		{
+			bleUseNum++;
+			bleNumCountFlag = 0;
+		}
+		gRobot.isBleOk.noBleTimer = 0;
+		ActionCommunicate(&ch, &status, &cmdFlag, &id, &id2, &data, &manualCmd);
 		USART_SendData(USART2, ch);
 	 }
 	else
@@ -2128,7 +2233,6 @@ void UART5_IRQHandler(void)
 			bleMsg[8],bleMsg[9],bleMsg[10],bleMsg[11]);
 		}			
 		bleMsgCounter = (bleMsgCounter + 1)%12;
-
 		gRobot.isBleOk.noBleTimer = 0;
 		ActionCommunicate(&ch, &status, &cmdFlag, &id, &id2, &data, &manualCmd);
 	 }
