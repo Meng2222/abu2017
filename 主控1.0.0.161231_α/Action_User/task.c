@@ -1523,6 +1523,8 @@ void WalkTask(void)
 					}
 					gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
 				}
+				//StickPos中使用了操作系统延时，应当清除信号量
+				OSSemSet(PeriodSem,0,&os_err);
 				break;
 			}
 
