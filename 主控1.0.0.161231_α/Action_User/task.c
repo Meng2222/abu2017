@@ -109,14 +109,14 @@ void GyroInit(void)
 	USART_SendData(USART6,'T');
 	USART_SendData(USART6,'0');
 	USART_SendData(USART6,'0');
-	USART_SendData(USART6,'0');
+	USART_SendData(USART6,'0'); 
 }
 //调试数据发送不能超过30个字节，发送10个字节需要1ms
 void sendDebugInfo(void)
 {
 
-	UART5_OUT((uint8_t *)"%d\t%d\t%d\t%d\t",status,\
-			(int)(gRobot.moveBase.actualAngle * 100.0f),(int)gRobot.moveBase.actualXPos,\
+	UART5_OUT((uint8_t *)"\r\nwa%d\t%d\t%d\t%d\t%d\t",status,\
+			(int)(gRobot.moveBase.actualAngle * 100.0f),(int)(GetAngle() * 100.0f),(int)gRobot.moveBase.actualXPos,\
 			(int)gRobot.moveBase.actualYPos);
 
 	UART5_OUT((uint8_t *)"%d\t%d\t%d\t",(int)gRobot.moveBase.targetSpeed.leftWheelSpeed,\

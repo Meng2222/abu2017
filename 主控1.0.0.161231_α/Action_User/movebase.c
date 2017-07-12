@@ -183,7 +183,10 @@ void ThreeWheelVelControl(wheelSpeed_t speed)
 	gRobot.moveBase.targetSpeed.leftWheelSpeed = speed.leftWheelSpeed/100.0f;
 	gRobot.moveBase.targetSpeed.backwardWheelSpeed = speed.backwardWheelSpeed/100.0f;
 	gRobot.moveBase.targetSpeed.forwardWheelSpeed = speed.forwardWheelSpeed/100.0f;
-
+	
+	gRobot.moveBase.targetSpeed.backwardWheelSpeed *= 1.03f;
+	gRobot.moveBase.targetSpeed.forwardWheelSpeed *= 1.03f;
+	
 	VelCrl(CAN2, BACKWARD_WHEEL_ID, speed.backwardWheelSpeed);
 	VelCrl(CAN2, FORWARD_WHEEL_ID, speed.forwardWheelSpeed);
 	VelCrl(CAN2, LEFT_WHEEL_ID, speed.leftWheelSpeed);
@@ -377,8 +380,8 @@ void SpeedAmend(wheelSpeed_t *pSpeedOut, expData_t *pExpData, float maxVelX)
 	float angleAdjust = 0.0f;
 	static float angleErr = 0.0f;
 	//前馈调节的角度（的大小）
-	#define FEEDFORWARD_COMPENSATION_ACC_ANGLE 3.0f
-	#define FEEDFORWARD_COMPENSATION_DEC_ANGLE 2.5f
+	#define FEEDFORWARD_COMPENSATION_ACC_ANGLE 2.0f
+	#define FEEDFORWARD_COMPENSATION_DEC_ANGLE 2.25f
 	#define ANGLE_ADJUST_LIMIT (40000.0f)
 	/*存在距离差用PID调速*/
 	//此处的目标位置是是根据moveTimer计算出来的本周期的位置 在CalcPath中计算
