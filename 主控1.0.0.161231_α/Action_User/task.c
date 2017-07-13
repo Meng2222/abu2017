@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
+#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -483,6 +483,7 @@ void ConfigTask(void)
 	//////测试使用！！！！！！！！！！！！！！！！
 	//	MoveY(50.0f);
 #ifdef NO_WALK_TASK
+	gRobot.moveBase.actualStopPoint = SHOOT_POINT2;
 	while(!PHOTOSENSORUPGUN)
 	{
 		//WAIT
@@ -2224,21 +2225,22 @@ void UpperGunShootTask(void)
 //	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(15.0f));
 	uint8_t upperGunShootFlag = 0;
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
-#ifdef NO_WALK_TASK
-	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
-#endif
+//#ifdef NO_WALK_TASK
+//	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
+//#endif
 	while(1)
 	{
 #ifndef NO_WALK_TASK
 		ROBOT_UpperGunCheckShootPoint();
 #endif
-		if(gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER && !PHOTOSENSORUPGUN)
+		if((gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)&&(!PHOTOSENSORUPGUN))
 		{
 			gRobot.upperGun.bulletNumber = GUN_NO_BULLET_ERROR;
 			gRobot.upperGun.mode = GUN_MANUAL_MODE;
 		}
 		else
 		{
+			gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER - gRobot.upperGun.shootTimes;
 			//如果接收到防守命令进入防守模式
 			if(gRobot.upperGun.defendZone1 & 0x0f)
 			{
