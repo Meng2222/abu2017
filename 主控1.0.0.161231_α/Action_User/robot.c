@@ -386,8 +386,10 @@ status_t ROBOT_Init(void)
 //	gRobot.autoCommand[PLANT4].plate = 2u;
 //	gRobot.plantState[PLANT6].plate = 0u;
 	gRobot.autoCommand[PLANT7].ball = 1u;
-	gRobot.autoCommand[PLANT6].plate = 1u;
+//	gRobot.autoCommand[PLANT6].plate = 1u;
 	gRobot.autoCommand[PLANT3].plate = 1u;
+	gRobot.autoCommand[PLANT1].plate = 2u;	
+	gRobot.autoCommand[PLANT5].plate = 2u;	
 	
 //	gRobot.upperLeftCommand[PLANT2].ball = 1;
 //	gRobot.upperRightCommand[PLANT4].ball = 1;
@@ -866,16 +868,16 @@ shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 
 shoot_command_t ROBOT_UpperGunGetShootCommand(void)
 {
-	#define UPPER_AUTO_NUM 4u
+	#define UPPER_AUTO_NUM 7u
 	uint8_t i = 0u;
-	uint8_t searchRange = 3;
+	uint8_t searchRange = 4;
 	gRobot.upperGun.gunCommand = (plant_t *)gRobot.autoCommand;
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	//为使上枪接收命令更难
 	OSTimeDly(5);
 	if(gRobot.upperGun.shootTimes >= UPPER_AUTO_NUM)
 	{
-		searchRange = 2;
+		searchRange = 4;
 		gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
 	}
 	if(gRobot.moveBase.actualStopPoint == SHOOT_POINT1)
