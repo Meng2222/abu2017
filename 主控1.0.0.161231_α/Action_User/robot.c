@@ -371,21 +371,21 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.cameraInfo[i].plate = 1;
 	}
-	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
-	{
-		gRobot.autoCommand[i].ball = 1;
-	}
-    gRobot.plantState[PLANT6].ball = 0;
-	gRobot.autoCommand[PLANT3].ball = 1;
+//	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
+//	{
+//		gRobot.autoCommand[i].ball = 1;
+//	}
+//    gRobot.plantState[PLANT6].ball = 0;
+//	gRobot.autoCommand[PLANT3].ball = 1;
 
-	for(uint8_t i = 0; i < 7;i++)
-	{
-		gRobot.autoCommand[i].plate = 1;
-	}
+//	for(uint8_t i = 0; i < 7;i++)
+//	{
+//		gRobot.autoCommand[i].plate = 1;
+//	}
 	gRobot.autoCommand[PLANT2].plate = 2u;
 	gRobot.autoCommand[PLANT4].plate = 2u;
 	gRobot.plantState[PLANT6].plate = 0u;
-	gRobot.autoCommand[PLANT7].plate = 0u;
+	gRobot.autoCommand[PLANT7].plate = 1u;
 	gRobot.autoCommand[PLANT6].plate = 0u;
 	gRobot.autoCommand[PLANT3].plate = 1u;
 	
@@ -416,7 +416,6 @@ status_t ROBOT_Init(void)
   */
 shoot_command_t ROBOT_LeftGunGetShootCommand(void)
 {
-
 	#define LEFT_NEW_PLATE_NUM 10u
 	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	uint8_t searchRange = 2;

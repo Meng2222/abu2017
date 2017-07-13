@@ -2276,7 +2276,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第五种参数类型对应补弹落盘
 			{
-				{-15.5f,12.3f, 0.0f, 77.0f, 10.0f},
+				{-13.1f,12.0f, 0.0f, 72.0f, 12.7f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -2315,7 +2315,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第四种参数类型对应补弹打球
 			{
-				{0.3f,8.4f,0.0f,126.0f,0.0f},
+				{-1.0f,5.6f,0.0f,135.0f,10.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -2372,7 +2372,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第五种参数类型对应补弹落盘
 			{
-				{0.0f,0.0f,0.0f,0.0f,0.0f},
+				{28.6f,12.3f,0.0f,72.6f,13.5f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -2525,7 +2525,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			}
 		}
 	},
-	//第三组参数对应场地左侧发射点参数
+	//第三组参数对应场地右侧发射点参数
 	{
 		//一号柱子对应参数
 		{
