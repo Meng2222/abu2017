@@ -18,7 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-#define NO_WALK_TASK
+//#define NO_WALK_TASK
 //#define TEST_RUN
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
@@ -148,7 +148,7 @@ void sendDebugInfo(void)
 	UART5_OUT((uint8_t *)"%d\t",(int)(gRobot.moveBase.actualKenimaticInfo.vt*0.1f));
 
 
-	UART5_OUT((uint8_t *)"C%d\t%d\t%d\t%d", (int)startLeaveX, (int)(gyroXErr * 10.0f), (int)(amendX * 10.0f), (int)GetPosX());
+	UART5_OUT((uint8_t *)"C%d\t%d\t%d\t%d\t%d", (int)gRobot.moveBase.targetPoint,(int)gRobot.moveBase.actualStopPoint, (int)(gyroXErr * 10.0f), (int)(amendX * 10.0f), (int)GetPosX());
 	UART5BufPut('\r');
 	UART5BufPut('\n');
 }
