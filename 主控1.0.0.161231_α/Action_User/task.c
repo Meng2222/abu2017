@@ -983,6 +983,8 @@ void WalkTask(void)
 	uint8_t sendSignal = 1;
 	uint8_t sendSignal2Camera = 1;
 	uint8_t loadTimes = 0;
+	uint8_t leanOnWallTimes = 0;
+	float stopYposRecord = 0;
 //	uint8_t clampSmallOpenFlag = 1;
 //	uint8_t clampSmallOpenCounter = 0;
 	//仅在beginToGO1中计时使用
@@ -1381,33 +1383,41 @@ void WalkTask(void)
 				//停车
 			case stopRobot:
 			{
-				//通知摄像头开始工作
-				SendStop2Camera();
-				SendStop2Camera();
-				SendStop2Camera();
-				//靠墙一段时间 0.5s 后抱死
-				OSTimeDly(20);
-				LockWheel();
-				//开始执行发射任务
-				//三枪的任务都有对应的ROBOT_xxxGunCheckShootPoint()函数 等待着邮箱的发送
-				OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				OSMboxPostOpt(UpperGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
-				//已经完成向前拱的动作，抱死 此时记录1次当前的x y 坐标
-				if(setLaunchPosFlag == 1)
+				if(fabs(gRobot.moveBase.actualYPos - stopYposRecord) < 3.0f)
 				{
-					gRobot.launchPosX = gRobot.moveBase.actualXPos;
-					gRobot.launchPosY = gRobot.moveBase.actualYPos;
-					setLaunchPosFlag -= 1;
+					leanOnWallTimes++;
 				}
-				//				CameraInit();
-				status = launch;
-				//如果是从重启进入的 stopRobot 则清除标志位
-				if(gRobot.isReset == ROBOT_RESET)
+				if(leanOnWallTimes >=3)
 				{
-					gRobot.isReset = ROBOT_NOT_RESET;
+					OSTimeDly(2);
+					//通知摄像头开始工作
+					SendStop2Camera();
+					SendStop2Camera();
+					SendStop2Camera();
+					//靠墙后抱死
+					LockWheel();
+					//开始执行发射任务
+					//三枪的任务都有对应的ROBOT_xxxGunCheckShootPoint()函数 等待着邮箱的发送
+					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					OSMboxPostOpt(RightGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					OSMboxPostOpt(UpperGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
+					//已经完成向前拱的动作，抱死 此时记录1次当前的x y 坐标
+					if(setLaunchPosFlag == 1)
+					{
+						gRobot.launchPosX = gRobot.moveBase.actualXPos;
+						gRobot.launchPosY = gRobot.moveBase.actualYPos;
+						setLaunchPosFlag -= 1;
+					}
+					//				CameraInit();
+					status = launch;
+					leanOnWallTimes = 0;
+					//如果是从重启进入的 stopRobot 则清除标志位
+					if(gRobot.isReset == ROBOT_RESET)
+					{
+						gRobot.isReset = ROBOT_NOT_RESET;
+					}
+					OSSemSet(PeriodSem,0,&os_err);
 				}
-				OSSemSet(PeriodSem, 0, &os_err);
 				break;
 			}
 				//发射飞盘
