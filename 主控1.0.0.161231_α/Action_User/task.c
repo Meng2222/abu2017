@@ -1383,7 +1383,7 @@ void WalkTask(void)
 				//停车
 			case stopRobot:
 			{
-				if(fabs(gRobot.moveBase.actualYPos - stopYposRecord) < 3.0f)
+				if(fabs(gRobot.moveBase.actualYPos - stopYposRecord) < 2.0f)
 				{
 					leanOnWallTimes++;
 				}
@@ -1397,6 +1397,9 @@ void WalkTask(void)
 					SendStop2Camera();
 					//靠墙后抱死
 					LockWheel();
+					elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
+					OSTimeDly(1);
+					elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 					//开始执行发射任务
 					//三枪的任务都有对应的ROBOT_xxxGunCheckShootPoint()函数 等待着邮箱的发送
 					OSMboxPostOpt(LeftGunShootPointMbox , &shootPointMsg , OS_POST_OPT_NONE);
@@ -2253,7 +2256,10 @@ void UpperGunShootTask(void)
 		else
 		{
 			gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER;
-			gRobot.upperGun.mode = GUN_ATTACK_MODE;
+			if(gRobot.upperGun.mode!=GUN_MANUAL_MODE)
+			{
+				gRobot.upperGun.mode = GUN_ATTACK_MODE;
+			}
 			//如果接收到防守命令进入防守模式
 			if(gRobot.upperGun.defendZone1 & 0x0f)
 			{
