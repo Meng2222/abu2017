@@ -2257,7 +2257,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD||gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
 	{
 		OSMboxPend(LeftGunShootPointMbox,0,&os_err);
-//		OSTimeDly(100);
+		OSTimeDly(20);
 		return MOVEBASE_POS_READY;
 	}
 
@@ -2280,7 +2280,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		||gRobot.isReset == ROBOT_RESET||gRobot.isReload == ROBOT_RELOAD||gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
 	{
 		OSMboxPend(RightGunShootPointMbox,0,&os_err);
-//		OSTimeDly(100);
+		OSTimeDly(20);
 		return MOVEBASE_POS_READY;
 	}
 	return GUN_NO_ERROR;
@@ -2302,7 +2302,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		||(gRobot.isReset == ROBOT_RESET)||(gRobot.isReload == ROBOT_RELOAD)||gRobot.moveBase.actualStopPoint == SHOOT_POINT_MOVING)
 	{
 		OSMboxPend(UpperGunShootPointMbox,0,&os_err);
-//		OSTimeDly(100);
+		OSTimeDly(20);
 		return MOVEBASE_POS_READY;
 	}
 	return GUN_NO_ERROR;

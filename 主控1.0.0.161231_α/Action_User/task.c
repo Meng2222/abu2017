@@ -1387,6 +1387,7 @@ void WalkTask(void)
 				{
 					leanOnWallTimes++;
 				}
+				stopYposRecord = gRobot.moveBase.actualYPos;
 				if(leanOnWallTimes >=3)
 				{
 					OSTimeDly(2);
@@ -1411,6 +1412,7 @@ void WalkTask(void)
 					//				CameraInit();
 					status = launch;
 					leanOnWallTimes = 0;
+					stopYposRecord = 0.0f;
 					//如果是从重启进入的 stopRobot 则清除标志位
 					if(gRobot.isReset == ROBOT_RESET)
 					{
