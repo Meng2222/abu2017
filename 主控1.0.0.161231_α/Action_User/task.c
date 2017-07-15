@@ -2627,6 +2627,10 @@ void UpperGunShootTask(void)
 				ROBOT_UpperGunHome();
 				OSTimeDly(6);
 			}
+			else
+			{
+				OSTimeDly(2);
+			}
 		}
 		else
 		{
