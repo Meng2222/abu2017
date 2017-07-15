@@ -81,6 +81,8 @@
 #define GUN_ATTACK_MODE         2
 #define GUN_DEFEND_MODE         3
 
+#define GUN_NO_BULLET_MODE      4
+
 #define GUN_START_SHOOT 1
 #define GUN_STOP_SHOOT 0
 

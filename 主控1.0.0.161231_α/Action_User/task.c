@@ -2236,7 +2236,7 @@ void UpperGunShootTask(void)
 		if((gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)&&(!PHOTOSENSORUPGUN))
 		{
 			gRobot.upperGun.bulletNumber = GUN_NO_BULLET_ERROR;
-			gRobot.upperGun.mode = GUN_MANUAL_MODE;
+			gRobot.upperGun.mode = GUN_NO_BULLET_MODE;
 		}
 		else
 		{
@@ -2618,6 +2618,14 @@ void UpperGunShootTask(void)
 			else
 			{
 				OSTaskSuspend(OS_PRIO_SELF);
+			}
+		}
+		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_NO_BULLET_MODE)
+		{
+			if(gRobot.isReset != ROBOT_RESET)
+			{
+				ROBOT_UpperGunHome();
+				OSTimeDly(6);
 			}
 		}
 		else
