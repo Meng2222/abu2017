@@ -2240,7 +2240,8 @@ void UpperGunShootTask(void)
 		}
 		else
 		{
-			gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER - gRobot.upperGun.shootTimes;
+			gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER;
+			gRobot.upperGun.mode = GUN_ATTACK_MODE;
 			//如果接收到防守命令进入防守模式
 			if(gRobot.upperGun.defendZone1 & 0x0f)
 			{
