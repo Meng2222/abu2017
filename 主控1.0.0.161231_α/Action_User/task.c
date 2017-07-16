@@ -1277,7 +1277,7 @@ void WalkTask(void)
 				else
 				{
 					//记录行程开关的触发次数
-					if(KEYSWITCH)
+					if(RESET_SWITCH)
 					{
 						keyOnTimes++;
 					}
@@ -1288,6 +1288,7 @@ void WalkTask(void)
 					//行程开关连续触发20次后从装载区触发
 					if(keyOnTimes>20)
 					{
+						gRobot.moveBase.targetPoint = SHOOT_POINT2;
 						ROBOT_UpperGunAim();
 						gRobot.isReload = ROBOT_RELOAD_FINISH;
 						gRobot.isLeaveLA = ROBOT_OUT_LA;
