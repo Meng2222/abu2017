@@ -1243,10 +1243,10 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 						if((*ch - msgId < 10u && *ch - msgId > 0u)
 							|| (msgId - *ch > 90u))
 						{
-							//ID == 70 从装载区出发
+							//ID == 70 从出发区出发
 							if(*id == 70)
 							{
-								gRobot.isLeaveLA = ROBOT_LEAVE_LA;
+								gRobot.isLeaveSZ = ROBOT_LEAVE_SZ;
 							}
 							//ID == 71 重新装弹
 							if(*id == 71)

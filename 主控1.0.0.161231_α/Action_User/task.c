@@ -1053,7 +1053,7 @@ void WalkTask(void)
 		{
 			//准备阶段
 			case getReady:
-				if(PHOTOSENSORUPGUN)
+				if(PHOTOSENSORUPGUN || gRobot.isLeaveSZ == ROBOT_LEAVE_SZ)
 				{
 					//photeElectricCounter 五次触发了上枪光电时才会执行命令跳到下一步
 					static uint8_t photoElectricCounter = 0;
@@ -1094,6 +1094,7 @@ void WalkTask(void)
 						RED_LED_OFF;
 #endif
 						status = goToLoadingArea;
+						gRobot.isLeaveSZ = ROBOT_OUT_SZ;
 						//在触发光电前 信号量也在一直累加 在等待陀螺仪时也有可能等待了几个tick 故在此必须清信号量
 						OSSemSet(PeriodSem, 0, &os_err);
 					}
@@ -1238,7 +1239,6 @@ void WalkTask(void)
 //					{
 						ROBOT_UpperGunAim();
 						gRobot.isReload = ROBOT_RELOAD_FINISH;
-						gRobot.isLeaveLA = ROBOT_OUT_LA;
 
 						switch(gRobot.moveBase.targetPoint)
 						{
@@ -1291,7 +1291,6 @@ void WalkTask(void)
 						gRobot.moveBase.targetPoint = SHOOT_POINT2;
 						ROBOT_UpperGunAim();
 						gRobot.isReload = ROBOT_RELOAD_FINISH;
-						gRobot.isLeaveLA = ROBOT_OUT_LA;
 						//第一次出发时初始化命令队列
 						if(loadTimes == 0)
 						{

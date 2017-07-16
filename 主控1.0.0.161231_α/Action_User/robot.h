@@ -43,10 +43,12 @@
 //重新装载完成
 #define ROBOT_RELOAD_FINISH 0
 
-//离开装载区
-#define ROBOT_LEAVE_LA 1
-//已经离开装载区
-#define ROBOT_OUT_LA 0
+//已经离开出发区
+#define ROBOT_OUT_SZ 2
+//离开出发区
+#define ROBOT_LEAVE_SZ 1
+//已经离开出发区
+#define ROBOT_IN_SZ 0
 
 //上枪自动防御
 #define UPPER_AUTO_DEFEND 0
@@ -472,8 +474,8 @@ typedef struct
 	//是否重装
 	unsigned char isReload;
 	
-	//是否从装载区出发
-	unsigned char isLeaveLA;
+	//是否从出发区出发
+	unsigned char isLeaveSZ;
 
 }robot_t;
 
