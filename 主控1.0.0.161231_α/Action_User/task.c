@@ -984,6 +984,7 @@ void WalkTask(void)
 	uint8_t sendSignal2Camera = 1;
 	uint8_t loadTimes = 0;
 	uint8_t leanOnWallTimes = 0;
+	uint8_t keyOnTimes = 0;
 	float stopYposRecord = 0;
 //	uint8_t clampSmallOpenFlag = 1;
 //	uint8_t clampSmallOpenCounter = 0;
@@ -1271,6 +1272,35 @@ void WalkTask(void)
 						loadTimes++;
 						gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
 //					}
+				}
+				//当平板通信中断时可以通过行程开关来从装载区出发
+				else
+				{
+					//记录行程开关的触发次数
+					if(KEYSWITCH)
+					{
+						keyOnTimes++;
+					}
+					else
+					{
+						keyOnTimes = 0;
+					}
+					//行程开关连续触发20次后从装载区触发
+					if(keyOnTimes>20)
+					{
+						ROBOT_UpperGunAim();
+						gRobot.isReload = ROBOT_RELOAD_FINISH;
+						gRobot.isLeaveLA = ROBOT_OUT_LA;
+						//第一次出发时初始化命令队列
+						if(loadTimes == 0)
+						{
+							InitQueue(SHOOT_POINT2);
+						}
+						status = goToLaunchingArea;
+						keyOnTimes = 0;
+						loadTimes++;
+						gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
+					}
 				}
 				break;
 			}
