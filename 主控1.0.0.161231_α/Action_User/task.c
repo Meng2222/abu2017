@@ -209,7 +209,7 @@ void RightGunSendDebugInfo(void)
 }
 void UpperGunSendDebugInfo(void)
 {
-	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
+	UART5_OUT((uint8_t *)"u\t%d\t%d\t%d\t%d\t%d\t%d\t",(int)gRobot.upperGun.checkTimeUsage,\
 		(int)gRobot.upperGun.targetPlant,(int)gRobot.upperGun.presentDefendZoneId,(int)gRobot.upperGun.lastDefendZoneId,\
 		(int)gRobot.upperGun.shootParaMode,(int)gRobot.upperGun.commandState);
 

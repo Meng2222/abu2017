@@ -2211,7 +2211,7 @@ status_t ROBOT_UpperGunCheckAim(void)
 		}
 		checkTime += (20 - timeout) * 5;
 	}
-	if(gRobot.upperGun.mode == GUN_ATTACK_MODE)
+	if(gRobot.upperGun.mode == GUN_DEFEND_MODE)
 	{
 		if(checkTime > 100)
 		{
