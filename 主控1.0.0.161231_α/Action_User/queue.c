@@ -501,6 +501,7 @@ void InitQueue(unsigned char stopPoint)
 		//场地中央发射点
 		case SHOOT_POINT2:
 		{
+
 			RNG_Config();
 			
 			rand0 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
@@ -578,7 +579,7 @@ void InitQueue(unsigned char stopPoint)
 				break;
 			}
 
-		break;
+			break;
 		}
 		//场地右侧发射点
 		case SHOOT_POINT3:

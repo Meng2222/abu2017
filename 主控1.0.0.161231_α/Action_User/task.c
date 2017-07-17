@@ -483,6 +483,7 @@ void ConfigTask(void)
 	//////测试使用！！！！！！！！！！！！！！！！
 	//	MoveY(50.0f);
 #ifdef NO_WALK_TASK
+	gRobot.moveBase.targetPoint = SHOOT_POINT2;
 	gRobot.moveBase.actualStopPoint = SHOOT_POINT2;
 	while(!PHOTOSENSORUPGUN)
 	{
@@ -1901,14 +1902,15 @@ void LeftGunShootTask(void)
 					}
 					else
 					{
-						if(gRobot.leftGun.shootParaMode%2)
-						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
-						}
-						else
-						{
-							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;
-						}
+						//卡弹后暂时不对没有执行的命令进行处理，由人来再次补弹
+//						if(gRobot.leftGun.shootParaMode%2)
+//						{
+//							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].plate += 1;
+//						}
+//						else
+//						{
+//							gRobot.leftGun.gunCommand[gRobot.leftGun.targetPlant].ball += 1;
+//						}
 					}
 					SetShootPlantTime(leftGunShootCommand.plantNum, leftGunShootCommand.shootMethod);
 				}
@@ -2163,14 +2165,15 @@ void RightGunShootTask(void)
 					}
 					else
 					{
-						if(gRobot.rightGun.shootParaMode%2)
-						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate += 1;
-						}
-						else
-						{
-							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball += 1;
-						}
+						//卡弹时暂时不对没有执行的命令进行处理，由人来继续补弹
+//						if(gRobot.rightGun.shootParaMode%2)
+//						{
+//							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].plate += 1;
+//						}
+//						else
+//						{
+//							gRobot.rightGun.gunCommand[gRobot.rightGun.targetPlant].ball += 1;
+//						}
 					}
 					SetShootPlantTime(rightGunShootCommand.plantNum, rightGunShootCommand.shootMethod);
 				}
