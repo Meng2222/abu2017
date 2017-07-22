@@ -2273,9 +2273,10 @@ void UpperGunShootTask(void)
 //	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(15.0f));
 	uint8_t upperGunShootFlag = 0;
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
-//#ifdef NO_WALK_TASK
-//	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
-//#endif
+#ifdef NO_WALK_TASK
+	gRobot.upperGun.mode = GUN_MANUAL_MODE;
+	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
+#endif
 	while(1)
 	{
 #ifndef NO_WALK_TASK
