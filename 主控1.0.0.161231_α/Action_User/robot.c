@@ -303,34 +303,7 @@ status_t ROBOT_Init(void)
 	gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
 
 	gRobot.isReset = ROBOT_NOT_RESET;
-	//产生两个随机数
-//	RNG_Config();
-//	leftRand = (float)RNG_Get_RandomNum()/0xffffffff;
-//	rightRand = (float)RNG_Get_RandomNum()/0xffffffff;
 
-//	RNG_Cmd(DISABLE);
-
-	//根据随机数给出左右枪的优先级顺序
-	if(leftRand <= 0.5f)
-	{
-		LeftGunPriority[0]=PLANT1;
-		LeftGunPriority[1]=PLANT2;
-	}
-	else
-	{
-		LeftGunPriority[0]=PLANT2;
-		LeftGunPriority[1]=PLANT1;
-	}
-	if(rightRand <= 0.5f)
-	{
-		RightGunPriority[0]=PLANT5;
-		RightGunPriority[1]=PLANT4;
-	}
-	else
-	{
-		RightGunPriority[0]=PLANT4;
-		RightGunPriority[1]=PLANT5;
-	}
 	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
 	{
 		gRobot.plantState[i].ballState = COMMAND_DONE;
@@ -372,25 +345,7 @@ status_t ROBOT_Init(void)
 	{
 		gRobot.cameraInfo[i].plate = 1;
 	}
-//	for(uint8_t i = PLANT1; i < LAND_NUMBER;i++)
-//	{
-//		gRobot.autoCommand[i].ball = 1;
-//	}
-//    gRobot.plantState[PLANT6].ball = 0;
-	gRobot.autoCommand[PLANT3].ball = 1;
 
-//	for(uint8_t i = 0; i < 7;i++)
-//	{
-//		gRobot.autoCommand[i].plate = 1;
-//	}
-//	gRobot.autoCommand[PLANT2].plate = 2u;
-//	gRobot.autoCommand[PLANT4].plate = 2u;
-//	gRobot.plantState[PLANT6].plate = 0u;
-	gRobot.autoCommand[PLANT7].ball = 1u;
-//	gRobot.autoCommand[PLANT6].plate = 1u;
-	gRobot.autoCommand[PLANT3].plate = 1u;
-	gRobot.autoCommand[PLANT1].plate = 2u;	
-	gRobot.autoCommand[PLANT5].plate = 2u;	
 	
 //	gRobot.upperLeftCommand[PLANT2].ball = 1;
 //	gRobot.upperRightCommand[PLANT4].ball = 1;

@@ -18,8 +18,7 @@
 #include "movebase2.h"
 #include "dma.h"
 
-//#define NO_WALK_TASK
-//#define TEST_RUN
+
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
 //宏定义标记左右枪没有命令时收回气缸的时间
@@ -1245,26 +1244,37 @@ void WalkTask(void)
 						{
 							//左发射点
 							case SHOOT_POINT1:
+#ifdef AUTO_MODE
 								if(loadTimes == 0)
 								{
 									InitQueue(SHOOT_POINT1);
 								}
+#endif
 								status = goToLeftLaunchingArea;
 								break;
 							//场地中央发射点
 							case SHOOT_POINT2:
+#ifdef AUTO_MODE
 								if(loadTimes == 0)
 								{
 									InitQueue(SHOOT_POINT2);
+									gRobot.autoCommand[PLANT3].ball = 1;
+									gRobot.autoCommand[PLANT7].ball = 1u;
+									gRobot.autoCommand[PLANT3].plate = 1u;
+									gRobot.autoCommand[PLANT1].plate = 2u;	
+									gRobot.autoCommand[PLANT5].plate = 2u;	
 								}
+#endif
 								status = goToLaunchingArea;
 								break;
 							//右发射点
 							case SHOOT_POINT3:
+#ifndef AUTO_MODE
 								if(loadTimes == 0)
 								{
 									InitQueue(SHOOT_POINT3);
 								}
+#endif
 								status = goToRightLaunchingArea;
 								break;
 
@@ -2268,12 +2278,16 @@ void UpperGunShootTask(void)
 {
 	CPU_INT08U  os_err;
 	os_err = os_err;
-
+	uint8_t upperGunModeRecord = GUN_ATTACK_MODE;
 	//fix me, if camera send data, this flag = 1
 //	VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(15.0f));
 	uint8_t upperGunShootFlag = 0;
 	gRobot.upperGun.mode = GUN_ATTACK_MODE;
 #ifdef NO_WALK_TASK
+	gRobot.upperGun.mode = GUN_MANUAL_MODE;
+	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
+#endif
+#ifndef AUTO_MODE
 	gRobot.upperGun.mode = GUN_MANUAL_MODE;
 	gRobot.upperGun.gunCommand = (plant_t *)gRobot.plantState;
 #endif
@@ -2285,14 +2299,22 @@ void UpperGunShootTask(void)
 		if((gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)&&(!PHOTOSENSORUPGUN))
 		{
 			gRobot.upperGun.bulletNumber = GUN_NO_BULLET_ERROR;
+			if(gRobot.upperGun.mode != GUN_NO_BULLET_MODE)
+			{
+				upperGunModeRecord = gRobot.upperGun.mode;
+			}
 			gRobot.upperGun.mode = GUN_NO_BULLET_MODE;
 		}
 		else
 		{
 			gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER;
-			if(gRobot.upperGun.mode!=GUN_MANUAL_MODE)
+			if(upperGunModeRecord!=GUN_MANUAL_MODE)
 			{
 				gRobot.upperGun.mode = GUN_ATTACK_MODE;
+			}
+			else
+			{
+				gRobot.upperGun.mode = GUN_MANUAL_MODE;
 			}
 			//如果接收到防守命令进入防守模式
 			if(gRobot.upperGun.defendZone1 & 0x0f)
