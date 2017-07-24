@@ -2296,6 +2296,7 @@ void UpperGunShootTask(void)
 #ifndef NO_WALK_TASK
 		ROBOT_UpperGunCheckShootPoint();
 #endif
+//#ifndef TEST_RUN
 		if((gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)&&(!PHOTOSENSORUPGUN))
 		{
 			gRobot.upperGun.bulletNumber = GUN_NO_BULLET_ERROR;
@@ -2308,7 +2309,7 @@ void UpperGunShootTask(void)
 		else
 		{
 			gRobot.upperGun.bulletNumber = MAX_BULLET_NUMBER_UPPER;
-			if(upperGunModeRecord!=GUN_MANUAL_MODE)
+			if(upperGunModeRecord!=GUN_MANUAL_MODE && gRobot.upperGun.mode!=GUN_MANUAL_MODE)
 			{
 				gRobot.upperGun.mode = GUN_ATTACK_MODE;
 			}
@@ -2385,6 +2386,7 @@ void UpperGunShootTask(void)
 			}
 #endif
 		}
+//#endif
 		//检查手动or自动
 		//auto mode用在正式比赛中，与左右两枪不同，通过摄像头的反馈发射飞盘
 		if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_DEFEND_MODE)

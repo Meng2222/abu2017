@@ -293,7 +293,6 @@ static void UpperGunInit(void)
 */
 status_t ROBOT_Init(void)
 {
-	float leftRand = 0.0f , rightRand = 0.0f;
 	gRobot.stage = ROBOT_STAGE_POWER_ON;
 	gRobot.isLeaveSZ = ROBOT_IN_SZ;
 	gRobot.shootTimes = 0;
