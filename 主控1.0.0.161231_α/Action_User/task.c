@@ -2294,7 +2294,9 @@ void UpperGunShootTask(void)
 	while(1)
 	{
 #ifndef NO_WALK_TASK
+#ifndef TEST_RUN
 		ROBOT_UpperGunCheckShootPoint();
+#endif
 #endif
 //#ifndef TEST_RUN
 		if((gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)&&(!PHOTOSENSORUPGUN))
