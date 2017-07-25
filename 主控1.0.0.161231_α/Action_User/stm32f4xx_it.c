@@ -1005,6 +1005,10 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 							break;
 						}
 					}
+					else
+					{
+						*cmdFlag = 0;
+					}
 					*status=15;
 				break;
 				case 14:
@@ -1229,6 +1233,32 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 									gRobot.isBleOk.isStopDefend = BLE_START_DEFEND;
 									gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
 								}
+								//ID == 70 从出发区出发
+								if(*id == 70)
+								{
+									gRobot.isLeaveSZ = ROBOT_LEAVE_SZ;
+								}
+								//ID == 71 重新装弹
+								if(*id == 71)
+								{
+									gRobot.isReload = ROBOT_RELOAD;
+								}
+								if(*id>=80&&*id<90)
+								{
+									switch(*id)
+									{
+										case 80:
+											gRobot.moveBase.targetPoint = SHOOT_POINT1;//Left
+										break;
+										case 81:
+											gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
+										break;
+										case 82:
+											gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
+										break;
+										default:break;
+									}
+								}							
 								//ID=255，全部切换为自动模式
 								if(*id == 255)
 								{
