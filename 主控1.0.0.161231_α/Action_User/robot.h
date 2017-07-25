@@ -11,8 +11,8 @@
 //#define RED_FIELD
 #define BLUE_FIELD
 
-//#define NO_WALK_TASK
-#define TEST_RUN
+#define NO_WALK_TASK
+//#define TEST_RUN
 //#define AUTO_MODE
 
 #define LEFT_AUTO_NUMBER 4u

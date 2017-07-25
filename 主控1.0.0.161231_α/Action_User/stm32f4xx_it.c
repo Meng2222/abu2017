@@ -961,7 +961,66 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					break;
 				case 13:
 					*id = *ch;
-				//*id在10~30区段为接收补弹命令
+				//当试场时三个平板同时发送命令，序号的顺序不一致
+#ifdef TEST_RUN
+					if(*id < 10)
+					{
+
+						switch(*id)
+						{
+							case 1:
+								//通知左枪开枪任务执行开枪动作
+								gRobot.leftGun.shoot = GUN_START_SHOOT;
+		//						OSTaskSuspend(Walk_TASK_PRIO);
+								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+								break;
+							case 2:
+								//通知右枪开枪任务执行开枪动作
+								gRobot.rightGun.shoot = GUN_START_SHOOT;
+		//						OSTaskSuspend(Walk_TASK_PRIO);
+								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+								break;
+							case 3:
+								//通知上面枪开枪任务执行开枪动作
+								gRobot.upperGun.shoot = GUN_START_SHOOT;
+		//						OSTaskSuspend(Walk_TASK_PRIO);
+								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+								break;
+							case 4:
+								//左枪自动模式
+								gRobot.leftGun.mode = GUN_AUTO_MODE;
+								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+							break;
+							case 5:
+								//右枪自动模式
+								gRobot.rightGun.mode = GUN_AUTO_MODE;
+								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+							break;
+							case 6:
+								//上枪自动模式
+								gRobot.upperGun.mode = GUN_ATTACK_MODE;
+								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+								break;
+							case 7:
+								//左枪手动模式
+								gRobot.leftGun.mode = GUN_MANUAL_MODE;
+								gRobot.leftGun.modeChangeFlag = 1;
+	//							LeftBack();
+								break;
+							case 8:
+								//右枪手动模式
+								gRobot.rightGun.mode = GUN_MANUAL_MODE;
+								gRobot.rightGun.modeChangeFlag = 1;
+	//							RightBack();
+								break;
+							case 9:
+								//上枪手动模式
+								gRobot.upperGun.mode = GUN_MANUAL_MODE;
+								break;
+						}
+					}
+#endif
+					//*id在10~30区段为接收补弹命令
 					if(*id>=10&&*id<30)
 					{
 						switch(*id/10)
@@ -1127,6 +1186,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 						{
 							if(*id < 10)
 							{
+#ifndef TEST_RUN
 								switch(*id)
 								{
 									case 1:
@@ -1179,6 +1239,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 										gRobot.upperGun.mode = GUN_MANUAL_MODE;
 										break;
 								}
+#endif
 							}
 							else if(*id == 30)
 							{
