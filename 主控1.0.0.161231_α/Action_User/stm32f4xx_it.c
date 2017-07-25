@@ -961,64 +961,9 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					break;
 				case 13:
 					*id = *ch;
-					if(*id < 10)
+				//*id在10~30区段为接收补弹命令
+					if(*id>=10&&*id<30)
 					{
-						switch(*id)
-						{
-							case 1:
-								//通知左枪开枪任务执行开枪动作
-								gRobot.leftGun.shoot = GUN_START_SHOOT;
-		//						OSTaskSuspend(Walk_TASK_PRIO);
-								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-								break;
-							case 2:
-								//通知右枪开枪任务执行开枪动作
-								gRobot.rightGun.shoot = GUN_START_SHOOT;
-		//						OSTaskSuspend(Walk_TASK_PRIO);
-								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-								break;
-							case 3:
-								//通知上面枪开枪任务执行开枪动作
-								gRobot.upperGun.shoot = GUN_START_SHOOT;
-		//						OSTaskSuspend(Walk_TASK_PRIO);
-								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
-								break;
-							case 4:
-								//左枪自动模式
-								gRobot.leftGun.mode = GUN_AUTO_MODE;
-								OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-							break;
-							case 5:
-								//右枪自动模式
-								gRobot.rightGun.mode = GUN_AUTO_MODE;
-								OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-							break;
-							case 6:
-								//上枪自动模式
-								gRobot.upperGun.mode = GUN_ATTACK_MODE;
-								OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
-								break;
-							case 7:
-								//左枪手动模式
-								gRobot.leftGun.mode = GUN_MANUAL_MODE;
-								gRobot.leftGun.modeChangeFlag = 1;
-	//							LeftBack();
-								break;
-							case 8:
-								//右枪手动模式
-								gRobot.rightGun.mode = GUN_MANUAL_MODE;
-								gRobot.rightGun.modeChangeFlag = 1;
-	//							RightBack();
-								break;
-							case 9:
-								//上枪手动模式
-								gRobot.upperGun.mode = GUN_MANUAL_MODE;
-								break;
-						}
-					}
-					else if(*id < 30)
-					{
-						//此部分为打完第一轮后接收补弹命令
 						switch(*id/10)
 						{
 							//*id 10-16 为打球 ，0 - 6为1 - 7 号柱子
@@ -1029,13 +974,13 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 	//							}
 	//							if((gRobot.manualCmdQueue.cmdBallState&(0x01<<(*id - 10)))==0)
 	//							{
-									manualCmd->plantNum = *id - 10;
-									manualCmd->method = SHOOT_METHOD3;
-									*cmdFlag = 1;
+								manualCmd->plantNum = *id - 10;
+								manualCmd->method = SHOOT_METHOD3;
+								*cmdFlag = 1;
 	//								InCmdQueue(manualCmd);
 	//								CheckCmdQueueState();
 	//							}
-								break;
+							break;
 							//*id 20-26 为落盘 ，0 - 6为1 - 7 号柱子
 							case 2:
 	//							if(gRobot.plantState[*id - 20].plateState == COMMAND_DONE)
@@ -1051,80 +996,13 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 	//							}
 	//							if((gRobot.manualCmdQueue.cmdPlateState&(0x01<<(*id - 20)))==0 || (*id - 20 == PLANT6))
 	//							{
-									manualCmd->plantNum = *id - 20;
-									manualCmd->method = SHOOT_METHOD4;
-									*cmdFlag = 1;
+								manualCmd->plantNum = *id - 20;
+								manualCmd->method = SHOOT_METHOD4;
+								*cmdFlag = 1;
 	//								InCmdQueue(manualCmd);
 	//								CheckCmdQueueState();
 	//							}
 							break;
-						}
-					}
-					else if(*id == 30)
-					{
-						//重启
-						gRobot.isReset = ROBOT_RESET;
-					}
-					else if(*id < 50)
-					{
-						//40~45对应6个防守分区
-						if(*id >= 40)
-						{
-							gRobot.upperGun.defendZone1 = *id - 40 + 1;
-							gRobot.upperGun.defendZone2 = 0x00;
-							gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
-							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
-						}
-					}
-					else if(*id < 60)
-					{
-						if(*id == 50)
-						{
-							gRobot.leftGun.bulletNumber = LEFT_BULLET_NUM - gRobot.leftGun.shootTimes;
-						}
-						if(*id == 51)
-						{
-							gRobot.leftGun.bulletNumber = GUN_NO_BULLET_ERROR;
-						}
-						if(*id == 52)
-						{
-							gRobot.rightGun.bulletNumber = RIGHT_BULLET_NUM - gRobot.rightGun.shootTimes;
-						}
-						if(*id == 53)
-						{
-							gRobot.rightGun.bulletNumber = GUN_NO_BULLET_ERROR;
-						}
-					}
-					else
-					{
-						//ID == 60 停止摄像头防守
-						if(*id == 60)
-						{
-							bleIsStopDefend = BLE_STOP_DEFEND;
-							gRobot.isBleOk.isStopDefend = BLE_STOP_DEFEND;
-							gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
-							gRobot.upperGun.defendZone1 = 0x00;
-							gRobot.upperGun.defendZone2 = 0x00; 					
-						}
-						//ID == 61 恢复摄像头防守
-						if(*id == 61)
-						{
-							bleIsStopDefend = BLE_START_DEFEND;
-							gRobot.isBleOk.isStopDefend = BLE_START_DEFEND;
-							gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
-						}
-						//ID=255，全部切换为自动模式
-						if(*id == 255)
-						{
-							//左枪自动模式
-							gRobot.leftGun.mode = GUN_AUTO_MODE;
-							OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
-							//右枪自动模式
-							gRobot.rightGun.mode = GUN_AUTO_MODE;
-							OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
-							//上枪自动模式
-							gRobot.upperGun.mode = GUN_ATTACK_MODE;
-							OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 						}
 					}
 					*status=15;
@@ -1243,28 +1121,127 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 						if((*ch - msgId < 10u && *ch - msgId > 0u)
 							|| (msgId - *ch > 90u))
 						{
-							//ID == 70 从出发区出发
-							if(*id == 70)
+							if(*id < 10)
 							{
-								gRobot.isLeaveSZ = ROBOT_LEAVE_SZ;
+								switch(*id)
+								{
+									case 1:
+										//通知左枪开枪任务执行开枪动作
+										gRobot.leftGun.shoot = GUN_START_SHOOT;
+				//						OSTaskSuspend(Walk_TASK_PRIO);
+										OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+										break;
+									case 2:
+										//通知右枪开枪任务执行开枪动作
+										gRobot.rightGun.shoot = GUN_START_SHOOT;
+				//						OSTaskSuspend(Walk_TASK_PRIO);
+										OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+										break;
+									case 3:
+										//通知上面枪开枪任务执行开枪动作
+										gRobot.upperGun.shoot = GUN_START_SHOOT;
+				//						OSTaskSuspend(Walk_TASK_PRIO);
+										OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+										break;
+									case 4:
+										//左枪自动模式
+										gRobot.leftGun.mode = GUN_AUTO_MODE;
+										OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+									break;
+									case 5:
+										//右枪自动模式
+										gRobot.rightGun.mode = GUN_AUTO_MODE;
+										OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+									break;
+									case 6:
+										//上枪自动模式
+										gRobot.upperGun.mode = GUN_ATTACK_MODE;
+										OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+										break;
+									case 7:
+										//左枪手动模式
+										gRobot.leftGun.mode = GUN_MANUAL_MODE;
+										gRobot.leftGun.modeChangeFlag = 1;
+			//							LeftBack();
+										break;
+									case 8:
+										//右枪手动模式
+										gRobot.rightGun.mode = GUN_MANUAL_MODE;
+										gRobot.rightGun.modeChangeFlag = 1;
+			//							RightBack();
+										break;
+									case 9:
+										//上枪手动模式
+										gRobot.upperGun.mode = GUN_MANUAL_MODE;
+										break;
+								}
 							}
-							//ID == 71 重新装弹
-							if(*id == 71)
+							else if(*id == 30)
 							{
-								gRobot.isReload = ROBOT_RELOAD;
+								//重启
+								gRobot.isReset = ROBOT_RESET;
 							}
-							switch(*id)
+							else if(*id < 50)
 							{
-								case 80:
-									gRobot.moveBase.targetPoint = SHOOT_POINT1;//Left
-								break;
-								case 81:
-									gRobot.moveBase.targetPoint = SHOOT_POINT2;//Center
-								break;
-								case 82:
-									gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
-								break;
-								default:break;
+								//40~45对应6个防守分区
+								if(*id >= 40)
+								{
+									gRobot.upperGun.defendZone1 = *id - 40 + 1;
+									gRobot.upperGun.defendZone2 = 0x00;
+									gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
+									OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+								}
+							}
+							else if(*id < 60)
+							{
+								if(*id == 50)
+								{
+									gRobot.leftGun.bulletNumber = LEFT_BULLET_NUM - gRobot.leftGun.shootTimes;
+								}
+								if(*id == 51)
+								{
+									gRobot.leftGun.bulletNumber = GUN_NO_BULLET_ERROR;
+								}
+								if(*id == 52)
+								{
+									gRobot.rightGun.bulletNumber = RIGHT_BULLET_NUM - gRobot.rightGun.shootTimes;
+								}
+								if(*id == 53)
+								{
+									gRobot.rightGun.bulletNumber = GUN_NO_BULLET_ERROR;
+								}
+							}
+							else
+							{
+								//ID == 60 停止摄像头防守
+								if(*id == 60)
+								{
+									bleIsStopDefend = BLE_STOP_DEFEND;
+									gRobot.isBleOk.isStopDefend = BLE_STOP_DEFEND;
+									gRobot.upperGun.isManualDefend = UPPER_MANUAL_DEFEND;
+									gRobot.upperGun.defendZone1 = 0x00;
+									gRobot.upperGun.defendZone2 = 0x00; 					
+								}
+								//ID == 61 恢复摄像头防守
+								if(*id == 61)
+								{
+									bleIsStopDefend = BLE_START_DEFEND;
+									gRobot.isBleOk.isStopDefend = BLE_START_DEFEND;
+									gRobot.upperGun.isManualDefend = UPPER_AUTO_DEFEND;
+								}
+								//ID=255，全部切换为自动模式
+								if(*id == 255)
+								{
+									//左枪自动模式
+									gRobot.leftGun.mode = GUN_AUTO_MODE;
+									OSTaskResume(LEFT_GUN_SHOOT_TASK_PRIO);
+									//右枪自动模式
+									gRobot.rightGun.mode = GUN_AUTO_MODE;
+									OSTaskResume(RIGHT_GUN_SHOOT_TASK_PRIO);
+									//上枪自动模式
+									gRobot.upperGun.mode = GUN_ATTACK_MODE;
+									OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
+								}
 							}
 							msgId = *ch;
 						}
