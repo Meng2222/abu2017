@@ -2694,6 +2694,7 @@ void UpperGunShootTask(void)
 			}
 			else if(gRobot.upperGun.shoot==GUN_START_SHOOT)
 			{
+				ROBOT_UpperGunAim();
 				ROBOT_UpperGunCheckAim();
 				ROBOT_UpperGunShoot();
 				UART5_OUT((uint8_t *)"Manual");
