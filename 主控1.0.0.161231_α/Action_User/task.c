@@ -2303,6 +2303,10 @@ void UpperGunShootTask(void)
 		{
 			ROBOT_UpperGunCheckReload();
 		}
+		else
+		{
+			gRobot.upperGun.champerErrerState = GUN_NO_ERROR;
+		}
 		if(gRobot.upperGun.champerErrerState == GUN_NO_BULLET_ERROR)
 		{
 			gRobot.upperGun.bulletNumber = GUN_NO_BULLET_ERROR;
