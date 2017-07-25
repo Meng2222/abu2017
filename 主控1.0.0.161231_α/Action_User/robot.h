@@ -563,6 +563,14 @@ status_t ROBOT_LeftGunCheckReload(void);
 *注意：上面的枪不需要上子弹
 */
 status_t ROBOT_RightGunCheckReload(void);
+/**
+*名称：ROBOT_UpperGunCheckReload
+*功能：检查上枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*
+*/
+status_t ROBOT_UpperGunCheckReload(void);
 /** @defgroup Shoot Tragedy
   * @brief 
   * @{

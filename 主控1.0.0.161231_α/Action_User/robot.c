@@ -1639,6 +1639,37 @@ status_t ROBOT_RightGunCheckReload(void)
 	return GUN_NO_ERROR;
 }
 
+/**
+*名称：ROBOT_UpperGunCheckReload
+*功能：检查上枪上弹情况
+*@param None
+*@retval status_t:GUN_NO_ERROR，GUN_RELOAD_ERROR
+*
+*/
+status_t ROBOT_UpperGunCheckReload(void)
+{
+	//宏定义检测超时时间（单位：CHECK_PERIOD）
+	#define CHECK_TIME_OUT (30)
+	//宏定义检测一次需要的时间（单位：系统时钟）
+	#define CHECK_PERIOD (1)
+	uint8_t checkTimes = CHECK_TIME_OUT;
+	uint8_t triggerTimes = 0;
+	gRobot.upperGun.champerErrerState = GUN_NO_BULLET_ERROR;
+	while(checkTimes--)
+	{
+		if(PHOTOSENSORUPGUN)
+		{
+			triggerTimes++;
+		}
+		if(triggerTimes>=5)
+		{
+			gRobot.upperGun.champerErrerState = GUN_NO_ERROR;
+			break;
+		}
+		OSTimeDly(1);
+	}
+	return GUN_NO_ERROR;
+}
 /** @defgroup Left_Gun_Shoot_Tragedy
   * @brief
   * @{

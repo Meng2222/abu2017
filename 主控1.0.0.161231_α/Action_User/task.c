@@ -2299,7 +2299,11 @@ void UpperGunShootTask(void)
 #endif
 #endif
 //#ifndef TEST_RUN
-		if((gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)&&(!PHOTOSENSORUPGUN))
+		if(gRobot.upperGun.shootTimes > MAX_BULLET_NUMBER_UPPER)
+		{
+			ROBOT_UpperGunCheckReload();
+		}
+		if(gRobot.upperGun.champerErrerState == GUN_NO_BULLET_ERROR)
 		{
 			gRobot.upperGun.bulletNumber = GUN_NO_BULLET_ERROR;
 			if(gRobot.upperGun.mode != GUN_NO_BULLET_MODE)
