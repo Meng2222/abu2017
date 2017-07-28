@@ -173,6 +173,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGDARM</Key>
+          <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>DLGUARM</Key>
           <Name>/</Name>
         </SetRegEntry>
@@ -189,7 +194,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>ARMDBGFLAGS</Key>
-          <Name></Name>
+          <Name>-T0</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -206,34 +211,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>327</LineNumber>
+          <LineNumber>2610</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134272170</Address>
+          <Address>134224890</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\Dreamer\Desktop\M22017\Z\涓绘帶1.0.0.161231_伪\Action_User\queue.c</Filename>
+          <Filename>C:\Users\Dreamer\Desktop\abu2017\涓绘帶1.0.0.161231_伪\Action_User\task.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/queue.c\327</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>319</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134272074</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\Dreamer\Desktop\M22017\Z\涓绘帶1.0.0.161231_伪\Action_User\queue.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\STM32F407_ACTION\../Action_User/queue.c\319</Expression>
+          <Expression>\\STM32F407_ACTION\../Action_User/task.c\2610</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

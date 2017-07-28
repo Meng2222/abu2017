@@ -561,6 +561,27 @@ void SelfCheckTask(void)
 				delay_ms(2900);
 				ThreeWheelVelControlSelfCheck(3);
 				delay_ms(700);
+				//正转1s
+				ThreeWheelVelControlSelfCheck(1);
+				delay_ms(2900);
+				//正转1s
+				ThreeWheelVelControlSelfCheck(3);
+				delay_ms(700);
+				//反转1s
+				ThreeWheelVelControlSelfCheck(2);
+				delay_ms(2900);
+				ThreeWheelVelControlSelfCheck(3);
+				delay_ms(700);
+				//正转1s
+				ThreeWheelVelControlSelfCheck(1);
+				delay_ms(2900);
+				ThreeWheelVelControlSelfCheck(3);
+				delay_ms(700);
+				//反转1s
+				ThreeWheelVelControlSelfCheck(2);
+				delay_ms(2900);
+				ThreeWheelVelControlSelfCheck(3);
+				delay_ms(700);				
 
 				status_check++;
 
@@ -1424,7 +1445,7 @@ void WalkTask(void)
 				//停车
 			case stopRobot:
 			{
-				if(fabs(gRobot.moveBase.actualYPos - stopYposRecord) < 2.0f)
+				if(fabs(gRobot.moveBase.actualYPos - stopYposRecord) < 1.5f)
 				{
 					leanOnWallTimes++;
 				}
