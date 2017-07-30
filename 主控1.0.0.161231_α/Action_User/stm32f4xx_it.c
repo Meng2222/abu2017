@@ -1131,7 +1131,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					UART5_OUT((uint8_t *)"ID%dR%d",*ch,msgId);
 					if(*cmdFlag == 1)
 					{
-						if((*ch - msgId < 10u && *ch - msgId > 0u)
+						if((*ch - msgId < 10u && *ch - msgId > 0u)\
 							|| (msgId - *ch > 90u))
 						{
 							UART5_OUT((uint8_t *)"BLE");
@@ -1207,7 +1207,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					}
 					else
 					{
-						if((*ch - msgId < 10u && *ch - msgId > 0u)
+						if((*ch - msgId < 10u && *ch - msgId > 0u)\
 							|| (msgId - *ch > 90u))
 						{
 							if(*id < 10)
