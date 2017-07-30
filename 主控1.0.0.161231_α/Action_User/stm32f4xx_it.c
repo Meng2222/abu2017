@@ -783,6 +783,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 			switch (*status)
 			{
 				case 0:
+				{
 					if (*ch == 'A')
 					{
 						if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
@@ -794,13 +795,17 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 						(*status)++;
 					}
 					break;
+				}
 				case 1:
+				{
 					if (*ch == 'C')
 						(*status)++;
 					else
 						*status = 0;
 					break;
+				}
 				case 2:
+				{
 					if (*ch == 'P')
 						(*status)++;				   //ACPC + [id1] + [id2] + data[4]
 					else if (*ch == 'C')
@@ -812,31 +817,41 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					else
 						(*status) = 0;
 					break;
+				}
 				case 3: 						   /*ACPC begin from here*/
+				{
 					if (*ch == 'C')
 						(*status)++;
 					else
 						(*status) = 0;
 					break;
+				}
 				case 4:
+				{
 					*id = *ch;
 					(*status)++;
 					break;
+				}
 				case 5:
+				{
 					*id2 = *ch;				//左	打球0 打盘3 扔6  右 打球1 打盘4 扔7	上 打球2 打盘5 扔8
 					*id2 = *id2 % 80;
 					(*status)++;
-				break;
+					break;
+				}
 				case 6:
 				case 7:
 				case 8:
 				case 9:
 				case 10:
+				{
 					if((*status) < 10)
 						data->data8[*status - 6] = *ch;
 					(*status)++;
 					break;
+				}
 				case 11:
+				{
 					switch(*id % 5)
 					{
 						//roll
@@ -953,13 +968,17 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					*id = 0xff;
 					*id2 = 0xff;
 					break;
+				}
 				case 12:							  /*ACCT begin from here*/
+				{
 					if (*ch == 'T')
 						(*status)++;
 					else
 						*status = 0;
 					break;
+				}
 				case 13:
+				{
 					*id = *ch;
 				//当试场时三个平板同时发送命令，序号的顺序不一致
 #ifdef TEST_RUN
@@ -1068,9 +1087,12 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					{
 						*cmdFlag = 0;
 					}
+					UART5_OUT((uint8_t *)"cmd%d",*cmdFlag);
 					*status=15;
-				break;
+					break;
+				}
 				case 14:
+				{
 					if(*ch == 'B')
 					{
 						if(gRobot.isBleOk.bleCheckStartFlag == BLE_CHECK_START)
@@ -1084,6 +1106,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 						*status = 0;
 					}
 					break;
+				}
 				case 15:
 					(*status)++;
 					break;
@@ -1103,6 +1126,9 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					(*status)++;
 					break;
 				case 21:
+				{
+					UART5_OUT((uint8_t *)"CMD%d",*cmdFlag);
+					UART5_OUT((uint8_t *)"ID%dR%d",*ch,msgId);
 					if(*cmdFlag == 1)
 					{
 						if((*ch - msgId < 10u && *ch - msgId > 0u)
@@ -1339,6 +1365,7 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					}
 					*status = 0;
 					break;
+				}
 				case 22:
 					(*status)++;
 					break;

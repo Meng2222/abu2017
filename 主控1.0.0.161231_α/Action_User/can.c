@@ -387,7 +387,7 @@ void CAN_Config(CAN_TypeDef* CANx,
 
 	/* Enable FIFO 0 message pending Interrupt */
 
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
@@ -395,14 +395,14 @@ void CAN_Config(CAN_TypeDef* CANx,
 	
 	//使能CAN总线关闭中断
 	NVIC_InitStructure.NVIC_IRQChannel = CAN1_SCE_IRQn;//串口1中断通道
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;//抢占优先级1
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;		//子优先级4
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;//抢占优先级1
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;		//子优先级4
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
 	
 	NVIC_InitStructure.NVIC_IRQChannel = CAN2_SCE_IRQn;//串口1中断通道
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;//抢占优先级1
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;		//子优先级4
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;//抢占优先级1
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//子优先级4
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
 	
