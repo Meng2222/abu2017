@@ -96,6 +96,10 @@
 #define GUN_ALREADY_RELOAD  1
 #define GUN_NOT_RELOAD  0
 
+//是否反转
+#define CLAMP_ROTATE 1
+#define CLAMP_NOT_ROTATE 0
+
 //左枪支架roll轴CAN ID
 #define RIGHT_GUN_ROLL_ID 7
 //左枪支架pitch轴CAN ID
@@ -477,6 +481,9 @@ typedef struct
 	
 	//是否从出发区出发
 	unsigned char isLeaveSZ;
+	
+	//是否反转
+	unsigned char isRotate;
 
 }robot_t;
 

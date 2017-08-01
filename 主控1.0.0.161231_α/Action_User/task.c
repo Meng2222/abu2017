@@ -1010,7 +1010,7 @@ void WalkTask(void)
 //	uint8_t clampSmallOpenFlag = 1;
 //	uint8_t clampSmallOpenCounter = 0;
 	//仅在beginToGO1中计时使用
-//	uint8_t upperPhotoSensorCounter = 0;
+	uint8_t upperPhotoSensorCounter = 0;
 	OSSemSet(PeriodSem, 0, &os_err);
 	while(1)
 	{
@@ -1224,23 +1224,30 @@ void WalkTask(void)
 			{
 				//停车
 				LockWheel();
-				//等待上枪光电
-				while(!PHOTOSENSORUPGUN)
+//				//等待上枪光电
+//				while(!PHOTOSENSORUPGUN)
+//				{
+//					//wait
+//				}
+//				OSSemSet(PeriodSem, 0, &os_err);
+				if(PHOTOSENSORUPGUN)
 				{
-					//wait
+					upperPhotoSensorCounter++;
 				}
-				OSSemSet(PeriodSem, 0, &os_err);
-				//弹匣的爪子收起
-				ClampClose();
-				timeCounter++;
-				//爪子关一段时间 400 ms 后 爪子翻翻并开始检测光电
-				if (timeCounter >= 40)
+				if(gRobot.isRotate == CLAMP_ROTATE || upperPhotoSensorCounter>=10)
 				{
-					//复位
-					timeCounter = 0;
-					//爪子翻
-					ClampRotate();
-					status = beginToGo1;
+					//弹匣的爪子收起
+					ClampClose();
+					timeCounter++;
+					//爪子关一段时间 400 ms 后 爪子翻翻并开始检测光电
+					if (timeCounter >= 40)
+					{
+						//复位
+						timeCounter = 0;
+						//爪子翻
+						ClampRotate();
+						status = beginToGo1;
+					}
 				}
 				break;
 			}

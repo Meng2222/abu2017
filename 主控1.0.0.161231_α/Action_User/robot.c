@@ -297,7 +297,7 @@ status_t ROBOT_Init(void)
 	gRobot.isLeaveSZ = ROBOT_IN_SZ;
 	gRobot.shootTimes = 0;
 	gRobot.status = ROBOT_STATUS_OK;
-
+	gRobot.isRotate = CLAMP_NOT_ROTATE;
 	gRobot.moveBase.targetPoint = SHOOT_POINT_MOVING;
 	gRobot.moveBase.actualStopPoint = SHOOT_POINT_MOVING;
 

@@ -1343,6 +1343,9 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 										case 82:
 											gRobot.moveBase.targetPoint = SHOOT_POINT3;//Right
 										break;
+										case 83:
+											gRobot.isRotate = CLAMP_ROTATE;
+										break;
 										default:break;
 									}
 								}							

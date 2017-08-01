@@ -1276,7 +1276,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第二种参数类型对应落盘
 			{
-				{3.5f,20.1f,0.0f,77.5f,10.5f},
+				{5.1f,19.5f,0.0f,77.5f,8.5f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
