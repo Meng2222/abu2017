@@ -1242,11 +1242,18 @@ void WalkTask(void)
 					//爪子关一段时间 400 ms 后 爪子翻翻并开始检测光电
 					if (timeCounter >= 40)
 					{
-						//复位
-						timeCounter = 0;
+						if(timeCounter >= 200)
+						{
+							timeCounter = 200;
+						}
 						//爪子翻
 						ClampRotate();
-						status = beginToGo1;
+						if(upperPhotoSensorCounter>=10)
+						{
+							//复位
+							timeCounter = 0;
+							status = beginToGo1;
+						}
 					}
 				}
 				break;
