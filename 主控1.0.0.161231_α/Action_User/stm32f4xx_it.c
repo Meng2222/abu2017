@@ -1108,31 +1108,71 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					break;
 				}
 				case 15:
-					(*status)++;
+					if(*ch==0)
+					{
+						(*status)++;
+					}
+					else
+					{
+						(*status)=0;
+					}
 					break;
 				case 16:
-					(*status)++;
+					if(*ch==0)
+					{
+						(*status)++;
+					}
+					else
+					{
+						(*status)=0;
+					}
 					break;
 				case 17:
-					(*status)++;
+					if(*ch==0)
+					{
+						(*status)++;
+					}
+					else
+					{
+						(*status)=0;
+					}
 					break;
 				case 18:
-					(*status)++;
+					if(*ch==0)
+					{
+						(*status)++;
+					}
+					else
+					{
+						(*status)=0;
+					}
 					break;
 				case 19:
-					(*status)++;
+					if(*ch==0)
+					{
+						(*status)++;
+					}
+					else
+					{
+						(*status)=0;
+					}
 					break;
 				case 20:
-					(*status)++;
+					if(*ch==0)
+					{
+						(*status)++;
+					}
+					else
+					{
+						(*status)=0;
+					}
 					break;
 				case 21:
 				{
-					UART5_OUT((uint8_t *)"CMD%d",*cmdFlag);
-					UART5_OUT((uint8_t *)"ID%dR%d",*ch,msgId);
 					if(*cmdFlag == 1)
 					{
-						if((*ch - msgId < 10u && *ch - msgId > 0u)\
-							|| (msgId - *ch > 90u))
+						if((*(int8_t *)ch - msgId < 10 && *(int8_t *)ch - msgId > 0)\
+							|| (msgId - *(int8_t *)ch > 90))
 						{
 							UART5_OUT((uint8_t *)"BLE");
 							if((manualCmd->plantNum != PLANT3 && manualCmd->plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
@@ -1199,6 +1239,10 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 										break;
 								}
 							}
+							
+							UART5_OUT((uint8_t *)"CMD%d",*cmdFlag);
+							UART5_OUT((uint8_t *)"ID%dR%d",*ch,msgId);
+
 							msgId = *ch;
 		//					CheckCmdQueueState();
 		//					DelTailQueue();
@@ -1207,8 +1251,8 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 					}
 					else
 					{
-						if((*ch - msgId < 10u && *ch - msgId > 0u)\
-							|| (msgId - *ch > 90u))
+						if((*(int8_t *)ch - msgId < 10 && *(int8_t *)ch - msgId > 0)\
+							|| (msgId - *(int8_t  *)ch > 90))
 						{
 							if(*id < 10)
 							{
@@ -1363,6 +1407,10 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 									OSTaskResume(UPPER_GUN_SHOOT_TASK_PRIO);
 								}
 							}
+							
+							UART5_OUT((uint8_t *)"CMD%d",*cmdFlag);
+							UART5_OUT((uint8_t *)"ID%dR%d",*ch,msgId);
+
 							msgId = *ch;
 						}
 					}
