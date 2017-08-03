@@ -348,9 +348,15 @@ status_t ROBOT_Init(void)
 	
 //	gRobot.upperLeftCommand[PLANT2].ball = 1;
 //	gRobot.upperRightCommand[PLANT4].ball = 1;
-
+#ifdef NO_WALK_TASK
 #ifdef AUTO_MODE	
-//	InitQueue();
+	InitQueue(SHOOT_POINT2);
+	gRobot.autoCommand[PLANT3].ball = 1;
+	gRobot.autoCommand[PLANT7].ball = 1u;
+	gRobot.autoCommand[PLANT3].plate = 1u;
+	gRobot.autoCommand[PLANT1].plate = 2u;	
+	gRobot.autoCommand[PLANT5].plate = 2u;	
+#endif
 #endif	
 	LeftGunInit();
 	RightGunInit();
