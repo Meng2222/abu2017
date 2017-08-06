@@ -1674,7 +1674,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//到达装弹位置
-				if(GetPosX()<=- (LOAD_AREA_STOP_X + 50.0f))
+				if(GetPosX()<=- (LOAD_AREA_STOP_X + 25.0f))
 				{
 					//moveTimFlag 是用来控制是否进行走形计时的 在TIM2 中使用
 					//由于停止运动了 MoveTo() 停止调用，故必须停止计时
@@ -1698,7 +1698,7 @@ void WalkTask(void)
 					BEEP_ON;
 				}
 				//到达装弹位置
-				if(GetPosX() >= LOAD_AREA_STOP_X + 50.0f)
+				if(GetPosX() >= LOAD_AREA_STOP_X + 25.0f)
 				{
 					LockWheel();
 					moveTimFlag = 0;
