@@ -1175,7 +1175,8 @@ void ActionCommunicate(uint8_t* ch, int* status, uint8_t* cmdFlag,uint8_t* id, u
 							|| (msgId - *(int8_t *)ch > 90))
 						{
 							UART5_OUT((uint8_t *)"BLE");
-							if((manualCmd->plantNum != PLANT3 && manualCmd->plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR)
+							if((manualCmd->plantNum != PLANT3 && manualCmd->plantNum != PLANT7)||gRobot.upperGun.bulletNumber == GUN_NO_BULLET_ERROR\
+								||gRobot.upperGun.mode==GUN_DEFEND_MODE)
 							{
 								InCmdQueue(*manualCmd);
 								UART5_OUT((uint8_t *)"%d %d\r\n",gRobot.manualCmdQueue.cmdArr[gRobot.manualCmdQueue.tailNum - 1].plantNum,\
