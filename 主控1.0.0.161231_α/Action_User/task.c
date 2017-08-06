@@ -1354,7 +1354,7 @@ void WalkTask(void)
 			case goToLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X, 3200.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X, 3200.0f, 1800.0f , 1800.0f);
 
 				if (fabs(GetPosX() - (-LAUNCH_STOP_X)) < 10.0f)
 				{
@@ -1370,7 +1370,7 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, -3000.0f, 2500.0f , 2000.0f);
-				MoveTo(LAUNCH_STOP_X, -3200.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X, -3200.0f, 1800.0f , 1800.0f);
 
 				//到位后给靠墙速度
 				if (fabs(GetPosX() - LAUNCH_STOP_X) < 10.0f)
@@ -1390,7 +1390,7 @@ void WalkTask(void)
 			case goToRightLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X + SIDE_DISTANCE, 3000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X + SIDE_DISTANCE, 3000.0f, 1800.0f , 1800.0f);
 
 				if (fabs(GetPosX() - (-LAUNCH_STOP_X + SIDE_DISTANCE)) < 10.0f)
 				{
@@ -1405,7 +1405,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-				MoveTo(LAUNCH_STOP_X + SIDE_DISTANCE, -3000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X + SIDE_DISTANCE, -3000.0f, 1800.0f , 1800.0f);
 
 				//到位后给靠墙速度
 				if (fabs(GetPosX() - (LAUNCH_STOP_X + SIDE_DISTANCE)) < 10.0f)
@@ -1424,7 +1424,7 @@ void WalkTask(void)
 			case goToLeftLaunchingArea:
 			{
 #ifdef RED_FIELD
-				MoveTo(-LAUNCH_STOP_X - SIDE_DISTANCE, 3000.0f, 2000.0f , 2000.0f);
+				MoveTo(-LAUNCH_STOP_X - SIDE_DISTANCE, 3000.0f, 1800.0f , 1800.0f);
 
 				//				if (GetPosX() >= -6459.14f)
 				if (fabs(GetPosX() - (-LAUNCH_STOP_X - SIDE_DISTANCE)) < 10.0f)
@@ -1440,7 +1440,7 @@ void WalkTask(void)
 				}
 #endif
 #ifdef BLUE_FIELD
-				MoveTo(LAUNCH_STOP_X - SIDE_DISTANCE, -3000.0f, 2000.0f , 2000.0f);
+				MoveTo(LAUNCH_STOP_X - SIDE_DISTANCE, -3000.0f, 1800.0f , 1800.0f);
 
 				//到位后给靠墙速度
 				if (fabs(GetPosX() - (LAUNCH_STOP_X - SIDE_DISTANCE)) < 10.0f)
@@ -1659,7 +1659,7 @@ void WalkTask(void)
 			case resetRunToLoad:
 			{
 #ifdef RED_FIELD
-				MoveTo(-(LOAD_AREA_STOP_X + 50.0f), -3200.0f, 2000.0f , 2000.0f);
+				MoveTo(-(LOAD_AREA_STOP_X + 25.0f), -3200.0f, 1800.0f , 1800.0f);
 
 				//接近装载区时通过光电校正坐标 红场使用右侧光电（处于行进方向后方的光电）
 				if (GetPosX() <= -12650.0f && PHOTOSENSORRIGHT)
@@ -1686,7 +1686,7 @@ void WalkTask(void)
 #endif
 				//红蓝场走形对称 实现是一样的
 #ifdef BLUE_FIELD
-				MoveTo(LOAD_AREA_STOP_X + 50.0f, 3200.0f, 2000.0f, 2000.0f);
+				MoveTo(LOAD_AREA_STOP_X + 25.0f, 3200.0f, 1800.0f, 1800.0f);
 				//接近装载区时通过光电校正坐标 蓝场使用左侧光电（处于行进方向后方的光电）
 				if (GetPosX() >= 12650.0f && PHOTOSENSORLEFT)
 				{
@@ -1713,7 +1713,7 @@ void WalkTask(void)
 #ifdef RED_FIELD
 				//				MoveTo(-6459.14f, -3000.0f, 2000.0f, 2000.0f);
 				//由于重试后陀螺仪零漂较严重，矫正角度后也位置也有偏差
-				MoveTo(-LAUNCH_STOP_X * cosf(ANGTORAD(gyroAngleErr)), -3000.0f, 2000.0f, 2000.0f);
+				MoveTo(-LAUNCH_STOP_X * cosf(ANGTORAD(gyroAngleErr)), -3000.0f, 1800.0f, 1800.0f);
 
 				//离开出发区时通过光电矫正X方向坐标 红场使用左侧光电（处于行进方向前方的光电）
 				if(GetPosX() > -500.0f && !PHOTOSENSORLEFT)
@@ -1743,7 +1743,7 @@ void WalkTask(void)
 #endif
 #ifdef BLUE_FIELD
 				//				MoveTo(6459.14f, 3000.0f, 2000.0f, 2000.0f);
-				MoveTo(LAUNCH_STOP_X * cosf(ANGTORAD(gyroAngleErr)), 3000.0f, 2000.0f, 2000.0f);
+				MoveTo(LAUNCH_STOP_X * cosf(ANGTORAD(gyroAngleErr)), 3000.0f, 1800.0f, 1800.0f);
 
 				//离开出发区时通过光电矫正X方向坐标 蓝场使用右侧光电（处于行进方向前方的光电）
 				if(GetPosX() < 500.0f && !PHOTOSENSORRIGHT)
