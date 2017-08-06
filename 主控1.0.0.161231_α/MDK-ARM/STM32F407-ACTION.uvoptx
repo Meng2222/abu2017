@@ -184,7 +184,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
-          <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=606,220,850,768,0)(1012=-1,-1,-1,-1,0)</Name>
+          <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=508,113,752,661,0)(1012=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -329,32 +329,42 @@
         <Ww>
           <count>5</count>
           <WinNumber>2</WinNumber>
-          <ItemText>CANSendPeriodSem,0x0A</ItemText>
+          <ItemText>CAN1Message[0],0x10</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>2</WinNumber>
-          <ItemText>CAN1Message[CAN1MsgCapacity]</ItemText>
+          <ItemText>CAN2Message[0]</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>2</WinNumber>
-          <ItemText>CAN1Message[50]</ItemText>
+          <ItemText>CAN1Message</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>2</WinNumber>
-          <ItemText>CAN1Message[CAN1MsgCapacity].message[i]</ItemText>
+          <ItemText>can1ReceiveNum,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>2</WinNumber>
-          <ItemText>buffer[i],0x0A</ItemText>
+          <ItemText>CAN1BuffFront,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>2</WinNumber>
-          <ItemText>CAN1Message[0]</ItemText>
+          <ItemText>CAN1BuffRear,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>CAN2BuffFront,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>CAN2BuffRear,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>

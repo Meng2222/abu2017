@@ -12,7 +12,8 @@
 #include "stm32f4xx_usart.h"
 
 
-
+uint8_t CAN1ErrorFlag = 0;
+uint8_t CAN2ErrorFlag = 0;
 /*
 ===============================================================
                         信号量定义
@@ -77,7 +78,12 @@ void ConfigTask(void)
 	
 	//定时器初始化
 	TIM_Init(TIM2, 499, 83, 0, 0);   //0.5ms主定时器
+	GPIO_Init_Pins(GPIOA,GPIO_Pin_8,GPIO_Mode_OUT);
+	GPIO_Init_Pins(GPIOA,GPIO_Pin_9,GPIO_Mode_OUT);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_9);
 
+	
 	CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
 	CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
 
@@ -91,7 +97,22 @@ void CANSendTask(void)
 //    OSSemSet(CANSendPeriodSem, 0, &os_err);
 	while(1)
 	{
-//		OSSemPend(CANSendPeriodSem, 0, &os_err);
+		
+		//当检测到总线关闭时，重新初始化CAN
+		if(CAN1ErrorFlag == CAN_BUS_OFF)
+		{
+			CAN_DeInit(CAN1);
+			CAN_Config(CAN1, 500, GPIOB, GPIO_Pin_8, GPIO_Pin_9);
+			CAN1ErrorFlag = CAN_BUS_OK;
+		}
+		if(CAN2ErrorFlag == CAN_BUS_OFF)
+		{
+			CAN_DeInit(CAN2);
+			CAN_Config(CAN2, 500, GPIOB, GPIO_Pin_5, GPIO_Pin_6);
+			CAN2ErrorFlag = CAN_BUS_OK;
+		}
+
+		//当队列非空时发送数据
 		if(CAN1BuffFront!=CAN1BuffRear)
 		{
 			if(CAN1BuffFront + 1 == MAX_CAN_CAPACITY)
@@ -105,6 +126,7 @@ void CANSendTask(void)
 				CAN_TxMsg(CAN2,CAN1Message[CAN1BuffFront-1].canSendId, CAN1Message[CAN1BuffFront-1].message,8);
 			}
 		}
+		
 		if(CAN2BuffFront!=CAN2BuffRear)
 		{
 			if(CAN2BuffFront + 1 == MAX_CAN_CAPACITY)

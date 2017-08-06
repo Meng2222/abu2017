@@ -95,7 +95,8 @@ void CAN1_RX0_IRQHandler(void)
 	CAN_ClearFlag(CAN1, CAN_FLAG_FOV1);
 	OSIntExit();
 }
-
+extern uint8_t CAN1ErrorFlag;
+extern uint8_t CAN2ErrorFlag;
 /**
   * @brief  CAN1 SCE interrupt  handler
   * @note   
@@ -108,6 +109,7 @@ void CAN1_SCE_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
+	CAN1ErrorFlag = CAN_BUS_OFF;
 	USART_SendData(UART5, 1);	
 	USART_SendData(UART5, CAN_GetLastErrorCode(CAN1));
 	USART_SendData(UART5, (uint8_t)-100);
@@ -131,6 +133,7 @@ void CAN2_SCE_IRQHandler(void)
 	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
 	OSIntNesting++;
 	OS_EXIT_CRITICAL();
+	CAN2ErrorFlag = CAN_BUS_OFF;
 	USART_SendData(UART5, 2);	
 	USART_SendData(UART5, CAN_GetLastErrorCode(CAN2));
 	USART_SendData(UART5, (uint8_t)-100);
@@ -189,7 +192,7 @@ extern  OS_EVENT 		*CANSendPeriodSem;
 extern uint8_t canErrCode;
 void TIM2_IRQHandler(void)
 {
-	#define CAN_SEND_PERIOD_COUNTER 1
+	#define CAN_SEND_PERIOD_COUNTER 40
 
 	static uint8_t CANSendPeriodCounter = CAN_SEND_PERIOD_COUNTER;
 
@@ -208,6 +211,15 @@ void TIM2_IRQHandler(void)
 		if (CANSendPeriodCounter == 0)
 		{
 			OSSemPost(CANSendPeriodSem);
+			//当队列满时指示灯闪烁
+			if((CAN1BuffRear + 1)%MAX_CAN_CAPACITY==CAN1BuffFront)
+			{
+				GPIOA->ODR^=0x0100;
+			}
+			if((CAN2BuffRear + 1)%MAX_CAN_CAPACITY==CAN2BuffFront)
+			{
+				GPIOA->ODR^=0x0200;
+			}
 			CANSendPeriodCounter = CAN_SEND_PERIOD_COUNTER;
 		}
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);

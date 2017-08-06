@@ -6,6 +6,8 @@
 #define CAN_SEND_OK 1
 #define CAN_SEND_ERR -1
 #define SDO_RESPONSE_COB_ID_BASE 0x280
+#define CAN_BUS_OFF 1
+#define CAN_BUS_OK 0
 void CAN_Config(CAN_TypeDef* CANx, 
 				uint32_t CAN_BaudRate,
 				GPIO_TypeDef * GPIOx,
