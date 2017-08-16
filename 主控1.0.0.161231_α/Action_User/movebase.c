@@ -696,6 +696,9 @@ void StickPos(float posX,float posY)
 			MoveY(50.0f);
 			OSTimeDly(50);
 			LockWheel();
+			elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
+			OSTimeDly(1);
+			elmo_Enable(CAN2 , MOVEBASE_BROADCAST_ID);
 			gRobot.launchPosX = gRobot.moveBase.actualXPos;
 			gRobot.launchPosY = gRobot.moveBase.actualYPos;
 			isOutOfRange = MOVEBASE_IN_RANGE;
