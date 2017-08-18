@@ -1037,6 +1037,7 @@ void WalkTask(void)
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
+				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(0.0f));
 
 				if(RESET_SWITCH)
 				{
@@ -1633,6 +1634,7 @@ void WalkTask(void)
 				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
 				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
 				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
+				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(0.0f));
 
 				/*等待按下重试开关 */
 				if(RESET_SWITCH)
