@@ -21,6 +21,10 @@
 #define BLE_STOP_DEFEND (1)
 #define BLE_START_DEFEND (0)
 
+//是否进入自检
+#define ROBOT_SELF_CHECK (1)
+#define ROBOT_NO_SELF_CHECK (0)
+
 #define LEFT_BULLET_NUM 200u
 #define RIGHT_BULLET_NUM 200u
 //着陆台个数
