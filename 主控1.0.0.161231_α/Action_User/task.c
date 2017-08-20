@@ -1003,6 +1003,7 @@ void WalkTask(void)
 	uint8_t loadTimes = 0;
 	uint8_t leanOnWallTimes = 0;
 	uint8_t keyOnTimes = 0;
+	uint8_t resetConfig = 0;
 	float stopYposRecord = 0;
 //	uint8_t clampSmallOpenFlag = 1;
 //	uint8_t clampSmallOpenCounter = 0;
@@ -1023,30 +1024,35 @@ void WalkTask(void)
 		{
 			if(gRobot.isReset == ROBOT_RESET||RESET_SWITCH)
 			{
-				//失能电机，中断发射任务
-				elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
-				ClearCmdQueue();
-				ROBOT_LeftGunHome();
-				ROBOT_RightGunHome();
-				ROBOT_UpperGunHome();
-				VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
-				VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
-				VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
-				VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
-				VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
-				VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(0.0f));
-
-				if(RESET_SWITCH)
+				resetConfig++;
+				if(resetConfig>=5)
 				{
+					resetConfig = 0;
+					//失能电机，中断发射任务
 					elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
-					//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
-					gRobot.isReset = ROBOT_RESET;
-					BEEP_ON;
-					delay_ms(720);
-					BEEP_OFF;
-					OSSemSet(PeriodSem,0,&os_err);
+					ClearCmdQueue();
+					ROBOT_LeftGunHome();
+					ROBOT_RightGunHome();
+					ROBOT_UpperGunHome();
+					VelCrl(CAN1, LEFT_GUN_LEFT_ID, LeftGunLeftSpeedTransform(0.0f));
+					VelCrl(CAN1, LEFT_GUN_RIGHT_ID,  LeftGunRightSpeedTransform(0.0f));
+					VelCrl(CAN1, RIGHT_GUN_LEFT_ID, RightGunLeftSpeedTransform(0.0f));
+					VelCrl(CAN1, RIGHT_GUN_RIGHT_ID,  RightGunRightSpeedTransform(0.0f));
+					VelCrl(CAN1, UPPER_GUN_LEFT_ID, UpperGunLeftSpeedTransform(0.0f));
+					VelCrl(CAN1, UPPER_GUN_RIGHT_ID, UpperGunRightSpeedTransform(0.0f));
+
+					if(RESET_SWITCH)
+					{
+						elmo_Disable(CAN2 , MOVEBASE_BROADCAST_ID);
+						//按下以后等待一秒 再进入reset 目的是防止多次进入重试 进入reset后会马上又检测开关是否触发
+						gRobot.isReset = ROBOT_RESET;
+						BEEP_ON;
+						delay_ms(720);
+						BEEP_OFF;
+						OSSemSet(PeriodSem,0,&os_err);
+					}
+					status = reset;
 				}
-				status = reset;
 			}
 		}
 		//在发射以及重启的过程中不读取elmo状态，不发送走行信息
