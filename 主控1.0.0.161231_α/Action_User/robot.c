@@ -1655,7 +1655,7 @@ status_t ROBOT_RightGunCheckReload(void)
 status_t ROBOT_UpperGunCheckReload(void)
 {
 	//宏定义检测超时时间（单位：CHECK_PERIOD）
-	#define CHECK_TIME_OUT (30)
+	#define CHECK_TIME_OUT (50)
 	//宏定义检测一次需要的时间（单位：系统时钟）
 	#define CHECK_PERIOD (1)
 	uint8_t checkTimes = CHECK_TIME_OUT;
@@ -1672,7 +1672,7 @@ status_t ROBOT_UpperGunCheckReload(void)
 			gRobot.upperGun.champerErrerState = GUN_NO_ERROR;
 			break;
 		}
-		OSTimeDly(1);
+		OSTimeDly(CHECK_PERIOD);
 	}
 	return GUN_NO_ERROR;
 }
