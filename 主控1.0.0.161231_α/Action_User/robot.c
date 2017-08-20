@@ -739,7 +739,7 @@ shoot_command_t ROBOT_RightGunGetShootCommand(void)
 shoot_command_t ROBOT_RightGunGetShootCommandFIFO(void)
 {
 	#define RIGHT_NEW_PLATE_NUM 10u
-	shoot_command_t shootCommand = {SHOOT_POINT3, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
+	shoot_command_t shootCommand = {SHOOT_POINT2, INVALID_PLANT_NUMBER, INVALID_SHOOT_METHOD};
 	cmd_t manualCmd;
 	//防止同一个枪连续执行命令
 	OSTimeDly(1);
