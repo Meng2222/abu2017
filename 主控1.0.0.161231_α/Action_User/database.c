@@ -138,7 +138,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBER
 		 //5#着陆台
 		 {40.5f,8.0f, 2.9f,3.9f,123.5f},
 		 //6#着陆台
-		 {-4.7f,11.9f, -1.9f,29.0f,126.0f},
+		 {-0.2f,12.2f, -2.5f,14.8f,116.1f},
 		 //7#着陆台
 		 {7.0f, 24.9f,6.0f,16.0f,77.0f}},
 		//第四类参数，对应新盘补弹落盘参数
@@ -153,7 +153,7 @@ gun_pose_t gLeftGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBER
 		 //5#着陆台
 		 {34.4f,16.5f,6.2f,17.0f,82.0f},
 		 //6#着陆台
-		 {-6.1f,20.3f,-2.0f,17.1f,105.8f},
+		 {-6.1f,20.3f,-3.5f,17.1f,105.8f},
 		 //7#着陆台
 		 {6.0f, 37.2f,2.5f,15.0f,46.0f}}
 	 },
@@ -534,7 +534,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		 //5#着陆台
 		 {29.8f,7.8f, 18.0f,119.5f,10.0f},
 		 //6#着陆台
-		 {0.0f,11.9f,7.6f,116.0f,20.0f},
+		 {3.5f,13.1f,-3.1f,120.5f,9.0f},
 		 //7#着陆台
 		 {-5.5f,26.9f, 7.5f,10.0f,70.0f}},
 		//第四类参数，对应新盘补弹落盘参数
@@ -549,7 +549,7 @@ gun_pose_t gRightGunPosDatabase[SHOOT_POINT_NUM][SHOOT_METHOD_NUMBER][LAND_NUMBE
 		 //5#着陆台
 		 {38.1f,17.5f,11.7f,77.5f,18.5f},
 		 //6#着陆台
-		 {8.5f ,19.6f,-2.1f,105.5f,17.0f},
+		 {9.0f ,20.6f,-1.1f,105.5f,17.0f},
 		 //7#着陆台
 		 {-3.5f,35.9f, 0.0f,45.0f,15.0f}}
 	 },
@@ -1228,7 +1228,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第二种参数类型对应落盘
 			{
-				{-13.1f,12.0f, 0.0f, 72.0f, 12.7f},
+				{-14.7f,13.8f, 0.0f, 74.0f, 11.2f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -1324,7 +1324,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第二种参数类型对应落盘
 			{
-				{28.6f,12.3f,0.0f,72.6f,13.5f},
+				{26.8f,13.8f,0.0f,74.1f,12.5f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
@@ -1420,7 +1420,7 @@ gun_pose_t gUpperGunPosDatabase[SHOOT_POINT_NUM][LAND_NUMBER][UPPER_SHOOT_METHOD
 			},
 			//第二种参数类型对应落盘
 			{
-				{9.0f,15.6f,0.0f,100.2f,12.9f},
+				{7.5f,12.8f,0.0f,96.0f,16.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
 				{0.0f,0.0f,0.0f,0.0f,0.0f},
