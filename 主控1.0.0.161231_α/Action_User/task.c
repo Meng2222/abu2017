@@ -1084,6 +1084,11 @@ void WalkTask(void)
 					photoElectricCounter++;
 					if(photoElectricCounter >= 5)
 					{
+						//避免数据溢出
+						if(photoElectricCounter>=100)
+						{
+							photoElectricCounter = 100;
+						}
 						//在车启动前才发命令给陀螺仪 通知其完成初始化
 						GyroInit();
 						//等待定位系统信号量
@@ -1094,32 +1099,33 @@ void WalkTask(void)
 						//错误处理  将会通过wifi显示错误 并且蜂鸣器响提示
 						if(os_err == OS_ERR_TIMEOUT)
 						{
-							//如果超时没有接收到定位系统数据则提示错误
-							while(1)
-							{
-								UART5_OUT((uint8_t *)"GYRO NO DATA ERROR!!!\r\n");
-								BEEP_ON;
-								delay_ms(350);
-								BEEP_OFF;
-								delay_ms(350);
-							}
+							//如果超时没有接收到定位系统数据则提示错误,并继续留在当前状态中给定位系统发送初始化命令
+
+							UART5_OUT((uint8_t *)"GYRO NO DATA ERROR!!!\r\n");
+							BEEP_ON;
+							delay_ms(350);
+							BEEP_OFF;
+							delay_ms(350);
 						}
-						//出发后爪子张开
-//						ClampOpen();
-//						//fix me maybe useless
-//						delay_ms(20);
-						//出发时左右枪复位
-//						ROBOT_LeftGunHome();
-//						ROBOT_RightGunHome();
+						else
+						{
+							//出发后爪子张开
+	//						ClampOpen();
+	//						//fix me maybe useless
+	//						delay_ms(20);
+							//出发时左右枪复位
+	//						ROBOT_LeftGunHome();
+	//						ROBOT_RightGunHome();
 #ifdef BLUE_FIELD
-						BLUE_LED_OFF;
+							BLUE_LED_OFF;
 #endif
 #ifdef RED_FIELD
-						RED_LED_OFF;
+							RED_LED_OFF;
 #endif
-						status = goToLoadingArea;
-						gRobot.isLeaveSZ = ROBOT_OUT_SZ;
-						//在触发光电前 信号量也在一直累加 在等待陀螺仪时也有可能等待了几个tick 故在此必须清信号量
+							status = goToLoadingArea;
+							gRobot.isLeaveSZ = ROBOT_OUT_SZ;
+							//在触发光电前 信号量也在一直累加 在等待陀螺仪时也有可能等待了几个tick 故在此必须清信号量
+						}
 						OSSemSet(PeriodSem, 0, &os_err);
 					}
 				}
