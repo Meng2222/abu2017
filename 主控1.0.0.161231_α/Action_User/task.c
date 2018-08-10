@@ -19,6 +19,8 @@
 #include "dma.h"
 
 
+#define GIT_TEST (1)
+
 //宏定义起跑爪子张开时间
 #define CLAMP_OPEN_DELAY (1.0f)
 //宏定义标记左右枪没有命令时收回气缸的时间
