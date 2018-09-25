@@ -489,109 +489,123 @@ void InitQueue(unsigned char stopPoint)
 	uint8_t rand0 = 0 , rand1 = 0, rand2 = 0;
 	uint8_t randCmd;
 	cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
-	switch(stopPoint)
-	{		
-		//场地左侧发射点
-		case SHOOT_POINT1:
-		{
-			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
-			break;
-		}
-		//场地中央发射点
-		case SHOOT_POINT2:
-		{
+	
+	for(uint8_t i = 5;i>0;i--)
+	{
+		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+	}
+//	switch(stopPoint)
+//	{		
+//		//场地左侧发射点
+//		case SHOOT_POINT1:
+//		{
+//			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//			initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
+//			break;
+//		}
+//		//场地中央发射点
+//		case SHOOT_POINT2:
+//		{
 
-			RNG_Config();
-			
-			rand0 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
-			rand1 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
-			rand2 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
+//			RNG_Config();
+//			
+//			rand0 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
+//			rand1 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
+//			rand2 = ((float)RNG_Get_RandomNum()/(float)0xffffffff)>0.5f;
 
-			RNG_Cmd(DISABLE);
-			
-			randCmd = rand0;
-			rand1 = rand1;
-			rand2 = rand2;
+//			RNG_Cmd(DISABLE);
+//			
+//			randCmd = rand0;
+//			rand1 = rand1;
+//			rand2 = rand2;
 
-			switch(randCmd)
-			{
+//			switch(randCmd)
+//			{
 
-				case 0:
-					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					UpperGunPriority[0] = PLANT1;
-					UpperGunPriority[1] = PLANT5;
-//					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-				break;
-				case 1:
-					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-					UpperGunPriority[0] = PLANT5;
-					UpperGunPriority[1] = PLANT1;
-//					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
-////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-				break;
-//				case 2:
-//					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-//				break;
-				default:
-//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//				case 0:
 //					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 //					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
 //					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 //					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-				break;
-			}
+//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//					UpperGunPriority[0] = PLANT1;
+//					UpperGunPriority[1] = PLANT5;
+////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//				break;
+//				case 1:
+//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//					UpperGunPriority[0] = PLANT5;
+//					UpperGunPriority[1] = PLANT1;
+////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);	
+//////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//				break;
+////				case 2:
+////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+////				break;
+//				default:
+////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//////					initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT1; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+////					initCmd.plantNum = PLANT4; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//				break;
+//			}
 
-			break;
-		}
-		//场地右侧发射点
-		case SHOOT_POINT3:
-		{
-			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
-			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);			
+//			break;
+//		}
+//		//场地右侧发射点
+//		case SHOOT_POINT3:
+//		{
+//			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD3; InCmdQueue(initCmd);
+//			initCmd.plantNum = PLANT5; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);			
 
-			break;
-		}
-		default:
-			break;
-	}
+//			break;
+//		}
+//		default:
+//			break;
+//	}
 }
 
 
