@@ -240,7 +240,7 @@ void CameraInit(void)
 	USART_SendData(USART3, 'a');
 	USART_SendData(USART3, 'a');
 #ifdef BLUE_FIELD
-	USART_SendData(USART3, 'b');
+	USART_SendData(USART3, 'r');
 #endif
 #ifdef RED_FIELD
 	USART_SendData(USART3, 'r');
@@ -2677,8 +2677,8 @@ void UpperGunShootTask(void)
 			}
 			else
 			{
-				gRobot.upperGun.mode = GUN_ATTACK_MODE;
-//				OSTaskSuspend(OS_PRIO_SELF);
+//				gRobot.upperGun.mode = GUN_ATTACK_MODE;
+				OSTaskSuspend(OS_PRIO_SELF);
 			}
 		}
 		else if(ROBOT_GunCheckMode(UPPER_GUN) == GUN_ATTACK_MODE)
@@ -2689,55 +2689,55 @@ void UpperGunShootTask(void)
 			gRobot.upperGun.shootParaMode = uppershootCommand.shootMethod;
 			if(gRobot.upperGun.commandState == GUN_HAVE_COMMAND)
 			{
-				uint8_t targetPlant = uppershootCommand.plantNum;
-				uint8_t shootMethod = uppershootCommand.shootMethod;
-				uint8_t shootZone = ZONE1;
-				//获取目标位姿
-				gun_pose_t pose = gUpperGunPosDatabase[gRobot.moveBase.actualStopPoint][targetPlant][shootMethod][shootZone];
-				//更新枪目标位姿
-				gRobot.upperGun.targetPose.pitch = pose.pitch;
-				gRobot.upperGun.targetPose.yaw = pose.yaw;
-				gRobot.upperGun.targetPose.speed1 = pose.speed1;
-				gRobot.upperGun.targetPose.speed2 = pose.speed2;
+//				uint8_t targetPlant = uppershootCommand.plantNum;
+//				uint8_t shootMethod = uppershootCommand.shootMethod;
+//				uint8_t shootZone = ZONE1;
+//				//获取目标位姿
+//				gun_pose_t pose = gUpperGunPosDatabase[gRobot.moveBase.actualStopPoint][targetPlant][shootMethod][shootZone];
+//				//更新枪目标位姿
+//				gRobot.upperGun.targetPose.pitch = pose.pitch;
+//				gRobot.upperGun.targetPose.yaw = pose.yaw;
+//				gRobot.upperGun.targetPose.speed1 = pose.speed1;
+//				gRobot.upperGun.targetPose.speed2 = pose.speed2;
 
-				ROBOT_UpperGunAim();
-				//检查是否到位
-				ROBOT_UpperGunCheckAim();
-				if(gRobot.upperGun.defendZone1 & 0x0f)
-				{
-					gRobot.upperGun.mode = GUN_DEFEND_MODE;
-					//执行命令过程中若切到防守模式将命令状态复位
-					if(gRobot.upperGun.shootParaMode%3)
-					{
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plate += 1;
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
-					}
-					else
-					{
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ball += 1;
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
-					}
-				}
-				else
-				{
-					ROBOT_UpperGunShoot();
-					gRobot.upperGun.lastPlant = gRobot.upperGun.targetPlant;
-					gRobot.upperGun.lastParaMode = gRobot.upperGun.shootParaMode;
-					SetShootPlantTime(uppershootCommand.plantNum, uppershootCommand.shootMethod);
-					//发射完成后标志任务执行完成
-					if(gRobot.upperGun.shootParaMode%3)
-					{
-						gRobot.manualCmdQueue.cmdPlateState&=(~((uint8_t)0x01<<(gRobot.upperGun.targetPlant)))&0x7f;
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
-					}
-					else
-					{
-						gRobot.manualCmdQueue.cmdBallState&=(~((uint8_t)0x01<<(gRobot.upperGun.targetPlant)))&0x7f;
-						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
-					}
-					UART5_OUT((uint8_t *)"Attack");
-					UpperGunSendDebugInfo();
-				}
+//				ROBOT_UpperGunAim();
+//				//检查是否到位
+//				ROBOT_UpperGunCheckAim();
+//				if(gRobot.upperGun.defendZone1 & 0x0f)
+//				{
+//					gRobot.upperGun.mode = GUN_DEFEND_MODE;
+//					//执行命令过程中若切到防守模式将命令状态复位
+//					if(gRobot.upperGun.shootParaMode%3)
+//					{
+//						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plate += 1;
+//						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
+//					}
+//					else
+//					{
+//						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ball += 1;
+//						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
+//					}
+//				}
+//				else
+//				{
+//					ROBOT_UpperGunShoot();
+//					gRobot.upperGun.lastPlant = gRobot.upperGun.targetPlant;
+//					gRobot.upperGun.lastParaMode = gRobot.upperGun.shootParaMode;
+//					SetShootPlantTime(uppershootCommand.plantNum, uppershootCommand.shootMethod);
+//					//发射完成后标志任务执行完成
+//					if(gRobot.upperGun.shootParaMode%3)
+//					{
+//						gRobot.manualCmdQueue.cmdPlateState&=(~((uint8_t)0x01<<(gRobot.upperGun.targetPlant)))&0x7f;
+//						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].plateState = COMMAND_DONE;
+//					}
+//					else
+//					{
+//						gRobot.manualCmdQueue.cmdBallState&=(~((uint8_t)0x01<<(gRobot.upperGun.targetPlant)))&0x7f;
+//						gRobot.upperGun.gunCommand[gRobot.upperGun.targetPlant].ballState = COMMAND_DONE;
+//					}
+//					UART5_OUT((uint8_t *)"Attack");
+//					UpperGunSendDebugInfo();
+//				}
 				gRobot.upperGun.commandState = GUN_NO_COMMAND;
 			}
 			else

@@ -1988,7 +1988,7 @@ void USART3_IRQHandler(void)
 				//更新7号着陆台飞盘位置, fix me
 				if(gRobot.isReset != ROBOT_RESET)
 				{
-					if(gRobot.upperGun.shootTimes >= 7u)
+					if(gRobot.upperGun.shootTimes >= 0u)
 					{
 						if(gRobot.upperGun.isManualDefend != UPPER_MANUAL_DEFEND)
 						{

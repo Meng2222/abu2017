@@ -490,18 +490,18 @@ void InitQueue(unsigned char stopPoint)
 	uint8_t randCmd;
 	cmd_t initCmd = {INVALID_PLANT_NUMBER,INVALID_SHOOT_METHOD};
 	
-	for(uint8_t i = 5;i>0;i--)
+	for(uint8_t i = 8;i>0;i--)
 	{
 		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 		initCmd.plantNum = PLANT2; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
-		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
+//		initCmd.plantNum = PLANT6; initCmd.method = SHOOT_METHOD4; InCmdQueue(initCmd);
 	}
 //	switch(stopPoint)
 //	{		
